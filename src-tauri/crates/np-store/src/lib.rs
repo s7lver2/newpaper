@@ -5,3 +5,6 @@ pub mod store;
 
 pub use error::StoreError;
 pub use store::Store;
+pub mod hlc;
+pub mod ids;
+pub use hlc::{Hlc, HlcClock};

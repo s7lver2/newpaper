@@ -7,6 +7,7 @@ use crate::{migrations, StoreError};
 pub struct Store {
     conn: Mutex<Connection>,
     device_id: String,
+    clock: crate::HlcClock,
 }
 
 impl Store {
@@ -27,12 +28,22 @@ impl Store {
         conn.busy_timeout(Duration::from_secs(5))?;
         migrations::migrate(&mut conn)?;
         let device_id = ensure_device_id(&conn)?;
-        Ok(Self { conn: Mutex::new(conn), device_id })
+        let clock = crate::HlcClock::new(device_id[..8].to_string());
+        Ok(Self { conn: Mutex::new(conn), device_id, clock })
     }
 
     /// UUID v4 de este dispositivo (tabla `local_meta`, nunca se sincroniza).
     pub fn device_id(&self) -> &str {
         &self.device_id
+    }
+
+    pub fn clock(&self) -> &crate::HlcClock {
+        &self.clock
+    }
+
+    /// Siguiente marca HLC codificada para `updated_at`.
+    pub fn stamp(&self) -> String {
+        self.clock.now().to_string()
     }
 
     pub fn user_version(&self) -> Result<u32, StoreError> {
@@ -95,4 +106,14 @@ mod tests {
         fn assert_send_sync<T: Send + Sync>() {}
         assert_send_sync::<Store>();
     }
+
+    #[test]
+    fn stamps_are_increasing_and_carry_device_node() {
+        let s = Store::open_in_memory().unwrap();
+        let a = s.stamp();
+        let b = s.stamp();
+        assert!(a < b);
+        assert!(a.ends_with(&s.device_id()[..8]));
+    }
+
 }

@@ -17,6 +17,7 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 | 6 | `components.test.tsx` pasaba el setter de `useState` a `onChange(v: string)`: no compila en typecheck | Callback con cast al tipo de la unión (`(next) => setV(next as "a" | "b" | "c")`) | — |
 | 9 | El paso 5 decía “3 ficheros” de test; con `tokens.test.ts` separado son 4 | Corregido el texto a 4 ficheros (16 tests, sin cambio) | — |
 | 10 | Al poner la implementación “encima de los tests”, las líneas `//!` del bloque de tests quedan a mitad de fichero y Rust no compila (E0753) | Las líneas `//!` se mueven al principio del fichero (`migrations.rs`) | — |
+| 11 | Mismo problema de `//!` que en la tarea 10 al poner la implementación encima de los tests (`hlc.rs`, `ids.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
 
 ## Pendiente
 
