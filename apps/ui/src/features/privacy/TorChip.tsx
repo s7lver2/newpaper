@@ -9,6 +9,13 @@ export function TorChip({ tab }: { tab: TabInfo | null }) {
   const status = usePrivacyStatus();
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
+  const [bump, setBump] = useState(0);
+  const sig = status ? `${status.mode}|${status.exitCountry ?? ''}|${status.tor.state}|${tab !== null && status.tabsWithoutTor.includes(tab.id)}` : '';
+  const prevSig = useRef<string | null>(null);
+  useEffect(() => {
+    if (prevSig.current !== null && prevSig.current !== sig && sig !== '') setBump((n) => n + 1);
+    prevSig.current = sig;
+  }, [sig]);
   const wrap = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (!open) return;
@@ -30,7 +37,7 @@ export function TorChip({ tab }: { tab: TabInfo | null }) {
     <div ref={wrap} className="np-torchip-wrap">
       <button
         type="button"
-        className="np-torchip np-hit"
+        className="np-torchip np-hit np-press-spring"
         data-open={open}
         data-mode={status.mode}
         data-failed={status.mode === 'tor' && status.tor.state === 'failed'}
@@ -41,6 +48,7 @@ export function TorChip({ tab }: { tab: TabInfo | null }) {
       >
         <span className={status.mode === 'tor' && status.tor.state !== 'failed' && status.tor.state !== 'off' ? 'np-tor-dot np-pulse' : 'np-tor-dot'} aria-hidden="true" />
         {label}
+        {bump > 0 ? <span key={bump} className="np-torchip-ring" aria-hidden="true" /> : null}
       </button>
       {open ? <TorPopup tabId={tab?.id ?? null} onClose={close} /> : null}
     </div>

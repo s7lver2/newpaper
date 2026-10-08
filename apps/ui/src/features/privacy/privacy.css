@@ -7,7 +7,7 @@
 .np-shield-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
 .np-shield-stats dt { font-size: 11.5px; color: var(--np-muted); }
 .np-shield-stats dd { margin: 0; font: 400 26px/1.2 var(--np-font-read); }
-.np-torchip { display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 0; border-radius: 8px; background: var(--np-tor-soft); color: var(--np-tor); font: 500 12px/1 var(--np-font-ui); }
+.np-torchip { position: relative; transition: background-color .45s var(--np-ease), color .45s var(--np-ease), transform .55s var(--np-bounce), box-shadow .45s var(--np-ease); display: inline-flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; border: 0; border-radius: 8px; background: var(--np-tor-soft); color: var(--np-tor); font: 500 12px/1 var(--np-font-ui); }
 .np-torchip[data-mode='direct'] { background: var(--np-soft); color: var(--np-muted); }
 .np-torchip[data-failed='true'] { background: var(--np-bad-bg); color: var(--np-bad); }
 .np-torchip[data-without='true'] { background: var(--np-warn-bg); color: var(--np-warn); }
@@ -135,3 +135,8 @@
 .np-dialog-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 10px; }
 .np-dialog-actions .np-btn { min-height: 46px; padding: 0 18px; border-radius: 12px; font-weight: 500; }
 .np-btn.np-btn-warn { border-color: var(--np-warn); background: var(--np-warn); color: var(--np-on-ink); }
+
+/* Tor chip feedback: hover lift and a one-shot ring when mode, exit country or state changes */
+.np-torchip:hover:not([data-open='true']) { box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 14%, transparent); }
+.np-torchip-ring { position: absolute; inset: 0; border-radius: 8px; border: 2px solid currentColor; pointer-events: none; animation: np-chip-ring .9s var(--np-ease) both; }
+@keyframes np-chip-ring { from { opacity: .7; transform: scale(1); } to { opacity: 0; transform: scale(1.35, 1.7); } }
