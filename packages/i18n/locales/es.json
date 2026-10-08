@@ -1,5 +1,7 @@
 {
-  "app": { "name": "newpaper" },
+  "app": {
+    "name": "newpaper"
+  },
   "common": {
     "close": "Cerrar",
     "cancel": "Cancelar",
@@ -7,5 +9,49 @@
     "retry": "Reintentar",
     "loading": "Cargando…",
     "articles": "{count, plural, one {# artículo} other {# artículos}}"
+  },
+  "shell": {
+    "tabs": {
+      "label": "Pestañas",
+      "new": "Nueva pestaña",
+      "close": "Cerrar la pestaña {title}",
+      "untitled": "Sin título",
+      "private": "Privada",
+      "loading": "Cargando"
+    },
+    "address": {
+      "label": "Buscar o escribir una dirección",
+      "suggestions": "Sugerencias",
+      "kind": {
+        "go": "Ir a",
+        "search": "Buscar",
+        "history": "Historial",
+        "outlet": "Medio",
+        "recent": "Búsqueda reciente"
+      }
+    },
+    "nav": {
+      "label": "Navegación",
+      "back": "Atrás",
+      "forward": "Adelante",
+      "reload": "Recargar"
+    },
+    "reader": {
+      "open": "Modo lector",
+      "original": "Ver original",
+      "byline": "Por {name}"
+    },
+    "surface": {
+      "errorTitle": "No se ha podido cargar la página",
+      "errorDetail": "Código {code}",
+      "crashTitle": "La pestaña ha dejado de responder",
+      "crashReload": "Recargar la pestaña"
+    },
+    "inicio": {
+      "title": "¿Qué quieres leer hoy?",
+      "results": "Resultados para «{query}»",
+      "soon": "Las coberturas aparecerán aquí cuando el índice de fuentes esté activo."
+    },
+    "notFound": "Esta página interna no existe."
   }
 }

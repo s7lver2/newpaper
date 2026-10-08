@@ -1,5 +1,7 @@
 {
-  "app": { "name": "newpaper" },
+  "app": {
+    "name": "newpaper"
+  },
   "common": {
     "close": "Close",
     "cancel": "Cancel",
@@ -7,5 +9,49 @@
     "retry": "Retry",
     "loading": "Loading…",
     "articles": "{count, plural, one {# article} other {# articles}}"
+  },
+  "shell": {
+    "tabs": {
+      "label": "Tabs",
+      "new": "New tab",
+      "close": "Close tab {title}",
+      "untitled": "Untitled",
+      "private": "Private",
+      "loading": "Loading"
+    },
+    "address": {
+      "label": "Search or type an address",
+      "suggestions": "Suggestions",
+      "kind": {
+        "go": "Go to",
+        "search": "Search",
+        "history": "History",
+        "outlet": "Outlet",
+        "recent": "Recent search"
+      }
+    },
+    "nav": {
+      "label": "Navigation",
+      "back": "Back",
+      "forward": "Forward",
+      "reload": "Reload"
+    },
+    "reader": {
+      "open": "Reader mode",
+      "original": "View original",
+      "byline": "By {name}"
+    },
+    "surface": {
+      "errorTitle": "This page couldn't be loaded",
+      "errorDetail": "Code {code}",
+      "crashTitle": "This tab stopped responding",
+      "crashReload": "Reload tab"
+    },
+    "inicio": {
+      "title": "What would you like to read today?",
+      "results": "Results for “{query}”",
+      "soon": "Coverage will appear here once the source index is active."
+    },
+    "notFound": "This internal page doesn't exist."
   }
 }

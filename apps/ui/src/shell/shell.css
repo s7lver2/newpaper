@@ -1,0 +1,21 @@
+.np-app { display: grid; grid-template-rows: auto auto 1fr; height: 100vh; overflow: hidden; }
+.np-tabstrip { display: flex; align-items: center; gap: 4px; padding: 6px 8px 0; background: var(--np-chrome); }
+.np-tabstrip-list { display: flex; gap: 2px; min-width: 0; overflow-x: auto; }
+.np-tabstrip-item { display: flex; align-items: center; border-radius: 10px 10px 0 0; max-width: 240px; }
+.np-tabstrip-item[data-active='true'] { background: var(--np-paper); }
+.np-tabstrip-tab { display: flex; align-items: center; gap: 6px; min-height: 36px; min-width: 120px; padding: 0 10px; border: 0; background: transparent; color: var(--np-ink2); font: 500 12.5px/1 var(--np-font-ui); }
+.np-tabstrip-title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.np-tab-private { font: 500 10.5px/1 var(--np-font-mono); color: var(--np-tor); }
+.np-tab-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--np-accent); }
+.np-toolbar { display: flex; align-items: center; gap: 6px; padding: 6px 10px; background: var(--np-paper); border-bottom: 1px solid var(--np-line); }
+.np-toolbar-nav, .np-toolbar-items { display: flex; gap: 2px; }
+.np-address { position: relative; flex: 1; display: flex; align-items: center; gap: 8px; min-height: 40px; padding: 0 14px; border-radius: 999px; background: var(--np-card); border: 1px solid var(--np-line); color: var(--np-muted); }
+.np-address-input { flex: 1; border: 0; outline: none; background: transparent; color: var(--np-ink); font: 400 14px/1 var(--np-font-ui); }
+.np-address-list { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 10; margin: 0; padding: 6px; list-style: none; background: var(--np-card); border: 1px solid var(--np-line); border-radius: var(--np-radius); box-shadow: var(--np-shadow-pop); }
+.np-address-option { display: flex; align-items: baseline; gap: 10px; min-height: 40px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+.np-address-option[aria-selected='true'], .np-address-option:hover { background: var(--np-accent-soft); }
+.np-address-kind { font: 500 11px/1 var(--np-font-mono); color: var(--np-faint); min-width: 92px; }
+.np-address-detail { margin-left: auto; color: var(--np-faint); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40%; }
+.np-main { position: relative; min-height: 0; }
+.np-content-slot { position: absolute; inset: 0; pointer-events: none; }
+.np-surface { position: absolute; inset: 0; overflow: auto; background: var(--np-paper); }

@@ -1,5 +1,7 @@
 {
-  "app": { "name": "newpaper" },
+  "app": {
+    "name": "newpaper"
+  },
   "common": {
     "close": "Schließen",
     "cancel": "Abbrechen",
@@ -7,5 +9,49 @@
     "retry": "Erneut versuchen",
     "loading": "Wird geladen…",
     "articles": "{count, plural, one {# Artikel} other {# Artikel}}"
+  },
+  "shell": {
+    "tabs": {
+      "label": "Tabs",
+      "new": "Neuer Tab",
+      "close": "Tab {title} schließen",
+      "untitled": "Ohne Titel",
+      "private": "Privat",
+      "loading": "Wird geladen"
+    },
+    "address": {
+      "label": "Suchen oder Adresse eingeben",
+      "suggestions": "Vorschläge",
+      "kind": {
+        "go": "Gehe zu",
+        "search": "Suchen",
+        "history": "Verlauf",
+        "outlet": "Medium",
+        "recent": "Letzte Suche"
+      }
+    },
+    "nav": {
+      "label": "Navigation",
+      "back": "Zurück",
+      "forward": "Vorwärts",
+      "reload": "Neu laden"
+    },
+    "reader": {
+      "open": "Lesemodus",
+      "original": "Original anzeigen",
+      "byline": "Von {name}"
+    },
+    "surface": {
+      "errorTitle": "Die Seite konnte nicht geladen werden",
+      "errorDetail": "Code {code}",
+      "crashTitle": "Der Tab reagiert nicht mehr",
+      "crashReload": "Tab neu laden"
+    },
+    "inicio": {
+      "title": "Was möchtest du heute lesen?",
+      "results": "Ergebnisse für „{query}“",
+      "soon": "Berichte erscheinen hier, sobald der Quellenindex aktiv ist."
+    },
+    "notFound": "Diese interne Seite existiert nicht."
   }
 }
