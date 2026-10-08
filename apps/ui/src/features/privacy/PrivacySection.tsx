@@ -1,0 +1,89 @@
+import { useI18n } from '@newpaper/i18n/react';
+import { Button, Switch } from '@newpaper/ui-kit';
+import { commands } from '../../ipc/commands';
+import type { NetMode } from '../../ipc/types';
+import { countryName, EXIT_COUNTRIES } from './countries';
+import { DotMap } from './DotMap';
+import { torStateLabel } from './TorPopup';
+import { applyStatus, usePrivacyStatus } from './usePrivacy';
+
+export function PrivacySection() {
+  const { t, locale } = useI18n();
+  const status = usePrivacyStatus();
+  if (!status) return null;
+  const setMode = async (m: NetMode) => applyStatus(await commands.netSetMode(m));
+  const modes: { id: NetMode | 'wireguard'; title: string; desc: string; disabled?: boolean }[] = [
+    { id: 'direct', title: t('privacy.settings.modeDirect'), desc: t('privacy.settings.modeDirectDesc') },
+    { id: 'tor', title: t('privacy.settings.modeTor'), desc: t('privacy.settings.modeTorDesc') },
+    { id: 'wireguard', title: t('privacy.settings.modeWireguard'), desc: t('privacy.settings.modeWireguardDesc'), disabled: true },
+  ];
+  return (
+    <section className="np-settings-section" aria-labelledby="np-set-privacy">
+      <h2 id="np-set-privacy" className="np-settings-h2">{t('privacy.settings.title')}</h2>
+      <p className="np-settings-hint">{t('privacy.settings.restartNote')}</p>
+      <div role="radiogroup" aria-label={t('privacy.settings.connection')} className="np-modes">
+        {modes.map((m) => (
+          <button
+            key={m.id}
+            type="button"
+            role="radio"
+            aria-checked={status.mode === m.id}
+            disabled={m.disabled}
+            className="np-mode"
+            onClick={() => m.id !== 'wireguard' && setMode(m.id)}
+          >
+            <strong>{m.title}</strong>
+            <span className="np-mode-desc">{m.desc}</span>
+          </button>
+        ))}
+      </div>
+      <p className="np-kicker" aria-live="polite">{torStateLabel(t, status)}</p>
+      {status.mode === 'direct' ? (
+        <p className="np-settings-hint">{t('privacy.tor.directNote')}</p>
+      ) : (
+        <>
+          <h3 className="np-settings-label">{t('privacy.settings.exitCountry')}</h3>
+          <DotMap active={status.exitCountry} />
+          <p className="np-settings-hint">{t('privacy.tor.reducesAnonymity')}</p>
+          <div role="radiogroup" aria-label={t('privacy.settings.exitCountry')} className="np-countries">
+            {['auto', ...EXIT_COUNTRIES.map((c) => c.code)].map((code) => {
+              const checked = (status.exitCountry ?? 'auto') === code;
+              return (
+                <button
+                  key={code}
+                  type="button"
+                  role="radio"
+                  aria-checked={checked}
+                  className="np-country"
+                  onClick={async () => applyStatus(await commands.torSetExitCountry(code === 'auto' ? null : code))}
+                >
+                  {code === 'auto' ? t('privacy.tor.autoCountry') : countryName(code, locale)}
+                </button>
+              );
+            })}
+          </div>
+          <div className="np-tor-route">
+            <span>{t('privacy.tor.routeYou')}</span><span aria-hidden="true">→</span>
+            <span>{t('privacy.tor.routeGuard')}</span><span aria-hidden="true">→</span>
+            <span>{t('privacy.tor.routeMiddle')}</span><span aria-hidden="true">→</span>
+            <span>{t('privacy.tor.routeExit', { country: status.exitCountry ?? t('privacy.tor.auto') })}</span>
+            <span>{t('privacy.tor.circuit', { n: status.circuit })}</span>
+            <Button variant="quiet" onClick={async () => applyStatus(await commands.torNewCircuit())}>{t('privacy.tor.newCircuit')}</Button>
+          </div>
+        </>
+      )}
+      <h3 className="np-settings-label">{t('privacy.settings.routing')}</h3>
+      <Switch
+        label={t('privacy.settings.feedsViaTor')}
+        checked={status.feedsViaTor}
+        onChange={async (v) => applyStatus(await commands.privacySetRouting({ feedsViaTor: v }))}
+      />
+      <Switch
+        label={t('privacy.settings.aiViaTor')}
+        description={t('privacy.settings.aiViaTorHint')}
+        checked={status.aiViaTor}
+        onChange={async (v) => applyStatus(await commands.privacySetRouting({ aiViaTor: v }))}
+      />
+    </section>
+  );
+}
