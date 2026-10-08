@@ -110,7 +110,7 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
               <Arrow dir="l" />
             </button>
             <div className="np-tor-candidate" aria-live="polite">
-              <div key={swipe} className="np-tor-swipe" data-dir={dir} data-first={swipe === 0}>
+              <div key={swipe} className="np-tor-swipe" data-dir={dir}>
                 <span className="np-tor-candidate-code">{short(candidate)}</span>
                 <span className="np-tor-candidate-name">{name(candidate)}</span>
                 <span className="np-tor-candidate-sub">{candidate === current ? t('privacy.tor.current') : ' '}</span>

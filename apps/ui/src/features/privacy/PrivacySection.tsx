@@ -22,7 +22,7 @@ export function PrivacySection() {
     { id: 'wireguard', title: t('privacy.settings.modeWireguard'), desc: t('privacy.settings.modeWireguardDesc'), disabled: true },
   ];
   return (
-    <section className="np-settings-section" aria-labelledby="np-set-privacy">
+    <section className="np-settings-section np-stagger" aria-labelledby="np-set-privacy">
       <div>
         <h2 id="np-set-privacy" className="np-settings-h2">{t('privacy.settings.title')}</h2>
         <p className="np-settings-hint">{t('privacy.settings.restartNote')}</p>
@@ -46,9 +46,9 @@ export function PrivacySection() {
       </div>
       <p className="np-kicker" aria-live="polite">{torStateLabel(t, status)}</p>
       {status.mode === 'direct' ? (
-        <p className="np-notice np-notice--warn">{t('privacy.tor.directNote')}</p>
+        <p className="np-notice np-notice--warn np-rise">{t('privacy.tor.directNote')}</p>
       ) : (
-        <div className="np-settings-card np-exit-card">
+        <div className="np-settings-card np-exit-card np-rise">
           <div className="np-exit-head">
             <div>
               <h3 className="np-settings-label">{t('privacy.settings.exitCountry')}</h3>

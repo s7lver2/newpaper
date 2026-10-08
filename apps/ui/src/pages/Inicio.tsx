@@ -6,7 +6,7 @@ export function Inicio({ url }: InternalPageProps) {
   const t = useT();
   const q = url.query.get('q');
   return (
-    <div className="np-inicio">
+    <div className="np-inicio np-rise-hero">
       <h1 className="np-inicio-title">{q ? t('shell.inicio.results', { query: q }) : t('shell.inicio.title')}</h1>
       <p className="np-inicio-sub">{t('shell.inicio.soon')}</p>
     </div>

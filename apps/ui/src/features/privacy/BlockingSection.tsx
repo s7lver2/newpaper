@@ -1,5 +1,5 @@
 import { useI18n } from '@newpaper/i18n/react';
-import { Button, Switch } from '@newpaper/ui-kit';
+import { Button, Switch, useCountUp } from '@newpaper/ui-kit';
 import { useEffect, useState } from 'react';
 import { commands } from '../../ipc/commands';
 import type { AdblockStatus, ListCategory } from '../../ipc/types';
@@ -15,6 +15,7 @@ const CATEGORY_KEY: Record<ListCategory, string> = {
 export function BlockingSection() {
   const { t, formatDate, formatNumber } = useI18n();
   const today = useTodayBlocked();
+  const shown = useCountUp(today);
   const [status, setStatus] = useState<AdblockStatus | null>(null);
   const [report, setReport] = useState<string>('');
   const [busy, setBusy] = useState(false);
@@ -26,7 +27,7 @@ export function BlockingSection() {
   const when = (secs: number | null) => (secs ? formatDate(new Date(secs * 1000), { dateStyle: 'medium', timeStyle: 'short' }) : t('privacy.blocking.never'));
 
   return (
-    <section className="np-settings-section" aria-labelledby="np-set-blocking">
+    <section className="np-settings-section np-stagger" aria-labelledby="np-set-blocking">
       <div>
         <h2 id="np-set-blocking" className="np-settings-h2">{t('privacy.blocking.title')}</h2>
         <p className="np-settings-hint">{t('privacy.blocking.lead')}</p>
@@ -34,7 +35,7 @@ export function BlockingSection() {
       <div className="np-stats">
         <div className="np-stat">
           <span className="np-stat-label">{t('privacy.shield.today')}</span>
-          <span className="np-stat-value">{formatNumber(today, { useGrouping: false })}</span>
+          <span className="np-stat-value">{formatNumber(shown, { useGrouping: false })}</span>
         </div>
       </div>
       <div className="np-settings-card np-switch-card">

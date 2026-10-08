@@ -69,7 +69,8 @@
       "themeInk": "Tinta",
       "themeSystem": "Sistema",
       "readerAuto": "Abrir las noticias en modo lector",
-      "readerAutoHint": "Las páginas reconocidas como noticia se muestran limpias, sin la web original."
+      "readerAutoHint": "Las páginas reconocidas como noticia se muestran limpias, sin la web original.",
+      "lead": "Idioma, apariencia y lectura."
     },
     "language": {
       "es": "Español",
@@ -90,7 +91,13 @@
       "deleteAll": "Borrar todo el historial",
       "deleteOutlet": "Borrar lo de un medio",
       "outletLabel": "Dominio del medio",
-      "deleted": "{count, plural, =0 {No había nada que borrar} one {# entrada borrada} other {# entradas borradas}}"
+      "deleted": "{count, plural, =0 {No había nada que borrar} one {# entrada borrada} other {# entradas borradas}}",
+      "lead": "Todo se guarda en tu equipo.",
+      "retentionHint": "Las visitas más antiguas se eliminan solas.",
+      "deleteDayHint": "Quita lo visitado en el último día.",
+      "deleteAllHint": "No se puede deshacer.",
+      "deleteOutletHint": "Quita todas las visitas de un dominio.",
+      "deleteAction": "Borrar"
     }
   },
   "privacy": {

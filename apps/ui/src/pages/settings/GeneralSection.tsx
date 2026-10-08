@@ -17,47 +17,53 @@ export function GeneralSection() {
   const [readerAuto, setReaderAuto] = useSetting<boolean>('reader.autoOpen', true);
   const languages = LOCALES.map((l) => ({ value: l, label: t(`settings.language.${l}`) }));
   return (
-    <section className="np-settings-section" aria-labelledby="np-set-general">
-      <h2 id="np-set-general" className="np-settings-h2">{t('settings.general.title')}</h2>
-      <div className="np-settings-row">
-        <span className="np-settings-label">{t('settings.general.language')}</span>
-        <SegmentedControl
-          label={t('settings.general.language')}
-          value={locale}
-          options={languages}
-          onChange={(l) => {
-            setLocale(l);
-            void commands.settingsSet('general.locale', l);
-          }}
-        />
+    <section className="np-settings-section np-stagger" aria-labelledby="np-set-general">
+      <div>
+        <h2 id="np-set-general" className="np-settings-h2">{t('settings.general.title')}</h2>
+        <p className="np-settings-hint">{t('settings.general.lead')}</p>
       </div>
-      <div className="np-settings-row">
-        <span className="np-settings-label">{t('settings.general.contentLanguage')}</span>
-        <SegmentedControl label={t('settings.general.contentLanguage')} value={contentLocale} options={languages} onChange={(l) => void setContentLocale(l)} />
-        <p className="np-settings-hint">{t('settings.general.contentLanguageHint')}</p>
+      <div role="radiogroup" aria-label={t('settings.general.theme')} className="np-themes">
+        {THEMES.map((o) => (
+          <button
+            key={o.value}
+            type="button"
+            role="radio"
+            aria-checked={theme === o.value}
+            className="np-theme-card np-lift"
+            onClick={() => {
+              applyTheme(o.value);
+              void setTheme(o.value);
+            }}
+          >
+            <span className="np-theme-preview" data-preview={o.value} aria-hidden="true"><i /><i /><i /></span>
+            <span>{t(o.labelKey)}</span>
+          </button>
+        ))}
       </div>
-      <div className="np-settings-row">
-        <span className="np-settings-label">{t('settings.general.theme')}</span>
-        <div role="radiogroup" aria-label={t('settings.general.theme')} className="np-themes">
-          {THEMES.map((o) => (
-            <button
-              key={o.value}
-              type="button"
-              role="radio"
-              aria-checked={theme === o.value}
-              className="np-theme-card"
-              onClick={() => {
-                applyTheme(o.value);
-                void setTheme(o.value);
-              }}
-            >
-              <span className="np-theme-preview" data-preview={o.value} aria-hidden="true"><i /><i /><i /></span>
-              <span>{t(o.labelKey)}</span>
-            </button>
-          ))}
+      <div className="np-settings-card np-switch-card">
+        <div className="np-set-row">
+          <div className="np-set-text">
+            <span className="np-set-name">{t('settings.general.language')}</span>
+          </div>
+          <SegmentedControl
+            label={t('settings.general.language')}
+            value={locale}
+            options={languages}
+            onChange={(l) => {
+              setLocale(l);
+              void commands.settingsSet('general.locale', l);
+            }}
+          />
         </div>
+        <div className="np-set-row">
+          <div className="np-set-text">
+            <span className="np-set-name">{t('settings.general.contentLanguage')}</span>
+            <span className="np-set-desc">{t('settings.general.contentLanguageHint')}</span>
+          </div>
+          <SegmentedControl label={t('settings.general.contentLanguage')} value={contentLocale} options={languages} onChange={(l) => void setContentLocale(l)} />
+        </div>
+        <Switch label={t('settings.general.readerAuto')} description={t('settings.general.readerAutoHint')} checked={readerAuto} onChange={(v) => void setReaderAuto(v)} />
       </div>
-      <Switch label={t('settings.general.readerAuto')} description={t('settings.general.readerAutoHint')} checked={readerAuto} onChange={(v) => void setReaderAuto(v)} />
     </section>
   );
 }

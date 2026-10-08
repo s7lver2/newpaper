@@ -69,7 +69,8 @@
       "themeInk": "Tinte",
       "themeSystem": "System",
       "readerAuto": "Nachrichten im Lesemodus öffnen",
-      "readerAutoHint": "Als Nachricht erkannte Seiten werden aufgeräumt angezeigt, ohne die Originalseite."
+      "readerAutoHint": "Als Nachricht erkannte Seiten werden aufgeräumt angezeigt, ohne die Originalseite.",
+      "lead": "Sprache, Darstellung und Lesen."
     },
     "language": {
       "es": "Español",
@@ -90,7 +91,13 @@
       "deleteAll": "Gesamten Verlauf löschen",
       "deleteOutlet": "Ein Medium löschen",
       "outletLabel": "Domain des Mediums",
-      "deleted": "{count, plural, =0 {Nichts zu löschen} one {# Eintrag gelöscht} other {# Einträge gelöscht}}"
+      "deleted": "{count, plural, =0 {Nichts zu löschen} one {# Eintrag gelöscht} other {# Einträge gelöscht}}",
+      "lead": "Alles wird auf deinem Rechner gespeichert.",
+      "retentionHint": "Ältere Besuche werden automatisch entfernt.",
+      "deleteDayHint": "Entfernt, was du am letzten Tag besucht hast.",
+      "deleteAllHint": "Das lässt sich nicht rückgängig machen.",
+      "deleteOutletHint": "Entfernt alle Besuche einer Domain.",
+      "deleteAction": "Löschen"
     }
   },
   "privacy": {

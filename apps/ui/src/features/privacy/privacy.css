@@ -4,7 +4,6 @@
 .np-shield-btn:hover { background: var(--np-soft); }
 .np-shield-count { font-size: 12px; color: var(--np-muted); }
 .np-popover { position: absolute; right: 0; top: 40px; z-index: 20; width: 300px; padding: 16px; display: grid; gap: 12px; background: var(--np-card); color: var(--np-ink); border: 1px solid var(--np-line); border-radius: var(--np-radius-lg); box-shadow: 0 20px 50px rgba(23, 23, 26, 0.18); transform-origin: top right; animation: np-menu .45s var(--np-ease) both; }
-@keyframes np-menu { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
 .np-shield-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 0; }
 .np-shield-stats dt { font-size: 11.5px; color: var(--np-muted); }
 .np-shield-stats dd { margin: 0; font: 400 26px/1.2 var(--np-font-read); }
@@ -23,10 +22,9 @@
 .np-map-layer { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
 .np-ld { position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--np-line3); }
 .np-map-arc { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; transition: opacity .5s var(--np-ease); }
-.np-map-pin { position: absolute; border-radius: 50%; transition: transform 1s cubic-bezier(.65, 0, .35, 1); }
-.np-map-plane { position: absolute; left: 0; top: 0; width: 24px; height: 24px; z-index: 3; offset-rotate: auto; animation: np-fly 1.8s cubic-bezier(.45, 0, .2, 1) forwards; }
+.np-map-pin { position: absolute; border-radius: 50%; transition: transform 1s var(--np-ease-inout); }
+.np-map-plane { position: absolute; left: 0; top: 0; width: 24px; height: 24px; z-index: 3; offset-rotate: auto; animation: np-fly 1.8s var(--np-ease-fly) forwards; }
 .np-map-plane svg { display: block; }
-@keyframes np-fly { from { offset-distance: 0%; } to { offset-distance: 100%; } }
 .np-tor-maplabel { position: absolute; left: 10px; top: 8px; padding: 2px 7px; border-radius: 5px; background: color-mix(in srgb, var(--np-card) 88%, transparent); color: var(--np-tor); font: 500 10px/13px var(--np-font-mono); }
 .np-tor-picker { display: flex; align-items: center; gap: 4px; padding: 12px 8px 6px; }
 .np-tor-step { position: relative; flex: none; display: grid; place-items: center; width: 40px; height: 48px; padding: 0; border: 0; border-radius: 10px; background: transparent; color: var(--np-ink); }
@@ -34,10 +32,8 @@
 .np-tor-step:hover { background: var(--np-soft); }
 .np-tor-candidate { flex: 1; min-width: 0; overflow: hidden; text-align: center; }
 .np-tor-swipe { display: grid; justify-items: center; }
-.np-tor-swipe[data-first='false'] { animation: np-sw-r .5s var(--np-ease) both; }
-.np-tor-swipe[data-first='false'][data-dir='l'] { animation-name: np-sw-l; }
-@keyframes np-sw-l { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
-@keyframes np-sw-r { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+.np-tor-swipe { animation: np-sw-r .5s var(--np-ease) both; }
+.np-tor-swipe[data-dir='l'] { animation-name: np-sw-l; }
 .np-tor-candidate-code { font: 500 22px/29px var(--np-font-mono); letter-spacing: .06em; }
 .np-tor-candidate-name { margin-top: 1px; font-size: 13px; line-height: 17px; }
 .np-tor-candidate-sub { margin-top: 2px; font-size: 11px; line-height: 14px; color: var(--np-faint); }
@@ -66,7 +62,7 @@
 .np-tor-more:hover { color: var(--np-accent-hover); }
 
 /* Route "Tú ── Guardia ── Medio ── Salida · XX" */
-.np-route { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font: 400 12px/1.4 var(--np-font-mono); }
+.np-route { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; font: 400 12px/normal var(--np-font-mono); }
 .np-route-part { display: inline-flex; align-items: center; gap: 10px; }
 .np-route-node { padding: 6px 10px; border: 1px solid var(--np-line3); border-radius: 8px; }
 .np-route-sep { color: var(--np-disabled); }
@@ -79,8 +75,21 @@
 /* Settings > Privacy and network (mockup: Ajustes.dc.html) */
 .np-settings-card { background: var(--np-card); border: 1px solid var(--np-line); border-radius: 16px; overflow: hidden; }
 .np-switch-card { padding: 4px 20px; }
-.np-switch-card .np-switch-row { min-height: 0; padding: 14px 0; border-bottom: 1px solid var(--np-line2); }
-.np-switch-card .np-switch-row:last-child { border-bottom: 0; }
+/* Rows of a card: the mockup draws a hairline under every row, the last one included */
+.np-switch-card .np-switch-row, .np-switch-card .np-set-row { min-height: 0; padding: 14px 0; border-bottom: 1px solid var(--np-line2); }
+.np-switch-card .np-set-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
+.np-set-text { flex: 1 1 240px; min-width: 0; display: grid; }
+.np-set-name { font-weight: 500; line-height: 18px; }
+.np-set-desc { color: var(--np-muted); font-size: 13px; line-height: 17px; }
+.np-settings-card .np-set-btn.np-btn { position: relative; min-height: 36px; height: 36px; padding: 0 12px; border-radius: 10px; font-size: 14px; font-weight: 400; }
+.np-settings-card .np-set-btn.np-btn::after { content: ''; position: absolute; inset: -4px 0; }
+.np-set-field input { box-sizing: border-box; width: 200px; max-width: 100%; height: 36px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--np-line3); background: var(--np-card); color: var(--np-ink); }
+.np-set-field input:focus { outline: none; border-color: var(--np-accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--np-accent) 10%, transparent); }
+/* Compact segmented control inside a card (Mundo / Europa in the mockup) */
+.np-settings-card .np-seg { gap: 3px; padding: 3px; border-radius: 10px; }
+.np-settings-card .np-seg-item { position: relative; min-height: 32px; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 13px; box-shadow: none; }
+.np-settings-card .np-seg-item[aria-checked='true'] { box-shadow: 0 1px 2px rgba(23, 23, 26, 0.1); }
+.np-settings-card .np-seg-item::after { content: ''; position: absolute; inset: -6px 0; }
 .np-switch-card .np-switch-label { font-weight: 500; line-height: 18px; }
 .np-modes { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 12px; background: var(--np-soft); }
 .np-mode { flex: 1 1 150px; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; min-height: var(--np-hit); padding: 12px 14px; border: 0; border-radius: 9px; background: transparent; color: var(--np-muted); text-align: left; }
@@ -94,21 +103,16 @@
 .np-exit-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; padding: 16px 20px; }
 .np-exit-head .np-settings-label { margin: 0; font-weight: 600; font-size: 14px; line-height: 1.3; }
 .np-exit-head .np-settings-hint { font-size: 13px; }
-.np-exit-head .np-seg { gap: 3px; padding: 3px; border-radius: 10px; }
-.np-exit-head .np-seg-item { position: relative; min-height: 32px; height: 32px; padding: 0 12px; border-radius: 8px; font-size: 13px; box-shadow: none; }
-.np-exit-head .np-seg-item[aria-checked='true'] { box-shadow: 0 1px 2px rgba(23, 23, 26, 0.1); }
-.np-exit-head .np-seg-item::after { content: ''; position: absolute; inset: -6px 0; }
 .np-modes + .np-kicker { margin: -8px 0 -6px; }
 .np-pinmap { position: relative; width: 100%; padding-bottom: 42%; overflow: hidden; background: var(--np-panel); border-top: 1px solid var(--np-line2); border-bottom: 1px solid var(--np-line2); }
 .np-pinmap-layer { position: absolute; inset: 0; transition: transform 1.1s var(--np-ease); }
 .np-d { position: absolute; width: 4px; height: 4px; margin: -2px 0 0 -2px; border-radius: 50%; background: color-mix(in srgb, var(--np-line3) 80%, var(--np-faint)); }
-.np-pin { position: absolute; width: 32px; height: 32px; margin: -16px 0 0 -16px; padding: 0; border: 0; background: transparent; transition: left 1.1s var(--np-ease), top 1.1s var(--np-ease); animation: np-drop .7s var(--np-bounce) both; }
+.np-pin { position: absolute; width: 32px; height: 32px; margin: -16px 0 0 -16px; padding: 0; border: 0; background: transparent; transition: left 1.1s var(--np-ease), top 1.1s var(--np-ease); animation: np-drop .7s var(--np-bounce) both; /* + animation-delay: 250 ms + 45 ms per pin, inline */ }
 .np-pin-dot { position: absolute; left: 50%; top: 50%; width: 9px; height: 9px; border-radius: 50%; background: var(--np-ink); box-shadow: 0 0 0 2px var(--np-card); transform: translate(-50%, -50%); transition: all .5s var(--np-ease); }
 .np-pin[data-active='true'] .np-pin-dot { width: 14px; height: 14px; background: var(--np-tor); box-shadow: 0 0 0 3px var(--np-card); }
 .np-pin-ping { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; border-radius: 50%; background: var(--np-tor); animation: np-ping 2s var(--np-ease) infinite; }
-.np-pin-tip { position: absolute; left: 50%; bottom: 100%; margin-bottom: 2px; padding: 4px 8px; border-radius: 6px; background: var(--np-ink); color: var(--np-paper); font-size: 12px; line-height: 1.4; white-space: nowrap; transform: translateX(-50%); }
-@keyframes np-drop { from { opacity: 0; transform: translateY(-16px) scale(.6); } to { opacity: 1; transform: none; } }
-@keyframes np-ping { 0% { transform: translate(-50%, -50%) scale(.6); opacity: .7; } 100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; } }
+.np-pin-tip { position: absolute; left: 50%; bottom: 100%; margin-bottom: 2px; padding: 4px 8px; border-radius: 6px; background: var(--np-ink); color: var(--np-paper); font-size: 12px; white-space: nowrap; transform: translateX(-50%); animation: np-tip-in .8s var(--np-ease) both; }
+@keyframes np-tip-in { from { opacity: 0; transform: translate(-50%, 12px); } to { opacity: 1; transform: translate(-50%, 0); } }
 .np-countries { display: flex; flex-wrap: wrap; gap: 6px; padding: 14px 20px; }
 .np-country { height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--np-line3); background: var(--np-card); color: var(--np-ink); font-size: 13px; }
 .np-country[aria-checked='true'] { border-color: var(--np-tor); background: var(--np-tor-soft); color: var(--np-tor); }

@@ -69,7 +69,8 @@
       "themeInk": "Ink",
       "themeSystem": "System",
       "readerAuto": "Open news in reader mode",
-      "readerAutoHint": "Pages recognised as news are shown clean, without the original site."
+      "readerAutoHint": "Pages recognised as news are shown clean, without the original site.",
+      "lead": "Language, appearance and reading."
     },
     "language": {
       "es": "Español",
@@ -90,7 +91,13 @@
       "deleteAll": "Clear all history",
       "deleteOutlet": "Clear one outlet",
       "outletLabel": "Outlet domain",
-      "deleted": "{count, plural, =0 {Nothing to clear} one {# entry cleared} other {# entries cleared}}"
+      "deleted": "{count, plural, =0 {Nothing to clear} one {# entry cleared} other {# entries cleared}}",
+      "lead": "Everything is stored on your computer.",
+      "retentionHint": "Older visits are removed automatically.",
+      "deleteDayHint": "Removes what you visited in the last day.",
+      "deleteAllHint": "This cannot be undone.",
+      "deleteOutletHint": "Removes every visit to one domain.",
+      "deleteAction": "Delete"
     }
   },
   "privacy": {
