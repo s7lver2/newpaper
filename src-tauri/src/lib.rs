@@ -3,6 +3,7 @@ pub mod config;
 pub mod error;
 pub mod features;
 pub mod npimg;
+pub mod privacy;
 mod setup;
 
 pub fn run() {

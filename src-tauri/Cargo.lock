@@ -3395,7 +3395,10 @@ dependencies = [
 name = "np-app"
 version = "0.1.0"
 dependencies = [
+ "async-trait",
  "chrono",
+ "np-adblock",
+ "np-net",
  "np-shell",
  "np-store",
  "percent-encoding",
@@ -3419,6 +3422,7 @@ dependencies = [
  "async-trait",
  "futures",
  "reqwest",
+ "rusqlite",
  "serde",
  "serde_json",
  "tempfile",
