@@ -86,8 +86,8 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
     : ready
       ? current === 'auto' ? t('privacy.tor.statusExitAuto') : t('privacy.tor.statusExit', { country: name(current) })
       : torStateLabel(t, status);
-  const flyLabel = flying
-    ? t('privacy.tor.flying')
+  const flyLabel = flight
+    ? t('privacy.tor.flying', { country: name(flight.to) })
     : candidate === current
       ? t('privacy.tor.flyHere')
       : candidate === 'auto' ? t('privacy.tor.flyAuto') : t('privacy.tor.fly', { country: name(candidate) });
@@ -113,7 +113,7 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
               <div key={swipe} className="np-tor-swipe" data-dir={dir} data-first={swipe === 0}>
                 <span className="np-tor-candidate-code">{short(candidate)}</span>
                 <span className="np-tor-candidate-name">{name(candidate)}</span>
-                {candidate === current ? <span className="np-tor-candidate-sub">{t('privacy.tor.current')}</span> : null}
+                <span className="np-tor-candidate-sub">{candidate === current ? t('privacy.tor.current') : ' '}</span>
               </div>
             </div>
             <button type="button" className="np-tor-step" aria-label={t('privacy.tor.next')} title={t('privacy.tor.next')} onClick={() => move(1)}>

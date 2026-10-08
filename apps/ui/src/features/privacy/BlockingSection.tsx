@@ -27,7 +27,10 @@ export function BlockingSection() {
 
   return (
     <section className="np-settings-section" aria-labelledby="np-set-blocking">
-      <h2 id="np-set-blocking" className="np-settings-h2">{t('privacy.blocking.title')}</h2>
+      <div>
+        <h2 id="np-set-blocking" className="np-settings-h2">{t('privacy.blocking.title')}</h2>
+        <p className="np-settings-hint">{t('privacy.blocking.lead')}</p>
+      </div>
       <div className="np-stats">
         <div className="np-stat">
           <span className="np-stat-label">{t('privacy.shield.today')}</span>
@@ -37,15 +40,20 @@ export function BlockingSection() {
       <div className="np-settings-card np-switch-card">
         <Switch label={t('privacy.blocking.enabled')} checked={status.enabled} onChange={async (v) => setStatus(await commands.adblockSetEnabled(v))} />
       </div>
-      <h3 className="np-settings-label">{t('privacy.blocking.lists')}</h3>
-      <div className="np-settings-card np-list-card">
+      <h3 className="np-settings-label np-sr-only">{t('privacy.blocking.lists')}</h3>
+      <div className="np-settings-card np-switch-card">
         {status.lists.map((l) => (
-          <div key={l.id} className="np-list-row">
-            <Switch label={l.name} checked={l.enabled} onChange={async (v) => setStatus(await commands.adblockSetList(l.id, v))} />
-            <span className="np-list-meta">
-              <span>{t(CATEGORY_KEY[l.category])}</span> · <span>{l.source === 'downloaded' ? t('privacy.blocking.sourceDownloaded', { date: when(l.fetchedAt) }) : t('privacy.blocking.sourceEmbedded')}</span>
-            </span>
-          </div>
+          <Switch
+            key={l.id}
+            label={l.name}
+            description={
+              <>
+                <span>{t(CATEGORY_KEY[l.category])}</span> · <span>{l.source === 'downloaded' ? t('privacy.blocking.sourceDownloaded', { date: when(l.fetchedAt) }) : t('privacy.blocking.sourceEmbedded')}</span>
+              </>
+            }
+            checked={l.enabled}
+            onChange={async (v) => setStatus(await commands.adblockSetList(l.id, v))}
+          />
         ))}
       </div>
       <div className="np-settings-actions">

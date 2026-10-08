@@ -82,7 +82,7 @@ export function PrivacySection() {
           </div>
         </div>
       )}
-      <h3 className="np-settings-label">{t('privacy.settings.routing')}</h3>
+      <h3 className="np-settings-label np-sr-only">{t('privacy.settings.routing')}</h3>
       <div className="np-settings-card np-switch-card">
         <Switch
           label={t('privacy.settings.feedsViaTor')}
