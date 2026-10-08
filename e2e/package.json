@@ -1,0 +1,19 @@
+{
+  "name": "@newpaper/e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "wdio run wdio.conf.ts"
+  },
+  "devDependencies": {
+    "@wdio/cli": "10.0.1",
+    "@wdio/local-runner": "10.0.1",
+    "@wdio/mocha-framework": "10.0.1",
+    "@wdio/spec-reporter": "10.0.1",
+    "webdriverio": "10.0.1",
+    "tsx": "^4",
+    "typescript": "7.0.2",
+    "@types/node": "^22",
+    "@wdio/globals": "10.0.1"
+  }
+}

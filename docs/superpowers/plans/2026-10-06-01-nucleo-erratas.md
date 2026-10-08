@@ -33,10 +33,14 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 | 24 | `DefaultReader` pasaba `page.article` (un booleano) a `ReaderView` y accedía a sus campos (TS2339, y falla en runtime). Era el bug pendiente de la sección “Pendiente” | `const a = page;`: `PageMessage` ya contiene todos los campos de `Article` | — |
 | 24 | `BrowserShell.test.tsx` buscaba “Ver original” con `getByRole`, pero hay dos botones con ese nombre (barra de herramientas y cabecera del lector), así que el test falla | La consulta se acota al botón del lector: `document.querySelector(".np-reader-actions button")` | — |
 | 26 | Con `listen()` de Tauri en los tests, las bajas de los listeners se resuelven después de `clearMocks()` y fallan con `unregisterListener` / `__TAURI_INTERNALS__.invoke is not a function`. Vitest sale con código de error aunque los 24 tests pasen | `apps/ui/src/test/setup.ts`: desmontar, esperar un ciclo de eventos y luego `clearMocks()` | — |
+| 27 | `e2e/package.json` usa `@types/node` y `@wdio/globals` en `types` del tsconfig, pero no los declara como dependencias (TS2688) | Añadidos `@types/node@^22` y `@wdio/globals@10.0.1` a devDependencies | — |
+| 27 | `helpers.ts` usa `browser.executeAsync(fn, cmd, args)`. En WebdriverIO 10 el comando es `executeAsyncScript(script: string, args[])`: el script debe ser texto | Script como cadena; argumentos en array `[cmd, args]` | — |
+| 27 | El binario de depuración de `np-app` carga `devUrl` (localhost:1420). El E2E no arranca el dev server y la página queda vacía | Documentado: para el E2E compilar con `cargo build --features tauri/custom-protocol` (usa `frontendDist`). El plan debe añadirlo al paso 4 | — |
+| 27 | Con la app compilada así, `tab_open` falla con `WebView2 error 0x8007139F` al crear la webview de contenido. Las pruebas apuntan a los `additional_browser_args` de las webviews de pestaña. Sin esa opción, `tab_open` funciona | **Pendiente**: decidir cómo unificar los argumentos entre la UI y las webviews de pestaña (no se ha cambiado código) | — |
 
 ## Pendiente
 
-Ninguno por ahora.
+- Tarea 27: `0x8007139F` al crear webviews de pestaña (ver fila de la tarea 27). Sin resolver; el E2E no ha pasado.
 
 ## Notas de entorno
 
