@@ -35,6 +35,7 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 
 ## Pendiente
 
+Ninguno por ahora.
 
 ## Notas de entorno
 
