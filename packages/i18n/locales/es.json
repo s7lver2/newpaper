@@ -1,0 +1,11 @@
+{
+  "app": { "name": "newpaper" },
+  "common": {
+    "close": "Cerrar",
+    "cancel": "Cancelar",
+    "save": "Guardar",
+    "retry": "Reintentar",
+    "loading": "Cargando…",
+    "articles": "{count, plural, one {# artículo} other {# artículos}}"
+  }
+}
