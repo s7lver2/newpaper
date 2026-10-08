@@ -6,3 +6,6 @@ pub use error::NetError;
 pub use mode::{compose_status, normalize_country, route, NetMode, NetSettings, NetStatus, Route, TorState, Traffic};
 pub mod socks;
 pub use socks::TargetAddr;
+pub mod fake;
+pub mod server;
+pub use server::{BoxStream, ConnectError, Connector, SocksServer, TorBackend};
