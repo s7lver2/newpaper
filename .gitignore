@@ -2,3 +2,7 @@ node_modules/
 target/
 dist/
 .env
+src-tauri/gen/schemas/
+*.log
+.vite/
+e2e/.tmp/
