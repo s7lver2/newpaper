@@ -40,7 +40,20 @@
     "reader": {
       "open": "Modo lector",
       "original": "Ver original",
-      "byline": "Por {name}"
+      "byline": "Por {name}",
+      "tools": "Ajustes de lectura",
+      "smaller": "Texto más pequeño",
+      "larger": "Texto más grande",
+      "autoOff": "No abrir el lector automáticamente",
+      "autoOn": "Abrir noticias en el lector",
+      "autoOffHint": "Desactiva la apertura automática; el botón de la barra de direcciones sigue abriendo el lector.",
+      "autoOnHint": "Vuelve a abrir las noticias reconocidas en el lector.",
+      "autoOffDone": "Lector automático desactivado. Puedes volver al lector con el botón de la barra.",
+      "undo": "Deshacer",
+      "minutes": "{n} min de lectura",
+      "source": "Fuente: {host}",
+      "emptyTitle": "No hay texto que mostrar",
+      "emptyHint": "La página no entregó contenido legible en el lector. Puedes verla tal cual."
     },
     "surface": {
       "kicker": "Error",
@@ -69,7 +82,7 @@
       "themeInk": "Tinta",
       "themeSystem": "Sistema",
       "readerAuto": "Abrir las noticias en modo lector",
-      "readerAutoHint": "Las páginas reconocidas como noticia se muestran limpias, sin la web original.",
+      "readerAutoHint": "Las páginas reconocidas como noticia se muestran limpias, sin la web original. En cualquier otra página con artículo puedes abrir el lector a mano.",
       "lead": "Idioma, apariencia y lectura."
     },
     "language": {

@@ -20,7 +20,7 @@ use crate::{
     input::{parse_input, search_url, Target},
     message::{parse_content_message, ContentMessage, PagePayload},
     model::{NavFailure, TabInfo, TabKind, TabList, TabView, TabsSnapshot},
-    news::is_news,
+    news::{is_news, reader_policy},
     TabId, NEW_TAB_URL,
 };
 use events::*;
@@ -135,6 +135,7 @@ impl TabManager {
                     t.failure = None;
                     t.crashed = false;
                     t.is_news = false;
+                    t.readable = false;
                     t.view = TabView::Original;
                 }
             });
@@ -338,10 +339,16 @@ impl TabManager {
     }
 
     fn on_page(&self, id: TabId, page: PagePayload) {
-        let news = page.article && is_news(&page.url, &page.signals, &self.ext.known_domains());
-        let auto = news && self.ext.reader_auto_open();
+        // `readable` (hay artículo extraíble) habilita el botón de lector en cualquier web;
+        // `news` solo decide la apertura automática.
+        let (readable, news, auto) = reader_policy(
+            page.article,
+            page.article && is_news(&page.url, &page.signals, &self.ext.known_domains()),
+            self.ext.reader_auto_open(),
+        );
         self.update(id, |t| {
             t.is_news = news;
+            t.readable = readable;
             if !page.title.is_empty() {
                 t.title = page.title.clone();
             }

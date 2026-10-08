@@ -25,7 +25,7 @@ export function Toolbar() {
           <Component key={itemId} tab={tab} />
         ))}
       </AddressBar>
-      {tab?.isNews ? (
+      {tab?.readable ? (
         <IconButton
           className="np-hit"
           label={tab.view === 'reader' ? t('shell.reader.original') : t('shell.reader.open')}

@@ -4,7 +4,7 @@ import { applyPage, applySnapshot, browserStore, resetBrowserStore } from './bro
 
 const tab = (id: number, url: string, extra: Partial<TabInfo> = {}): TabInfo => ({
   id, url, title: '', kind: url.startsWith('newpaper://') ? 'internal' : 'web', private: false, loading: false,
-  canGoBack: false, canGoForward: false, view: 'original', isNews: false, failure: null, crashed: false, ...extra,
+  canGoBack: false, canGoForward: false, view: 'original', isNews: false, readable: false, failure: null, crashed: false, ...extra,
 });
 const page = (tabId: number, url: string): TabPageEvent => ({
   tabId, isNews: true,

@@ -11,7 +11,7 @@ import { TabStrip } from './TabStrip';
 
 const tab = (id: number, url: string, extra: Partial<TabInfo> = {}): TabInfo => ({
   id, url, title: `T${id}`, kind: 'web', private: false, loading: false, canGoBack: false, canGoForward: false,
-  view: 'original', isNews: false, failure: null, crashed: false, ...extra,
+  view: 'original', isNews: false, readable: false, failure: null, crashed: false, ...extra,
 });
 
 describe('TabStrip', () => {

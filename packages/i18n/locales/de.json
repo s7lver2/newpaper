@@ -40,7 +40,20 @@
     "reader": {
       "open": "Lesemodus",
       "original": "Original anzeigen",
-      "byline": "Von {name}"
+      "byline": "Von {name}",
+      "tools": "Leseeinstellungen",
+      "smaller": "Kleinerer Text",
+      "larger": "Größerer Text",
+      "autoOff": "Lesemodus nicht automatisch öffnen",
+      "autoOn": "Nachrichten im Lesemodus öffnen",
+      "autoOffHint": "Schaltet das automatische Öffnen aus; die Schaltfläche in der Adressleiste öffnet den Lesemodus weiterhin.",
+      "autoOnHint": "Erkannte Nachrichten wieder im Lesemodus öffnen.",
+      "autoOffDone": "Automatischer Lesemodus aus. Mit der Schaltfläche in der Leiste kommst du zurück.",
+      "undo": "Rückgängig",
+      "minutes": "{n} Min. Lesezeit",
+      "source": "Quelle: {host}",
+      "emptyTitle": "Kein Text vorhanden",
+      "emptyHint": "Die Seite hat keinen lesbaren Inhalt für den Lesemodus geliefert. Du kannst sie im Original ansehen."
     },
     "surface": {
       "kicker": "Fehler",
@@ -69,7 +82,7 @@
       "themeInk": "Tinte",
       "themeSystem": "System",
       "readerAuto": "Nachrichten im Lesemodus öffnen",
-      "readerAutoHint": "Als Nachricht erkannte Seiten werden aufgeräumt angezeigt, ohne die Originalseite.",
+      "readerAutoHint": "Als Nachricht erkannte Seiten werden aufgeräumt angezeigt, ohne die Originalseite. Auf jeder anderen Seite mit Artikel lässt sich der Lesemodus von Hand öffnen.",
       "lead": "Sprache, Darstellung und Lesen."
     },
     "language": {

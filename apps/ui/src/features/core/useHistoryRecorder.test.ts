@@ -7,7 +7,7 @@ import { useHistoryRecorder } from './useHistoryRecorder';
 
 const tab = (extra: Partial<TabInfo>): TabInfo => ({
   id: 1, url: 'https://a.example/', title: '', kind: 'web', private: false, loading: true, canGoBack: false,
-  canGoForward: false, view: 'original', isNews: false, failure: null, crashed: false, ...extra,
+  canGoForward: false, view: 'original', isNews: false, readable: false, failure: null, crashed: false, ...extra,
 });
 
 describe('useHistoryRecorder', () => {

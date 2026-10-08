@@ -29,6 +29,13 @@ pub fn is_news(url: &str, signals: &NewsSignals, known_domains: &HashSet<String>
     signals.og_type.as_deref() == Some("article") || signals.json_ld_types.iter().any(|t| t.ends_with("NewsArticle"))
 }
 
+/// Lector: `readable` (hay artículo extraíble) ofrece el botón manual en cualquier web;
+/// `auto` (abrir solo) exige además noticia reconocida y el ajuste `reader.autoOpen`.
+pub fn reader_policy(has_article: bool, news: bool, auto_open: bool) -> (bool, bool, bool) {
+    let news = has_article && news;
+    (has_article, news, news && auto_open)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -56,5 +63,13 @@ mod tests {
         assert!(is_news("https://blog.example/x", &og, &known()));
         assert!(is_news("https://blog.example/x", &ld, &known()));
         assert!(!is_news("https://shop.example/", &none(), &known()));
+    }
+
+    #[test]
+    fn manual_reader_needs_article_only_and_auto_needs_news() {
+        assert_eq!(reader_policy(true, false, true), (true, false, false));
+        assert_eq!(reader_policy(true, true, true), (true, true, true));
+        assert_eq!(reader_policy(true, true, false), (true, true, false));
+        assert_eq!(reader_policy(false, true, true), (false, false, false));
     }
 }

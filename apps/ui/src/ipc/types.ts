@@ -18,6 +18,8 @@ export interface TabInfo {
   canGoForward: boolean;
   view: TabView;
   isNews: boolean;
+  /** Readability extrajo un artículo: el lector se puede abrir a mano aunque no sea noticia. */
+  readable: boolean;
   failure: NavFailure | null;
   crashed: boolean;
 }

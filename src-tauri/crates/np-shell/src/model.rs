@@ -41,6 +41,8 @@ pub struct TabInfo {
     pub can_go_forward: bool,
     pub view: TabView,
     pub is_news: bool,
+    /// Readability extrajo un artículo: el lector se puede abrir a mano aunque no sea noticia.
+    pub readable: bool,
     pub failure: Option<NavFailure>,
     pub crashed: bool,
 }
@@ -83,6 +85,7 @@ impl TabList {
             can_go_forward: false,
             view: TabView::Original,
             is_news: false,
+            readable: false,
             failure: None,
             crashed: false,
         });
@@ -137,6 +140,7 @@ impl TabList {
         if new_kind == TabKind::Internal {
             tab.title.clear();
             tab.is_news = false;
+            tab.readable = false;
             tab.view = TabView::Original;
             tab.loading = false;
         }

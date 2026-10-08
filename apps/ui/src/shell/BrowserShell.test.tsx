@@ -12,7 +12,7 @@ import { _resetRegistry, registerInternalPage, registerReaderView, registerTabSu
 
 const tab = (extra: Partial<TabInfo> = {}): TabInfo => ({
   id: 1, url: 'https://d.example/a', title: 'T', kind: 'web', private: false, loading: false, canGoBack: false,
-  canGoForward: false, view: 'original', isNews: false, failure: null, crashed: false, ...extra,
+  canGoForward: false, view: 'original', isNews: false, readable: false, failure: null, crashed: false, ...extra,
 });
 const page: TabPageEvent = {
   tabId: 1, isNews: true,

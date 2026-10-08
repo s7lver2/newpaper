@@ -40,7 +40,20 @@
     "reader": {
       "open": "Reader mode",
       "original": "View original",
-      "byline": "By {name}"
+      "byline": "By {name}",
+      "tools": "Reading settings",
+      "smaller": "Smaller text",
+      "larger": "Larger text",
+      "autoOff": "Don't open reader automatically",
+      "autoOn": "Open news in the reader",
+      "autoOffHint": "Turns off automatic opening; the address bar button still opens the reader.",
+      "autoOnHint": "Open recognised news in the reader again.",
+      "autoOffDone": "Automatic reader turned off. You can come back to the reader with the toolbar button.",
+      "undo": "Undo",
+      "minutes": "{n} min read",
+      "source": "Source: {host}",
+      "emptyTitle": "Nothing to show",
+      "emptyHint": "The page didn't provide readable content for the reader. You can view it as is."
     },
     "surface": {
       "kicker": "Error",
@@ -69,7 +82,7 @@
       "themeInk": "Ink",
       "themeSystem": "System",
       "readerAuto": "Open news in reader mode",
-      "readerAutoHint": "Pages recognised as news are shown clean, without the original site.",
+      "readerAutoHint": "Pages recognised as news are shown clean, without the original site. On any other page with an article you can open the reader by hand.",
       "lead": "Language, appearance and reading."
     },
     "language": {
