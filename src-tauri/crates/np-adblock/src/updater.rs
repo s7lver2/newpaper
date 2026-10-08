@@ -15,7 +15,7 @@ pub trait ListFetcher: Send + Sync {
 pub const REFRESH_INTERVAL_SECS: i64 = 86_400;
 
 pub fn is_due(last: Option<i64>, now: i64) -> bool {
-    last.map_or(true, |l| now - l >= REFRESH_INTERVAL_SECS)
+    last.is_none_or(|l| now - l >= REFRESH_INTERVAL_SECS)
 }
 
 /// Rechaza respuestas que no son listas (páginas HTML de error/CAPTCHA, cuerpos casi vacíos).

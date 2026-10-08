@@ -108,7 +108,7 @@ pub fn build_blocker(cache: &ListCache, settings: &AdblockSettings, extra_rules:
     let texts = loaded
         .iter()
         .map(|l| l.text.as_str())
-        .chain(extra_rules.into_iter());
+        .chain(extra_rules);
     Blocker::from_lists(texts)
 }
 

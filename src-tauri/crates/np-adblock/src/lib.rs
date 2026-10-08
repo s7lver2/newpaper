@@ -5,3 +5,6 @@ pub mod lists;
 pub mod updater;
 pub mod stats;
 pub mod service;
+#[cfg(windows)]
+pub mod webview2;
+pub mod cosmetic_msg;
