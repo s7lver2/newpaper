@@ -8,7 +8,7 @@ export function Inicio({ url }: InternalPageProps) {
   return (
     <div className="np-inicio">
       <h1 className="np-inicio-title">{q ? t('shell.inicio.results', { query: q }) : t('shell.inicio.title')}</h1>
-      <p className="np-settings-hint">{t('shell.inicio.soon')}</p>
+      <p className="np-inicio-sub">{t('shell.inicio.soon')}</p>
     </div>
   );
 }

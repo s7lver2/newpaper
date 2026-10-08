@@ -10,11 +10,15 @@ export function Ajustes({ url }: InternalPageProps) {
   const Section = current.Component;
   return (
     <div className="np-settings">
-      <h1 className="np-settings-h1">{t('settings.title')}</h1>
       <nav aria-label={t('settings.nav')} className="np-settings-nav">
+        <h1 className="np-settings-h1">{t('settings.title')}</h1>
         {sections.map((s) => (
           <button key={s.id} type="button" aria-current={s.id === current.id ? 'page' : undefined} className="np-settings-navitem" onClick={() => openInternal('ajustes', [s.id])}>
-            {t(s.titleKey)}
+            <span className="np-settings-navicon" aria-hidden="true">{s.glyph ?? '•'}</span>
+            <span className="np-settings-navtext">
+              <span className="np-settings-navlabel">{t(s.titleKey)}</span>
+              {s.Summary ? <span className="np-settings-navsub"><s.Summary /></span> : null}
+            </span>
           </button>
         ))}
       </nav>

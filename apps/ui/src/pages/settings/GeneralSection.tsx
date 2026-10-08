@@ -4,6 +4,12 @@ import { applyTheme, SegmentedControl, Switch, type ThemeChoice } from '@newpape
 import { commands } from '../../ipc/commands';
 import { useSetting } from '../../state/settings';
 
+const THEMES: { value: ThemeChoice; labelKey: string }[] = [
+  { value: 'paper', labelKey: 'settings.general.themePaper' },
+  { value: 'ink', labelKey: 'settings.general.themeInk' },
+  { value: 'system', labelKey: 'settings.general.themeSystem' },
+];
+
 export function GeneralSection() {
   const { t, locale, setLocale } = useI18n();
   const [contentLocale, setContentLocale] = useSetting<Locale>('content.locale', locale);
@@ -32,19 +38,24 @@ export function GeneralSection() {
       </div>
       <div className="np-settings-row">
         <span className="np-settings-label">{t('settings.general.theme')}</span>
-        <SegmentedControl
-          label={t('settings.general.theme')}
-          value={theme}
-          options={[
-            { value: 'paper', label: t('settings.general.themePaper') },
-            { value: 'ink', label: t('settings.general.themeInk') },
-            { value: 'system', label: t('settings.general.themeSystem') },
-          ]}
-          onChange={(v) => {
-            applyTheme(v);
-            void setTheme(v);
-          }}
-        />
+        <div role="radiogroup" aria-label={t('settings.general.theme')} className="np-themes">
+          {THEMES.map((o) => (
+            <button
+              key={o.value}
+              type="button"
+              role="radio"
+              aria-checked={theme === o.value}
+              className="np-theme-card"
+              onClick={() => {
+                applyTheme(o.value);
+                void setTheme(o.value);
+              }}
+            >
+              <span className="np-theme-preview" data-preview={o.value} aria-hidden="true"><i /><i /><i /></span>
+              <span>{t(o.labelKey)}</span>
+            </button>
+          ))}
+        </div>
       </div>
       <Switch label={t('settings.general.readerAuto')} description={t('settings.general.readerAutoHint')} checked={readerAuto} onChange={(v) => void setReaderAuto(v)} />
     </section>
