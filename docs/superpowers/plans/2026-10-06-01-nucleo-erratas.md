@@ -23,6 +23,7 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 | 14 | Mismo problema de `//!` que en las tareas 10–13 (`history.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
 | 15 | Mismo problema de `//!` que en las tareas 10–14 (`model.rs`, `input.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
 | 16 | Mismo problema de `//!` que en las tareas 10–15 (`message.rs`, `news.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
+| 17 | Mismo problema de `//!` que en las tareas 10–16 (`extensions.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
 
 ## Pendiente
 
