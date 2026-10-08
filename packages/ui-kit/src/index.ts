@@ -4,6 +4,7 @@ import './motion.css';
 export { applyTheme, watchSystemTheme } from './theme';
 export type { ThemeChoice, ResolvedTheme } from './theme';
 export { useReducedMotion } from './useReducedMotion';
+export { useCountUp } from './useCountUp';
 import './components/components.css';
 export { Button } from './components/Button';
 export type { ButtonVariant } from './components/Button';

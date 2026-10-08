@@ -18,7 +18,7 @@ export function ReaderView(props: {
     onOpenLink?.(a.getAttribute('href')!);
   };
   return (
-    <article className="np-reader" lang={article.lang ?? undefined}>
+    <article className="np-reader np-rise" lang={article.lang ?? undefined}>
       <header className="np-reader-head">
         <h1 className="np-reader-title">{article.title}</h1>
         {props.meta ? <div className="np-reader-meta">{props.meta}</div> : null}

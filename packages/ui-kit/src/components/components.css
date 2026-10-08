@@ -1,6 +1,8 @@
 .np-btn { min-height: var(--np-hit); padding: 0 18px; border-radius: 999px; border: 1px solid var(--np-line3); background: var(--np-card); color: var(--np-ink); font: 500 14px/1 var(--np-font-ui); }
 .np-btn--primary { background: var(--np-ink); border-color: var(--np-ink); color: var(--np-on-ink); }
 .np-btn--quiet { background: transparent; border-color: transparent; color: var(--np-muted); }
+.np-btn:where(:hover:not(:disabled)) { background: var(--np-soft); }
+.np-btn--primary:where(:hover:not(:disabled)) { background: var(--np-ink-hover); border-color: var(--np-ink-hover); }
 .np-btn--danger { color: var(--np-bad); border-color: var(--np-bad); }
 .np-btn:disabled { color: var(--np-disabled); cursor: not-allowed; }
 .np-btn--primary:disabled { background: var(--np-soft); border-color: var(--np-line3); }

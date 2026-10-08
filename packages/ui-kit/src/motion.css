@@ -1,14 +1,60 @@
+/*
+ * Motion kit. Every duration, easing and delay below is lifted from the mockups (Main, Ajustes, Inicio,
+ * Errores .dc.html); components compose these tokens instead of redefining them.
+ *
+ *   --np-ease        cubic-bezier(.22,1,.36,1)   entrances, colour/border/shadow transitions
+ *   --np-bounce      cubic-bezier(.34,1.56,.64,1) springs: switch knob, lifts, nav glyph, pins dropping in
+ *   --np-ease-inout  cubic-bezier(.65,0,.35,1)   map pan/zoom
+ *   --np-ease-fly    cubic-bezier(.45,0,.2,1)    plane along the arc
+ */
+
 @keyframes np-rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+@keyframes np-rise-hero { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes np-rise-sm { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@keyframes np-slide { from { opacity: 0; transform: translateX(28px); } to { opacity: 1; transform: none; } }
 @keyframes np-fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes np-pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes np-drop-in { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+@keyframes np-drop { from { opacity: 0; transform: translateY(-16px) scale(.6); } to { opacity: 1; transform: none; } }
 @keyframes np-pop { from { opacity: 0; transform: scale(.92); } to { opacity: 1; transform: none; } }
+@keyframes np-menu { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+@keyframes np-sw-l { from { opacity: 0; transform: translateX(-16px); } to { opacity: 1; transform: none; } }
+@keyframes np-sw-r { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+@keyframes np-pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+@keyframes np-ping { 0% { transform: translate(-50%, -50%) scale(.6); opacity: .7; } 100% { transform: translate(-50%, -50%) scale(2.6); opacity: 0; } }
+@keyframes np-fly { from { offset-distance: 0%; } to { offset-distance: 100%; } }
+@keyframes np-draw { to { stroke-dashoffset: 0; } }
+@keyframes np-sway { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes np-spin { to { transform: rotate(360deg); } }
+@keyframes np-blink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
 
 .np-rise { animation: np-rise .8s var(--np-ease) both; }
+.np-rise-hero { animation: np-rise-hero 1s var(--np-ease) both; }
 .np-fade { animation: np-fade .5s var(--np-ease) both; }
-.np-pulse { animation: np-pulse 1.4s ease-in-out infinite; }
+.np-drop-in { animation: np-drop-in .45s var(--np-ease) both; }
+.np-pulse { animation: np-pulse 1.6s ease-in-out infinite; }
 .np-pop { animation: np-pop .5s var(--np-bounce) both; }
-.np-root button { transition: background-color .45s var(--np-ease), color .45s var(--np-ease), border-color .45s var(--np-ease), transform .45s var(--np-ease); }
+.np-sway { animation: np-sway 3s ease-in-out infinite; transform-origin: 50% 0; }
+.np-spin { animation: np-spin 1.2s linear infinite; transform-origin: 50% 50%; transform-box: fill-box; }
+.np-blink { animation: np-blink 1.2s ease-in-out infinite; }
+
+/* Staggered entrance of a section's blocks: .8 s rise, 70 ms apart (".stg" in Ajustes.dc.html). */
+.np-stagger > * { animation: np-rise .8s var(--np-ease) both; }
+.np-stagger > :nth-child(2) { animation-delay: .07s; }
+.np-stagger > :nth-child(3) { animation-delay: .14s; }
+.np-stagger > :nth-child(4) { animation-delay: .21s; }
+.np-stagger > :nth-child(5) { animation-delay: .28s; }
+.np-stagger > :nth-child(n + 6) { animation-delay: .35s; }
+
+/* Card that floats up on hover with a spring (".lift"). */
+.np-lift { transition: transform .55s var(--np-bounce), box-shadow .55s var(--np-ease), background-color .45s var(--np-ease), border-color .45s var(--np-ease), color .45s var(--np-ease), opacity .5s var(--np-ease); }
+.np-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(23, 23, 26, .08); }
+
+/* Every button and link eases colours, borders, shadows and the press; specificity 0 so any component can replace the list. */
+:where(.np-root) :where(button, a) { transition: background-color .45s var(--np-ease), color .45s var(--np-ease), border-color .45s var(--np-ease), transform .45s var(--np-ease), box-shadow .45s var(--np-ease), opacity .45s var(--np-ease); }
+:where(.np-root) :where(input, select, textarea) { transition: border-color .5s var(--np-ease), box-shadow .5s var(--np-ease); }
 .np-root button:active:not(:disabled) { transform: scale(.98); }
+.np-root .np-press-spring:active:not(:disabled) { transform: scale(.96); }
+.np-root .np-press-spring { transition: background-color .45s var(--np-ease), color .45s var(--np-ease), border-color .45s var(--np-ease), transform .55s var(--np-bounce), box-shadow .45s var(--np-ease); }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -16,4 +62,6 @@
     transition: none !important;
     scroll-behavior: auto !important;
   }
+  /* Line drawings that normally draw themselves in must still be visible. */
+  .np-drawn * { stroke-dashoffset: 0 !important; }
 }

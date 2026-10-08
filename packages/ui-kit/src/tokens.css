@@ -6,6 +6,7 @@
   --np-panel: #FBFAF7;
   --np-card: #FFFFFF;
   --np-ink: #17171A;
+  --np-ink-hover: #2B2B2F;
   --np-ink2: #3D3B37;
   --np-muted: #5E5B55;
   --np-faint: #8D8981;
@@ -44,6 +45,8 @@
   --np-font-mono: 'IBM Plex Mono', ui-monospace, monospace;
   --np-ease: cubic-bezier(.22,1,.36,1);
   --np-bounce: cubic-bezier(.34,1.56,.64,1);
+  --np-ease-inout: cubic-bezier(.65,0,.35,1);
+  --np-ease-fly: cubic-bezier(.45,0,.2,1);
   --np-radius: 12px;
   --np-radius-lg: 18px;
   --np-hit: 44px;
@@ -56,6 +59,7 @@
   --np-panel: #18181B;
   --np-card: #1C1C1F;
   --np-ink: #ECE9E2;
+  --np-ink-hover: #D2CFC7;
   --np-ink2: #CBC7BE;
   --np-muted: #A29E95;
   --np-faint: #77736C;
@@ -92,7 +96,7 @@
 .np-root {
   background: var(--np-paper);
   color: var(--np-ink);
-  font: 400 14px/1.5 var(--np-font-ui);
+  font: 400 14px/normal var(--np-font-ui);
   -webkit-font-smoothing: antialiased;
 }
 :where(.np-root) :where(button, input, select, textarea) { font: inherit; }
