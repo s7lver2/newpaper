@@ -122,6 +122,40 @@ La posición **se mide, no se asigna**, y **nunca altera la nota de un artículo
 - Desglose por tema (economía, inmigración, territorial…) y **fiabilidad factual** como eje separado (% de afirmaciones verificadas correctas).
 - Corrección manual del usuario guardada como `override` y marcada en la UI.
 
+### 5.2.1 Decisión de diseño: cómo se mide la posición de un texto sin saber de qué medio es
+
+El análisis de cada artículo es **ciego**: la IA nunca sabe qué medio lo publicó. Si lo supiera, proyectaría la fama del medio sobre el texto y el sistema sería circular (la posición del medio sale de sus textos; la de un texto no puede salir del medio).
+
+**1. Anonimizado antes de analizar.** Se eliminan el nombre del medio, cabecera, eslóganes, URLs, firmas, autorreferencias ("este diario", "como publicó X"), enlaces internos y pies de foto con marca. El texto llega a la etapa 5 como "Documento A".
+
+**2. Posición relativa, no absoluta.** No existe un "centro" universal. La posición de un texto se mide **frente a las otras coberturas del mismo hecho** (también anonimizadas). Neutral significa "cerca del centro del grupo de coberturas y del registro de las fuentes primarias", no "a mitad de la escala".
+
+**3. Señales textuales observables**, cada una con evidencia citada (fragmentos concretos):
+
+| Señal | Qué se mide | Ejemplo |
+|---|---|---|
+| Elección léxica | Términos que usa de forma desproporcionada un bloque político | "patronal" / "empresarios"; "okupas" / "personas que ocupan" |
+| Encuadre del tema | Económico, moral, de conflicto, de seguridad, de derechos… | La subida del SMI como "justicia social" o como "amenaza al empleo" |
+| Voces citadas | Reparto de citas entre actores y quién tiene la última palabra | Solo sindicatos vs. Gobierno + patronal + expertos |
+| Asimetría de atribución | Verbos que valoran a quien habla | "denuncia", "alerta", "reconoce" frente a "dice", "afirma" |
+| Adjetivación y carga emocional | Adjetivos valorativos, hipérboles | "apocalipsis de empleo", "fiel a su costumbre" |
+| Selección y omisión | Qué datos del grupo de coberturas incluye y cuáles calla | Omite el estudio que contradice su tesis |
+| Orden y titular | Qué se destaca y qué queda al final | Titular con la reacción de una parte |
+
+**4. Léxico político calibrado con el Congreso.** Se construye un léxico de frases partidistas a partir del **Diario de Sesiones del Congreso de los Diputados** (público): para cada bigrama/trigrama se calcula cuánto más lo usa un bloque que otro (método tipo Gentzkow–Shapiro de "slant"). Ese léxico se recalcula por legislatura, se guarda en `config/lexicon-es.json` y se usa como **señal objetiva independiente del LLM**. Para inglés y alemán se usan los diarios parlamentarios equivalentes (Hansard, Bundestag) cuando se activen esos idiomas.
+
+**5. Juez LLM con rúbrica cerrada.** Un modelo puntúa cada señal de la tabla con una rúbrica fija (escala, ejemplos ancla de ambos lados) y **debe citar el fragmento** que justifica cada puntuación; sin cita, la señal no cuenta.
+
+**6. Combinación y confianza.** `framing = combinación ponderada(léxico, juez LLM, voces, omisiones)` con pesos en configuración. Se calcula un intervalo de confianza; si las señales son débiles o contradictorias el resultado es **"no determinable"** (por ejemplo, una nota de agencia muy breve) en vez de forzar una etiqueta.
+
+**7. Controles contra el sesgo del propio sistema.**
+- *Prueba de espejo:* se intercambian actores y términos de un bloque por los del otro en textos de prueba; la puntuación debe invertirse de forma simétrica.
+- *Conjunto de validación ciego* de artículos etiquetados por varias personas de distinta orientación; se mide el error por bloque para detectar sesgo sistemático del modelo.
+- *Comparación entre modelos:* el juez se ejecuta con dos proveedores distintos en una muestra; grandes discrepancias se marcan.
+- Se publica en la UI el desglose de señales, nunca solo un número.
+
+Estas puntuaciones por artículo alimentan la parte *propia* (60 %) de la posición de cada medio (§5.2).
+
 ### 5.3 Hemeroteca (Wayback Machine)
 - CDX: `https://web.archive.org/cdx/search/cdx?url=<url>&output=json&fl=timestamp,digest,statuscode&filter=statuscode:200&collapse=digest` (cache 6 h).
 - Captura cruda: `https://web.archive.org/web/<ts>id_/<url>`, extraída con Readability (en una webview oculta).
@@ -131,7 +165,18 @@ La posición **se mide, no se asigna**, y **nunca altera la nota de un artículo
 ## 6. Pipeline de IA (packages/pipeline + np-ai-proxy)
 
 ### 6.1 Proveedores
-Anthropic, OpenAI, Google Gemini, DeepSeek, xAI (Grok), Mistral, Perplexity, OpenRouter, Groq, Hugging Face, Ollama (local), LM Studio (local) y cualquier endpoint compatible con OpenAI.
+Anthropic, OpenAI (ChatGPT), **Nous Research** (modelos Hermes vía Nous Portal), **NVIDIA** (NIM / build.nvidia.com), Google Gemini, DeepSeek, xAI (Grok), Mistral, Perplexity, OpenRouter, Groq, Hugging Face, Ollama (local), LM Studio (local) y cualquier endpoint compatible con OpenAI. Los endpoints exactos de Nous y NVIDIA (ambos compatibles con OpenAI) se verifican en el plan.
+
+#### 6.1.1 Catálogo central y conexión sencilla
+- **Un único registro** `config/providers.json` describe cada proveedor: id, nombre, logo, categoría, tipo (`nube` | `local`), adaptador (paquete del AI SDK u `openai-compatible`), URL base, prefijo de clave para autodetección, enlace "Consigue tu clave", modelos con precio, latencia típica y capacidades (`structured`, `tools`, `vision`, `search`). Añadir un proveedor = añadir una entrada, sin tocar código.
+- **Categorías en la UI:** *Recomendados* (**ChatGPT** y **Nous Research**), *Nube*, *En tu equipo*, *Avanzado* (endpoint propio).
+- **Asistente "Conectar un proveedor"** pensado para cualquier persona, en tres pasos:
+  1. Elegir proveedor (o pegar directamente la clave: se **autodetecta** el proveedor por prefijo, p. ej. `sk-ant-`, `nvapi-`, `gsk_`, `xai-`, `AIza`).
+  2. Botón "Consigue tu clave" que abre la página oficial del proveedor; pegar la clave.
+  3. Prueba automática de conexión y **asignación automática** de modelos al pipeline según el preset elegido, con un resumen en lenguaje llano ("Verificar usará GPT; lo ligero, tu modelo local").
+- Los locales (Ollama, LM Studio) se **detectan solos** en `localhost` y aparecen como "Detectado" sin configurar nada.
+- El configurador avanzado del pipeline (§6.2) sigue disponible, pero oculto tras "Opciones avanzadas".
+
 - Cada proveedor del AI SDK recibe un `fetch` personalizado que llama al comando Rust `ai_fetch(provider_id, request)`; **Rust añade la cabecera de autenticación leyendo la clave del llavero**, aplica el modo de red y devuelve la respuesta (streaming por canal de eventos). Las claves nunca están en la webview.
 - Registro de modelos y precios en `config/prices.json` (editable), con `coste_entrada/salida por 1M tokens` y `local: bool`.
 - "Probar conexión": petición mínima por proveedor con latencia.
@@ -143,7 +188,7 @@ Anthropic, OpenAI, Google Gemini, DeepSeek, xAI (Grok), Mistral, Perplexity, Ope
 | 2 | Detectar afirmaciones | LLM | `Claim[] {id, quote, span:[ini,fin], kind: hecho\|cifra\|opinion\|atribucion, checkable}` + `loadedPhrases[] {quote, span, reason}` |
 | 3 | Buscar coberturas | sin IA (np-feeds) | `Coverage[] {outlet, url, title, lean}` (equilibradas izq/centro/der) |
 | 4 | Verificar datos | LLM + fetch de fuentes | `Verdict[] {claimId, status: verificado\|enganoso\|falso\|falta_contexto\|opinion\|no_verificable, explanation, sources[]}` |
-| 5 | Puntuar neutralidad | LLM | `Score {neutrality 0-100, framing 0-100, loadedLanguage, voices {gobierno,patronal,sindicatos,expertos,...}, omissions[], verdict}` |
+| 5 | Puntuar neutralidad (lectura ciega, §5.2.1) | léxico + LLM | `Score {neutrality 0-100, framing 0-100 \| null, confidence, signals[{kind, value, evidence[]}], voices {…}, omissions[], verdict}` |
 | 6 | Síntesis, tablas y gráficos | LLM | `Synthesis {headline, summary3[], facts[], parties[], disputes[], unknowns[], visualizations[], rewrites[]}` |
 | 7 | Detector de texto IA (opcional) | heurística + LLM | `AiAuthorship {probability, paragraphs[], signals[]}` |
 | 8 | Agente | LLM con herramientas | respuesta en streaming con citas |
@@ -151,7 +196,8 @@ Anthropic, OpenAI, Google Gemini, DeepSeek, xAI (Grok), Mistral, Perplexity, Ope
 - **Análisis rápido** (al abrir, configurable): etapas 2 (solo `loadedPhrases`) y 5 parcial con un modelo local; nota provisional.
 - **Análisis completo** (al pulsar o automático según reglas): etapas 2–7 con los modelos asignados.
 - **Fuentes primarias para verificar:** lista blanca configurable (INE, Eurostat, BOE, Banco de España, AIReF, Maldita, Newtral, Moncloa…); la etapa 4 consulta coberturas + búsqueda restringida a esos dominios y **cita solo URLs realmente recuperadas** (validación: toda `source.url` debe existir en el conjunto recuperado; si no, se descarta).
-- **Visualizaciones:** `{type: bar|line|range|stacked|matrix|table, title, unit?, data, sourceIds[]}`; el render es de `ui-kit` (SVG propio, tokens del tema). Datos sin fuente → no se dibujan.
+- **Visualizaciones:** `{type: bar|line|range|stacked|matrix|table|parliament|map, title, unit?, data, sourceIds[]}`; el render es de `ui-kit` (SVG propio, tokens del tema). Datos sin fuente → no se dibujan.
+- **Gráfico electoral `parliament`:** hemiciclo del **Congreso de los Diputados** (350 escaños) con los grupos ordenados por ideología, colores por partido (configurables en `config/parties-es.json`), línea de mayoría absoluta (176), comparación entre dos legislaturas o entre resultado y encuesta, y modo **"constructor de mayorías"** (marcar grupos y ver si suman). Se usa en síntesis y en el agente cuando el hecho trata de votaciones, encuestas o pactos. Datos solo de fuentes citadas (resultados oficiales del Ministerio del Interior / Congreso o encuestas identificadas).
 - **Reescrituras (modo Cambios):** `{from, to, reason}` alineadas con spans del original.
 - **Asignación por etapa:** `{provider, model, temperature, fallback}`; presets *Privacidad total*, *Equilibrado*, *Máxima calidad*, *Mínimo coste*. Si el modelo falla, se usa el `fallback` (por defecto Ollama).
 - **Coste:** estimado por etapa con tokens aproximados × `prices.json`; límite mensual: al alcanzarlo, el análisis completo pasa a modelos locales. Contabilidad real con `usage` de cada respuesta.
@@ -169,12 +215,12 @@ Anthropic, OpenAI, Google Gemini, DeepSeek, xAI (Grok), Mistral, Perplexity, Ope
 ### 6.5 Agente
 - Contexto: artículo, coberturas, fuentes recuperadas, veredictos y, si existe, el **fragmento seleccionado**.
 - Modos: Preguntar, Verificar, Explicar.
-- Herramientas: `searchCoverage`, `fetchSource` (lista blanca + coberturas), `getVerdicts`. Respuesta con citas numeradas que deben mapear a fuentes recuperadas.
+- Herramientas: `searchCoverage`, `fetchSource` (lista blanca + coberturas), `getVerdicts`, **`renderVisualization`** (devuelve una visualización con el esquema de §6.2, incluido el hemiciclo, que el chat dibuja en línea) y **`showMedia`** (imágenes o vídeos de las fuentes recuperadas, siempre con su fuente y nunca generados). Respuesta con citas numeradas que deben mapear a fuentes recuperadas; los gráficos del chat tienen botón "Ver datos" y "Añadir a la síntesis".
 - Entradas: barra flotante al seleccionar texto, clic derecho (Preguntar / Verificar / Explicar), botón por afirmación, pestaña "Agente" del panel.
 
 ## 7. Datos (np-store, SQLite)
 
-Tablas principales: `outlets`, `feeds`, `articles` (+ FTS5), `events` (hechos) y `event_articles`, `analyses` (url, text_hash, stage, json, model, cost, created_at), `outlet_stats` (framing medio, n, por tema, fiabilidad), `outlet_overrides`, `wayback_captures`, `settings` (clave-valor JSON tipado), `blocked_stats`, `watches` (hechos vigilados), `usage` (coste mensual). Migraciones con `user_version`.
+Tablas principales: `outlets`, `feeds`, `articles` (+ FTS5), `events` (hechos) y `event_articles`, `analyses` (url, text_hash, stage, json, model, cost, created_at), `outlet_stats` (framing medio, n, por tema, fiabilidad), `outlet_overrides`, `wayback_captures`, `settings` (clave-valor JSON tipado), `blocked_stats`, `watches` (hechos vigilados), `usage` (coste mensual), `history` (visitas y búsquedas, §16), `saved_articles` y `offline_editions` (§18), `sync_peers` y `sync_log` (§15). Toda fila sincronizable lleva `id` (UUID), `updated_at` (reloj híbrido lógico) y `deleted` (lápida). Migraciones con `user_version`.
 
 ## 8. Interfaz
 
@@ -187,7 +233,7 @@ Fuente de verdad visual: la pizarra de mockups. Resumen:
 ## 9. Primer arranque
 
 - **Instalador v1:** bundle NSIS de Tauri, instalación por usuario, marca de newpaper (imágenes, español), opciones: acceso directo, iniciar con Windows, abrir enlaces de noticias, importar marcadores, incluir Tor, descargar modelo local (vía Ollama si está instalado). **Instalador v2** (aspecto exacto del mockup): mini app Tauri "setup" que descarga y coloca la app — fase posterior.
-- **Actualizaciones:** `tauri-plugin-updater` con firma.
+- **Actualizaciones:** ver §17.
 - **Recorrido:** bienvenida → 3 pasos (temas, IA, red) → 6 marcas sobre la interfaz real (lente, frase, nota, noticia neutral, Tor, ajustes) → "Listo". Repetible desde Ajustes.
 
 ## 10. Errores y degradación
@@ -217,18 +263,77 @@ Fuente de verdad visual: la pizarra de mockups. Resumen:
 
 Tauri 2 para Android e iOS reutilizando `packages/pipeline`, `ui-kit` y crates de núcleo compatibles. Producto: lector + **compartir para analizar** (Android intent filter / iOS share extension), pantallas M0–M10 de la pizarra. Bloqueo vía `shouldInterceptRequest` (Android) y content blockers de WebKit (iOS); Tor con Arti y proxy por webview; IA local a través del Ollama del PC (red local o Tailscale).
 
-## 14. Descomposición en subproyectos
+## 14. Idiomas
+
+- **Interfaz completa en español, inglés y alemán** (`es`, `en`, `de`), con español como idioma por defecto. Se detecta el idioma del sistema en el primer arranque y se puede cambiar en Ajustes → General sin reiniciar.
+- **i18n:** catálogos ICU MessageFormat en `packages/i18n/locales/{es,en,de}.json`, compartidos entre escritorio y móvil, con plurales, fechas, números y monedas vía `Intl`. Un test de CI comprueba que no faltan claves en ningún idioma y que los textos de la interfaz no están escritos a mano en los componentes.
+- Las páginas internas (404, errores, cuelgue, tres en raya, tour e instalador) están traducidas. Los chistes de la "fe de erratas" tienen su propia lista en cada idioma.
+- **Salida de la IA en el idioma del usuario:** el idioma va como parámetro en todas las etapas. Las citas textuales se mantienen en el idioma original, con traducción opcional entre corchetes.
+- **Por idioma:** lista de fuentes RSS curadas (`config/sources-{es,en,de}.json`), léxico partidista (§5.2.1) y composición parlamentaria (`config/parties-{es,en,de}.json`: Congreso, House of Commons y Bundestag). El idioma de los contenidos se elige aparte del idioma de la interfaz.
+- Los nombres de los medios no se traducen. El instalador NSIS incluye las tres lenguas.
+
+## 15. Sincronización PC↔móvil sin cuenta
+
+- **Sin servidor ni cuenta:** los dispositivos se emparejan escaneando un **QR** que muestra el PC. El QR contiene la clave pública X25519 efímera, la huella del dispositivo y las direcciones. El intercambio de claves X25519 deriva una clave de sesión con HKDF, y el tráfico se cifra extremo a extremo con XChaCha20-Poly1305.
+- **Descubrimiento:** mDNS (`_newpaper._tcp`) en la red local. Fuera de casa se usa la dirección de Tailscale si existe, introducida a mano o detectada.
+- **Modelo de datos:** cada fila sincronizable lleva un `id` UUID, `updated_at` (reloj lógico híbrido, HLC) y una lápida `deleted`. Los conflictos se resuelven por fila con "el último que escribe gana" según el HLC. `sync_log` guarda el último HLC visto de cada par, y la sincronización envía solo los cambios por encima de esa marca.
+- **Ámbitos activables:** ajustes, historial, artículos guardados, análisis y síntesis, temas seguidos y fuentes personalizadas. Las **claves de API** no se sincronizan por defecto. Si el usuario lo activa explícitamente, viajan cifradas con la clave del par y se guardan en el llavero del destino.
+- **Cuándo se sincroniza:** al abrir la app, cada 5 minutos si ambos dispositivos están visibles y manualmente con "Sincronizar ahora". Se puede revocar un par desde Ajustes → Dispositivos.
+- **Respaldo sin red:** exportar o importar un archivo `.npsync` cifrado con una frase de paso (Argon2id).
+- La sincronización nunca pasa por Tor ni por terceros.
+
+## 16. Historial
+
+- **Historial de visitas:** URL, título, medio, hora y si se analizó. **Historial de búsquedas:** consultas en la barra, en el buscador de coberturas y en la hemeroteca. Ambos se buscan con FTS5.
+- Vista "Historial" agrupada por día, con filtros por medio y por tipo (visita, búsqueda o análisis). Al reabrir una entrada se recupera su análisis en caché.
+- **Privacidad:**
+  - Las pestañas privadas no registran nada.
+  - La retención es configurable: 7 días, 30 días, 1 año o para siempre; por defecto, 90 días.
+  - Se puede borrar por rango, por medio o todo.
+  - Opción de pausar el historial.
+  - El historial se sincroniza solo si ese ámbito está activo (§15).
+- Las sugerencias de la barra de direcciones combinan el historial, los medios conocidos y las búsquedas recientes.
+
+## 17. Actualizaciones
+
+- **Aplicación:**
+  - `tauri-plugin-updater`, con paquetes firmados con minisign; la clave pública va embebida.
+  - Canales `estable` y `beta`.
+  - Comprobación al arrancar y cada 24 horas, con descarga en segundo plano y aplicación al reiniciar.
+  - Notas de versión dentro de la app.
+  - El instalador anterior se conserva para volver atrás si el arranque posterior falla dos veces.
+- **Contenido**, que se actualiza sin reinstalar:
+  - listas de filtros (adblock), fuentes RSS, línea editorial de medios, precios de modelos, registro de proveedores, léxicos y partidos;
+  - se distribuye como un manifiesto JSON firmado con versión por recurso;
+  - se aplica de forma atómica y se puede revertir.
+  - Las listas de filtros también se actualizan desde sus orígenes oficiales.
+- Las actualizaciones pueden descargarse a través de Tor si está activo. Nunca se instala nada sin firma válida.
+- En móvil, la app se actualiza a través de la tienda o del APK firmado, y el contenido usa el mismo manifiesto.
+
+## 18. Noticias sin conexión
+
+- **Edición del día:** a una hora configurable (por defecto, las 7:00) y solo con Wi-Fi o corriente, si se elige, se descarga una edición con:
+  - el resumen de portada;
+  - los N artículos principales de los temas seguidos, ya extraídos en modo lector, con imágenes comprimidas;
+  - sus análisis rápidos.
+- Las ediciones se guardan en `offline_editions` y los artículos de "leer más tarde" en `saved_articles`. Ambos están disponibles sin red, y la búsqueda funciona en local.
+- **Sin conexión:** el panel de análisis muestra lo que hay en caché. El agente funciona con un modelo local si está configurado y, si no, avisa. Las acciones que necesitan red se ponen en cola.
+- **Límites:** espacio máximo configurable (por defecto, 500 MB) y caducidad de las ediciones (7 días), con limpieza automática.
+- Al perder la conexión aparece la página de "sin conexión" con acceso a la edición del día y al tres en raya.
+
+## 19. Descomposición en subproyectos
 
 Cada uno tiene su plan en `docs/superpowers/plans/`:
 
 | # | Subproyecto | Depende de |
 |---|---|---|
-| 1 | Núcleo del navegador: monorepo, Tauri, pestañas, lector, almacenamiento, ajustes, ui-kit | — |
+| 1 | Núcleo del navegador: monorepo, Tauri, pestañas, lector, almacenamiento (con columnas de sincronización), ajustes, ui-kit, **infraestructura i18n (es/en/de)**, **historial de visitas y búsquedas** | — |
 | 2 | Privacidad y red: adblock, Tor (Arti) con país, kill switch | 1 |
-| 3 | Fuentes: índice RSS, hechos, búsqueda de respaldo, línea editorial, Wayback | 1 |
-| 4 | Pipeline de IA: proveedores con proxy de claves, etapas, esquemas, costes, caché, detector IA, sin cobertura, agente | 1 (y 3 para coberturas) |
-| 5 | Experiencia de análisis: panel, lente, selección→agente, síntesis con gráficos, hemeroteca, sin cobertura | 1, 3, 4 |
-| 6 | Primer arranque y sistema: instalador, actualizaciones, recorrido, páginas de error/404/cuelgue, tres en raya | 1 |
-| 7 | Móvil | 1–5 |
+| 3 | Fuentes: índice RSS por idioma, hechos, búsqueda de respaldo, línea editorial (con **léxico calibrado**), Wayback, **ediciones sin conexión y guardados** | 1 |
+| 4 | Pipeline de IA: **registro central de proveedores** (con Nous y NVIDIA), proxy de claves, etapas, esquemas, **posición desde el texto (§5.2.1)**, costes, caché, detector IA, sin cobertura, agente con **herramientas visuales** | 1 (y 3 para coberturas) |
+| 5 | Experiencia de análisis: panel, lente, selección→agente, síntesis con gráficos (**hemiciclo del Congreso**), visuales del agente, hemeroteca, sin cobertura, **asistente de proveedores**, vista de historial | 1, 3, 4 |
+| 6 | Arranque, sistema y actualizaciones: instalador, **actualizador de app y contenido**, recorrido, páginas de error/404/cuelgue/sin conexión, tres en raya | 1 |
+| 7 | Sincronización PC↔móvil sin cuenta: emparejamiento QR, cifrado, mDNS/Tailscale, HLC, exportación `.npsync` | 1 |
+| 8 | Móvil | 1–7 |
 
-Orden recomendado: 1 → (2, 3 en paralelo) → 4 → 5 → 6 → 7.
+Orden recomendado: 1 → (2, 3 en paralelo) → 4 → 5 → (6, 7 en paralelo) → 8.
