@@ -8,3 +8,4 @@ pub use store::Store;
 pub mod hlc;
 pub mod ids;
 pub use hlc::{Hlc, HlcClock};
+pub mod settings;

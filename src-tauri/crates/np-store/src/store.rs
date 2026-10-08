@@ -8,6 +8,7 @@ pub struct Store {
     conn: Mutex<Connection>,
     device_id: String,
     clock: crate::HlcClock,
+    pub(crate) observers: Mutex<Vec<(String, crate::settings::SettingObserver)>>,
 }
 
 impl Store {
@@ -29,7 +30,7 @@ impl Store {
         migrations::migrate(&mut conn)?;
         let device_id = ensure_device_id(&conn)?;
         let clock = crate::HlcClock::new(device_id[..8].to_string());
-        Ok(Self { conn: Mutex::new(conn), device_id, clock })
+        Ok(Self { conn: Mutex::new(conn), device_id, clock, observers: Mutex::new(Vec::new()) })
     }
 
     /// UUID v4 de este dispositivo (tabla `local_meta`, nunca se sincroniza).
