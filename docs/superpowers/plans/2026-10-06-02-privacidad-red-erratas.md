@@ -139,3 +139,27 @@ Sustituye a la limitación de la revisión anterior: ahora sí se compararon `Ma
 - **Cuenta atrás de Bloqueo y barrido del primer candidato**: JS (rAF) solo para el contador, que en el mockup también es JS; el resto es CSS.
 - **Inicio**: solo se anima el bloque provisional (título y subtítulo); el buscador, el briefing y los chips con `rise` escalonado, `dropIn` y `.arr` son del plan 05.
 - **No verificado**: variantes de Errores con `sway`/`spin`/`blink` (Tor bloqueado, certificado, tiempo agotado: plan 06), `slide` del panel de análisis, `pop` de la selección de texto, `bump`/`rise0/1` del lector y los chips de "Sigues" (planes 03-05). Los keyframes ya están en `motion.css`.
+
+## Lector: desactivable y rediseño
+
+**Qué se pidió.** Que el lector sea fácil de desactivar y que no dependa de que la página sea "noticia" (el análisis con IA debe valer también para un blog), y que el lector por defecto deje de verse "muy básico".
+
+**Lógica.** `TabInfo` gana `readable` (Readability extrajo un artículo). `is_news` queda solo para la apertura automática. Regla en `news::reader_policy(has_article, news, auto_open)`: el botón manual existe si hay artículo; la apertura automática exige además noticia reconocida y `reader.autoOpen`. Se mantiene el ajuste booleano `reader.autoOpen` (sin modo "Siempre / Solo noticias / Nunca": el tercer valor no aporta nada hoy y rompería la compatibilidad con valores ya guardados).
+
+| Área | Cambio | Commit |
+|---|---|---|
+| Modelo/IPC | `TabInfo.readable` (Rust y TS); se reinicia al empezar a cargar y en páginas internas; `tab://page` sin cambios | 0687e6b |
+| Barra de direcciones | El botón de lector sale con `tab.readable` (antes `isNews`) | 0687e6b |
+| Apertura automática | `reader_policy` (con test): auto = noticia + artículo + ajuste | 0687e6b |
+| Control en el lector | "No abrir el lector automáticamente" (alterna `reader.autoOpen`; aviso con "Deshacer" 7 s; el botón pasa a "Abrir noticias en el lector"); en la web original sigue el botón de la barra para volver; Ajustes › General refleja el valor y su ayuda cita la apertura manual | 0687e6b, aviso en el commit de rediseño |
+| Cabecera del lector | Barra fija con desenfoque: "Ver original", A− / A+ (5 pasos, ajuste `reader.sizeStep`), control de apertura automática y línea de progreso de 2 px | rediseño |
+| Tipografía | Medio con inicial y antetítulo mono en versalitas; titular Newsreader 500 de 34–54 px (tracking -0,024 em, `text-wrap: balance`); entradilla en cursiva (`excerpt`, omitida si repite el arranque); byline sin "Por" duplicado, fecha y tiempo de lectura con separadores; cuerpo de 20 px / 1,72, medida de 66 ch, capitular sutil, citas con filete de acento, listas, `hr` con tres puntos, código, tablas con scroll, `figcaption` con filete; texto tinta `#E6E1D6` sobre `#17171A` | rediseño |
+| Estados | Pie con fuente y "Ver original"; estado vacío si el HTML saneado no deja texto; sin imagen principal la cabecera sostiene la composición | rediseño |
+
+### Desviaciones y no verificado (Lector)
+
+- Sin tema sepia ni selector de tema dentro del lector (el tema sigue en Ajustes › General).
+- Imágenes: el proxy `npimg` rechaza `127.0.0.1` por diseño (SSRF), así que en el fixture local las imágenes salen rotas; la composición con imágenes se comprobó sustituyendo su `src` por `data:` desde CDP. Con webs reales no cambia.
+- Recargar la UI (`Page.reload`) con una pestaña en lector la deja en blanco hasta recargar la página (el evento `tab://page` no se reemite); no es alcanzable por el usuario y no se toca aquí.
+- El estado vacío no se pudo provocar con una página real; solo verificado por tipos.
+- Sin paywalls: el lector muestra solo lo que la página ya entrega.
