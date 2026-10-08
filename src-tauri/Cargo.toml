@@ -9,7 +9,26 @@ publish = false
 name = "np_app_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
+[build-dependencies]
+tauri-build = { workspace = true }
+
 [dependencies]
+tauri = { workspace = true }
+np-shell = { path = "crates/np-shell" }
+np-store = { path = "crates/np-store" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+url = { workspace = true }
+reqwest = { workspace = true }
+percent-encoding = "2.3"
+chrono = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }
+
 
 [workspace]
 members = [".", "crates/*"]

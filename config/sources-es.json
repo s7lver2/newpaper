@@ -1,0 +1,8 @@
+{
+  "version": 1,
+  "medios": [
+    { "id": "elpais", "nombre": "El País", "dominio": "elpais.com", "feeds": [], "pais": "ES", "idioma": "es", "tipo": "medio" },
+    { "id": "elmundo", "nombre": "El Mundo", "dominio": "elmundo.es", "feeds": [], "pais": "ES", "idioma": "es", "tipo": "medio" },
+    { "id": "efe", "nombre": "EFE", "dominio": "efe.com", "feeds": [], "pais": "ES", "idioma": "es", "tipo": "agencia" }
+  ]
+}

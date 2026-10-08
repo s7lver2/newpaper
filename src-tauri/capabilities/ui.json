@@ -1,0 +1,17 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "ui",
+  "description": "Permisos de la webview de interfaz. Las webviews de contenido no reciben ninguno.",
+  "webviews": ["ui"],
+  "permissions": [
+    "core:default",
+    "allow-tab-open", "allow-tab-close", "allow-tab-activate", "allow-tab-navigate",
+    "allow-tab-back", "allow-tab-forward", "allow-tab-reload", "allow-tab-set-view",
+    "allow-tab-set-bounds", "allow-tabs-snapshot",
+    "allow-settings-get", "allow-settings-set", "allow-settings-list",
+    "allow-history-record-visit", "allow-history-record-search", "allow-history-mark-analyzed",
+    "allow-history-search", "allow-history-delete", "allow-omnibox-suggest",
+    "allow-secret-set", "allow-secret-has", "allow-secret-delete",
+    "allow-config-read"
+  ]
+}
