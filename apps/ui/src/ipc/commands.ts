@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core';
 import type {
-  DeleteScope, HistoryEntry, HistoryFilter, Rect, SearchSource, Suggestion, TabId, TabInfo, TabsSnapshot, TabView,
+  AdblockStatus, BlockedCounts, DeleteScope, HistoryEntry, HistoryFilter, NetMode, PrivacyStatus, Rect, RefreshReport,
+  SearchSource, Suggestion, TabId, TabInfo, TabsSnapshot, TabView,
 } from './types';
 
 /** Único punto de la UI que conoce los nombres de los comandos Rust. Los subproyectos añaden entradas. */
@@ -32,4 +33,16 @@ export const commands = {
   secretDelete: (key: string) => invoke<void>('secret_delete', { key }),
 
   configRead: (name: string) => invoke<string>('config_read', { name }),
+
+  privacyStatus: () => invoke<PrivacyStatus>('privacy_status'),
+  netSetMode: (mode: NetMode) => invoke<PrivacyStatus>('net_set_mode', { mode }),
+  torSetExitCountry: (country: string | null) => invoke<PrivacyStatus>('tor_set_exit_country', { country }),
+  torNewCircuit: (tabId?: TabId) => invoke<PrivacyStatus>('tor_new_circuit', { tabId }),
+  privacySetRouting: (r: { aiViaTor?: boolean; feedsViaTor?: boolean }) => invoke<PrivacyStatus>('privacy_set_routing', r),
+  tabWithoutTor: (tabId: TabId) => invoke<PrivacyStatus>('tab_without_tor', { tabId }),
+  adblockStatus: () => invoke<AdblockStatus>('adblock_status'),
+  adblockSetEnabled: (enabled: boolean) => invoke<AdblockStatus>('adblock_set_enabled', { enabled }),
+  adblockSetList: (id: string, enabled: boolean) => invoke<AdblockStatus>('adblock_set_list', { id, enabled }),
+  adblockRefresh: () => invoke<RefreshReport>('adblock_refresh'),
+  blockedCounts: (tabId?: TabId) => invoke<BlockedCounts>('blocked_counts', { tabId }),
 };

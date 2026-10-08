@@ -90,5 +90,82 @@
       "outletLabel": "Dominio del medio",
       "deleted": "{count, plural, =0 {No había nada que borrar} one {# entrada borrada} other {# entradas borradas}}"
     }
+  },
+  "privacy": {
+    "shield": {
+      "label": "{count, plural, =0 {Nada bloqueado en esta página} one {# elemento bloqueado en esta página} other {# elementos bloqueados en esta página}}",
+      "title": "Bloqueo",
+      "page": "Esta página",
+      "today": "Hoy",
+      "enabled": "Bloquear anuncios y rastreadores",
+      "settings": "Ajustes de bloqueo"
+    },
+    "tor": {
+      "chipDirect": "Directo",
+      "chipTor": "Tor · {country}",
+      "chipLabel": "Red: {status}. Abrir opciones de Tor",
+      "auto": "Auto",
+      "withoutTor": "Sin Tor",
+      "stateOff": "Tor apagado",
+      "stateBootstrapping": "Conectando a Tor… {percent} %",
+      "stateReady": "Conectado a Tor",
+      "stateFailed": "Tor no disponible: no sale nada por conexión directa",
+      "popupTitle": "Opciones de Tor",
+      "routeYou": "Tú",
+      "routeGuard": "Guardia",
+      "routeMiddle": "Medio",
+      "routeExit": "Salida · {country}",
+      "prev": "País anterior",
+      "next": "País siguiente",
+      "autoCountry": "Automático",
+      "fly": "Salir por {country}",
+      "flyAuto": "Salir por cualquier país",
+      "flying": "Cambiando de salida…",
+      "current": "Salida actual",
+      "newCircuit": "Nuevo circuito",
+      "circuit": "Circuito n.º {n}",
+      "withoutTorAction": "Abrir esta pestaña sin Tor",
+      "more": "Más opciones",
+      "enable": "Activar Tor",
+      "directNote": "Conexión directa: los medios ven tu IP real. El bloqueo sigue activo.",
+      "reducesAnonymity": "Fijar un país reduce el anonimato"
+    },
+    "withoutTor": {
+      "title": "¿Abrir esta pestaña sin Tor?",
+      "body": "La página verá tu dirección IP real y tu proveedor de internet sabrá qué medio visitas. Solo afecta a esta pestaña.",
+      "confirm": "Abrir sin Tor"
+    },
+    "settings": {
+      "title": "Privacidad y red",
+      "connection": "Conexión",
+      "restartNote": "Cambiar de modo o de país reinicia el motor web (unos 2 s). Las pestañas se recargan.",
+      "modeDirect": "Directo",
+      "modeDirectDesc": "Sin intermediarios. Rápido, pero los medios ven tu IP.",
+      "modeTor": "Tor",
+      "modeTorDesc": "Tu tráfico sale por la red Tor desde el país que elijas.",
+      "modeWireguard": "WireGuard",
+      "modeWireguardDesc": "Importar un perfil .conf de tu proveedor. Llegará en una fase posterior.",
+      "exitCountry": "País de salida",
+      "routing": "Qué pasa por Tor",
+      "feedsViaTor": "Descargar las fuentes RSS por Tor",
+      "aiViaTor": "Enviar las peticiones de IA por Tor",
+      "aiViaTorHint": "Más lento. Los modelos locales nunca pasan por Tor."
+    },
+    "blocking": {
+      "title": "Bloqueo",
+      "enabled": "Bloquear anuncios, rastreadores, banners de cookies y modales de suscripción",
+      "lists": "Listas de filtros",
+      "sourceDownloaded": "Actualizada {date}",
+      "sourceEmbedded": "Copia incluida en la app",
+      "refresh": "Actualizar ahora",
+      "refreshed": "{count, plural, =0 {Ninguna lista ha cambiado} one {# lista actualizada} other {# listas actualizadas}}",
+      "refreshFailed": "{count, plural, one {# lista no se pudo descargar} other {# listas no se pudieron descargar}}",
+      "engine": "Motor: adblock-rust · última actualización: {when}",
+      "never": "nunca",
+      "categoryAds": "Anuncios",
+      "categoryPrivacy": "Rastreadores",
+      "categoryCookies": "Banners de cookies",
+      "categoryNewsletters": "Modales de suscripción"
+    }
   }
 }

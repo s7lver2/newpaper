@@ -90,5 +90,82 @@
       "outletLabel": "Outlet domain",
       "deleted": "{count, plural, =0 {Nothing to clear} one {# entry cleared} other {# entries cleared}}"
     }
+  },
+  "privacy": {
+    "shield": {
+      "label": "{count, plural, =0 {Nothing blocked on this page} one {# item blocked on this page} other {# items blocked on this page}}",
+      "title": "Blocking",
+      "page": "This page",
+      "today": "Today",
+      "enabled": "Block ads and trackers",
+      "settings": "Blocking settings"
+    },
+    "tor": {
+      "chipDirect": "Direct",
+      "chipTor": "Tor · {country}",
+      "chipLabel": "Network: {status}. Open Tor options",
+      "auto": "Auto",
+      "withoutTor": "No Tor",
+      "stateOff": "Tor is off",
+      "stateBootstrapping": "Connecting to Tor… {percent}%",
+      "stateReady": "Connected to Tor",
+      "stateFailed": "Tor unavailable: nothing goes out directly",
+      "popupTitle": "Tor options",
+      "routeYou": "You",
+      "routeGuard": "Guard",
+      "routeMiddle": "Middle",
+      "routeExit": "Exit · {country}",
+      "prev": "Previous country",
+      "next": "Next country",
+      "autoCountry": "Automatic",
+      "fly": "Exit via {country}",
+      "flyAuto": "Exit via any country",
+      "flying": "Changing exit…",
+      "current": "Current exit",
+      "newCircuit": "New circuit",
+      "circuit": "Circuit #{n}",
+      "withoutTorAction": "Open this tab without Tor",
+      "more": "More options",
+      "enable": "Turn on Tor",
+      "directNote": "Direct connection: outlets see your real IP. Blocking stays on.",
+      "reducesAnonymity": "Pinning a country reduces anonymity"
+    },
+    "withoutTor": {
+      "title": "Open this tab without Tor?",
+      "body": "The page will see your real IP address and your internet provider will know which outlet you visit. Only this tab is affected.",
+      "confirm": "Open without Tor"
+    },
+    "settings": {
+      "title": "Privacy and network",
+      "connection": "Connection",
+      "restartNote": "Changing mode or country restarts the web engine (about 2 s). Tabs reload.",
+      "modeDirect": "Direct",
+      "modeDirectDesc": "No intermediaries. Fast, but outlets see your IP.",
+      "modeTor": "Tor",
+      "modeTorDesc": "Your traffic leaves through the Tor network from the country you choose.",
+      "modeWireguard": "WireGuard",
+      "modeWireguardDesc": "Import a .conf profile from your provider. Coming in a later phase.",
+      "exitCountry": "Exit country",
+      "routing": "What goes through Tor",
+      "feedsViaTor": "Download RSS feeds through Tor",
+      "aiViaTor": "Send AI requests through Tor",
+      "aiViaTorHint": "Slower. Local models never go through Tor."
+    },
+    "blocking": {
+      "title": "Blocking",
+      "enabled": "Block ads, trackers, cookie banners and newsletter pop-ups",
+      "lists": "Filter lists",
+      "sourceDownloaded": "Updated {date}",
+      "sourceEmbedded": "Copy bundled with the app",
+      "refresh": "Update now",
+      "refreshed": "{count, plural, =0 {No list changed} one {# list updated} other {# lists updated}}",
+      "refreshFailed": "{count, plural, one {# list could not be downloaded} other {# lists could not be downloaded}}",
+      "engine": "Engine: adblock-rust · last update: {when}",
+      "never": "never",
+      "categoryAds": "Ads",
+      "categoryPrivacy": "Trackers",
+      "categoryCookies": "Cookie banners",
+      "categoryNewsletters": "Newsletter pop-ups"
+    }
   }
 }

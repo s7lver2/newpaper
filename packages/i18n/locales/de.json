@@ -90,5 +90,82 @@
       "outletLabel": "Domain des Mediums",
       "deleted": "{count, plural, =0 {Nichts zu löschen} one {# Eintrag gelöscht} other {# Einträge gelöscht}}"
     }
+  },
+  "privacy": {
+    "shield": {
+      "label": "{count, plural, =0 {Auf dieser Seite nichts blockiert} one {# Element auf dieser Seite blockiert} other {# Elemente auf dieser Seite blockiert}}",
+      "title": "Blockieren",
+      "page": "Diese Seite",
+      "today": "Heute",
+      "enabled": "Werbung und Tracker blockieren",
+      "settings": "Blockier-Einstellungen"
+    },
+    "tor": {
+      "chipDirect": "Direkt",
+      "chipTor": "Tor · {country}",
+      "chipLabel": "Netzwerk: {status}. Tor-Optionen öffnen",
+      "auto": "Auto",
+      "withoutTor": "Ohne Tor",
+      "stateOff": "Tor ist aus",
+      "stateBootstrapping": "Verbinde mit Tor… {percent} %",
+      "stateReady": "Mit Tor verbunden",
+      "stateFailed": "Tor nicht verfügbar: Es geht nichts direkt hinaus",
+      "popupTitle": "Tor-Optionen",
+      "routeYou": "Du",
+      "routeGuard": "Wächter",
+      "routeMiddle": "Mitte",
+      "routeExit": "Ausgang · {country}",
+      "prev": "Vorheriges Land",
+      "next": "Nächstes Land",
+      "autoCountry": "Automatisch",
+      "fly": "Über {country} hinaus",
+      "flyAuto": "Über ein beliebiges Land hinaus",
+      "flying": "Ausgang wird gewechselt…",
+      "current": "Aktueller Ausgang",
+      "newCircuit": "Neuer Kanal",
+      "circuit": "Kanal Nr. {n}",
+      "withoutTorAction": "Diesen Tab ohne Tor öffnen",
+      "more": "Weitere Optionen",
+      "enable": "Tor einschalten",
+      "directNote": "Direkte Verbindung: Medien sehen deine echte IP. Das Blockieren bleibt aktiv.",
+      "reducesAnonymity": "Ein festes Land verringert die Anonymität"
+    },
+    "withoutTor": {
+      "title": "Diesen Tab ohne Tor öffnen?",
+      "body": "Die Seite sieht deine echte IP-Adresse, und dein Internetanbieter erfährt, welches Medium du besuchst. Betrifft nur diesen Tab.",
+      "confirm": "Ohne Tor öffnen"
+    },
+    "settings": {
+      "title": "Datenschutz und Netzwerk",
+      "connection": "Verbindung",
+      "restartNote": "Ein Wechsel von Modus oder Land startet die Web-Engine neu (etwa 2 s). Tabs werden neu geladen.",
+      "modeDirect": "Direkt",
+      "modeDirectDesc": "Ohne Zwischenstation. Schnell, aber Medien sehen deine IP.",
+      "modeTor": "Tor",
+      "modeTorDesc": "Dein Verkehr verlässt das Tor-Netz in dem Land, das du wählst.",
+      "modeWireguard": "WireGuard",
+      "modeWireguardDesc": "Ein .conf-Profil deines Anbieters importieren. Kommt in einer späteren Phase.",
+      "exitCountry": "Ausgangsland",
+      "routing": "Was über Tor läuft",
+      "feedsViaTor": "RSS-Feeds über Tor laden",
+      "aiViaTor": "KI-Anfragen über Tor senden",
+      "aiViaTorHint": "Langsamer. Lokale Modelle laufen nie über Tor."
+    },
+    "blocking": {
+      "title": "Blockieren",
+      "enabled": "Werbung, Tracker, Cookie-Banner und Newsletter-Fenster blockieren",
+      "lists": "Filterlisten",
+      "sourceDownloaded": "Aktualisiert {date}",
+      "sourceEmbedded": "Mit der App ausgelieferte Kopie",
+      "refresh": "Jetzt aktualisieren",
+      "refreshed": "{count, plural, =0 {Keine Liste geändert} one {# Liste aktualisiert} other {# Listen aktualisiert}}",
+      "refreshFailed": "{count, plural, one {# Liste konnte nicht geladen werden} other {# Listen konnten nicht geladen werden}}",
+      "engine": "Engine: adblock-rust · letzte Aktualisierung: {when}",
+      "never": "nie",
+      "categoryAds": "Werbung",
+      "categoryPrivacy": "Tracker",
+      "categoryCookies": "Cookie-Banner",
+      "categoryNewsletters": "Newsletter-Fenster"
+    }
   }
 }
