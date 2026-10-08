@@ -11,7 +11,6 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 | 3 | `repo.test.ts` usaba `new URL(..., import.meta.url)` con `environment: jsdom`: la URL es `http:` y `fileURLToPath` falla | `// @vitest-environment node` al inicio del archivo | — |
 | 5 | `theme.test.ts` mezclaba tests de DOM (jsdom) con lectura de CSS (`import.meta.url`) | Los tests de CSS se movieron, sin cambios, a `src/tokens.test.ts` con `// @vitest-environment node` | 75b455a |
 | 5 | `src/test/setup.ts` usa `window` y `Element` al cargar, y falla en entorno `node` | Preparación de DOM envuelta en `if (typeof window !== 'undefined')` | 75b455a |
-
 | 7 | `extract.test.ts` leía las fixtures con `readFileSync(new URL(..., import.meta.url))` bajo `jsdom` (necesario para `DOMParser`): mismo fallo de URL no `file:` | Las fixtures se importan con `?raw` de Vite; el tsconfig del paquete añade `"vite/client"` a `types` | — |
 
 ## Pendiente
