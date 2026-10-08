@@ -10,3 +10,5 @@ pub mod fake;
 pub mod server;
 pub use server::{BoxStream, ConnectError, Connector, SocksServer, TorBackend};
 pub mod tor;
+pub mod controller;
+pub use controller::NetController;
