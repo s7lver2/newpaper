@@ -1,6 +1,6 @@
-import { useId } from 'react';
+import { useId, type ReactNode } from 'react';
 
-export function Switch(props: { checked: boolean; onChange(next: boolean): void; label: string; description?: string; disabled?: boolean; id?: string }) {
+export function Switch(props: { checked: boolean; onChange(next: boolean): void; label: string; description?: ReactNode; disabled?: boolean; id?: string }) {
   const auto = useId();
   const id = props.id ?? auto;
   return (

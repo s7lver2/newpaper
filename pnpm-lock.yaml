@@ -341,6 +341,9 @@ importers:
 
   packages/ui-kit:
     dependencies:
+      '@fontsource-variable/newsreader':
+        specifier: 5.3.0
+        version: 5.3.0
       '@fontsource/ibm-plex-mono':
         specifier: 5.3.0
         version: 5.3.0
@@ -623,6 +626,9 @@ packages:
     peerDependenciesMeta:
       '@noble/hashes':
         optional: true
+
+  '@fontsource-variable/newsreader@5.3.0':
+    resolution: {integrity: sha512-rrzYi43qMpbzwuFtf9OkWH8sxAPVPcQQQEwXpPtwaKYeJ8yVg5aLs5kawmo1f2Q1t1M38TLmEKCkGVDsYwgdFw==}
 
   '@fontsource/ibm-plex-mono@5.3.0':
     resolution: {integrity: sha512-eTgnZjZEGk1QtD3ZstF+Vclo2HLAni8YMy34/DxllwZvyz1lR/1RF/xTiAquOBO7MvqBx8D2Ig2WCPMVfdZu7Q==}
@@ -3003,6 +3009,8 @@ snapshots:
     optional: true
 
   '@exodus/bytes@1.16.0': {}
+
+  '@fontsource-variable/newsreader@5.3.0': {}
 
   '@fontsource/ibm-plex-mono@5.3.0': {}
 
