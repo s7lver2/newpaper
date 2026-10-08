@@ -20,6 +20,7 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 | 11 | Mismo problema de `//!` que en la tarea 10 al poner la implementación encima de los tests (`hlc.rs`, `ids.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
 | 12 | (a) Mismo problema de `//!` que en las tareas 10 y 11 (`settings.rs`). (b) `Store.observers` se declaró privado, pero `settings.rs` lo usa desde otro módulo (E0616) | (a) `//!` al principio del fichero. (b) campo `pub(crate) observers` | — |
 | 13 | Mismo problema de `//!` que en las tareas 10–12 (`secrets.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
+| 14 | Mismo problema de `//!` que en las tareas 10–13 (`history.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
 
 ## Pendiente
 

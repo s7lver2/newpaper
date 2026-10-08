@@ -10,3 +10,4 @@ pub mod ids;
 pub use hlc::{Hlc, HlcClock};
 pub mod settings;
 pub mod secrets;
+pub mod history;
