@@ -1,7 +1,7 @@
 .np-settings { display: grid; grid-template-columns: 220px 1fr; gap: 8px 40px; max-width: 1040px; margin: 0 auto; padding: 40px 32px 80px; }
 .np-settings-h1 { grid-column: 1 / -1; font: 600 34px/1.2 var(--np-font-read); margin: 0 0 12px; }
 .np-settings-nav { display: grid; align-content: start; gap: 2px; }
-.np-settings-navitem { min-height: 40px; text-align: left; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: var(--np-ink2); }
+.np-settings-navitem { min-height: var(--np-hit); text-align: left; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: var(--np-ink2); }
 .np-settings-navitem[aria-current='page'] { background: var(--np-card); color: var(--np-ink); box-shadow: 0 1px 2px rgba(0,0,0,.06); }
 .np-settings-section { display: grid; gap: 18px; }
 .np-settings-h2 { font: 600 22px/1.3 var(--np-font-read); margin: 0; }
@@ -10,6 +10,6 @@
 .np-settings-hint { margin: 0; color: var(--np-muted); font-size: 12.5px; }
 .np-settings-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: end; }
 .np-settings-field { display: grid; gap: 4px; font-size: 12.5px; color: var(--np-muted); }
-.np-settings-field input { min-height: 40px; padding: 0 12px; border-radius: 10px; border: 1px solid var(--np-line3); background: var(--np-card); color: var(--np-ink); }
+.np-settings-field input { min-height: var(--np-hit); padding: 0 12px; border-radius: 10px; border: 1px solid var(--np-line3); background: var(--np-card); color: var(--np-ink); }
 .np-inicio { max-width: 720px; margin: 14vh auto 0; padding: 0 24px; }
 .np-inicio-title { font: 600 40px/1.15 var(--np-font-read); margin: 0 0 12px; }

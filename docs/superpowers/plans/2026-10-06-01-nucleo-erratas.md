@@ -45,3 +45,12 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 ## Notas de entorno
 
 - Git avisa de `CRLF will be replaced by LF` en los archivos de Windows. No afecta a los tests; es configuración de `core.autocrlf` en esta máquina.
+
+## Revisión visual contra mockups (Main, Ajustes) y spec §8
+
+| Dónde | Problema | Corrección |
+|---|---|---|
+| `apps/ui/src/shell/shell.css` | Barra de direcciones en píldora (999px), 40 px y borde `--np-line`; el mockup `Main` usa radio 12 px, 38 px y borde `--np-line3`; pestañas con padding/tipografía distintos | Ajustado a las medidas del mockup (tira `8px 12px 0`, pestaña `0 14px`/13px, punto 8px, toolbar `8px 12px` con borde `line3`) |
+| `shell.css` `.np-fallback` | Error y cuelgue: al combinar `np-surface` (absolute, inset 0) con grid, las filas se estiraban y el botón "Reintentar" se alargaba a toda la altura | `align-content: start` y padding lateral calculado en lugar de `margin: auto` |
+| `components.css`, `pages.css` | Objetivos de 38–40 px (segmentado, navegación de ajustes, campos) incumplen §8 (≥ 44 px) | `min-height: var(--np-hit)`. Las pestañas del navegador se quedan en 36 px, como el mockup |
+| `App.tsx` en dev | `StrictMode` ejecuta `startBrowserSync` dos veces y abre dos pestañas iniciales (solo en desarrollo) | Sin cambio: no ocurre en el build de producción; pendiente de proteger con un guard si molesta |
