@@ -100,3 +100,42 @@ Sustituye a la limitación de la revisión anterior: ahora sí se compararon `Ma
 - **Fila final del interruptor**: el mockup dibuja un borde bajo la última fila de la tarjeta; la app no.
 - **Título de las pestañas internas**: las páginas `newpaper://` muestran "Sin título" (el título lo fija el núcleo en Rust; no se toca el comportamiento).
 - **No comparado**: animaciones (avión, zooms, trazo del dibujo de error), solo verificadas en su estado final; estados hover/active, solo por CSS; el artículo en modo lector y el panel de análisis (planes 03-05); `Crash` y `Error404` no existen entre los mockups entregados.
+
+## Ajustes y animaciones sobre la app real
+
+**Qué faltaba.** La pasada anterior igualó medidas estáticas y se declaró "no comparado" todo lo que se mueve. Tampoco se revisó que las reglas CSS globales pisaran las de los componentes: `.np-root button { transition }` (especificidad 0,1,1) anulaba la transición `left/top 1.1 s` de los pines del mapa y la de 0,5 s del interruptor; `.np-pulse` duraba 1,4 s en vez de 1,6 s; los trazos del dibujo de error quedaban **invisibles** con `prefers-reduced-motion` (el mockup los fuerza a `stroke-dashoffset: 0`); `line-height` era 1,5 (los mockups usan `normal`, de ahí 6 px de más en cada tile de modo, carta de tema y fila); General y Datos conservaban el marco antiguo.
+
+**Método.** WebView2 real con `--remote-debugging-port` y Chrome sin cabeza sobre el servidor de mockups: volcado de cada elemento con texto/fondo/borde (rect, tipografía, color, radio, sombra) de las cuatro secciones comparables de Ajustes; inventario de `document.getAnimations()` (nombre, duración, retardo, easing, relleno, objetivo) en Ajustes (4 secciones), Inicio y el popup de Tor (abrir, candidato, volar, cerrar); fotogramas a 0/150/400/900 ms congelando las animaciones finitas con `currentTime`; emulación de `prefers-reduced-motion: reduce` (0 animaciones, trazos visibles).
+
+| Área | Diferencia | Corrección | Commit |
+|---|---|---|---|
+| Global | `line-height` 1,5; tiles de modo 73 px (mockup 67), cartas de tema 171 (168), filas +2 px | `line-height: normal` en `.np-root` y títulos de Ajustes | 4f8e27e |
+| Botones y enlaces | Lista de transición con especificidad 0,1,1 que pisaba la de pines/interruptor; sin `box-shadow`/`opacity`; sin hover en `.np-btn` | `:where(.np-root) :where(button, a)` (especificidad 0) con la lista del mockup; hover `--np-soft` (primario `--np-ink-hover`); `.np-press-spring` (escala .96, 0,55 s con resorte) | 4f8e27e |
+| Tokens/utilidades de movimiento | Keyframes repartidos en `privacy.css`/`shell.css` | `motion.css`: `np-rise`, `-hero`, `-sm`, `drop`, `drop-in`, `menu`, `sw-l/r`, `ping`, `fly`, `draw`, `sway`, `spin`, `blink`; `.np-stagger` (70 ms), `.np-lift`; `--np-ease-inout`, `--np-ease-fly` | 4f8e27e |
+| Pulso del chip | 1,4 s | 1,6 s ease-in-out | 4f8e27e |
+| Reduced motion | Dibujo de error invisible | `.np-drawn *` fuerza `stroke-dashoffset: 0` | 4f8e27e |
+| Lector | Sin entrada | `.np-rise` en el artículo (`rise` .8 s) | 4f8e27e |
+| Contador de Bloqueo | Salto directo | `useCountUp` (1,4 s, ease-out cuártico, JS como en el mockup; sin animar con movimiento reducido) | 4f8e27e, d8e17b6 |
+| Ajustes: barra lateral | Fondo del activo cambiaba por fundido; orden General primero; Datos sin subtítulo | Bloque `navhi` que se desliza (0,7 s, `cubic-bezier(.34,1.3,.64,1)`, paso 62 px); icono hover `!important` como el mockup; orden Privacidad, Bloqueo, General, Datos; resumen de retención en Datos | d8e17b6 |
+| Ajustes: secciones | Aparición instantánea | `.np-stagger` (rise .8 s, retardos .07 s) en las 4 secciones; tarjeta de país y aviso "directo" con `rise` | d8e17b6 |
+| Ajustes › General | Etiquetas sueltas y segmentados anchos | Entradilla, tarjetas de tema primero (278,7 × 168, `np-lift`), tarjeta blanca de filas (idioma, idioma de contenidos con descripción, modo lector) con segmentado compacto de 32 px a la derecha | d8e17b6 |
+| Ajustes › Datos | Controles sueltos | Entradilla y tarjeta de filas nombre 500 + descripción 13 px + control: retención, pausa, borrar 24 h, borrar todo (peligro), borrar un medio (campo + botón de 36 px, radio 10) | d8e17b6 |
+| Mapa de Ajustes | Pines sin deslizamiento (transición pisada); tooltip sin entrada | Transición `left/top 1,1 s` efectiva; `np-tip-in` .8 s manteniendo el centrado; caída escalonada (250 ms + 45 ms por pin) ya existente | 4f8e27e, d8e17b6 |
+| Popup de Tor | Primer candidato sin barrido | `sw-r` .5 s también en la apertura, como el mockup | d8e17b6 |
+| Filas de tarjeta | Sin línea bajo la última fila | Se dibuja, como el mockup (cierra la desviación anterior) | d8e17b6 |
+| Errores | Trazos sin clase compartida; sin entrada del bloque; botón sin resorte | `np-drawn` con retardos 0,3–1,1 s, `rise` .9 s en el layout, botón con `np-press-spring` | fb1dcd0 |
+| Inicio | Sin entrada | `rise` 1 s (14 px) | fb1dcd0 |
+| Sugerencias de la barra | Sin entrada | `drop-in` .45 s con 50 ms de escalón, fondo con transición | fb1dcd0 |
+| Barra superior con muchas pestañas | Columna de la rejilla `auto`: 20 pestañas ensanchaban la ventana a 5 848 px y sacaban el chip de Tor fuera | `grid-template-columns: minmax(0, 1fr)` | fb1dcd0 |
+
+**Comparación de animaciones (app = mockup).** Ajustes: `rise` .8 s con retardos .07/.14/.21 s, `drop` .7 s con retardo 250 ms + 45 ms/pin, `ping` 2 s, transiciones de 0,45 s (color/fondo), 0,7 s `cubic-bezier(.34,1.3,.64,1)` (resaltado) y 0,7 s `cubic-bezier(.34,1.56,.64,1)` (iconos). Popup de Tor: `menu` .45 s, `sw-r` .5 s, `pulse` 1,6 s, mapa y pines 1 s `cubic-bezier(.65,0,.35,1)`, pager 0,5 s, `fly` 1,8 s `cubic-bezier(.45,0,.2,1)` con `offset-path`. Con `prefers-reduced-motion` emulado: 0 animaciones y trazos del error visibles.
+
+### Desviaciones asumidas (Ajustes y animaciones)
+
+- **Sin buscador "Buscar ajuste" ni pie "newpaper 0.1 · Tauri 2 · WebView2"** y sin entradas IA, Análisis, Fuentes (planes 03-05); la barra lateral queda con 4 entradas sin huecos.
+- **"General" y "Datos e historial"** conservan su contenido funcional (idioma, tema, modo lector; retención, pausa, borrados): no existen "Tamaño de lectura", "Caché de análisis", "Índice RSS" ni "Exportar ajustes" del mockup, y el título de la sección no es "Apariencia"/"Datos".
+- **Bloqueo**: una sola tarjeta de cifras ("Hoy"); "Datos ahorrados" y "Muros de cookies" no tienen fuente de datos. Los textos de las listas son los reales (nombre del filtro + categoría + origen).
+- **Privacidad y red**: se mantiene la línea de estado "Conectado a Tor", WireGuard desactivado ("próximamente"), 21 países en el carrusel/chips (mockup 14), tooltip sin latencia, nodo "Guardia/Medio" sin país (el cliente no lo expone).
+- **Cuenta atrás de Bloqueo y barrido del primer candidato**: JS (rAF) solo para el contador, que en el mockup también es JS; el resto es CSS.
+- **Inicio**: solo se anima el bloque provisional (título y subtítulo); el buscador, el briefing y los chips con `rise` escalonado, `dropIn` y `.arr` son del plan 05.
+- **No verificado**: variantes de Errores con `sway`/`spin`/`blink` (Tor bloqueado, certificado, tiempo agotado: plan 06), `slide` del panel de análisis, `pop` de la selección de texto, `bump`/`rise0/1` del lector y los chips de "Sigues" (planes 03-05). Los keyframes ya están en `motion.css`.
