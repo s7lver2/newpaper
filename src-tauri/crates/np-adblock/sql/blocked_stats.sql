@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS blocked_stats (
+  day     TEXT    PRIMARY KEY NOT NULL,
+  blocked INTEGER NOT NULL DEFAULT 0
+);
