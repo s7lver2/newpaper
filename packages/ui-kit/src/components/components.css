@@ -1,0 +1,23 @@
+.np-btn { min-height: var(--np-hit); padding: 0 18px; border-radius: 999px; border: 1px solid var(--np-line3); background: var(--np-card); color: var(--np-ink); font: 500 14px/1 var(--np-font-ui); }
+.np-btn--primary { background: var(--np-ink); border-color: var(--np-ink); color: var(--np-on-ink); }
+.np-btn--quiet { background: transparent; border-color: transparent; color: var(--np-muted); }
+.np-btn--danger { color: var(--np-bad); border-color: var(--np-bad); }
+.np-btn:disabled { color: var(--np-disabled); cursor: not-allowed; }
+.np-icon-btn { display: inline-grid; place-items: center; min-width: var(--np-hit); min-height: var(--np-hit); border: 0; border-radius: 10px; background: transparent; color: var(--np-ink2); }
+.np-icon-btn:hover { background: var(--np-soft); }
+.np-icon-btn[aria-pressed='true'] { background: var(--np-accent-soft); color: var(--np-accent); }
+.np-switch-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: var(--np-hit); }
+.np-switch-text { display: grid; gap: 2px; }
+.np-switch-desc { color: var(--np-muted); font-size: 12.5px; }
+.np-switch { position: relative; width: 44px; height: 26px; min-height: 26px; border-radius: 999px; border: 0; background: var(--np-line3); padding: 0; }
+.np-switch::after { content: ''; position: absolute; inset: -9px 0; }
+.np-switch-thumb { position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--np-card); transition: transform .45s var(--np-bounce); }
+.np-switch[aria-checked='true'] { background: var(--np-accent); }
+.np-switch[aria-checked='true'] .np-switch-thumb { transform: translateX(18px); }
+.np-seg { display: inline-flex; padding: 3px; gap: 2px; border-radius: 999px; background: var(--np-soft); }
+.np-seg-item { min-height: 38px; padding: 0 14px; border: 0; border-radius: 999px; background: transparent; color: var(--np-muted); }
+.np-seg-item[aria-checked='true'] { background: var(--np-card); color: var(--np-ink); box-shadow: 0 1px 2px rgba(0,0,0,.08); }
+.np-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--np-line); }
+.np-tab { min-height: var(--np-hit); padding: 0 14px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--np-muted); font: 500 13.5px/1 var(--np-font-ui); }
+.np-tab[aria-selected='true'] { color: var(--np-ink); border-bottom-color: var(--np-ink); }
+.np-tab-badge { margin-left: 6px; font: 500 11px/1 var(--np-font-mono); color: var(--np-faint); }
