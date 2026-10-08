@@ -5,7 +5,7 @@ const bridge: WebviewBridge | undefined = (window as unknown as { chrome?: { web
 
 function post(m: PageMessage | NavMessage | ShortcutMessage): void {
   try {
-    bridge?.postMessage(m);
+    bridge?.postMessage(JSON.stringify(m));
   } catch {
     /* el anfitrión puede no estar listo: se ignora */
   }

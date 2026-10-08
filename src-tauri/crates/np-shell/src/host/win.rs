@@ -40,7 +40,9 @@ unsafe fn register(core: &ICoreWebView2, app: AppHandle, tab: TabId) -> windows:
         args.Source(&mut src)?;
         let source = take_pwstr(src);
         let mut json = PWSTR::null();
-        args.WebMessageAsJson(&mut json)?;
+        // El manejador IPC de wry corta la cadena de manejadores si el mensaje no es una cadena,
+        // así que el script de contenido envía el JSON serializado como texto.
+        args.TryGetWebMessageAsString(&mut json)?;
         let raw = take_pwstr(json);
         let reply = a.state::<Arc<TabManager>>().handle_raw_message(tab, &raw, &source);
         if let Some(v) = reply {

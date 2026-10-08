@@ -36,11 +36,13 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 | 27 | `e2e/package.json` usa `@types/node` y `@wdio/globals` en `types` del tsconfig, pero no los declara como dependencias (TS2688) | Añadidos `@types/node@^22` y `@wdio/globals@10.0.1` a devDependencies | — |
 | 27 | `helpers.ts` usa `browser.executeAsync(fn, cmd, args)`. En WebdriverIO 10 el comando es `executeAsyncScript(script: string, args[])`: el script debe ser texto | Script como cadena; argumentos en array `[cmd, args]` | — |
 | 27 | El binario de depuración de `np-app` carga `devUrl` (localhost:1420). El E2E no arranca el dev server y la página queda vacía | Documentado: para el E2E compilar con `cargo build --features tauri/custom-protocol` (usa `frontendDist`). El plan debe añadirlo al paso 4 | — |
-| 27 | Con la app compilada así, `tab_open` falla con `WebView2 error 0x8007139F` al crear la webview de contenido. Las pruebas apuntan a los `additional_browser_args` de las webviews de pestaña. Sin esa opción, `tab_open` funciona | **Pendiente**: decidir cómo unificar los argumentos entre la UI y las webviews de pestaña (no se ha cambiado código) | — |
+| 27 | `tab_open` fallaba con `WebView2 error 0x8007139F`: la webview UI usaba los argumentos por defecto de Tauri y las de pestaña `additional_browser_args` propios; WebView2 no admite entornos con argumentos distintos en una misma ventana | La webview UI se crea con `additional_browser_args(DEFAULT_BROWSER_ARGS)` en `src-tauri/src/setup.rs`. Los perfiles futuros (Tor, subproyecto 2) deben mantener estos mismos argumentos base y diferenciarse por `data_directory` | `setup.rs` |
+| 27 | El plan no incluía `e2e/fixtures/noticia.html` en el árbol (solo lo citaba): el servidor devolvía 404 | Copia de `packages/extract/test/fixtures/noticia.html` | `e2e/fixtures/noticia.html` |
+| 27 | El contenido nunca llegaba a Rust: wry registra su manejador IPC primero y devuelve error con mensajes que no son texto, y WebView2 no llama a los manejadores siguientes (el de np-shell) | `content.ts` envía `JSON.stringify(m)` y `win.rs` lee con `TryGetWebMessageAsString`; el contenido sigue siendo el mismo JSON | `content.ts`, `win.rs` |
 
 ## Pendiente
 
-- Tarea 27: `0x8007139F` al crear webviews de pestaña (ver fila de la tarea 27). Sin resolver; el E2E no ha pasado.
+- Ninguno. El E2E del lector pasa (1 escenario).
 
 ## Notas de entorno
 

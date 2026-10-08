@@ -65,7 +65,9 @@ fn create_main_window(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
         .build()?;
     let size = window.inner_size()?.to_logical::<f64>(window.scale_factor()?);
     window.add_child(
-        WebviewBuilder::new("ui", WebviewUrl::App("index.html".into())).auto_resize(),
+        WebviewBuilder::new("ui", WebviewUrl::App("index.html".into()))
+            .additional_browser_args(np_shell::extensions::DEFAULT_BROWSER_ARGS)
+            .auto_resize(),
         LogicalPosition::new(0.0, 0.0),
         LogicalSize::new(size.width, size.height),
     )?;
