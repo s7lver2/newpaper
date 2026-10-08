@@ -88,7 +88,7 @@ Sustituye a la limitación de la revisión anterior: ahora sí se compararon `Ma
 | Ajustes › General | Tema como control segmentado de ancho completo | Tarjetas de vista previa (papel, tinta, sistema) de 84 px como en "Apariencia"; el segmentado de idioma ya no se estira | 5ee1a9d |
 | Inicio | Título 40 px / 600 y pista como texto de ajustes | 52 px / 400 con tracking -0,025 em y subtítulo en cursiva de 20 px; columna de 640 px con 110 px de margen superior | 5ee1a9d |
 | Errores y crash (`FallbackSurfaces`) | Título suelto y botón pill | Maquetación de `Errores.dc.html`: dibujo de línea animado de 260 × 220, antetítulo, título Newsreader 42/500, lead de 19 px, botón de 46 px radio 12 | dec7ab0 |
-| Diálogo "abrir sin Tor" | Botones pill de 44 px | 46 px radio 12 (peso 500), como el botón de los mockups | ver el commit final de esta revisión |
+| Diálogo "abrir sin Tor" | Botones pill de 44 px | 46 px radio 12 (peso 500), como el botón de los mockups | (commit de documentación de esta revisión) |
 
 ### Desviaciones asumidas (revisión sobre la app real)
 
