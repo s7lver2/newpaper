@@ -1,0 +1,35 @@
+import { invoke } from '@tauri-apps/api/core';
+import type {
+  DeleteScope, HistoryEntry, HistoryFilter, Rect, SearchSource, Suggestion, TabId, TabInfo, TabsSnapshot, TabView,
+} from './types';
+
+/** Único punto de la UI que conoce los nombres de los comandos Rust. Los subproyectos añaden entradas. */
+export const commands = {
+  tabOpen: (args: { url?: string; private?: boolean; activate?: boolean } = {}) => invoke<TabInfo>('tab_open', args),
+  tabClose: (tabId: TabId) => invoke<void>('tab_close', { tabId }),
+  tabActivate: (tabId: TabId) => invoke<void>('tab_activate', { tabId }),
+  tabNavigate: (tabId: TabId, input: string) => invoke<void>('tab_navigate', { tabId, input }),
+  tabBack: (tabId: TabId) => invoke<void>('tab_back', { tabId }),
+  tabForward: (tabId: TabId) => invoke<void>('tab_forward', { tabId }),
+  tabReload: (tabId: TabId) => invoke<void>('tab_reload', { tabId }),
+  tabSetView: (tabId: TabId, view: TabView) => invoke<void>('tab_set_view', { tabId, view }),
+  tabSetBounds: (rect: Rect) => invoke<void>('tab_set_bounds', { rect }),
+  tabsSnapshot: () => invoke<TabsSnapshot>('tabs_snapshot'),
+
+  settingsGet: <T = unknown>(key: string) => invoke<T | null>('settings_get', { key }),
+  settingsSet: (key: string, value: unknown) => invoke<void>('settings_set', { key, value }),
+  settingsList: (prefix: string) => invoke<[string, unknown][]>('settings_list', { prefix }),
+
+  historyRecordVisit: (tabId: TabId, url: string, title: string) => invoke<string | null>('history_record_visit', { tabId, url, title }),
+  historyRecordSearch: (query: string, source: SearchSource) => invoke<string | null>('history_record_search', { query, source }),
+  historyMarkAnalyzed: (url: string) => invoke<number>('history_mark_analyzed', { url }),
+  historySearch: (filter: HistoryFilter) => invoke<HistoryEntry[]>('history_search', { filter }),
+  historyDelete: (scope: DeleteScope) => invoke<number>('history_delete', { scope }),
+  omniboxSuggest: (input: string) => invoke<Suggestion[]>('omnibox_suggest', { input }),
+
+  secretSet: (key: string, value: string) => invoke<void>('secret_set', { key, value }),
+  secretHas: (key: string) => invoke<boolean>('secret_has', { key }),
+  secretDelete: (key: string) => invoke<void>('secret_delete', { key }),
+
+  configRead: (name: string) => invoke<string>('config_read', { name }),
+};
