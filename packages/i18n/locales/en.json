@@ -53,5 +53,42 @@
       "soon": "Coverage will appear here once the source index is active."
     },
     "notFound": "This internal page doesn't exist."
+  },
+  "settings": {
+    "title": "Settings",
+    "nav": "Settings sections",
+    "general": {
+      "title": "General",
+      "language": "Interface language",
+      "contentLanguage": "Content language",
+      "contentLanguageHint": "Choose which outlets, lexicon and parliament are used as reference.",
+      "theme": "Theme",
+      "themePaper": "Paper",
+      "themeInk": "Ink",
+      "themeSystem": "System",
+      "readerAuto": "Open news in reader mode",
+      "readerAutoHint": "Pages recognised as news are shown clean, without the original site."
+    },
+    "language": {
+      "es": "Español",
+      "en": "English",
+      "de": "Deutsch"
+    },
+    "data": {
+      "title": "Data and history",
+      "retention": "Keep history for",
+      "retention7": "7 days",
+      "retention30": "30 days",
+      "retention90": "90 days",
+      "retention365": "1 year",
+      "retentionForever": "Forever",
+      "pause": "Pause history",
+      "pauseHint": "While paused, no visit or search is saved.",
+      "deleteDay": "Clear the last 24 hours",
+      "deleteAll": "Clear all history",
+      "deleteOutlet": "Clear one outlet",
+      "outletLabel": "Outlet domain",
+      "deleted": "{count, plural, =0 {Nothing to clear} one {# entry cleared} other {# entries cleared}}"
+    }
   }
 }

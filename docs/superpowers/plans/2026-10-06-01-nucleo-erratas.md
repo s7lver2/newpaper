@@ -32,6 +32,7 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 | 23 | `apps/ui` ahora importa `@newpaper/ui-kit`, cuyo `index.ts` hace `import "./x.css"`: el typecheck falla (TS2882) sin tipos de Vite | `"vite/client"` en `types` del tsconfig de `apps/ui` (también en el plan) | — |
 | 24 | `DefaultReader` pasaba `page.article` (un booleano) a `ReaderView` y accedía a sus campos (TS2339, y falla en runtime). Era el bug pendiente de la sección “Pendiente” | `const a = page;`: `PageMessage` ya contiene todos los campos de `Article` | — |
 | 24 | `BrowserShell.test.tsx` buscaba “Ver original” con `getByRole`, pero hay dos botones con ese nombre (barra de herramientas y cabecera del lector), así que el test falla | La consulta se acota al botón del lector: `document.querySelector(".np-reader-actions button")` | — |
+| 26 | Con `listen()` de Tauri en los tests, las bajas de los listeners se resuelven después de `clearMocks()` y fallan con `unregisterListener` / `__TAURI_INTERNALS__.invoke is not a function`. Vitest sale con código de error aunque los 24 tests pasen | `apps/ui/src/test/setup.ts`: desmontar, esperar un ciclo de eventos y luego `clearMocks()` | — |
 
 ## Pendiente
 

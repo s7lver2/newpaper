@@ -53,5 +53,42 @@
       "soon": "Berichte erscheinen hier, sobald der Quellenindex aktiv ist."
     },
     "notFound": "Diese interne Seite existiert nicht."
+  },
+  "settings": {
+    "title": "Einstellungen",
+    "nav": "Bereiche der Einstellungen",
+    "general": {
+      "title": "Allgemein",
+      "language": "Sprache der Oberfläche",
+      "contentLanguage": "Sprache der Inhalte",
+      "contentLanguageHint": "Lege fest, welche Medien, welches Lexikon und welches Parlament als Referenz dienen.",
+      "theme": "Design",
+      "themePaper": "Papier",
+      "themeInk": "Tinte",
+      "themeSystem": "System",
+      "readerAuto": "Nachrichten im Lesemodus öffnen",
+      "readerAutoHint": "Als Nachricht erkannte Seiten werden aufgeräumt angezeigt, ohne die Originalseite."
+    },
+    "language": {
+      "es": "Español",
+      "en": "English",
+      "de": "Deutsch"
+    },
+    "data": {
+      "title": "Daten und Verlauf",
+      "retention": "Verlauf behalten",
+      "retention7": "7 Tage",
+      "retention30": "30 Tage",
+      "retention90": "90 Tage",
+      "retention365": "1 Jahr",
+      "retentionForever": "Immer",
+      "pause": "Verlauf pausieren",
+      "pauseHint": "Solange pausiert ist, werden weder Besuche noch Suchen gespeichert.",
+      "deleteDay": "Letzte 24 Stunden löschen",
+      "deleteAll": "Gesamten Verlauf löschen",
+      "deleteOutlet": "Ein Medium löschen",
+      "outletLabel": "Domain des Mediums",
+      "deleted": "{count, plural, =0 {Nichts zu löschen} one {# Eintrag gelöscht} other {# Einträge gelöscht}}"
+    }
   }
 }
