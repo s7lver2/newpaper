@@ -1,0 +1,19 @@
+[package]
+name = "np-store"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+rusqlite = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+uuid = { workspace = true }
+tracing = { workspace = true }
+
+[target.'cfg(windows)'.dependencies]
+keyring = { version = "3.6", features = ["windows-native"] }
+
+[dev-dependencies]
+tempfile = { workspace = true }
