@@ -7,3 +7,5 @@ pub const NEW_TAB_URL: &str = "newpaper://inicio";
 pub mod message;
 pub mod news;
 pub mod extensions;
+pub mod host;
+pub use host::{Rect, ShellError, TabManager};
