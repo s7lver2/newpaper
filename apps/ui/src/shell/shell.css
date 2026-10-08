@@ -1,4 +1,4 @@
-.np-app { display: grid; grid-template-rows: auto auto 1fr; height: 100vh; overflow: hidden; }
+.np-app { display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto 1fr; height: 100vh; overflow: hidden; }
 
 /* Tab strip (mockup Main.dc.html): 43 px, tabs 35 px, 10 px top radius, 13 px titles */
 .np-tabstrip { display: flex; align-items: flex-end; gap: 2px; padding: 8px 12px 0; background: var(--np-chrome); }
@@ -35,8 +35,13 @@
 .np-address-input[data-display='true'] { color: transparent; caret-color: var(--np-ink); }
 .np-address-input[data-display='true']::selection { color: transparent; }
 .np-address-list { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 10; margin: 0; padding: 6px; list-style: none; background: var(--np-card); border: 1px solid var(--np-line); border-radius: var(--np-radius); box-shadow: var(--np-shadow-pop); }
-.np-address-option { display: flex; align-items: baseline; gap: 10px; min-height: 40px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+.np-address-list { animation: np-drop-in .45s var(--np-ease) both; }
+.np-address-option { animation: np-drop-in .45s var(--np-ease) both; transition: background-color .45s var(--np-ease); display: flex; align-items: baseline; gap: 10px; min-height: 40px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
 .np-address-option[aria-selected='true'], .np-address-option:hover { background: var(--np-accent-soft); }
+.np-address-option:nth-child(2) { animation-delay: 50ms; }
+.np-address-option:nth-child(3) { animation-delay: 100ms; }
+.np-address-option:nth-child(4) { animation-delay: 150ms; }
+.np-address-option:nth-child(n + 5) { animation-delay: 200ms; }
 .np-address-kind { font: 500 11px/1 var(--np-font-mono); color: var(--np-faint); min-width: 92px; }
 .np-address-detail { margin-left: auto; color: var(--np-faint); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40%; }
 .np-main { position: relative; min-height: 0; }
@@ -44,12 +49,12 @@
 .np-surface { position: absolute; inset: 0; overflow: auto; background: var(--np-paper); }
 
 .np-reader-actions { position: sticky; top: 0; display: flex; justify-content: flex-end; padding: 10px 16px; background: linear-gradient(var(--np-paper), transparent); }
-.np-fallback { box-sizing: border-box; width: 100%; max-width: 980px; margin: 0 auto; padding: 80px 32px; display: flex; flex-wrap: wrap; align-items: center; align-content: flex-start; gap: 56px; }
+.np-fallback { animation: np-rise .9s var(--np-ease) both; box-sizing: border-box; width: 100%; max-width: 980px; margin: 0 auto; padding: 80px 32px; display: flex; flex-wrap: wrap; align-items: center; align-content: flex-start; gap: 56px; }
 .np-fallback-art { flex: none; color: var(--np-ink); }
 .np-fallback-text { flex: 1 1 380px; }
 .np-fallback-kicker { margin-bottom: 10px; letter-spacing: .12em; }
 .np-fallback-title { font: 500 42px/1.1 var(--np-font-read); margin: 0; }
 .np-fallback-lead { margin: 14px 0 26px; font-size: 19px; line-height: 1.55; color: var(--np-ink2); }
 .np-fallback .np-btn { min-height: 46px; padding: 0 18px; border-radius: 12px; font-weight: 500; }
-.np-fallback-art > * { stroke-dasharray: 1; stroke-dashoffset: 1; animation: np-draw 1.4s var(--np-ease) forwards; }
-@keyframes np-draw { to { stroke-dashoffset: 0; } }
+/* The drawing strokes itself in (class np-drawn; inline animation-delay per stroke, as in Errores.dc.html) */
+.np-drawn path, .np-drawn line, .np-drawn circle, .np-drawn rect, .np-drawn polyline { stroke-dasharray: 1; stroke-dashoffset: 1; animation: np-draw 1.4s var(--np-ease) forwards; }

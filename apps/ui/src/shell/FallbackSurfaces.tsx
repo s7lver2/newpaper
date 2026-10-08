@@ -5,7 +5,7 @@ import type { TabInfo } from '../ipc/types';
 
 /** Line drawing from Errores.dc.html (document with a cut cable); the strokes draw themselves in. */
 const Art = () => (
-  <svg className="np-fallback-art" width="260" height="220" viewBox="0 0 260 220" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+  <svg className="np-fallback-art np-drawn" width="260" height="220" viewBox="0 0 260 220" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
     <rect x="40" y="40" width="130" height="150" rx="6" pathLength="1" />
     <line x1="58" y1="66" x2="152" y2="66" pathLength="1" style={{ animationDelay: '.3s' }} />
     <line x1="58" y1="88" x2="130" y2="88" pathLength="1" style={{ animationDelay: '.4s' }} />
@@ -27,7 +27,7 @@ export function FallbackError({ tab }: { tab: TabInfo }) {
         <p className="np-kicker np-fallback-kicker">{t('shell.surface.kicker')}</p>
         <h1 className="np-fallback-title">{t('shell.surface.errorTitle')}</h1>
         <p className="np-fallback-lead">{t('shell.surface.errorDetail', { code })}</p>
-        <Button variant="primary" onClick={() => commands.tabReload(tab.id)}>
+        <Button variant="primary" className="np-press-spring" onClick={() => commands.tabReload(tab.id)}>
           {t('common.retry')}
         </Button>
       </div>
@@ -43,7 +43,7 @@ export function FallbackCrash({ tab }: { tab: TabInfo }) {
       <div className="np-fallback-text">
         <p className="np-kicker np-fallback-kicker">{t('shell.surface.kicker')}</p>
         <h1 className="np-fallback-title">{t('shell.surface.crashTitle')}</h1>
-        <Button variant="primary" onClick={() => commands.tabReload(tab.id)}>
+        <Button variant="primary" className="np-press-spring" onClick={() => commands.tabReload(tab.id)}>
           {t('shell.surface.crashReload')}
         </Button>
       </div>
