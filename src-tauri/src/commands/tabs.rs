@@ -1,6 +1,10 @@
 use std::sync::Arc;
 
-use np_shell::{model::{TabInfo, TabView, TabsSnapshot}, Rect, TabId, TabManager};
+use np_shell::{
+    host::{INK_BG, PAPER_BG},
+    model::{TabInfo, TabView, TabsSnapshot},
+    Rect, TabId, TabManager,
+};
 use tauri::State;
 
 use crate::error::CmdResult;
@@ -51,6 +55,13 @@ pub async fn tab_set_view(tabs: Tabs<'_>, tab_id: TabId, view: TabView) -> CmdRe
 #[tauri::command]
 pub async fn tab_set_bounds(tabs: Tabs<'_>, rect: Rect) -> CmdResult<()> {
     tabs.set_bounds(rect);
+    Ok(())
+}
+
+/// La UI informa del tema resuelto (`paper` / `ink`) para pintar el fondo nativo de ventana y webviews.
+#[tauri::command]
+pub async fn chrome_set_theme(tabs: Tabs<'_>, theme: String) -> CmdResult<()> {
+    tabs.set_background(if theme == "ink" { INK_BG } else { PAPER_BG });
     Ok(())
 }
 

@@ -24,6 +24,7 @@ pub fn run() {
             commands::tabs::tab_set_view,
             commands::tabs::tab_set_bounds,
             commands::tabs::tabs_snapshot,
+            commands::tabs::chrome_set_theme,
             commands::settings::settings_get,
             commands::settings::settings_set,
             commands::settings::settings_list,

@@ -1,6 +1,10 @@
 use std::{sync::Arc, time::Duration};
 
-use np_shell::{extensions::ShellExtensions, TabManager};
+use np_shell::{
+    extensions::ShellExtensions,
+    host::{INK_BG, PAPER_BG},
+    TabManager,
+};
 use np_store::{history::HistoryRepo, secrets::SecretStore, Store};
 use tauri::{webview::WebviewBuilder, window::WindowBuilder, App, Emitter, LogicalPosition, LogicalSize, Manager, WebviewUrl};
 
@@ -57,19 +61,40 @@ fn spawn_history_retention(store: Arc<Store>) {
     });
 }
 
+/// Fondo inicial según el ajuste de tema (o el tema del sistema): evita el destello blanco de WebView2.
+fn initial_background(app: &App, store: &Store) -> (u8, u8, u8) {
+    let choice = store.get_setting::<String>("appearance.theme").ok().flatten().unwrap_or_else(|| "system".into());
+    let ink = match choice.as_str() {
+        "ink" => true,
+        "paper" => false,
+        _ => app.get_window("main").and_then(|w| w.theme().ok()).is_some_and(|t| t == tauri::Theme::Dark),
+    };
+    if ink { INK_BG } else { PAPER_BG }
+}
+
 fn create_main_window(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
+    let tabs = app.state::<Arc<TabManager>>().inner().clone();
+    let store = app.state::<Arc<Store>>().inner().clone();
     let window = WindowBuilder::new(app, "main")
         .title("newpaper")
         .inner_size(1280.0, 820.0)
         .min_inner_size(900.0, 600.0)
+        .background_color(tabs.background())
         .build()?;
+    let (r, g, b) = initial_background(app, &store);
+    tabs.set_background((r, g, b));
     let size = window.inner_size()?.to_logical::<f64>(window.scale_factor()?);
-    window.add_child(
+    let ui = window.add_child(
         WebviewBuilder::new("ui", WebviewUrl::App("index.html".into()))
             .additional_browser_args(np_shell::extensions::DEFAULT_BROWSER_ARGS)
+            .background_color(tabs.background())
             .auto_resize(),
         LogicalPosition::new(0.0, 0.0),
         LogicalSize::new(size.width, size.height),
     )?;
+    #[cfg(windows)]
+    np_shell::host::harden_ui(&ui)?;
+    #[cfg(not(windows))]
+    let _ = ui;
     Ok(())
 }

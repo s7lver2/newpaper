@@ -55,6 +55,7 @@ impl AdblockService {
         let blocker = self.blocker();
         let block = blocker.should_block(url, source_url, kind, method);
         if block {
+            tracing::debug!(tab, ?kind, url, source = source_url, "blocked");
             let n = self.stats.record(tab, &today_local());
             self.notifier.blocked(tab, n);
         }
