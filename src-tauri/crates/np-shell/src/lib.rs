@@ -1,0 +1,6 @@
+//! Navegador de newpaper: pestañas, entrada de la barra, mensajes de contenido y anfitrión WebView2.
+pub mod input;
+pub mod model;
+
+pub type TabId = u64;
+pub const NEW_TAB_URL: &str = "newpaper://inicio";

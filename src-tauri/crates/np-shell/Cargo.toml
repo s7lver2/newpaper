@@ -1,0 +1,19 @@
+[package]
+name = "np-shell"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+tauri = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+tracing = { workspace = true }
+url = { workspace = true }
+reqwest = { workspace = true }
+
+[target.'cfg(windows)'.dependencies]
+webview2-com = { workspace = true }
+windows = { workspace = true }
+windows-core = { workspace = true }
