@@ -22,7 +22,15 @@ export const config: WebdriverIO.Config = {
     fixtures = await startFixtureServer();
   },
   beforeSession: () => {
-    driver = spawn('tauri-driver', ['--native-driver', EDGE_DRIVER], { stdio: 'inherit' });
+    driver = spawn('tauri-driver', ['--native-driver', EDGE_DRIVER], {
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        NP_FAKE_TOR: '1',
+        // localhost es "tercero" para una página servida en 127.0.0.1; el cosmético oculta .np-test-ad
+        NP_TEST_EXTRA_RULES: '||localhost^$third-party\n127.0.0.1##.np-test-ad',
+      },
+    });
   },
   afterSession: () => driver?.kill(),
   onComplete: () => fixtures?.close(),

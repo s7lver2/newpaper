@@ -19,3 +19,12 @@ export async function uiInvoke<T>(cmd: string, args: Record<string, unknown> = {
   `;
   return browser.executeAsyncScript(script, [cmd, args]) as Promise<T>;
 }
+
+/** Cambia a la webview de contenido cuya URL contiene `urlPart`. */
+export async function switchToContent(urlPart: string): Promise<void> {
+  for (const h of await browser.getWindowHandles()) {
+    await browser.switchToWindow(h);
+    if ((await browser.getUrl()).includes(urlPart)) return;
+  }
+  throw new Error(`content webview with ${urlPart} not found`);
+}

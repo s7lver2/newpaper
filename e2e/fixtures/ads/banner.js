@@ -1,0 +1,1 @@
+window.npAdLoaded = true;
