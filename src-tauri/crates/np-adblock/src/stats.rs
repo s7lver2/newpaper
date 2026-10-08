@@ -38,6 +38,10 @@ impl BlockedStats {
         self.inner.lock().expect("stats lock").per_tab.remove(&tab);
     }
 
+    pub fn tab_counts(&self) -> HashMap<u64, u64> {
+        self.inner.lock().expect("stats lock").per_tab.clone()
+    }
+
     /// Vuelca los pendientes con UPSERT. Si falla, los pendientes se conservan.
     pub fn flush(&self, conn: &Connection) -> rusqlite::Result<()> {
         let pending = std::mem::take(&mut self.inner.lock().expect("stats lock").pending);

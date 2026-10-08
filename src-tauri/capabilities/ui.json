@@ -12,6 +12,9 @@
     "allow-history-record-visit", "allow-history-record-search", "allow-history-mark-analyzed",
     "allow-history-search", "allow-history-delete", "allow-omnibox-suggest",
     "allow-secret-set", "allow-secret-has", "allow-secret-delete",
-    "allow-config-read"
+    "allow-config-read",
+    "allow-privacy-status", "allow-net-set-mode", "allow-tor-set-exit-country", "allow-tor-new-circuit",
+    "allow-privacy-set-routing", "allow-tab-without-tor", "allow-adblock-status", "allow-adblock-set-enabled",
+    "allow-adblock-set-list", "allow-adblock-refresh", "allow-blocked-counts"
   ]
 }

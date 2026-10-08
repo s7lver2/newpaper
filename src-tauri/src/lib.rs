@@ -37,6 +37,17 @@ pub fn run() {
             commands::secrets::secret_has,
             commands::secrets::secret_delete,
             commands::config::config_read,
+            privacy::commands::privacy_status,
+            privacy::commands::net_set_mode,
+            privacy::commands::tor_set_exit_country,
+            privacy::commands::tor_new_circuit,
+            privacy::commands::privacy_set_routing,
+            privacy::commands::tab_without_tor,
+            privacy::commands::adblock_status,
+            privacy::commands::adblock_set_enabled,
+            privacy::commands::adblock_set_list,
+            privacy::commands::adblock_refresh,
+            privacy::commands::blocked_counts,
         ])
         .run(tauri::generate_context!())
         .expect("error while running newpaper");
