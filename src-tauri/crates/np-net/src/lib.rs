@@ -9,3 +9,4 @@ pub use socks::TargetAddr;
 pub mod fake;
 pub mod server;
 pub use server::{BoxStream, ConnectError, Connector, SocksServer, TorBackend};
+pub mod tor;
