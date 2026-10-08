@@ -14,10 +14,11 @@ export function Toolbar() {
   const items = toolbarItems();
   return (
     <div className="np-toolbar">
+      <span className="np-toolbar-progress" data-loading={tab?.loading ? 'true' : 'false'} aria-hidden="true" />
       <nav aria-label={t('shell.nav.label')} className="np-toolbar-nav">
-        <IconButton className="np-hit" label={t('shell.nav.back')} icon={<IconBack />} disabled={!tab} onClick={() => id && commands.tabBack(id)} />
-        <IconButton className="np-hit" label={t('shell.nav.forward')} icon={<IconForward />} disabled={!tab?.canGoForward} onClick={() => id && commands.tabForward(id)} />
-        <IconButton className="np-hit" label={t('shell.nav.reload')} icon={<IconReload />} disabled={!tab || tab.kind !== 'web'} onClick={() => id && commands.tabReload(id)} />
+        <IconButton className="np-hit np-press-spring" label={t('shell.nav.back')} icon={<IconBack />} disabled={!tab} onClick={() => id && commands.tabBack(id)} />
+        <IconButton className="np-hit np-press-spring" label={t('shell.nav.forward')} icon={<IconForward />} disabled={!tab?.canGoForward} onClick={() => id && commands.tabForward(id)} />
+        <IconButton className={tab?.loading ? 'np-hit np-press-spring np-reload-spin' : 'np-hit np-press-spring'} label={t('shell.nav.reload')} icon={<IconReload />} disabled={!tab || tab.kind !== 'web'} onClick={() => id && commands.tabReload(id)} />
       </nav>
       <AddressBar tab={tab}>
         {items.filter((i) => i.slot === 'address').map(({ id: itemId, Component }) => (
@@ -36,7 +37,7 @@ export function Toolbar() {
       {items.filter((i) => i.slot !== 'address').map(({ id: itemId, Component }) => (
         <Component key={itemId} tab={tab} />
       ))}
-      <IconButton className="np-hit" label={t('shell.settings')} icon={<IconSettings />} onClick={() => openInternal('ajustes', [], undefined, { newTab: true })} />
+      <IconButton className="np-hit np-press-spring" label={t('shell.settings')} icon={<IconSettings />} onClick={() => openInternal('ajustes', [], undefined, { newTab: true })} />
     </div>
   );
 }

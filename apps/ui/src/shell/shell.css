@@ -58,3 +58,13 @@
 .np-fallback .np-btn { min-height: 46px; padding: 0 18px; border-radius: 12px; font-weight: 500; }
 /* The drawing strokes itself in (class np-drawn; inline animation-delay per stroke, as in Errores.dc.html) */
 .np-drawn path, .np-drawn line, .np-drawn circle, .np-drawn rect, .np-drawn polyline { stroke-dasharray: 1; stroke-dashoffset: 1; animation: np-draw 1.4s var(--np-ease) forwards; }
+
+/* Light feedback on the top bar: tab entrance, loading bar under the toolbar, spinning reload glyph */
+.np-tabstrip-item { animation: np-pop .35s var(--np-ease) both; }
+.np-toolbar { position: relative; }
+.np-toolbar-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; overflow: hidden; opacity: 0; transition: opacity .3s var(--np-ease); pointer-events: none; }
+.np-toolbar-progress[data-loading='true'] { opacity: 1; }
+.np-toolbar-progress::after { content: ''; position: absolute; inset: 0 auto 0 0; width: 35%; background: var(--np-accent); border-radius: 2px; animation: np-load 1.2s var(--np-ease-inout) infinite; }
+.np-reload-spin svg { animation: np-spin 1s linear infinite; transform-origin: 50% 50%; }
+@keyframes np-load { from { transform: translateX(-100%); } to { transform: translateX(300%); } }
+@media (prefers-reduced-motion: reduce) { .np-toolbar-progress::after { animation: none; width: 100%; opacity: .5; } }

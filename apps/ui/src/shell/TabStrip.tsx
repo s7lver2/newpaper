@@ -25,12 +25,12 @@ export function TabStrip() {
                 <span className="np-tabstrip-title">{title}</span>
                 {tab.private ? <span className="np-tab-private">{t('shell.tabs.private')}</span> : null}
               </button>
-              <IconButton label={t('shell.tabs.close', { title })} icon={<IconClose />} className="np-tabstrip-close np-hit" onClick={() => commands.tabClose(tab.id)} />
+              <IconButton label={t('shell.tabs.close', { title })} icon={<IconClose />} className="np-tabstrip-close np-hit np-press-spring" onClick={() => commands.tabClose(tab.id)} />
             </div>
           );
         })}
       </div>
-      <IconButton label={t('shell.tabs.new')} icon={<span aria-hidden="true">+</span>} className="np-tabstrip-new np-hit" onClick={() => commands.tabOpen()} />
+      <IconButton label={t('shell.tabs.new')} icon={<span aria-hidden="true">+</span>} className="np-tabstrip-new np-hit np-press-spring" onClick={() => commands.tabOpen()} />
     </div>
   );
 }
