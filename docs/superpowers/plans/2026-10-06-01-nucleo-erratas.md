@@ -19,6 +19,7 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 | 10 | Al poner la implementación “encima de los tests”, las líneas `//!` del bloque de tests quedan a mitad de fichero y Rust no compila (E0753) | Las líneas `//!` se mueven al principio del fichero (`migrations.rs`) | — |
 | 11 | Mismo problema de `//!` que en la tarea 10 al poner la implementación encima de los tests (`hlc.rs`, `ids.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
 | 12 | (a) Mismo problema de `//!` que en las tareas 10 y 11 (`settings.rs`). (b) `Store.observers` se declaró privado, pero `settings.rs` lo usa desde otro módulo (E0616) | (a) `//!` al principio del fichero. (b) campo `pub(crate) observers` | — |
+| 13 | Mismo problema de `//!` que en las tareas 10–12 (`secrets.rs`) | Las líneas `//!` se mueven al principio del fichero | — |
 
 ## Pendiente
 
