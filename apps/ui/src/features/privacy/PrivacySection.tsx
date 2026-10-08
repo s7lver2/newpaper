@@ -67,6 +67,8 @@ export function PrivacySection() {
             <span>{t('privacy.tor.routeGuard')}</span><span aria-hidden="true">→</span>
             <span>{t('privacy.tor.routeMiddle')}</span><span aria-hidden="true">→</span>
             <span>{t('privacy.tor.routeExit', { country: status.exitCountry ?? t('privacy.tor.auto') })}</span>
+          </div>
+          <div className="np-tor-route">
             <span>{t('privacy.tor.circuit', { n: status.circuit })}</span>
             <Button variant="quiet" onClick={async () => applyStatus(await commands.torNewCircuit())}>{t('privacy.tor.newCircuit')}</Button>
           </div>

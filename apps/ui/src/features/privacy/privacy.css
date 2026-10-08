@@ -12,9 +12,9 @@
 .np-torchip[data-without='true'] { border-color: var(--np-warn); color: var(--np-warn); background: var(--np-warn-bg); }
 .np-tor-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
 .np-tor-popup { width: 340px; }
-.np-tor-route { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font: 400 12px/1.4 var(--np-font-mono); color: var(--np-muted); }
+.np-tor-route { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 6px; font: 400 12px/1.4 var(--np-font-mono); color: var(--np-muted); }
 .np-tor-picker { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px; }
-.np-tor-candidate { text-align: center; }
+.np-tor-candidate { display: grid; justify-items: center; gap: 2px; text-align: center; }
 .np-tor-candidate-code { display: block; font: 600 26px/1 var(--np-font-mono); color: var(--np-tor); }
 .np-tor-fly { position: relative; overflow: hidden; }
 .np-plane { display: inline-block; }
@@ -23,6 +23,7 @@
 .np-tor-note { margin: 0; font-size: 12px; color: var(--np-muted); }
 .np-dialog-scrim { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: var(--np-scrim); }
 .np-dialog { width: min(460px, calc(100vw - 32px)); padding: 24px; display: grid; gap: 14px; background: var(--np-card); border-radius: var(--np-radius-lg); box-shadow: var(--np-shadow-modal); }
+.np-dialog p { margin: 0; }
 .np-dialog h2 { margin: 0; font: 600 22px/1.25 var(--np-font-read); }
 .np-dialog-actions { display: flex; justify-content: flex-end; gap: 10px; }
 .np-modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
@@ -34,7 +35,8 @@
 .np-country { display: flex; align-items: center; gap: 8px; min-height: var(--np-hit); padding: 0 10px; border-radius: 10px; border: 1px solid var(--np-line); background: var(--np-card); color: var(--np-ink); }
 .np-country[aria-checked='true'] { border-color: var(--np-tor); color: var(--np-tor); }
 .np-dotmap { width: 100%; max-width: 520px; height: auto; }
-.np-dotmap-dot { fill: var(--np-line3); }
+.np-dotmap-land { fill: var(--np-line3); }
+.np-dotmap-dot { fill: var(--np-faint); }
 .np-dotmap-dot[data-active='true'] { fill: var(--np-tor); }
-.np-list-row { display: grid; grid-template-columns: 1fr auto; gap: 4px 16px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--np-line2); }
+.np-list-row { display: grid; gap: 0 16px; padding: 6px 0 10px; border-bottom: 1px solid var(--np-line2); }
 .np-list-meta { font-size: 12px; color: var(--np-muted); }

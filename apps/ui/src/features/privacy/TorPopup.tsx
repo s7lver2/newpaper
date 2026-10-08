@@ -96,7 +96,7 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
             <span>{t('privacy.tor.circuit', { n: status.circuit })}</span>
             <Button variant="quiet" onClick={async () => applyStatus(await commands.torNewCircuit(tabId ?? undefined))}>{t('privacy.tor.newCircuit')}</Button>
           </div>
-          {tabId !== null ? (
+          {tabId !== null && !status.tabsWithoutTor.includes(tabId) ? (
             <Button variant="quiet" onClick={() => { requestOpenWithoutTor(tabId); onClose(); }}>{t('privacy.tor.withoutTorAction')}</Button>
           ) : null}
         </>

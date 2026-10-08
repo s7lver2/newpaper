@@ -1,5 +1,5 @@
 import { useT } from '@newpaper/i18n/react';
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { TabInfo } from '../../ipc/types';
 import { TorPopup, torStateLabel } from './TorPopup';
 import { usePrivacyStatus } from './usePrivacy';
@@ -9,6 +9,15 @@ export function TorChip({ tab }: { tab: TabInfo | null }) {
   const status = usePrivacyStatus();
   const [open, setOpen] = useState(false);
   const close = useCallback(() => setOpen(false), []);
+  const wrap = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (!open) return;
+    const onDown = (e: PointerEvent) => {
+      if (e.target instanceof Node && !wrap.current?.contains(e.target)) setOpen(false);
+    };
+    document.addEventListener('pointerdown', onDown);
+    return () => document.removeEventListener('pointerdown', onDown);
+  }, [open]);
   if (!status) return null;
   const without = tab !== null && status.tabsWithoutTor.includes(tab.id);
   const label =
@@ -18,7 +27,7 @@ export function TorChip({ tab }: { tab: TabInfo | null }) {
         ? t('privacy.tor.withoutTor')
         : t('privacy.tor.chipTor', { country: status.exitCountry ?? t('privacy.tor.auto') });
   return (
-    <div className="np-torchip-wrap">
+    <div ref={wrap} className="np-torchip-wrap">
       <button
         type="button"
         className="np-torchip"

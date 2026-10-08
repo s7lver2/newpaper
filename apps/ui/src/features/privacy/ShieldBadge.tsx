@@ -1,6 +1,6 @@
 import { useI18n } from '@newpaper/i18n/react';
 import { Button, Switch } from '@newpaper/ui-kit';
-import { useEffect, useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { commands } from '../../ipc/commands';
 import type { TabInfo } from '../../ipc/types';
 import { openInternal } from '../../shell/navigate';
@@ -19,17 +19,25 @@ export function ShieldBadge({ tab }: { tab: TabInfo | null }) {
   const [open, setOpen] = useState(false);
   const [enabled, setEnabled] = useState(true);
   const panelId = useId();
+  const wrap = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
     void commands.adblockStatus().then((s) => setEnabled(s.enabled));
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false);
+    const onDown = (e: PointerEvent) => {
+      if (e.target instanceof Node && !wrap.current?.contains(e.target)) setOpen(false);
+    };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onDown);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onDown);
+    };
   }, [open]);
 
   return (
-    <div className="np-shield">
+    <div ref={wrap} className="np-shield">
       <button
         type="button"
         className="np-shield-btn"
