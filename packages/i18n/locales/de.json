@@ -11,6 +11,7 @@
     "articles": "{count, plural, one {# Artikel} other {# Artikel}}"
   },
   "shell": {
+    "settings": "Einstellungen",
     "tabs": {
       "label": "Tabs",
       "new": "Neuer Tab",
@@ -42,6 +43,7 @@
       "byline": "Von {name}"
     },
     "surface": {
+      "kicker": "Fehler",
       "errorTitle": "Die Seite konnte nicht geladen werden",
       "errorDetail": "Code {code}",
       "crashTitle": "Der Tab reagiert nicht mehr",
@@ -118,9 +120,9 @@
       "prev": "Vorheriges Land",
       "next": "Nächstes Land",
       "autoCountry": "Automatisch",
-      "fly": "Ausgang über {country}",
-      "flyAuto": "Ausgang über ein beliebiges Land",
-      "flying": "Ausgang wird gewechselt…",
+      "fly": "Flug nach {country}",
+      "flyAuto": "Flug in ein beliebiges Land",
+      "flying": "Flug nach {country}…",
       "current": "Aktueller Ausgang",
       "newCircuit": "Neuer Kanal",
       "circuit": "Kanal Nr. {n}",
@@ -140,6 +142,8 @@
       "confirm": "Ohne Tor öffnen"
     },
     "settings": {
+      "summaryDirect": "Direkt",
+      "summaryTor": "Tor · {country}",
       "title": "Datenschutz und Netzwerk",
       "connection": "Verbindung",
       "restartNote": "Ein Wechsel von Modus oder Land startet die Web-Engine neu (etwa 2 s). Tabs werden neu geladen.",
@@ -160,6 +164,8 @@
       "zoomEurope": "Europa"
     },
     "blocking": {
+      "lead": "Werbung, Tracker und Störendes. Engine: adblock-rust, dieselbe wie bei Brave.",
+      "summary": "{count} heute",
       "title": "Blockieren",
       "enabled": "Werbung, Tracker, Cookie-Banner und Newsletter-Fenster blockieren",
       "lists": "Filterlisten",

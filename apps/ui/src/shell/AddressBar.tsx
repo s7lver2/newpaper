@@ -1,14 +1,25 @@
 import { useT } from '@newpaper/i18n/react';
-import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useId, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
 import { commands } from '../ipc/commands';
 import type { Suggestion, TabInfo } from '../ipc/types';
-import { IconSearch } from './icons';
+import { IconLock, IconSearch } from './icons';
 import { navigate } from './navigate';
 import { shellBus } from './shellBus';
 
+/** "host/" (muted) + "path" (ink), like the mockup; null when the URL is not a plain web address. */
+export function splitDisplayUrl(url: string): { host: string; path: string } | null {
+  try {
+    const u = new URL(url);
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
+    return { host: `${u.host}/`, path: `${u.pathname.slice(1)}${u.search}${u.hash}` };
+  } catch {
+    return null;
+  }
+}
+
 const looksLikeSearch = (s: string) => /\s/.test(s.trim()) || !s.includes('.');
 
-export function AddressBar({ tab }: { tab: TabInfo | null }) {
+export function AddressBar({ tab, children }: { tab: TabInfo | null; children?: ReactNode }) {
   const t = useT();
   const listId = useId();
   const input = useRef<HTMLInputElement>(null);
@@ -16,6 +27,7 @@ export function AddressBar({ tab }: { tab: TabInfo | null }) {
   const [items, setItems] = useState<Suggestion[]>([]);
   const [index, setIndex] = useState(-1);
   const [open, setOpen] = useState(false);
+  const [focused, setFocused] = useState(false);
 
   useEffect(() => setText(tab?.url ?? ''), [tab?.id, tab?.url]);
   useEffect(() => {
@@ -63,10 +75,18 @@ export function AddressBar({ tab }: { tab: TabInfo | null }) {
     }
   };
 
+  const display = !focused && tab?.kind === 'web' && text === tab.url ? splitDisplayUrl(tab.url) : null;
   return (
     <div className="np-address">
-      <IconSearch />
-      <input
+      {tab?.kind === 'web' && tab.url.startsWith('https:') && !tab.failure && !tab.crashed ? <IconLock /> : <IconSearch />}
+      <div className="np-address-field">
+        {display ? (
+          <span className="np-address-display" aria-hidden="true">
+            {display.host}
+            <span className="np-address-path">{display.path}</span>
+          </span>
+        ) : null}
+        <input
         ref={input}
         role="combobox"
         aria-label={t('shell.address.label')}
@@ -75,16 +95,24 @@ export function AddressBar({ tab }: { tab: TabInfo | null }) {
         aria-activedescendant={index >= 0 ? `${listId}-${index}` : undefined}
         aria-autocomplete="list"
         className="np-address-input"
+        data-display={display !== null}
         value={text}
         spellCheck={false}
         onChange={(e) => {
           setText(e.target.value);
           setOpen(true);
         }}
-        onFocus={(e) => e.currentTarget.select()}
-        onBlur={() => setTimeout(() => setOpen(false), 120)}
+        onFocus={(e) => {
+          setFocused(true);
+          e.currentTarget.select();
+        }}
+        onBlur={() => {
+          setFocused(false);
+          setTimeout(() => setOpen(false), 120);
+        }}
         onKeyDown={onKey}
       />
+      </div>
       {open && items.length > 0 ? (
         <ul id={listId} role="listbox" aria-label={t('shell.address.suggestions')} className="np-address-list">
           {items.map((s, i) => (
@@ -106,6 +134,7 @@ export function AddressBar({ tab }: { tab: TabInfo | null }) {
           ))}
         </ul>
       ) : null}
+      {children}
     </div>
   );
 }

@@ -11,6 +11,7 @@
     "articles": "{count, plural, one {# article} other {# articles}}"
   },
   "shell": {
+    "settings": "Settings",
     "tabs": {
       "label": "Tabs",
       "new": "New tab",
@@ -42,6 +43,7 @@
       "byline": "By {name}"
     },
     "surface": {
+      "kicker": "Error",
       "errorTitle": "This page couldn't be loaded",
       "errorDetail": "Code {code}",
       "crashTitle": "This tab stopped responding",
@@ -118,9 +120,9 @@
       "prev": "Previous country",
       "next": "Next country",
       "autoCountry": "Automatic",
-      "fly": "Exit via {country}",
-      "flyAuto": "Exit via any country",
-      "flying": "Changing exit…",
+      "fly": "Fly to {country}",
+      "flyAuto": "Fly to any country",
+      "flying": "Flying to {country}…",
       "current": "Current exit",
       "newCircuit": "New circuit",
       "circuit": "Circuit #{n}",
@@ -140,6 +142,8 @@
       "confirm": "Open without Tor"
     },
     "settings": {
+      "summaryDirect": "Direct",
+      "summaryTor": "Tor · {country}",
       "title": "Privacy and network",
       "connection": "Connection",
       "restartNote": "Changing mode or country restarts the web engine (about 2 s). Tabs reload.",
@@ -160,6 +164,8 @@
       "zoomEurope": "Europe"
     },
     "blocking": {
+      "lead": "Ads, trackers and annoyances. Engine: adblock-rust, the same one Brave uses.",
+      "summary": "{count} today",
       "title": "Blocking",
       "enabled": "Block ads, trackers, cookie banners and newsletter pop-ups",
       "lists": "Filter lists",

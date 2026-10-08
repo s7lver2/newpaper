@@ -11,6 +11,7 @@
     "articles": "{count, plural, one {# artículo} other {# artículos}}"
   },
   "shell": {
+    "settings": "Ajustes",
     "tabs": {
       "label": "Pestañas",
       "new": "Nueva pestaña",
@@ -42,6 +43,7 @@
       "byline": "Por {name}"
     },
     "surface": {
+      "kicker": "Error",
       "errorTitle": "No se ha podido cargar la página",
       "errorDetail": "Código {code}",
       "crashTitle": "La pestaña ha dejado de responder",
@@ -118,9 +120,9 @@
       "prev": "País anterior",
       "next": "País siguiente",
       "autoCountry": "Automático",
-      "fly": "Salir por {country}",
-      "flyAuto": "Salir por cualquier país",
-      "flying": "Cambiando de salida…",
+      "fly": "Volar a {country}",
+      "flyAuto": "Volar a cualquier país",
+      "flying": "Volando a {country}…",
       "current": "Salida actual",
       "newCircuit": "Nuevo circuito",
       "circuit": "Circuito n.º {n}",
@@ -140,6 +142,8 @@
       "confirm": "Abrir sin Tor"
     },
     "settings": {
+      "summaryDirect": "Directo",
+      "summaryTor": "Tor · {country}",
       "title": "Privacidad y red",
       "connection": "Conexión",
       "restartNote": "Cambiar de modo o de país reinicia el motor web (unos 2 s). Las pestañas se recargan.",
@@ -160,6 +164,8 @@
       "zoomEurope": "Europa"
     },
     "blocking": {
+      "lead": "Anuncios, rastreadores y molestias. Motor: adblock-rust, el mismo de Brave.",
+      "summary": "{count} hoy",
       "title": "Bloqueo",
       "enabled": "Bloquear anuncios, rastreadores, banners de cookies y modales de suscripción",
       "lists": "Listas de filtros",

@@ -3,8 +3,9 @@ import type { PageArticle, ShortcutAction, TabInfo } from '../ipc/types';
 import type { InternalUrl } from './internalUrl';
 
 export interface InternalPageProps { url: InternalUrl; tab: TabInfo }
-export interface SettingsSection { id: string; order: number; titleKey: string; descriptionKey?: string; Component: ComponentType }
-export interface ToolbarItem { id: string; order: number; Component: ComponentType<{ tab: TabInfo | null }> }
+export interface SettingsSection { id: string; order: number; titleKey: string; descriptionKey?: string; glyph?: string; Summary?: ComponentType; Component: ComponentType }
+/** `address` items sit inside the address pill (shield, Tor chip); the rest follow it. */
+export interface ToolbarItem { id: string; order: number; slot?: 'address' | 'bar'; Component: ComponentType<{ tab: TabInfo | null }> }
 export type TabSurfaceKind = 'error' | 'crash';
 export interface ReaderSurfaceProps { tab: TabInfo; page: PageArticle }
 export interface Overlay { id: string; Component: ComponentType }

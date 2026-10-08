@@ -2,7 +2,7 @@ import { useT } from '@newpaper/i18n/react';
 import { IconButton } from '@newpaper/ui-kit';
 import { commands } from '../ipc/commands';
 import { useBrowser } from '../state/browser';
-import { IconClose, IconPlus } from './icons';
+import { IconClose } from './icons';
 
 export function TabStrip() {
   const t = useT();
@@ -21,16 +21,16 @@ export function TabStrip() {
                 className="np-tabstrip-tab"
                 onClick={() => commands.tabActivate(tab.id)}
               >
-                {tab.loading ? <span className="np-pulse np-tab-dot" aria-label={t('shell.tabs.loading')} /> : null}
+                <span className={tab.loading ? 'np-pulse np-tab-dot' : 'np-tab-dot'} data-loading={tab.loading} {...(tab.loading ? { role: 'img', 'aria-label': t('shell.tabs.loading') } : { 'aria-hidden': true })} />
                 <span className="np-tabstrip-title">{title}</span>
                 {tab.private ? <span className="np-tab-private">{t('shell.tabs.private')}</span> : null}
               </button>
-              <IconButton label={t('shell.tabs.close', { title })} icon={<IconClose />} className="np-tabstrip-close" onClick={() => commands.tabClose(tab.id)} />
+              <IconButton label={t('shell.tabs.close', { title })} icon={<IconClose />} className="np-tabstrip-close np-hit" onClick={() => commands.tabClose(tab.id)} />
             </div>
           );
         })}
       </div>
-      <IconButton label={t('shell.tabs.new')} icon={<IconPlus />} onClick={() => commands.tabOpen()} />
+      <IconButton label={t('shell.tabs.new')} icon={<span aria-hidden="true">+</span>} className="np-tabstrip-new np-hit" onClick={() => commands.tabOpen()} />
     </div>
   );
 }
