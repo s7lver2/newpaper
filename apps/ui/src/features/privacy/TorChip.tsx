@@ -30,7 +30,8 @@ export function TorChip({ tab }: { tab: TabInfo | null }) {
     <div ref={wrap} className="np-torchip-wrap">
       <button
         type="button"
-        className="np-torchip"
+        className="np-torchip np-hit"
+        data-open={open}
         data-mode={status.mode}
         data-failed={status.mode === 'tor' && status.tor.state === 'failed'}
         data-without={without}
@@ -38,7 +39,7 @@ export function TorChip({ tab }: { tab: TabInfo | null }) {
         aria-label={t('privacy.tor.chipLabel', { status: `${label} · ${torStateLabel(t, status)}` })}
         onClick={() => setOpen((o) => !o)}
       >
-        <span className={status.tor.state === 'bootstrapping' ? 'np-tor-dot np-pulse' : 'np-tor-dot'} aria-hidden="true" />
+        <span className={status.mode === 'tor' && status.tor.state !== 'failed' && status.tor.state !== 'off' ? 'np-tor-dot np-pulse' : 'np-tor-dot'} aria-hidden="true" />
         {label}
       </button>
       {open ? <TorPopup tabId={tab?.id ?? null} onClose={close} /> : null}

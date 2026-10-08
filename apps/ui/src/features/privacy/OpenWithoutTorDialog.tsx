@@ -37,11 +37,11 @@ export function OpenWithoutTorDialog() {
     <div className="np-dialog-scrim">
       <div ref={dialogRef} role="alertdialog" aria-modal="true" aria-labelledby={titleId} aria-describedby={bodyId} className="np-dialog np-pop">
         <h2 id={titleId}>{t('privacy.withoutTor.title')}</h2>
-        <p id={bodyId}>{t('privacy.withoutTor.body')}</p>
+        <p id={bodyId} className="np-notice np-notice--warn">{t('privacy.withoutTor.body')}</p>
         <div className="np-dialog-actions">
           <Button ref={cancelRef} onClick={cancelOpenWithoutTor}>{t('common.cancel')}</Button>
           <Button
-            variant="danger"
+            className="np-btn-warn"
             onClick={async () => {
               cancelOpenWithoutTor();
               applyStatus(await commands.tabWithoutTor(tabId));

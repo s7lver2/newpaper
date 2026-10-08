@@ -128,7 +128,11 @@
       "more": "Weitere Optionen",
       "enable": "Tor einschalten",
       "directNote": "Direkte Verbindung: Medien sehen deine echte IP. Das Blockieren bleibt aktiv.",
-      "reducesAnonymity": "Ein festes Land verringert die Anonymität"
+      "reducesAnonymity": "Ein festes Land verringert die Anonymität",
+      "flyHere": "Du gehst hier bereits hinaus",
+      "building": "Neuer Kanal wird aufgebaut…",
+      "statusExit": "Ausgang über {country}",
+      "statusExitAuto": "Ausgang über ein beliebiges Land"
     },
     "withoutTor": {
       "title": "Diesen Tab ohne Tor öffnen?",
@@ -140,16 +144,20 @@
       "connection": "Verbindung",
       "restartNote": "Ein Wechsel von Modus oder Land startet die Web-Engine neu (etwa 2 s). Tabs werden neu geladen.",
       "modeDirect": "Direkt",
-      "modeDirectDesc": "Ohne Zwischenstation. Schnell, aber Medien sehen deine IP.",
+      "modeDirectDesc": "Schnell, IP sichtbar",
       "modeTor": "Tor",
-      "modeTorDesc": "Dein Verkehr verlässt das Tor-Netz in dem Land, das du wählst.",
+      "modeTorDesc": "Anonym, du wählst das Land",
       "modeWireguard": "WireGuard",
-      "modeWireguardDesc": "Ein .conf-Profil deines Anbieters importieren. Kommt in einer späteren Phase.",
+      "modeWireguardDesc": "VPN deines Anbieters · bald verfügbar",
       "exitCountry": "Ausgangsland",
       "routing": "Was über Tor läuft",
       "feedsViaTor": "RSS-Feeds über Tor laden",
       "aiViaTor": "KI-Anfragen über Tor senden",
-      "aiViaTorHint": "Langsamer. Lokale Modelle laufen nie über Tor."
+      "aiViaTorHint": "Langsamer. Lokale Modelle laufen nie über Tor.",
+      "exitHint": "Tippe auf einen Punkt. Ein festes Land verringert die Anonymität.",
+      "zoom": "Kartenzoom",
+      "zoomWorld": "Welt",
+      "zoomEurope": "Europa"
     },
     "blocking": {
       "title": "Blockieren",

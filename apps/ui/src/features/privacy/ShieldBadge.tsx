@@ -7,8 +7,8 @@ import { openInternal } from '../../shell/navigate';
 import { useBlockedCount, useTodayBlocked } from './usePrivacy';
 
 const ShieldIcon = () => (
-  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-    <path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z" />
+  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" aria-hidden="true">
+    <path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6l8-3z" />
   </svg>
 );
 
@@ -40,7 +40,7 @@ export function ShieldBadge({ tab }: { tab: TabInfo | null }) {
     <div ref={wrap} className="np-shield">
       <button
         type="button"
-        className="np-shield-btn"
+        className="np-shield-btn np-hit"
         aria-label={t('privacy.shield.label', { count })}
         aria-expanded={open}
         aria-controls={panelId}
@@ -50,7 +50,7 @@ export function ShieldBadge({ tab }: { tab: TabInfo | null }) {
         <span className="np-shield-count np-mono" aria-hidden="true">{formatNumber(count, { useGrouping: false })}</span>
       </button>
       {open ? (
-        <div id={panelId} role="dialog" aria-label={t('privacy.shield.title')} className="np-popover np-pop">
+        <div id={panelId} role="dialog" aria-label={t('privacy.shield.title')} className="np-popover">
           <dl className="np-shield-stats">
             <div><dt>{t('privacy.shield.page')}</dt><dd className="np-mono">{formatNumber(count, { useGrouping: false })}</dd></div>
             <div><dt>{t('privacy.shield.today')}</dt><dd className="np-mono">{formatNumber(today, { useGrouping: false })}</dd></div>

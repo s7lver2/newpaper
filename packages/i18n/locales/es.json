@@ -128,7 +128,11 @@
       "more": "Más opciones",
       "enable": "Activar Tor",
       "directNote": "Conexión directa: los medios ven tu IP real. El bloqueo sigue activo.",
-      "reducesAnonymity": "Fijar un país reduce el anonimato"
+      "reducesAnonymity": "Fijar un país reduce el anonimato",
+      "flyHere": "Ya sales por aquí",
+      "building": "Construyendo un circuito nuevo…",
+      "statusExit": "Saliendo por {country}",
+      "statusExitAuto": "Saliendo por cualquier país"
     },
     "withoutTor": {
       "title": "¿Abrir esta pestaña sin Tor?",
@@ -140,16 +144,20 @@
       "connection": "Conexión",
       "restartNote": "Cambiar de modo o de país reinicia el motor web (unos 2 s). Las pestañas se recargan.",
       "modeDirect": "Directo",
-      "modeDirectDesc": "Sin intermediarios. Rápido, pero los medios ven tu IP.",
+      "modeDirectDesc": "Rápido, IP visible",
       "modeTor": "Tor",
-      "modeTorDesc": "Tu tráfico sale por la red Tor desde el país que elijas.",
+      "modeTorDesc": "Anónimo, eliges país",
       "modeWireguard": "WireGuard",
-      "modeWireguardDesc": "Importar un perfil .conf de tu proveedor. Llegará en una fase posterior.",
+      "modeWireguardDesc": "VPN de tu proveedor · próximamente",
       "exitCountry": "País de salida",
       "routing": "Qué pasa por Tor",
       "feedsViaTor": "Descargar las fuentes RSS por Tor",
       "aiViaTor": "Enviar las peticiones de IA por Tor",
-      "aiViaTorHint": "Más lento. Los modelos locales nunca pasan por Tor."
+      "aiViaTorHint": "Más lento. Los modelos locales nunca pasan por Tor.",
+      "exitHint": "Pulsa un punto. Fijar país reduce el anonimato.",
+      "zoom": "Zoom del mapa",
+      "zoomWorld": "Mundo",
+      "zoomEurope": "Europa"
     },
     "blocking": {
       "title": "Bloqueo",

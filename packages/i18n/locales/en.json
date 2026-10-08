@@ -128,7 +128,11 @@
       "more": "More options",
       "enable": "Turn on Tor",
       "directNote": "Direct connection: outlets see your real IP. Blocking stays on.",
-      "reducesAnonymity": "Pinning a country reduces anonymity"
+      "reducesAnonymity": "Pinning a country reduces anonymity",
+      "flyHere": "You already exit here",
+      "building": "Building a new circuit…",
+      "statusExit": "Exiting via {country}",
+      "statusExitAuto": "Exiting via any country"
     },
     "withoutTor": {
       "title": "Open this tab without Tor?",
@@ -140,16 +144,20 @@
       "connection": "Connection",
       "restartNote": "Changing mode or country restarts the web engine (about 2 s). Tabs reload.",
       "modeDirect": "Direct",
-      "modeDirectDesc": "No intermediaries. Fast, but outlets see your IP.",
+      "modeDirectDesc": "Fast, IP visible",
       "modeTor": "Tor",
-      "modeTorDesc": "Your traffic leaves through the Tor network from the country you choose.",
+      "modeTorDesc": "Anonymous, you pick the country",
       "modeWireguard": "WireGuard",
-      "modeWireguardDesc": "Import a .conf profile from your provider. Coming in a later phase.",
+      "modeWireguardDesc": "Your provider’s VPN · coming soon",
       "exitCountry": "Exit country",
       "routing": "What goes through Tor",
       "feedsViaTor": "Download RSS feeds through Tor",
       "aiViaTor": "Send AI requests through Tor",
-      "aiViaTorHint": "Slower. Local models never go through Tor."
+      "aiViaTorHint": "Slower. Local models never go through Tor.",
+      "exitHint": "Press a dot. Pinning a country reduces anonymity.",
+      "zoom": "Map zoom",
+      "zoomWorld": "World",
+      "zoomEurope": "Europe"
     },
     "blocking": {
       "title": "Blocking",

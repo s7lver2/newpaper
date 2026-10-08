@@ -3,6 +3,7 @@ import { Button, Switch } from '@newpaper/ui-kit';
 import { useEffect, useState } from 'react';
 import { commands } from '../../ipc/commands';
 import type { AdblockStatus, ListCategory } from '../../ipc/types';
+import { useTodayBlocked } from './usePrivacy';
 
 const CATEGORY_KEY: Record<ListCategory, string> = {
   ads: 'privacy.blocking.categoryAds',
@@ -12,7 +13,8 @@ const CATEGORY_KEY: Record<ListCategory, string> = {
 };
 
 export function BlockingSection() {
-  const { t, formatDate } = useI18n();
+  const { t, formatDate, formatNumber } = useI18n();
+  const today = useTodayBlocked();
   const [status, setStatus] = useState<AdblockStatus | null>(null);
   const [report, setReport] = useState<string>('');
   const [busy, setBusy] = useState(false);
@@ -26,9 +28,17 @@ export function BlockingSection() {
   return (
     <section className="np-settings-section" aria-labelledby="np-set-blocking">
       <h2 id="np-set-blocking" className="np-settings-h2">{t('privacy.blocking.title')}</h2>
-      <Switch label={t('privacy.blocking.enabled')} checked={status.enabled} onChange={async (v) => setStatus(await commands.adblockSetEnabled(v))} />
+      <div className="np-stats">
+        <div className="np-stat">
+          <span className="np-stat-label">{t('privacy.shield.today')}</span>
+          <span className="np-stat-value">{formatNumber(today, { useGrouping: false })}</span>
+        </div>
+      </div>
+      <div className="np-settings-card np-switch-card">
+        <Switch label={t('privacy.blocking.enabled')} checked={status.enabled} onChange={async (v) => setStatus(await commands.adblockSetEnabled(v))} />
+      </div>
       <h3 className="np-settings-label">{t('privacy.blocking.lists')}</h3>
-      <div>
+      <div className="np-settings-card np-list-card">
         {status.lists.map((l) => (
           <div key={l.id} className="np-list-row">
             <Switch label={l.name} checked={l.enabled} onChange={async (v) => setStatus(await commands.adblockSetList(l.id, v))} />

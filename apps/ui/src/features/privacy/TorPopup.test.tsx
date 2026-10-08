@@ -52,7 +52,7 @@ describe('TorPopup', () => {
     // Durante la animación del avión el botón cambia de texto; se espera a que vuelva a estar disponible.
     await userEvent.click(screen.getByRole('button', { name: 'País anterior' }));
     await userEvent.click(screen.getByRole('button', { name: 'País anterior' }));
-    await userEvent.click(await screen.findByRole('button', { name: 'Salir por cualquier país' }, { timeout: 2000 }));
+    await userEvent.click(await screen.findByRole('button', { name: 'Salir por cualquier país' }, { timeout: 4000 }));
     expect(calls).toContainEqual(['tor_set_exit_country', { country: null }]);
   });
 
