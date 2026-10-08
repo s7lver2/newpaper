@@ -19,3 +19,7 @@
 .np-main { position: relative; min-height: 0; }
 .np-content-slot { position: absolute; inset: 0; pointer-events: none; }
 .np-surface { position: absolute; inset: 0; overflow: auto; background: var(--np-paper); }
+
+.np-reader-actions { position: sticky; top: 0; display: flex; justify-content: flex-end; padding: 10px 16px; background: linear-gradient(var(--np-paper), transparent); }
+.np-fallback { max-width: 560px; margin: 12vh auto 0; padding: 0 24px; display: grid; gap: 14px; justify-items: start; }
+.np-fallback-title { font: 600 30px/1.2 var(--np-font-read); margin: 0; }
