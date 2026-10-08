@@ -46,7 +46,7 @@ describe('SegmentedControl', () => {
         <SegmentedControl
           label="Mode"
           value={v}
-          onChange={setV}
+          onChange={(next) => setV(next as 'a' | 'b' | 'c')}
           options={[
             { value: 'a', label: 'A' },
             { value: 'b', label: 'B' },
@@ -71,7 +71,7 @@ describe('Tabs', () => {
   it('implements the WAI-ARIA tabs pattern', async () => {
     function Host() {
       const [t, setT] = useState<'x' | 'y'>('x');
-      return <Tabs label="Panel" idPrefix="p" tabs={[{ id: 'x', label: 'X' }, { id: 'y', label: 'Y', badge: '3' }]} active={t} onChange={setT} />;
+      return <Tabs label="Panel" idPrefix="p" tabs={[{ id: 'x', label: 'X' }, { id: 'y', label: 'Y', badge: '3' }]} active={t} onChange={(next) => setT(next as 'x' | 'y')} />;
     }
     render(<Host />);
     const x = screen.getByRole('tab', { name: 'X' });

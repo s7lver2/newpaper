@@ -1,0 +1,12 @@
+.np-reader { max-width: 680px; margin: 0 auto; padding: 48px 24px 96px; color: var(--np-ink); }
+.np-reader-title { font: 600 38px/1.15 var(--np-font-read); letter-spacing: -0.01em; margin: 0 0 14px; text-wrap: balance; }
+.np-reader-meta { font: 400 12.5px/1.5 var(--np-font-mono); color: var(--np-muted); display: flex; gap: 10px; flex-wrap: wrap; }
+.np-reader-body { margin-top: 28px; font: 400 19px/1.65 var(--np-font-read); }
+.np-reader-body p { margin: 0 0 1.1em; }
+.np-reader-body h2, .np-reader-body h3 { font-family: var(--np-font-read); font-weight: 600; margin: 1.6em 0 .6em; }
+.np-reader-body a { color: var(--np-accent); text-underline-offset: 3px; }
+.np-reader-body img { max-width: 100%; height: auto; border-radius: 10px; }
+.np-reader-body figcaption { font: 400 13px/1.4 var(--np-font-ui); color: var(--np-muted); margin-top: 6px; }
+.np-reader-body blockquote { margin: 1.2em 0; padding-left: 18px; border-left: 3px solid var(--np-line3); color: var(--np-ink2); font-style: italic; }
+.np-reader-body table { border-collapse: collapse; font: 400 14px/1.4 var(--np-font-ui); }
+.np-reader-body td, .np-reader-body th { border-bottom: 1px solid var(--np-line); padding: 6px 10px; }

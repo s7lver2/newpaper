@@ -13,6 +13,9 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 | 5 | `src/test/setup.ts` usa `window` y `Element` al cargar, y falla en entorno `node` | Preparación de DOM envuelta en `if (typeof window !== 'undefined')` | 75b455a |
 | 7 | `extract.test.ts` leía las fixtures con `readFileSync(new URL(..., import.meta.url))` bajo `jsdom` (necesario para `DOMParser`): mismo fallo de URL no `file:` | Las fixtures se importan con `?raw` de Vite; el tsconfig del paquete añade `"vite/client"` a `types` | — |
 | 8 | `message.test.ts` y el test de `dist/content.js` usaban `readFileSync(new URL(..., import.meta.url))` bajo `jsdom` | Fixture con `?raw`; el bundle se lee con `import.meta.glob` (no falla si `dist/` aún no existe) |  — |
+| 5 | `packages/ui-kit/tsconfig.json` no incluye los tipos de Node, y `tokens.test.ts` usa `node:fs` | `"types": ["vitest/globals", "node"]` en el tsconfig de ui-kit | — |
+| 6 | `components.test.tsx` pasaba el setter de `useState` a `onChange(v: string)`: no compila en typecheck | Callback con cast al tipo de la unión (`(next) => setV(next as "a" | "b" | "c")`) | — |
+| 9 | El paso 5 decía “3 ficheros” de test; con `tokens.test.ts` separado son 4 | Corregido el texto a 4 ficheros (16 tests, sin cambio) | — |
 
 ## Pendiente
 
