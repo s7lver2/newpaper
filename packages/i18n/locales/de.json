@@ -186,8 +186,101 @@
       "deleteAction": "Löschen"
     },
     "ai": {
-      "title": "KI",
-      "description": "Anbieter, Modell für jeden Schritt und Ausgaben"
+      "title": "Künstliche Intelligenz",
+      "description": "Anbieter, Modell für jeden Schritt und Ausgaben",
+      "lead": "Verbinde Anbieter und baue deine Analyse-Pipeline. Schlüssel werden verschlüsselt im Windows-Anmeldeinformationsspeicher abgelegt.",
+      "startPoint": "Ausgangspunkt",
+      "perNews": "{cost} pro Nachricht",
+      "providers": "Anbieter",
+      "providersCount": "{total} kompatibel · {active} aktiv",
+      "filterLabel": "Anbieter filtern",
+      "filter": {
+        "all": "Alle",
+        "on": "Aktiv",
+        "cloud": "Cloud",
+        "local": "Lokal"
+      },
+      "detected": "Erkannt",
+      "connected": "Verbunden",
+      "notDetected": "Nicht erkannt",
+      "addKey": "Schlüssel hinzufügen",
+      "activate": "{name} aktivieren",
+      "localAuto": "Lokale Modelle werden automatisch genutzt, sobald sie laufen",
+      "apiKey": "API-Schlüssel",
+      "address": "Adresse",
+      "models": "Verfügbare Modelle",
+      "kindLocal": "Läuft auf deinem Rechner · kostenlos · sendet keine Daten",
+      "noLocalModels": "Es ist kein Modell geladen: Öffne die Anwendung und lade eines herunter.",
+      "noModels": "Gib die Modelle deines Endpunkts ein, um sie nutzen zu können.",
+      "close": "Schließen",
+      "needKey": "Füge zuerst deinen API-Schlüssel ein.",
+      "testOk": "Verbunden · {ms} ms",
+      "pipeline": "Analyse-Pipeline",
+      "pipelineHint": "Klicke einen Schritt, um ihn zu konfigurieren",
+      "step": {
+        "extract": "Artikel extrahieren",
+        "claims": "Aussagen erkennen",
+        "search": "Berichterstattung suchen",
+        "verify": "Daten prüfen",
+        "score": "Neutralität bewerten",
+        "synthesis": "Synthese, Tabellen und Grafiken",
+        "aiDetect": "KI-generierten Text erkennen",
+        "agent": "Agent"
+      },
+      "stepDesc": {
+        "extract": "Holt den sauberen Text aus der Seite, ohne Werbung und Menüs.",
+        "claims": "Trennt Fakten, Zahlen und Meinungen, um zu wissen, was zu prüfen ist.",
+        "search": "Findet denselben Sachverhalt in den anderen Medien deiner Liste und im Web.",
+        "verify": "Gleicht jede Zahl und Aussage mit Primärquellen ab.",
+        "score": "Misst wertende Sprache, Ausgewogenheit der Stimmen und Auslassungen.",
+        "synthesis": "Verfasst die saubere Nachricht und wählt, was visualisiert wird.",
+        "aiDetect": "Sucht nach statistischen Hinweisen auf generierten Text.",
+        "agent": "Beantwortet deine Fragen mit Quellenangaben. Wird pro Frage berechnet."
+      },
+      "stepFixed": {
+        "extract": "Readability · ohne KI",
+        "search": "RSS-Index + Ersatzsuche"
+      },
+      "stepNote": {
+        "extract": "Dieser Schritt nutzt keine KI: Readability übernimmt ihn, die Engine hinter dem Lesemodus von Firefox. Immer auf deinem Rechner.",
+        "search": "Dieser Schritt nutzt kein Modell: Er durchsucht deinen lokalen RSS-Index und bei Bedarf die Ersatzsuche. Einstellbar unter Quellen."
+      },
+      "off": "Deaktiviert",
+      "unassigned": "Nicht zugewiesen",
+      "where": {
+        "off": "aus"
+      },
+      "stepOf": "Schritt {n} von {total}",
+      "activateStep": "Diesen Schritt aktivieren",
+      "activateStepAria": "Schritt aktivieren",
+      "provider": "Anbieter",
+      "model": "Modell",
+      "creativity": "Kreativität",
+      "temp": {
+        "precise": "präzise",
+        "balanced": "ausgewogen",
+        "creative": "kreativ"
+      },
+      "noTemperature": "Dieses Modell erlaubt keine Anpassung der Kreativität.",
+      "fallbackTo": "Bei Fehlern wechselt es zu",
+      "noFallback": "Kein Ersatzmodell",
+      "sum": {
+        "cost": "Kosten pro Nachricht",
+        "time": "Geschätzte Zeit",
+        "local": "Schritte auf deinem Rechner",
+        "withLimit": "Mit {limit} im Monat",
+        "noLimit": "Ohne Monatslimit"
+      },
+      "of": "von",
+      "unlimited": "unbegrenzt",
+      "newsUnit": "Nachrichten",
+      "summary": "Pipeline mit 8 Schritten",
+      "summaryNone": "Kein Anbieter",
+      "emptyTitle": "Verbinde einen Anbieter",
+      "emptyText": "Ohne verbundenen Anbieter gibt es keine Modelle für die einzelnen Schritte. Einer reicht zum Start; ein Assistent führt dich in drei Schritten.",
+      "budgetLabel": "Monatliches Ausgabenlimit",
+      "noLimit": "Kein Limit",
+      "budgetNote": "Beim Erreichen des Limits wechselt die vollständige Analyse zu lokalen Modellen. 0 schaltet das Limit aus."
     },
     "analysis": {
       "title": "Analyse",
@@ -198,7 +291,24 @@
       "autoFullHint": "Nutzt deine Anbieter bei jedem geöffneten Artikel. Kann Geld kosten.",
       "detector": "Erkennung KI-generierter Texte",
       "detectorHint": "Zeigt einen Hinweis pro Absatz. Niemals ein Beweis.",
-      "language": "Analysen werden in der Sprache der Oberfläche geschrieben; Zitate bleiben in ihrer Originalsprache."
+      "language": "Analysen werden in der Sprache der Oberfläche geschrieben; Zitate bleiben in ihrer Originalsprache.",
+      "lead": "Wann eine Nachricht analysiert wird und wie tief.",
+      "when": "Wann analysiert wird",
+      "trigger": {
+        "auto": "Automatisch",
+        "demand": "Auf Abruf",
+        "tiered": "Gestaffelt"
+      },
+      "triggerDesc": {
+        "auto": "Vollständige Analyse beim Öffnen jeder Nachricht",
+        "demand": "Nur bei Klick auf Analyse oder Strg+Umschalt+A",
+        "tiered": "Schnell und lokal beim Öffnen, vollständig auf Klick"
+      },
+      "triggerCost": {
+        "auto": "Nutzt deine Anbieter bei jeder Nachricht",
+        "demand": "nur auf Anfrage",
+        "tiered": "schnell kostenlos · vollständig auf Abruf"
+      }
     }
   },
   "privacy": {
@@ -891,8 +1001,8 @@
       "advanced": "Erweitert"
     },
     "pitch": {
-      "openai": "Der bekannteste. Schnell und in fast allem gut.",
-      "nous": "Offene Hermes-Modelle ohne Stilfilter."
+      "openai": "Der einfachste Einstieg",
+      "nous": "Offene Hermes-Modelle ohne redaktionelle Zensur"
     },
     "connect": "{name} verbinden",
     "pasteKey": "Hast du schon einen Schlüssel? Hier einfügen",
@@ -918,10 +1028,12 @@
     "testing": "Wird getestet…",
     "testOk": "Verbunden in {ms} ms",
     "testFail": "Hat nicht funktioniert: {message}",
-    "doneTitle": "{name} ist bereit",
-    "doneSub": "Bereit, mit dir Nachrichten zu lesen. Jedem Schritt wurde ein Modell zugewiesen.",
+    "doneTitle": "{name} ist verbunden",
+    "doneSub": "Jede Analyse kostet etwa {cost}. Die leichten Schritte bleiben auf deinem Rechner.",
     "where": {
-      "local": "Auf deinem Rechner"
+      "local": "Auf deinem Rechner",
+      "home": "dein Rechner",
+      "cloud": "Cloud"
     },
     "priceUnknown": "Preis unbekannt",
     "estimate": "Geschätzte Kosten pro Analyse: {total}",
@@ -954,7 +1066,144 @@
     "budget": "Ausgaben",
     "limit": "Monatslimit (USD)",
     "limitHint": "Ist das Limit erreicht, läuft die Analyse mit lokalen Modellen. Leer lassen für kein Limit.",
-    "spent": "Diesen Monat ausgegeben: {amount}"
+    "spent": "Diesen Monat ausgegeben: {amount}",
+    "free": "kostenlos",
+    "close": "Assistent schließen",
+    "steps": {
+      "label": "Schritte",
+      "choose": "Wählen",
+      "chooseSub": "Anbieter oder Schlüssel",
+      "key": "Schlüssel",
+      "keySub": "Einfügen, fertig",
+      "test": "Test",
+      "testSub": "Verbindung und Modelle"
+    },
+    "tag": {
+      "recommended": "Empfohlen"
+    },
+    "desc": {
+      "openai": "Die Modelle von OpenAI mit deinem eigenen Schlüssel. Du zahlst nur, was du nutzt: Eine Analyse kostet Cent-Beträge.",
+      "nous": "Offene Gewichte, die jeder prüfen kann, bereitgestellt über Nous Portal mit einer OpenAI-kompatiblen API."
+    },
+    "isOf": "Gehört zu",
+    "pill": {
+      "detected": "erkannt"
+    },
+    "sub": {
+      "openai": "OpenAI",
+      "nous": "Hermes, offene Gewichte",
+      "anthropic": "Claude",
+      "google": "Google",
+      "deepseek": "V3 und R1",
+      "xai": "Grok",
+      "mistral": "Large und Small",
+      "nvidia": "build.nvidia.com",
+      "perplexity": "Sonar, mit Suche",
+      "openrouter": "Hunderte Modelle",
+      "groq": "Ultraschnell",
+      "huggingface": "Offene Modelle",
+      "ollama": "Öffnen, damit es erkannt wird",
+      "lmstudio": "Öffnen, damit es erkannt wird"
+    },
+    "subCfg": {
+      "anthropic": "Claude",
+      "openai": "GPT",
+      "google": "Gemini",
+      "nous": "Hermes, offene Gewichte",
+      "deepseek": "V3 und R1",
+      "xai": "Grok",
+      "mistral": "Large und Small",
+      "nvidia": "build.nvidia.com",
+      "perplexity": "Sonar, mit Suche",
+      "openrouter": "Hunderte Modelle",
+      "groq": "Ultraschnelle Inferenz",
+      "huggingface": "Offene Modelle",
+      "ollama": "Auf deinem Rechner",
+      "lmstudio": "Auf deinem Rechner",
+      "custom": "Beliebiger Endpunkt"
+    },
+    "keyOf": "Füge deinen {name}-Schlüssel ein",
+    "keyOptional": "Schlüssel (optional)",
+    "pasteHere": "Schlüssel hier einfügen",
+    "keySaved": "•••••••••••••••• gespeichert",
+    "kind": {
+      "cloud": "In der Cloud · du zahlst nach Nutzung mit deinem eigenen Schlüssel",
+      "custom": "Jeder Server, der die OpenAI-API spricht"
+    },
+    "kb": {
+      "start": "Beginnt mit",
+      "isKeyOf": ": Das ist ein {name}-Schlüssel"
+    },
+    "unknownPrefixHere": "Wir erkennen das Präfix nicht. Wenn der Schlüssel von {name} ist, mach weiter: Wir prüfen es im Test.",
+    "noKeyTitle": "Noch keinen Schlüssel?",
+    "siteCustom": "Die Dokumentation deines Servers",
+    "opened": "In einem neuen Tab geöffnet. Komm zurück, wenn du ihn hast.",
+    "how": {
+      "1": "Melde dich bei {site} an oder erstelle ein Konto.",
+      "2": "Öffne {section} und klicke auf „{button}“.",
+      "3": "Kopiere den Schlüssel und füge ihn hier ein. Er wird nur einmal angezeigt."
+    },
+    "howCustom": {
+      "1": "Kopiere die Basisadresse deines Servers: Sie endet meist auf /v1.",
+      "2": "Wenn er einen Schlüssel verlangt, füge ihn unten ein; sonst lass das Feld leer.",
+      "3": "Klicke auf „Verbindung testen“, fertig."
+    },
+    "tip": {
+      "openai": "Die API wird getrennt von ChatGPT Plus abgerechnet: Lade unter Billing Guthaben auf, ab 5 $.",
+      "google": "Es gibt ein kostenloses Kontingent mit Tageslimits: genug zum Ausprobieren."
+    },
+    "chk": {
+      "connect": "Mit dem Server verbinden",
+      "connectOk": "Antwortet in {ms} ms",
+      "models": "Modelle auflisten",
+      "modelsOk": "{n, plural, one {# Modell verfügbar} other {# Modelle verfügbar}}",
+      "reply": "Antworttest",
+      "replyOk": "Korrekte Antwort in {s} s",
+      "replyText": "Bereit, mit dir Nachrichten zu lesen."
+    },
+    "testingTitle": "{name} wird getestet…",
+    "works": "{name} funktioniert",
+    "failTitle": "{name} antwortet nicht",
+    "failEyebrow": "Verbindung fehlgeschlagen",
+    "failLocal": "{name} läuft nicht oder hat kein Modell geladen. Öffne es und versuche es erneut.",
+    "failCloud": "Prüfe, ob der {name}-Schlüssel stimmt und Guthaben hat; du kannst zurückgehen und ihn ändern.",
+    "retry": "Erneut versuchen",
+    "assigning": "Modelle werden zugewiesen…",
+    "assignedAuto": "Automatisch zugewiesen",
+    "plain": {
+      "local": "Alles läuft auf deinem Rechner mit {big}. Kostenlos, nichts verlässt ihn.",
+      "mixed": "Prüfen und Verfassen der Synthese nutzen {big}; die leichten Schritte dein lokales Modell.",
+      "cloud": "Die gesamte Analyse nutzt {big} in der Cloud. Verbinde ein lokales Modell, wenn die leichten Schritte auf deinem Rechner bleiben sollen."
+    },
+    "task": {
+      "extract": "Extraktion",
+      "claims": "Aussagen",
+      "verify": "Prüfung",
+      "score": "Neutralität",
+      "synthesis": "Synthese",
+      "agent": "Agent",
+      "noAi": "Readability · ohne KI"
+    },
+    "perQuestion": "{cost} /Frage",
+    "estimateLabel": "Geschätzte Kosten pro Analyse",
+    "agentApart": "Agent separat, {cost} pro Frage",
+    "limitLine": "Monatslimit: {limit} (in den Einstellungen änderbar)",
+    "noLimitLine": "Kein Monatslimit (in den Einstellungen festlegbar)",
+    "advanced": "Erweiterte Optionen",
+    "advancedBody": "Du kannst das Modell jedes Schritts, die Kreativität, das Ersatzmodell und die Voreinstellungen ändern.",
+    "advancedLink": "Pipeline-Konfigurator öffnen",
+    "doneSubLocal": "Du analysierst Nachrichten kostenlos, ohne dass etwas deinen Rechner verlässt.",
+    "closedTitle": "Assistent geschlossen",
+    "closedSub": "Es wurde nichts gespeichert. Du kannst jederzeit neu beginnen.",
+    "backToSettings": "Zurück zu den Einstellungen",
+    "presetDesc": {
+      "privacy": "Alles auf deinem Rechner. Nichts geht ins Internet.",
+      "balanced": "Günstige Cloud für Leichtes, eine gute zum Prüfen.",
+      "quality": "Die besten Modelle in jedem Schritt.",
+      "cheap": "Schnelle, günstige Modelle."
+    },
+    "spentShort": "Diesen Monat ausgegeben: {amount}.",
+    "failCustom": "Prüfe Adresse, Modelle und Schlüssel deines Endpunkts und ob der Server läuft; du kannst zurückgehen und sie ändern."
   },
   "history": {
     "title": "Verlauf",

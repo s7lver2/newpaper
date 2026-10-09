@@ -9,6 +9,6 @@ import { SourcesSection } from './SourcesSection';
 
 registerToolbarItem({ id: 'save', order: 5, Component: SaveButton });
 registerInternalPage('edicion', EditionPage);
-registerSettingsSection({ id: 'fuentes', order: 40, titleKey: 'sources.settings.title', glyph: '☰', Summary: SourcesSummary, Component: SourcesSection });
+registerSettingsSection({ id: 'fuentes', order: 16, titleKey: 'sources.settings.title', glyph: '☰', Summary: SourcesSummary, Component: SourcesSection });
 registerSettingsSection({ id: 'sin-conexion', order: 50, titleKey: 'sources.offline.title', glyph: '◔', Summary: OfflineSummary, Component: OfflineSection });
 registerOverlay({ id: 'offline-builder', Component: OfflineBuilder });

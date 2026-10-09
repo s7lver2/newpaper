@@ -1,115 +1,134 @@
 import { useI18n } from '@newpaper/i18n/react';
-import { autoAssign, describeAssignment, PRESETS, type Assignments, type Registry, type StageId } from '@newpaper/pipeline';
-import { Button, SegmentedControl } from '@newpaper/ui-kit';
-import { useEffect, useState } from 'react';
+import { autoAssign, PRESETS, type Assignments, type PresetId, type Registry } from '@newpaper/pipeline';
+import { useEffect, useRef, useState } from 'react';
 import { commands } from '../../ipc/commands';
-import type { MonthUsage } from '../../ipc/types';
+import type { LocalProbe, MonthUsage } from '../../ipc/types';
 import { parseInternalUrl } from '../../shell/internalUrl';
 import { openInternal } from '../../shell/navigate';
 import { useActiveTab } from '../../state/browser';
 import { getRegistry, useAiSettings } from '../ai/pipeline';
+import { AiPipeline, pipelineTotals } from './AiPipeline';
+import { AiProviders } from './AiProviders';
+import { money, useUsd } from './aiModel';
 import { ConnectWizard } from './ConnectWizard';
 
 export function AiSection() {
-  const { t, formatCurrency } = useI18n();
+  const { t } = useI18n();
+  const fmt = useUsd();
   const ai = useAiSettings();
   const tab = useActiveTab();
   const connecting = parseInternalUrl(tab?.url ?? '')?.path[1] === 'conectar';
   const [registry, setRegistry] = useState<Registry | null>(null);
   const [usage, setUsage] = useState<MonthUsage | null>(null);
-  const [local, setLocal] = useState<Record<string, string[]>>({});
+  const [probe, setProbe] = useState<LocalProbe>({ ollama: null, lmstudio: null });
 
   useEffect(() => {
     void getRegistry().then(setRegistry);
     void commands.usageMonth().then(setUsage).catch(() => {});
-    void commands.aiLocalProbe().then((p) => setLocal(Object.fromEntries(Object.entries(p).filter(([, v]) => v?.length)) as Record<string, string[]>)).catch(() => {});
+    void commands.aiLocalProbe().then(setProbe).catch(() => {});
   }, []);
 
   if (connecting) return <ConnectWizard onDone={() => void openInternal('ajustes', ['ia'])} />;
   if (!registry) return null;
-  const auto = autoAssign(registry, [...ai.connected, ...Object.keys(local)], ai.preset, local);
+
+  const localMap = Object.fromEntries(Object.entries(probe).filter(([, v]) => v?.length)) as Record<string, string[]>;
+  const available = [...new Set([...ai.connected, ...Object.keys(localMap)])];
   const manual = Object.keys(ai.assignments).length > 0;
-  const effective: Assignments = manual ? ai.assignments : auto;
-  const options = [...ai.connected, ...Object.keys(local)].flatMap((pid) => {
-    const p = registry.get(pid);
-    if (!p) return [];
-    const models = local[pid] ?? p.models.map((m) => m.id);
-    return models.map((m) => ({ value: `${pid}/${m}`, label: `${p.name} · ${registry.model(pid, m)?.name ?? m}` }));
-  });
-  const setStage = (stage: StageId, value: string) => {
-    const [provider, ...rest] = value.split('/');
-    void ai.setAssignments({ ...effective, [stage]: { provider: provider!, model: rest.join('/') } });
-  };
-  const disconnect = async (id: string) => {
-    await commands.secretDelete(`ai.${id}`);
-    await ai.setConnected(ai.connected.filter((x) => x !== id));
-  };
+  const effective: Assignments = manual ? ai.assignments : autoAssign(registry, available, ai.preset, localMap);
+  const free = t('providers.free');
 
   return (
-    <div className="np-ai-section">
-      <h3>{t('providers.connected')}</h3>
-      {ai.connected.length === 0 && Object.keys(local).length === 0 ? (
-        <div className="np-wizard-detected">
-          <p className="np-muted">{t('providers.noneConnected')}</p>
-          <p>{t('providers.subtitle')}</p>
+    <section className="np-aip np-stagger" aria-labelledby="np-set-ai">
+      <div>
+        <h2 id="np-set-ai" className="np-settings-h2">{t('settings.ai.title')}</h2>
+        <p className="np-settings-hint">{t('settings.ai.lead')}</p>
+      </div>
+
+      <div>
+        <div className="np-aip-eyebrow np-aip-caps np-aip-eyebrow--block">{t('settings.ai.startPoint')}</div>
+        <div className="np-aip-presets" role="radiogroup" aria-label={t('settings.ai.startPoint')}>
+          {PRESETS.map((p) => {
+            const on = ai.preset === p.id && !manual && available.length > 0;
+            const a = autoAssign(registry, available, p.id, localMap);
+            const tot = pipelineTotals(registry, a, ai.detector);
+            const meta = available.length === 0 ? '—' : t('settings.ai.perNews', { cost: `${money(tot.usd, fmt, free)}${tot.unknown ? '+' : ''}` });
+            return (
+              <button
+                key={p.id}
+                type="button"
+                role="radio"
+                aria-checked={on}
+                className="np-aip-preset np-lift"
+                onClick={() => {
+                  void ai.setPreset(p.id as PresetId).then(() => ai.setAssignments({}));
+                }}
+              >
+                <span className="np-aip-preset-name">{t(`providers.preset.${p.id}`)}</span>
+                <span className="np-aip-preset-desc">{t(`providers.presetDesc.${p.id}`)}</span>
+                <span className="np-aip-preset-meta">{meta}</span>
+              </button>
+            );
+          })}
         </div>
-      ) : null}
-      <ul className="np-ai-connected">
-        {ai.connected.map((id) => (
-          <li key={id}>
-            <span>{registry.get(id)?.name ?? id}</span>
-            <Button variant="quiet" onClick={() => void disconnect(id)}>{t('providers.disconnect')}</Button>
-          </li>
-        ))}
-        {Object.keys(local).map((id) => (
-          <li key={id}>
-            <span>{registry.get(id)?.name ?? id}</span>
-            <span className="np-tag np-tag--ok">{t('providers.detectedLocal', { n: local[id]!.length })}</span>
-          </li>
-        ))}
-      </ul>
-      <Button variant="primary" onClick={() => void openInternal('ajustes', ['ia', 'conectar'])}>{t('providers.connectOne')}</Button>
+      </div>
 
-      <h3>{t('providers.pipeline')}</h3>
-      <SegmentedControl label={t('providers.preset.label')} value={ai.preset} onChange={(v) => void ai.setPreset(v)} options={PRESETS.map((p) => ({ value: p.id, label: t(`providers.preset.${p.id}`) }))} />
-      <p className="np-muted">{t(`providers.presetHint.${ai.preset}`)}</p>
-      <table className="np-table">
-        <thead>
-          <tr>
-            <th scope="col">{t('providers.stage')}</th>
-            <th scope="col">{t('providers.model')}</th>
-          </tr>
-        </thead>
-        <tbody>
-          {describeAssignment(registry, effective).map((r) => (
-            <tr key={r.stage}>
-              <td>{t(`analysis.stage.${r.stage}`)}</td>
-              <td>
-                <select aria-label={t('providers.modelFor', { stage: t(`analysis.stage.${r.stage}`) })} value={`${effective[r.stage]!.provider}/${effective[r.stage]!.model}`} onChange={(e) => setStage(r.stage, e.target.value)}>
-                  {options.map((o) => (
-                    <option key={o.value} value={o.value}>{o.label}</option>
-                  ))}
-                </select>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-      {manual ? <Button variant="quiet" onClick={() => void ai.setAssignments({})}>{t('providers.backToAuto')}</Button> : <p className="np-muted">{t('providers.auto')}</p>}
+      <AiProviders registry={registry} ai={ai} localMap={localMap} />
 
-      <h3>{t('providers.budget')}</h3>
-      <label className="np-field">
-        <span>{t('providers.limit')}</span>
-        <input
-          type="number"
-          min={0}
-          step={1}
-          value={ai.monthlyLimitUsd ?? ''}
-          onChange={(e) => void ai.setMonthlyLimitUsd(e.target.value === '' ? null : Math.max(0, Number(e.target.value)))}
-        />
-        <span className="np-muted">{t('providers.limitHint')}</span>
-      </label>
-      {usage ? <p>{t('providers.spent', { amount: formatCurrency(usage.cost, 'USD') })}</p> : null}
+      {available.length === 0 ? (
+        <div className="np-aip-empty">
+          <div className="np-aip-empty-title">{t('settings.ai.emptyTitle')}</div>
+          <p className="np-aip-empty-text">{t('settings.ai.emptyText')}</p>
+          <button type="button" className="np-aip-empty-btn" onClick={() => void openInternal('ajustes', ['ia', 'conectar'])}>{t('providers.connectOne')}</button>
+        </div>
+      ) : (
+        <AiPipeline registry={registry} ai={ai} localMap={localMap} effective={effective} />
+      )}
+
+      <Budget limit={ai.monthlyLimitUsd} onChange={(v) => void ai.setMonthlyLimitUsd(v)} spent={usage ? fmt(usage.cost) : null} />
+    </section>
+  );
+}
+
+/** Límite de gasto mensual: 0 = sin límite. Se guarda tras una pausa para no escribir el ajuste en cada paso del deslizador. */
+function Budget({ limit, onChange, spent }: { limit: number | null; onChange(v: number | null): void; spent: string | null }) {
+  const { t } = useI18n();
+  const fmt = useUsd(true);
+  const [value, setValue] = useState(limit ?? 0);
+  const [bump, setBump] = useState(0);
+  const editing = useRef(false);
+  const timer = useRef<number | undefined>(undefined);
+  useEffect(() => {
+    if (!editing.current) setValue(limit ?? 0);
+  }, [limit]);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const change = (v: number) => {
+    editing.current = true;
+    setValue(v);
+    setBump((b) => b + 1);
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => {
+      editing.current = false;
+      onChange(v === 0 ? null : v);
+    }, 350);
+  };
+  return (
+    <div className="np-aip-budget">
+      <div className="np-aip-budget-head">
+        <label htmlFor="np-aip-budget">{t('settings.ai.budgetLabel')}</label>
+        <span className="np-aip-budget-value" key={bump} data-bump={bump % 2}>{value === 0 ? t('settings.ai.noLimit') : fmt(value)}</span>
+      </div>
+      <input
+        id="np-aip-budget"
+        className="np-aip-slider"
+        type="range"
+        min={0}
+        max={Math.max(50, Math.ceil(limit ?? 0))}
+        step={1}
+        value={value}
+        aria-valuetext={value === 0 ? t('settings.ai.noLimit') : fmt(value)}
+        onChange={(e) => change(Number(e.target.value))}
+      />
+      <div className="np-aip-budget-note">{t('settings.ai.budgetNote')}{spent ? ` ${t('providers.spentShort', { amount: spent })}` : ''}</div>
     </div>
   );
 }

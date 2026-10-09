@@ -43,4 +43,6 @@
 .np-theme-preview i:first-child { height: 8px; width: 70%; border-radius: 4px; opacity: 1; }
 .np-theme-preview i:last-child { width: 60%; }
 .np-settings--full { display: block; height: auto; min-height: 100%; }
-.np-settings--full .np-settings-body { max-width: 1040px; margin: 0 auto; padding: 24px 24px 64px; }
+/* Asistente de proveedores: main de 1040 px con 36/24/64 px de margen interior (Proveedores.dc.html) */
+.np-settings--full .np-settings-body { flex: none; max-width: 1088px; margin: 0 auto; padding: 36px 24px 64px; }
+.np-settings--full .np-settings-body > * { max-width: none; }

@@ -186,8 +186,101 @@
       "deleteAction": "Delete"
     },
     "ai": {
-      "title": "AI",
-      "description": "Providers, the model for each step and spending"
+      "title": "Artificial intelligence",
+      "description": "Providers, the model for each step and spending",
+      "lead": "Connect providers and build your analysis pipeline. Keys are stored encrypted in the Windows credential store.",
+      "startPoint": "Starting point",
+      "perNews": "{cost} per article",
+      "providers": "Providers",
+      "providersCount": "{total} supported · {active} active",
+      "filterLabel": "Filter providers",
+      "filter": {
+        "all": "All",
+        "on": "Active",
+        "cloud": "Cloud",
+        "local": "Local"
+      },
+      "detected": "Detected",
+      "connected": "Connected",
+      "notDetected": "Not detected",
+      "addKey": "Add key",
+      "activate": "Activate {name}",
+      "localAuto": "Local models are used automatically when they are running",
+      "apiKey": "API key",
+      "address": "Address",
+      "models": "Available models",
+      "kindLocal": "Runs on your computer · free · sends no data",
+      "noLocalModels": "No model is loaded: open the application and download one.",
+      "noModels": "Type your endpoint's models to be able to use them.",
+      "close": "Close",
+      "needKey": "Paste your API key first.",
+      "testOk": "Connected · {ms} ms",
+      "pipeline": "Analysis pipeline",
+      "pipelineHint": "Press a step to configure it",
+      "step": {
+        "extract": "Extract the article",
+        "claims": "Detect claims",
+        "search": "Find coverage",
+        "verify": "Verify facts",
+        "score": "Score neutrality",
+        "synthesis": "Synthesis, tables and charts",
+        "aiDetect": "Detect AI-written text",
+        "agent": "Agent"
+      },
+      "stepDesc": {
+        "extract": "Pulls the clean text out of the page, without ads or menus.",
+        "claims": "Separates facts, figures and opinions to know what to verify.",
+        "search": "Finds the same fact in the other outlets on your list and on the web.",
+        "verify": "Checks every figure and claim against primary sources.",
+        "score": "Measures loaded language, balance of voices and omissions.",
+        "synthesis": "Writes the clean article and chooses what to visualise.",
+        "aiDetect": "Looks for statistical signs of generated text.",
+        "agent": "Answers your questions citing sources. Billed per question."
+      },
+      "stepFixed": {
+        "extract": "Readability · no AI",
+        "search": "RSS index + fallback search"
+      },
+      "stepNote": {
+        "extract": "This step uses no AI: Readability does it, the engine behind Firefox's reader mode. Always on your computer.",
+        "search": "This step uses no model: it searches your local RSS index and, if needed, the fallback search. Configure it under Sources."
+      },
+      "off": "Off",
+      "unassigned": "Unassigned",
+      "where": {
+        "off": "off"
+      },
+      "stepOf": "Step {n} of {total}",
+      "activateStep": "Turn this step on",
+      "activateStepAria": "Turn step on",
+      "provider": "Provider",
+      "model": "Model",
+      "creativity": "Creativity",
+      "temp": {
+        "precise": "precise",
+        "balanced": "balanced",
+        "creative": "creative"
+      },
+      "noTemperature": "This model doesn't let you adjust creativity.",
+      "fallbackTo": "If it fails, it falls back to",
+      "noFallback": "No fallback model",
+      "sum": {
+        "cost": "Cost per article",
+        "time": "Estimated time",
+        "local": "Steps on your computer",
+        "withLimit": "With {limit} a month",
+        "noLimit": "No monthly limit"
+      },
+      "of": "of",
+      "unlimited": "unlimited",
+      "newsUnit": "articles",
+      "summary": "8-step pipeline",
+      "summaryNone": "No provider",
+      "emptyTitle": "Connect a provider",
+      "emptyText": "Without a connected provider there are no models to assign to each step. One is enough to start; a wizard guides you in three steps.",
+      "budgetLabel": "Monthly spending limit",
+      "noLimit": "No limit",
+      "budgetNote": "When the limit is reached, the full analysis switches to local models. 0 turns the limit off."
     },
     "analysis": {
       "title": "Analysis",
@@ -198,7 +291,24 @@
       "autoFullHint": "Uses your providers on every article you open. It may cost money.",
       "detector": "AI-generated text detector",
       "detectorHint": "Shows a hint for each paragraph. It is never proof.",
-      "language": "Analyses are written in the interface language; quotes keep their original language."
+      "language": "Analyses are written in the interface language; quotes keep their original language.",
+      "lead": "When a news article is analysed and how deeply.",
+      "when": "When to analyse",
+      "trigger": {
+        "auto": "Automatic",
+        "demand": "On demand",
+        "tiered": "Tiered"
+      },
+      "triggerDesc": {
+        "auto": "Full analysis when you open any article",
+        "demand": "Only when you press Analysis or Ctrl+Shift+A",
+        "tiered": "Quick and local on opening, full when you press"
+      },
+      "triggerCost": {
+        "auto": "Uses your providers on every article",
+        "demand": "only when you ask",
+        "tiered": "quick is free · full on demand"
+      }
     }
   },
   "privacy": {
@@ -891,8 +1001,8 @@
       "advanced": "Advanced"
     },
     "pitch": {
-      "openai": "The best known. Fast and good at almost everything.",
-      "nous": "Open Hermes models without style filters."
+      "openai": "The easiest way to start",
+      "nous": "Open Hermes models without editorial censorship"
     },
     "connect": "Connect {name}",
     "pasteKey": "Already have a key? Paste it here",
@@ -918,10 +1028,12 @@
     "testing": "Testing…",
     "testOk": "Connected in {ms} ms",
     "testFail": "It did not work: {message}",
-    "doneTitle": "{name} is ready",
-    "doneSub": "Ready to read the news with you. Each step has been assigned a model.",
+    "doneTitle": "{name} is connected",
+    "doneSub": "Each analysis will cost about {cost}. The light steps stay on your computer.",
     "where": {
-      "local": "On your computer"
+      "local": "On your computer",
+      "home": "your computer",
+      "cloud": "cloud"
     },
     "priceUnknown": "unknown price",
     "estimate": "Estimated cost per analysis: {total}",
@@ -954,7 +1066,144 @@
     "budget": "Spending",
     "limit": "Monthly limit (USD)",
     "limitHint": "When the limit is reached, analysis switches to local models. Leave it empty for no limit.",
-    "spent": "Spent this month: {amount}"
+    "spent": "Spent this month: {amount}",
+    "free": "free",
+    "close": "Close the wizard",
+    "steps": {
+      "label": "Steps",
+      "choose": "Choose",
+      "chooseSub": "Provider or key",
+      "key": "Key",
+      "keySub": "Paste it and go",
+      "test": "Test",
+      "testSub": "Connection and models"
+    },
+    "tag": {
+      "recommended": "Recommended"
+    },
+    "desc": {
+      "openai": "OpenAI's models with your own key. You only pay for what you use: an analysis costs cents.",
+      "nous": "Open weights anyone can audit, served from Nous Portal with an OpenAI-compatible API."
+    },
+    "isOf": "It's from",
+    "pill": {
+      "detected": "detected"
+    },
+    "sub": {
+      "openai": "OpenAI",
+      "nous": "Hermes, open weights",
+      "anthropic": "Claude",
+      "google": "Google",
+      "deepseek": "V3 and R1",
+      "xai": "Grok",
+      "mistral": "Large and Small",
+      "nvidia": "build.nvidia.com",
+      "perplexity": "Sonar, with search",
+      "openrouter": "Hundreds of models",
+      "groq": "Ultra-fast",
+      "huggingface": "Open models",
+      "ollama": "Open it to detect it",
+      "lmstudio": "Open it to detect it"
+    },
+    "subCfg": {
+      "anthropic": "Claude",
+      "openai": "GPT",
+      "google": "Gemini",
+      "nous": "Hermes, open weights",
+      "deepseek": "V3 and R1",
+      "xai": "Grok",
+      "mistral": "Large and Small",
+      "nvidia": "build.nvidia.com",
+      "perplexity": "Sonar, with search",
+      "openrouter": "Hundreds of models",
+      "groq": "Ultra-fast inference",
+      "huggingface": "Open models",
+      "ollama": "On your computer",
+      "lmstudio": "On your computer",
+      "custom": "Any endpoint"
+    },
+    "keyOf": "Paste your {name} key",
+    "keyOptional": "Key (optional)",
+    "pasteHere": "Paste your key here",
+    "keySaved": "•••••••••••••••• saved",
+    "kind": {
+      "cloud": "In the cloud · you pay per use with your own key",
+      "custom": "Any server that speaks the OpenAI API"
+    },
+    "kb": {
+      "start": "Starts with",
+      "isKeyOf": ": it is a {name} key"
+    },
+    "unknownPrefixHere": "We don't recognise the prefix. If it is from {name}, carry on: we'll check it in the test.",
+    "noKeyTitle": "Don't have a key?",
+    "siteCustom": "Your server's documentation",
+    "opened": "Opened in a new tab. Come back here when you have it.",
+    "how": {
+      "1": "Sign in or create an account at {site}.",
+      "2": "Open {section} and press “{button}”.",
+      "3": "Copy the key and paste it here. It is only shown once."
+    },
+    "howCustom": {
+      "1": "Copy your server's base address: it usually ends in /v1.",
+      "2": "If it asks for a key, paste it below; if not, leave it empty.",
+      "3": "Press “Test connection” and you are done."
+    },
+    "tip": {
+      "openai": "The API is billed separately from ChatGPT Plus: add credit under Billing, from $5.",
+      "google": "It has a free tier with daily limits: enough to try it out."
+    },
+    "chk": {
+      "connect": "Connect to the server",
+      "connectOk": "Replies in {ms} ms",
+      "models": "List models",
+      "modelsOk": "{n, plural, one {# model available} other {# models available}}",
+      "reply": "Reply test",
+      "replyOk": "Correct reply in {s} s",
+      "replyText": "Ready to read the news with you."
+    },
+    "testingTitle": "Testing {name}…",
+    "works": "{name} works",
+    "failTitle": "{name} is not responding",
+    "failEyebrow": "Could not connect",
+    "failLocal": "{name} is not running or has no model loaded. Open it and try again.",
+    "failCloud": "Check that the {name} key is correct and has credit; you can go back to change it.",
+    "retry": "Try again",
+    "assigning": "Assigning models…",
+    "assignedAuto": "Assigned automatically",
+    "plain": {
+      "local": "Everything will run on your computer with {big}. Free and nothing leaves it.",
+      "mixed": "Verifying and writing the synthesis will use {big}; the light steps, your local model.",
+      "cloud": "The whole analysis will use {big} in the cloud. Connect a local model if you want the light steps to stay on your computer."
+    },
+    "task": {
+      "extract": "Extraction",
+      "claims": "Claims",
+      "verify": "Verification",
+      "score": "Neutrality",
+      "synthesis": "Synthesis",
+      "agent": "Agent",
+      "noAi": "Readability · no AI"
+    },
+    "perQuestion": "{cost} /question",
+    "estimateLabel": "Estimated cost per analysis",
+    "agentApart": "Agent billed separately, {cost} per question",
+    "limitLine": "Monthly limit: {limit} (change it in Settings)",
+    "noLimitLine": "No monthly limit (you can set one in Settings)",
+    "advanced": "Advanced options",
+    "advancedBody": "You can change the model of each step, the creativity, the fallback model and the presets.",
+    "advancedLink": "Open the pipeline configurator",
+    "doneSubLocal": "You will analyse news for free, with nothing leaving your computer.",
+    "closedTitle": "Wizard closed",
+    "closedSub": "Nothing has been saved. You can start again whenever you like.",
+    "backToSettings": "Back to Settings",
+    "presetDesc": {
+      "privacy": "Everything on your computer. Nothing goes online.",
+      "balanced": "Cheap cloud for the light steps, a good one to verify.",
+      "quality": "The best models at every step.",
+      "cheap": "Fast, inexpensive models."
+    },
+    "spentShort": "Spent this month: {amount}.",
+    "failCustom": "Check the address, models and key of your endpoint, and that the server is running; you can go back to change them."
   },
   "history": {
     "title": "History",
