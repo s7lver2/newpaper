@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Idioma y actualizaciones</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8}a:hover{color:#182E86}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1),box-shadow .45s cubic-bezier(.22,1,.36,1),opacity .45s cubic-bezier(.22,1,.36,1)}
+button:active{transform:scale(.98)}
+input:focus{outline:none;border-color:#2340B8!important;box-shadow:0 0 0 4px rgba(35,64,184,.1)}
+.hov:hover{background:#EFECE5}
+.lift{transition:transform .55s cubic-bezier(.34,1.56,.64,1),box-shadow .55s cubic-bezier(.22,1,.36,1),background-color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1)}
+.lift:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(23,23,26,.08)}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fade0{from{opacity:0;filter:blur(3px);transform:translateY(4px)}to{opacity:1;filter:none;transform:none}}
+@keyframes fade1{from{opacity:0;filter:blur(3px);transform:translateY(4px)}to{opacity:1;filter:none;transform:none}}
+@keyframes pop0{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes pop1{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div lang="{{code}}" style="min-height: 900px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #D9D5CC; background: #E7E3DA; flex-wrap: wrap">
+<a href="Main.dc.html" class="hov" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 10px; color: #17171A; text-decoration: none; background: #F6F4EF; border: 1px solid #D9D5CC">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg><span style="{{fx}}">{{t.back}}</span></a>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">newpaper://ajustes/general</span>
+</div>
+<div style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch">
+<nav style="flex: 1 1 250px; max-width: 100%; box-sizing: border-box; padding: 28px 16px; border-right: 1px solid #E2DED5; display: flex; flex-direction: column; gap: 4px">
+<div style="{{fx}}"><div style="font-family: 'Newsreader', serif; font-size: 28px; font-weight: 500; padding: 0 12px 16px">{{t.settings}}</div></div>
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="8">
+<a href="Ajustes.dc.html" aria-current="{{n.cur}}" class="hov" style="{{n.style}}"><span style="font-weight: 500">{{n.label}}</span><span style="font-size: 12px; color: #5E5B55">{{n.sub}}</span></a>
+</sc-for>
+<div style="margin-top: auto; padding: 20px 12px 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">newpaper {{curVer}} · Tauri 2</div>
+</nav>
+
+<main style="flex: 999 1 640px; min-width: 0; padding: 36px 40px 64px; box-sizing: border-box">
+<div style="{{fxMain}}">
+<div style="margin-bottom: 26px"><div style="font-family: 'Newsreader', serif; font-size: 36px; font-weight: 500">{{t.title}}</div><div style="color: #5E5B55; margin-top: 4px">{{t.sub}}</div></div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start">
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 22px">
+<div style="font-weight: 600; font-size: 16px">{{t.langH}}</div>
+<div style="font-size: 13px; color: #5E5B55; margin: 2px 0 16px">{{t.langD}}</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px" role="radiogroup" aria-label="{{t.langH}}">
+<sc-for list="{{langs}}" as="l" hint-placeholder-count="3">
+<button onClick="{{l.pick}}" role="radio" aria-checked="{{l.aria}}" class="lift" style="{{l.style}}">
+<span style="display: flex; justify-content: space-between; align-items: center; width: 100%"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55">{{l.code}}</span><span style="{{l.check}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></span></span>
+<span style="font-family: 'Newsreader', serif; font-size: 30px; line-height: 1; margin-top: 10px">{{l.hello}}</span>
+<span style="font-weight: 500">{{l.name}}</span>
+</button>
+</sc-for>
+</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 22px">
+<div style="font-weight: 600; font-size: 16px">{{t.newsH}}</div>
+<div style="font-size: 13px; color: #5E5B55; margin: 2px 0 12px">{{t.newsD}}</div>
+<sc-for list="{{news}}" as="nw" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-top: 1px solid #EFECE6">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #F6F4EF; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 500">{{nw.code}}</span>
+<div style="flex: 1; min-width: 0"><div style="font-weight: 500">{{nw.name}}</div><div style="font-size: 12px; color: #5E5B55">{{nw.desc}}</div></div>
+<button onClick="{{nw.toggle}}" role="switch" aria-checked="{{nw.aria}}" aria-label="{{nw.name}}" style="{{nw.track}}"><span style="{{nw.knob}}"></span></button>
+</div>
+</sc-for>
+<div style="font-size: 12px; color: #8D8981; margin-top: 6px">{{t.quotes}}</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 18px 22px; display: flex; align-items: center; gap: 14px">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #ECE8FB; color: #4A2FB8; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5.5"></circle><circle cx="12" cy="12" r="2"></circle></svg></span>
+<div style="flex: 1; min-width: 0"><div style="font-weight: 500">{{t.tor}}</div><div style="font-size: 12px; color: #5E5B55">{{t.torD}}</div></div>
+<button onClick="{{toggleTor}}" role="switch" aria-checked="{{torSw.aria}}" aria-label="{{t.tor}}" style="{{torSw.track}}"><span style="{{torSw.knob}}"></span></button>
+</section>
+</div>
+
+<div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; overflow: hidden">
+<div style="padding: 22px 22px 18px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">{{t.updH}}</span>
+<span style="display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #0B6B50; background: #E3F2EC; padding: 3px 9px; border-radius: 999px">{{t.signed}}<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg></span>
+</div>
+<div style="font-family: 'Newsreader', serif; font-size: 28px; line-height: 1.15; margin: 8px 0 4px">{{headline}}</div>
+<div style="font-size: 13px; color: #5E5B55">{{subline}}</div>
+
+<sc-if value="{{showDl}}" hint-placeholder-val="{{ true }}">
+<div style="margin-top: 16px">
+<div style="height: 8px; background: #EFECE5; border-radius: 4px; overflow: hidden"><span style="{{dlBar}}"></span></div>
+<div style="display: flex; justify-content: space-between; margin-top: 6px; font-size: 12px; color: #5E5B55"><span>{{dlLabel}}</span><span style="font-family: 'IBM Plex Mono', monospace">{{dlMb}}</span></div>
+</div>
+</sc-if>
+
+<div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px">
+<button onClick="{{restart}}" disabled="{{restartDisabled}}" style="{{restartStyle}}"><sc-if value="{{restarting}}" hint-placeholder-val="{{ false }}"><span style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(246,244,239,.35); border-top-color: #F6F4EF; animation: spin .8s linear infinite"></span></sc-if>{{restartLabel}}</button>
+<button onClick="{{toggleNotes}}" aria-expanded="{{notesAria}}" class="hov" style="display: flex; align-items: center; gap: 6px; height: 44px; padding: 0 14px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A"><span>{{t.notes}}</span><span style="{{notesChev}}">›</span></button>
+</div>
+</div>
+<sc-if value="{{notesOpen}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="padding: 4px 22px 18px; border-top: 1px solid #EFECE6">
+<sc-for list="{{notes}}" as="nt" hint-placeholder-count="4">
+<div style="display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid #EFECE6; font-size: 13px; line-height: 1.45"><span style="{{nt.tagStyle}}">{{nt.tag}}</span><span style="flex: 1">{{nt.text}}</span></div>
+</sc-for>
+</div>
+</sc-if>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 20px 22px">
+<div style="font-weight: 600; margin-bottom: 10px">{{t.channel}}</div>
+<div style="display: flex; background: #EFECE5; border-radius: 12px; padding: 4px; gap: 4px">
+<sc-for list="{{channels}}" as="ch" hint-placeholder-count="2"><button onClick="{{ch.pick}}" style="{{ch.style}}"><span style="font-weight: 600">{{ch.name}}</span><span style="font-size: 12px; opacity: .8">{{ch.desc}}</span></button></sc-for>
+</div>
+<div style="font-size: 12px; color: #8D8981; margin-top: 10px">{{t.check}}</div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 20px 22px; display: flex; flex-direction: column; gap: 12px">
+<sc-if value="{{rbIdle}}" hint-placeholder-val="{{ true }}">
+<button onClick="{{askRollback}}" class="hov" style="align-self: flex-start; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px; border: 1px solid #17171A; border-radius: 12px; background: #FFFFFF; color: #17171A"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 108-8H7"></path><path d="M9 1L6 4l3 3"></path></svg>{{rbLabel}}</button>
+</sc-if>
+<sc-if value="{{rbAsk}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; background: #FBF0DC; color: #6B4100; border-radius: 12px; padding: 10px 12px">
+<span style="flex: 1 1 200px">{{rbQ}}</span>
+<button onClick="{{doRollback}}" style="height: 40px; padding: 0 14px; border: 0; border-radius: 10px; background: #17171A; color: #F6F4EF">{{t.rbYes}}</button>
+<button onClick="{{cancelRollback}}" class="hov" style="height: 40px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #6B4100">{{t.cancel}}</button>
+</div>
+</sc-if>
+<sc-if value="{{rbDone}}" hint-placeholder-val="{{ false }}">
+<div style="{{rbDoneStyle}}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg><span style="flex: 1">{{rbDoneText}}</span><button onClick="{{cancelRollback}}" class="hov" style="height: 36px; padding: 0 10px; border: 0; border-radius: 8px; background: transparent; color: #0B6B50; font-size: 13px">{{t.undo}}</button></div>
+</sc-if>
+<div style="display: flex; gap: 10px; font-size: 13px; color: #3D3B37; line-height: 1.5"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5E5B55" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6l8-3z"></path></svg><span>{{t.auto}}</span></div>
+</section>
+</div>
+</div>
+
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; margin-top: 22px; overflow: hidden">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap; padding: 20px 22px 14px">
+<div style="flex: 1 1 360px"><div style="font-weight: 600; font-size: 16px">{{t.contH}}</div><div style="font-size: 13px; color: #5E5B55; margin-top: 2px">{{t.contD}}</div></div>
+<button onClick="{{updateAll}}" disabled="{{allDisabled}}" style="{{allStyle}}"><sc-if value="{{busy}}" hint-placeholder-val="{{ false }}"><span style="width: 14px; height: 14px; border-radius: 50%; border: 2px solid rgba(246,244,239,.35); border-top-color: #F6F4EF; animation: spin .8s linear infinite"></span></sc-if>{{allLabel}}</button>
+</div>
+<div style="overflow-x: auto">
+<div style="min-width: 640px">
+<sc-for list="{{items}}" as="it" hint-placeholder-count="7">
+<div style="display: flex; align-items: center; gap: 16px; padding: 12px 22px; border-top: 1px solid #EFECE6">
+<div style="flex: 1 1 240px; min-width: 0"><div style="font-weight: 500">{{it.name}}</div><div style="font-size: 12px; color: #5E5B55">{{it.desc}}</div></div>
+<div style="flex: none; width: 150px; display: flex; flex-direction: column; gap: 4px">
+<span style="{{it.verStyle}}">{{it.ver}}</span>
+<span style="height: 3px; background: #EFECE5; border-radius: 2px; overflow: hidden"><span style="{{it.prog}}"></span></span>
+</div>
+<span style="flex: none; width: 70px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">{{it.date}}</span>
+<span style="{{it.statusStyle}}">{{it.status}}</span>
+<button onClick="{{it.revert}}" disabled="{{it.noRevert}}" class="hov" style="{{it.revStyle}}">{{t.revert}}</button>
+</div>
+</sc-for>
+</div>
+</div>
+</section>
+</div>
+</main>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const D = (m, d) => new Date(2026, m - 1, d);
+    this.state = {
+      lang: 'es', lk: 0, news: { es: true, en: false, de: false }, tor: true, dl: 0, channel: 'stable', notes: false, restart: 'idle', rb: 'idle', busy: false,
+      items: [
+        { id: 'filters', ver: '2026.10.07', next: '2026.10.08', prev: '2026.10.05', date: D(10, 7), prevDate: D(10, 5), phase: 'idle', k: 0 },
+        { id: 'rss', ver: 'v41', next: 'v42', prev: 'v40', date: D(9, 30), prevDate: D(9, 18), phase: 'idle', k: 0 },
+        { id: 'outlets', ver: '2026.09', next: '2026.10', prev: '2026.08', date: D(9, 1), prevDate: D(8, 1), phase: 'idle', k: 0 },
+        { id: 'prices', ver: '2026.10.01', next: '2026.10.06', prev: '2026.09.24', date: D(10, 1), prevDate: D(9, 24), phase: 'idle', k: 0 },
+        { id: 'providers', ver: 'v18', next: 'v19', prev: 'v17', date: D(9, 22), prevDate: D(9, 2), phase: 'idle', k: 0 },
+        { id: 'lexicon', ver: 'XV-3', next: null, prev: 'XV-2', date: D(9, 15), prevDate: D(6, 10), phase: 'idle', k: 0 },
+        { id: 'parties', ver: '2026.03', next: null, prev: '2025.11', date: D(3, 4), prevDate: D(11, 20), phase: 'idle', k: 0 }
+      ]
+    };
+  }
+  componentDidMount() { this.startDl(); }
+  componentWillUnmount() { clearInterval(this.iv); clearTimeout(this.tr); clearTimeout(this.tu); }
+  startDl() {
+    clearInterval(this.iv);
+    this.setState({ dl: 0, restart: 'idle' });
+    this.iv = setInterval(() => {
+      const n = Math.min(100, this.state.dl + 1 + Math.round(Math.random() * 2));
+      this.setState({ dl: n });
+      if (n >= 100) clearInterval(this.iv);
+    }, 90);
+  }
+  runNext() {
+    const items = this.state.items, i = items.findIndex((x) => x.next && x.phase === 'idle');
+    if (i < 0) { this.setState({ busy: false }); return; }
+    this.setState({ items: items.map((x, j) => (j === i ? Object.assign({}, x, { phase: 'run' }) : x)) });
+    this.tu = setTimeout(() => {
+      this.setState({ items: this.state.items.map((x, j) => (j === i ? Object.assign({}, x, { phase: 'idle', prev: x.ver, prevDate: x.date, ver: x.next, next: null, date: new Date(2026, 9, 8), k: x.k + 1 }) : x)) });
+      this.tu = setTimeout(() => this.runNext(), 160);
+    }, 650);
+  }
+  revert(id) {
+    this.setState({ items: this.state.items.map((x) => (x.id === id && x.prev ? Object.assign({}, x, { next: x.ver, ver: x.prev, date: x.prevDate, prev: null, k: x.k + 1 }) : x)) });
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', BO = 'cubic-bezier(.34,1.56,.64,1)';
+    const T = {
+      es: {
+        back: 'Volver', settings: 'Ajustes', title: 'General', sub: 'Idioma y actualizaciones. Los cambios se aplican sin reiniciar.',
+        nav: [['General', 'Idioma · versión'], ['Privacidad y red', 'Tor · España'], ['Inteligencia artificial', 'Pipeline de 8 pasos'], ['Análisis', 'Escalonado'], ['Fuentes', '34 medios'], ['Bloqueo', '1.832 hoy'], ['Apariencia', 'Papel'], ['Datos', '82 MB']],
+        langH: 'Idioma de la interfaz', langD: 'Toda la app: menús, páginas internas, avisos e instalador.',
+        newsH: 'Idioma de las noticias y fuentes', newsD: 'Independiente del de la interfaz. Cada idioma trae sus fuentes, su léxico partidista y su parlamento.',
+        langNames: { es: 'Español', en: 'Inglés', de: 'Alemán' }, src: 'fuentes',
+        quotes: 'Las citas se mantienen en su idioma original, con traducción opcional entre corchetes.',
+        tor: 'Descargar a través de Tor cuando esté activo', torD: 'Más lento, pero nadie ve qué versión descargas.',
+        updH: 'ACTUALIZACIONES', signed: 'firmada', newVer: 'Hay una versión nueva: {v}', youHave: 'Tienes la {v}. Se instalará al reiniciar.',
+        dl: 'Descargando en segundo plano…', ready: 'Descargada y verificada', restart: 'Reiniciar para actualizar', restarting: 'Reiniciando…', done: 'Actualizada a la {v}', doneSub: 'Todo ha ido bien. Las notas siguen aquí debajo.',
+        notes: 'Notas de versión', channel: 'Canal', stable: 'Estable', stableD: 'Probada durante dos semanas', beta: 'Beta', betaD: 'Novedades antes, con algún fallo',
+        check: 'Se comprueba al arrancar y cada 24 horas.',
+        rb: 'Volver a la versión anterior ({v})', rbQ: '¿Volver a la {v}? Tus datos se conservan.', rbYes: 'Volver', cancel: 'Cancelar', undo: 'Deshacer', rbDone: 'Se usará la {v} en el próximo arranque.',
+        auto: 'Si la nueva versión falla al arrancar dos veces, se vuelve sola a la anterior. Nunca se instala nada sin firma válida.',
+        contH: 'Contenido actualizado sin reinstalar', contD: 'Un manifiesto JSON firmado, con versión por recurso. Se aplica de una vez y se puede revertir.',
+        all: 'Actualizar todo', allBusy: 'Actualizando…', allOk: 'Todo al día', revert: 'Revertir', upToDate: 'Al día', newV: 'Nueva: {v}', updating: 'Actualizando',
+        items: { filters: ['Listas de filtros', 'EasyList, EasyPrivacy y uBlock · también desde sus orígenes'], rss: ['Fuentes RSS', 'Lista curada de medios por idioma'], outlets: ['Línea editorial de medios', 'Posición medida y su incertidumbre'], prices: ['Precios de modelos', 'Para estimar el coste de cada análisis'], providers: ['Registro de proveedores', 'Catálogo central de proveedores de IA'], lexicon: ['Léxico partidista', 'Diario de Sesiones del Congreso'], parties: ['Partidos y escaños', 'Composición del Congreso'] },
+        notesList: [['Nuevo', 'El agente dibuja gráficos y hemiciclos dentro del chat.'], ['Nuevo', 'Edición del día para leer sin conexión.'], ['Mejora', 'La posición de cada texto explica sus señales una a una.'], ['Arreglo', 'El panel de análisis ya no parpadea al cambiar de pestaña.']],
+        tags: { 'Nuevo': 'n', 'Mejora': 'm', 'Arreglo': 'a' }
+      },
+      en: {
+        back: 'Back', settings: 'Settings', title: 'General', sub: 'Language and updates. Changes apply without restarting.',
+        nav: [['General', 'Language · version'], ['Privacy & network', 'Tor · Spain'], ['Artificial intelligence', '8-step pipeline'], ['Analysis', 'Tiered'], ['Sources', '34 outlets'], ['Blocking', '1,832 today'], ['Appearance', 'Paper'], ['Data', '82 MB']],
+        langH: 'Interface language', langD: 'The whole app: menus, internal pages, notices and installer.',
+        newsH: 'News and sources language', newsD: 'Separate from the interface. Each language brings its own sources, partisan lexicon and parliament.',
+        langNames: { es: 'Spanish', en: 'English', de: 'German' }, src: 'sources',
+        quotes: 'Quotes stay in their original language, with an optional translation in brackets.',
+        tor: 'Download through Tor when it is on', torD: 'Slower, but nobody sees which version you download.',
+        updH: 'UPDATES', signed: 'signed', newVer: 'A new version is available: {v}', youHave: 'You have {v}. It will install when you restart.',
+        dl: 'Downloading in the background…', ready: 'Downloaded and verified', restart: 'Restart to update', restarting: 'Restarting…', done: 'Updated to {v}', doneSub: 'Everything went fine. The notes are still below.',
+        notes: 'Release notes', channel: 'Channel', stable: 'Stable', stableD: 'Tested for two weeks', beta: 'Beta', betaD: 'New things first, with some bugs',
+        check: 'Checked at startup and every 24 hours.',
+        rb: 'Go back to the previous version ({v})', rbQ: 'Go back to {v}? Your data is kept.', rbYes: 'Go back', cancel: 'Cancel', undo: 'Undo', rbDone: '{v} will be used on next startup.',
+        auto: 'If the new version fails to start twice, it rolls back on its own. Nothing is ever installed without a valid signature.',
+        contH: 'Content updated without reinstalling', contD: 'A signed JSON manifest with a version per resource. Applied all at once and can be reverted.',
+        all: 'Update all', allBusy: 'Updating…', allOk: 'All up to date', revert: 'Revert', upToDate: 'Up to date', newV: 'New: {v}', updating: 'Updating',
+        items: { filters: ['Filter lists', 'EasyList, EasyPrivacy and uBlock · also from their sources'], rss: ['RSS sources', 'Curated outlets per language'], outlets: ['Outlet editorial line', 'Measured position and its uncertainty'], prices: ['Model prices', 'To estimate the cost of each analysis'], providers: ['Provider registry', 'Central catalogue of AI providers'], lexicon: ['Partisan lexicon', 'Spanish Congress session records'], parties: ['Parties and seats', 'Composition of the Congress'] },
+        notesList: [['New', 'The agent draws charts and hemicycles right in the chat.'], ['New', 'Daily edition for reading offline.'], ['Better', 'Each text’s position explains its signals one by one.'], ['Fix', 'The analysis panel no longer flickers when switching tabs.']],
+        tags: { 'New': 'n', 'Better': 'm', 'Fix': 'a' }
+      },
+      de: {
+        back: 'Zurück', settings: 'Einstellungen', title: 'Allgemein', sub: 'Sprache und Updates. Änderungen gelten ohne Neustart.',
+        nav: [['Allgemein', 'Sprache · Version'], ['Datenschutz & Netz', 'Tor · Spanien'], ['Künstliche Intelligenz', 'Pipeline mit 8 Schritten'], ['Analyse', 'Gestuft'], ['Quellen', '34 Medien'], ['Blockieren', '1.832 heute'], ['Darstellung', 'Papier'], ['Daten', '82 MB']],
+        langH: 'Sprache der Oberfläche', langD: 'Die ganze App: Menüs, interne Seiten, Hinweise und Installer.',
+        newsH: 'Sprache der Nachrichten und Quellen', newsD: 'Unabhängig von der Oberfläche. Jede Sprache bringt eigene Quellen, ein Parteilexikon und ihr Parlament mit.',
+        langNames: { es: 'Spanisch', en: 'Englisch', de: 'Deutsch' }, src: 'Quellen',
+        quotes: 'Zitate bleiben in der Originalsprache, mit optionaler Übersetzung in Klammern.',
+        tor: 'Über Tor herunterladen, wenn aktiv', torD: 'Langsamer, aber niemand sieht, welche Version du lädst.',
+        updH: 'UPDATES', signed: 'signiert', newVer: 'Neue Version verfügbar: {v}', youHave: 'Du hast {v}. Sie wird beim Neustart installiert.',
+        dl: 'Wird im Hintergrund geladen…', ready: 'Geladen und geprüft', restart: 'Zum Aktualisieren neu starten', restarting: 'Neustart…', done: 'Aktualisiert auf {v}', doneSub: 'Alles hat geklappt. Die Hinweise stehen weiter unten.',
+        notes: 'Versionshinweise', channel: 'Kanal', stable: 'Stabil', stableD: 'Zwei Wochen getestet', beta: 'Beta', betaD: 'Neues früher, mit Fehlern',
+        check: 'Wird beim Start und alle 24 Stunden geprüft.',
+        rb: 'Zur vorherigen Version zurück ({v})', rbQ: 'Zurück zu {v}? Deine Daten bleiben erhalten.', rbYes: 'Zurück', cancel: 'Abbrechen', undo: 'Rückgängig', rbDone: 'Beim nächsten Start wird {v} verwendet.',
+        auto: 'Startet die neue Version zweimal nicht, wird automatisch die vorherige verwendet. Ohne gültige Signatur wird nie etwas installiert.',
+        contH: 'Inhalte ohne Neuinstallation aktualisiert', contD: 'Ein signiertes JSON-Manifest mit Version pro Ressource. Wird auf einmal angewendet und lässt sich zurücksetzen.',
+        all: 'Alles aktualisieren', allBusy: 'Wird aktualisiert…', allOk: 'Alles aktuell', revert: 'Zurücksetzen', upToDate: 'Aktuell', newV: 'Neu: {v}', updating: 'Wird aktualisiert',
+        items: { filters: ['Filterlisten', 'EasyList, EasyPrivacy und uBlock · auch aus den Originalquellen'], rss: ['RSS-Quellen', 'Kuratierte Medien pro Sprache'], outlets: ['Redaktionelle Linie der Medien', 'Gemessene Position und Unsicherheit'], prices: ['Modellpreise', 'Zur Schätzung der Kosten jeder Analyse'], providers: ['Anbieterregister', 'Zentraler Katalog der KI-Anbieter'], lexicon: ['Parteilexikon', 'Sitzungsprotokolle des Congreso'], parties: ['Parteien und Sitze', 'Zusammensetzung des Congreso'] },
+        notesList: [['Neu', 'Der Agent zeichnet Diagramme und Sitzverteilungen direkt im Chat.'], ['Neu', 'Tagesausgabe zum Offline-Lesen.'], ['Besser', 'Die Position jedes Textes erklärt ihre Signale einzeln.'], ['Fix', 'Das Analysefeld flackert beim Tabwechsel nicht mehr.']],
+        tags: { 'Neu': 'n', 'Besser': 'm', 'Fix': 'a' }
+      }
+    };
+    const L = s.lang, t = T[L], loc = { es: 'es-ES', en: 'en-GB', de: 'de-DE' }[L];
+    const f = (str, v) => str.replace('{v}', v);
+    const sw = (on, col) => ({
+      aria: on ? 'true' : 'false',
+      track: 'flex:none;position:relative;width:46px;height:28px;border-radius:14px;border:0;padding:0;transition:background-color .5s ' + E + ';background:' + (on ? (col || '#0B6B50') : '#CFCAC0'),
+      knob: 'position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(23,23,26,.2);transition:transform .65s ' + BO + ';transform:translateX(' + (on ? '18px' : '0') + ') rotate(' + (on ? '180deg' : '0deg') + ')'
+    });
+    const beta = s.channel === 'beta';
+    const curVer = '1.3.2', newVer = beta ? '1.5.0-beta.2' : '1.4.0', prevVer = '1.3.1';
+    const done = s.restart === 'done', ready = s.dl >= 100;
+    const sizeMb = beta ? 92 : 87;
+    const fmtDate = (d) => d.toLocaleDateString(loc, { day: 'numeric', month: 'short' });
+    const nTag = (tag) => { const k = t.tags[tag]; return "flex:none;align-self:flex-start;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;padding:2px 6px;border-radius:5px;" + (k === 'n' ? 'background:#E8ECFA;color:#2340B8' : k === 'm' ? 'background:#E3F2EC;color:#0B6B50' : 'background:#EFECE5;color:#5E5B55'); };
+    const pending = s.items.filter((x) => x.next).length;
+    const items = s.items.map((x) => {
+      const run = x.phase === 'run';
+      return {
+        name: t.items[x.id][0], desc: t.items[x.id][1], ver: x.ver, date: fmtDate(x.date),
+        verStyle: "font-family:'IBM Plex Mono',monospace;font-size:13px;display:inline-block;animation:pop" + (x.k % 2) + ' .55s ' + BO + ' both',
+        prog: 'display:block;height:100%;border-radius:2px;background:#2340B8;transition:width ' + (run ? '.6s ' + E : '0s') + ';width:' + (run ? 100 : 0) + '%',
+        status: run ? t.updating : x.next ? f(t.newV, x.next) : t.upToDate,
+        statusStyle: 'flex:none;width:130px;font-size:12px;font-weight:500;transition:color .4s;color:' + (run ? '#2340B8' : x.next ? '#8A5300' : '#0B6B50'),
+        revert: () => this.revert(x.id), noRevert: !x.prev || s.busy,
+        revStyle: 'flex:none;height:36px;padding:0 12px;border:1px solid #D9D5CC;border-radius:10px;background:#FFFFFF;font-size:12px;color:#17171A;opacity:' + (!x.prev || s.busy ? 0.4 : 1) + ';cursor:' + (!x.prev || s.busy ? 'default' : 'pointer')
+      };
+    });
+    const langDefs = [['es', 'ES', 'Hola', 'Español'], ['en', 'EN', 'Hello', 'English'], ['de', 'DE', 'Hallo', 'Deutsch']];
+    return {
+      t, code: L,
+      fx: 'animation:fade' + (s.lk % 2) + ' .6s ' + E + ' both',
+      fxMain: 'max-width:1040px;animation:fade' + (s.lk % 2) + ' .6s ' + E + ' both',
+      nav: t.nav.map((n, i) => ({ label: n[0], sub: n[1], cur: i === 0 ? 'page' : 'false', style: 'display:flex;flex-direction:column;gap:1px;padding:10px 12px;border-radius:12px;text-decoration:none;color:#17171A;animation:fade' + (s.lk % 2) + ' .6s ' + E + ' ' + (i * 30) + 'ms both;' + (i === 0 ? 'background:#FFFFFF;box-shadow:0 1px 2px rgba(23,23,26,.06)' : '') })),
+      curVer: done ? newVer : curVer,
+      langs: langDefs.map((l) => {
+        const on = L === l[0];
+        return {
+          code: l[1], hello: l[2], name: l[3], aria: on ? 'true' : 'false',
+          pick: () => { if (!on) this.setState({ lang: l[0], lk: s.lk + 1 }); },
+          style: 'display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:14px;border-radius:14px;text-align:left;color:#17171A;min-height:120px;border:1.5px solid ' + (on ? '#17171A' : '#E2DED5') + ';background:' + (on ? '#F6F4EF' : '#FFFFFF'),
+          check: 'width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:#17171A;color:#F6F4EF;transition:transform .55s ' + BO + ',opacity .4s;transform:scale(' + (on ? 1 : 0.4) + ');opacity:' + (on ? 1 : 0)
+        };
+      }),
+      news: [['es', 'ES', 34, 'Congreso de los Diputados'], ['en', 'EN', 28, 'House of Commons'], ['de', 'DE', 22, 'Bundestag']].map((n) => Object.assign({
+        code: n[1], name: t.langNames[n[0]], desc: n[2] + ' ' + t.src + ' · ' + n[3],
+        toggle: () => { const o = Object.assign({}, s.news); o[n[0]] = !o[n[0]]; this.setState({ news: o }); }
+      }, sw(!!s.news[n[0]]))),
+      torSw: sw(s.tor, '#4A2FB8'), toggleTor: () => this.setState({ tor: !s.tor }),
+      headline: done ? f(t.done, newVer) : f(t.newVer, newVer),
+      subline: done ? t.doneSub : f(t.youHave, curVer),
+      showDl: !done,
+      dlBar: 'display:block;height:100%;border-radius:4px;transition:width .2s linear,background-color .5s;width:' + s.dl + '%;background:' + (ready ? '#0B6B50' : '#2340B8'),
+      dlLabel: ready ? t.ready : t.dl,
+      dlMb: Math.round(sizeMb * s.dl / 100) + ' / ' + sizeMb + ' MB',
+      restartDisabled: !ready || s.restart !== 'idle',
+      restarting: s.restart === 'run',
+      restartLabel: done ? f(t.done, newVer) : s.restart === 'run' ? t.restarting : t.restart,
+      restartStyle: 'display:flex;align-items:center;gap:8px;height:44px;padding:0 16px;border:0;border-radius:12px;font-weight:500;' + (done ? 'background:#E3F2EC;color:#0B6B50;cursor:default' : ready ? 'background:#17171A;color:#F6F4EF' : 'background:#E7E3DA;color:#8D8981;cursor:default'),
+      restart: () => { if (!ready || s.restart !== 'idle') return; this.setState({ restart: 'run' }); clearTimeout(this.tr); this.tr = setTimeout(() => this.setState({ restart: 'done', rb: 'idle' }), 1800); },
+      notesOpen: s.notes, notesAria: s.notes ? 'true' : 'false', toggleNotes: () => this.setState({ notes: !s.notes }),
+      notesChev: 'display:inline-block;transition:transform .5s ' + E + ';transform:rotate(' + (s.notes ? 90 : 0) + 'deg)',
+      notes: t.notesList.map((n) => ({ tag: n[0], text: n[1], tagStyle: nTag(n[0]) })),
+      channels: [['stable', t.stable, t.stableD], ['beta', t.beta, t.betaD]].map((c) => ({
+        name: c[1], desc: c[2],
+        pick: () => { if (s.channel !== c[0]) { this.setState({ channel: c[0] }); this.startDl(); } },
+        style: 'flex:1;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:10px 14px;border:0;border-radius:9px;text-align:left;' + (s.channel === c[0] ? 'background:#FFFFFF;color:#17171A;box-shadow:0 1px 2px rgba(0,0,0,.12)' : 'background:transparent;color:#5E5B55')
+      })),
+      rbIdle: s.rb === 'idle', rbAsk: s.rb === 'ask', rbDone: s.rb === 'done',
+      rbLabel: f(t.rb, done ? curVer : prevVer), rbQ: f(t.rbQ, done ? curVer : prevVer), rbDoneText: f(t.rbDone, done ? curVer : prevVer),
+      rbDoneStyle: 'display:flex;align-items:center;gap:10px;background:#E3F2EC;color:#0B6B50;border-radius:12px;padding:6px 6px 6px 12px;font-size:13px;animation:pop' + (s.lk % 2) + ' .5s ' + BO + ' both',
+      askRollback: () => this.setState({ rb: 'ask' }), doRollback: () => this.setState({ rb: 'done' }), cancelRollback: () => this.setState({ rb: 'idle' }),
+      items, busy: s.busy,
+      allDisabled: s.busy || pending === 0,
+      allLabel: s.busy ? t.allBusy : pending === 0 ? t.allOk : t.all + ' · ' + pending,
+      allStyle: 'display:flex;align-items:center;gap:8px;height:44px;padding:0 16px;border:0;border-radius:12px;font-weight:500;' + (pending === 0 && !s.busy ? 'background:#E3F2EC;color:#0B6B50;cursor:default' : 'background:#17171A;color:#F6F4EF'),
+      updateAll: () => { if (s.busy || pending === 0) return; this.setState({ busy: true }); clearTimeout(this.tu); this.tu = setTimeout(() => this.runNext(), 50); }
+    };
+  }
+}
+</script>
+</body>
+</html>

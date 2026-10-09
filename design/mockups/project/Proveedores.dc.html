@@ -1,0 +1,464 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Conectar un proveedor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8;transition:color .45s cubic-bezier(.22,1,.36,1)}a:hover{color:#182E86}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .45s cubic-bezier(.22,1,.36,1),box-shadow .45s cubic-bezier(.22,1,.36,1),opacity .45s cubic-bezier(.22,1,.36,1)}
+button:active{transform:scale(.98)}
+input{transition:border-color .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1)}
+input:focus{outline:none;border-color:#2340B8!important;box-shadow:0 0 0 4px rgba(35,64,184,.1)}
+.hov:hover{background:#EFECE5}
+.dk:hover{background:#2B2B2F}
+.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+.stg>*{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+.stg>*:nth-child(2){animation-delay:.06s}.stg>*:nth-child(3){animation-delay:.12s}.stg>*:nth-child(4){animation-delay:.18s}.stg>*:nth-child(5){animation-delay:.24s}.stg>*:nth-child(6){animation-delay:.3s}
+.lift{transition:transform .55s cubic-bezier(.34,1.56,.64,1),box-shadow .55s cubic-bezier(.22,1,.36,1),background-color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1)}
+.lift:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(23,23,26,.08);border-color:#CFCAC0!important}
+.lift:hover .arr{transform:translateX(4px)}
+.arr{transition:transform .5s cubic-bezier(.34,1.56,.64,1)}
+.spin{width:14px;height:14px;border-radius:50%;border:2px solid #D9D5CC;border-top-color:#2340B8;animation:spin .8s linear infinite;box-sizing:border-box}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+.sk{background:#EFECE5;border-radius:8px;animation:pulse 1.6s ease-in-out infinite}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes swR{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes swL{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:none}}
+@keyframes bnc0{0%{opacity:0;transform:scale(.3) rotate(-14deg)}60%{opacity:1;transform:scale(1.14) rotate(4deg)}100%{opacity:1;transform:none}}
+@keyframes bnc1{0%{opacity:0;transform:scale(.3) rotate(-14deg)}60%{opacity:1;transform:scale(1.14) rotate(4deg)}100%{opacity:1;transform:none}}
+@keyframes drop{from{opacity:0;transform:translateY(-10px) scale(.7)}to{opacity:1;transform:none}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes shut{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height: 1000px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #D9D5CC; background: #E7E3DA; flex-wrap: wrap">
+<a href="Ajustes.dc.html" class="hov" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 10px; color: #17171A; text-decoration: none; background: #F6F4EF; border: 1px solid #D9D5CC">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Ajustes</a>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">newpaper://ajustes/ia/conectar</span>
+</div>
+<main style="flex: 1; padding: 36px 24px 64px; box-sizing: border-box">
+<div style="max-width: 1040px; margin: 0 auto">
+
+<sc-if value="{{open}}" hint-placeholder-val="{{ true }}">
+<div>
+<div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 16px">
+<div>
+<div style="font-family: 'Newsreader', serif; font-size: 38px; font-weight: 500; line-height: 1.1">Conectar un proveedor</div>
+<div style="color: #5E5B55; margin-top: 6px; font-size: 15px">Tres pasos y listo. No hace falta saber nada de inteligencia artificial.</div>
+</div>
+<button onClick="{{close}}" aria-label="Cerrar el asistente" class="hov" style="flex: none; width: 44px; height: 44px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #5E5B55; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+</div>
+
+<div style="position: relative; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 30px 0 34px">
+<div style="position: absolute; left: 16.66%; right: 16.66%; top: 17px; height: 2px; background: #E2DED5"></div>
+<div style="{{trackFill}}"></div>
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="3">
+<div style="position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; text-align: center">
+<span style="{{st.dot}}"><sc-if value="{{st.done}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if><sc-if value="{{st.notDone}}" hint-placeholder-val="{{ true }}"><span>{{st.n}}</span></sc-if></span>
+<span style="{{st.label}}">{{st.name}}</span>
+<span style="font-size: 12px; color: #8D8981">{{st.sub}}</span>
+</div>
+</sc-for>
+</div>
+
+<sc-if value="{{is1}}" hint-placeholder-val="{{ true }}">
+<div style="{{pane}}">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55; margin-bottom: 10px">RECOMENDADOS</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px">
+<sc-for list="{{recs}}" as="r" hint-placeholder-count="2">
+<button onClick="{{r.pick}}" class="lift" style="display: flex; flex-direction: column; align-items: flex-start; gap: 6px; text-align: left; min-height: 232px; padding: 24px; border-radius: 20px; background: #FFFFFF; border: 1px solid #E2DED5; color: #17171A">
+<span style="display: flex; align-items: center; justify-content: space-between; width: 100%">
+<span style="{{r.logoBox}}"><sc-if value="{{r.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{r.logo}}" alt="" width="30" height="30" style="display: block"></sc-if><sc-if value="{{r.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{r.mono}}</span></sc-if></span>
+<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.04em; padding: 4px 10px; border-radius: 999px; background: #E8ECFA; color: #2340B8">{{r.tag}}</span>
+</span>
+<span style="font-family: 'Newsreader', serif; font-size: 28px; font-weight: 500; margin-top: 16px; line-height: 1.1">{{r.name}}</span>
+<span style="font-size: 16px; color: #17171A; line-height: 1.35">{{r.pitch}}</span>
+<span style="font-size: 13px; color: #5E5B55; line-height: 1.5">{{r.desc}}</span>
+<span style="display: flex; align-items: center; gap: 6px; margin-top: auto; padding-top: 14px; font-size: 13px; font-weight: 600">Conectar {{r.name}}<svg class="arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span>
+</button>
+</sc-for>
+</div>
+
+<div style="margin-top: 16px; background: #FFFFFF; border: 1px dashed #CFCAC0; border-radius: 18px; padding: 18px 20px">
+<label for="k1" style="display: block; font-weight: 600; margin-bottom: 4px">¿Ya tienes una clave? Pégala aquí</label>
+<div style="font-size: 13px; color: #5E5B55; margin-bottom: 12px">Reconocemos el proveedor por cómo empieza la clave.</div>
+<div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap">
+<input id="k1" type="password" autocomplete="off" spellcheck="false" value="{{key}}" onChange="{{onKey}}" placeholder="sk-…, sk-ant-…, nvapi-…, AIza…" style="flex: 1 1 320px; min-width: 0; height: 46px; padding: 0 14px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #17171A">
+<sc-if value="{{hasDet}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="{{det.miniBox}}"><sc-if value="{{det.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{det.logo}}" alt="" width="20" height="20" style="display: block"></sc-if><sc-if value="{{det.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 15px; font-weight: 600">{{det.mono}}</span></sc-if></span>
+<span style="font-size: 13px">Es de <b style="font-weight: 600">{{det.name}}</b></span>
+<button onClick="{{goDet}}" class="dk" style="height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: #17171A; color: #F6F4EF; font-weight: 500">Continuar</button>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{unknownKey}}" hint-placeholder-val="{{ false }}"><div class="rise" style="margin-top: 10px; font-size: 13px; color: #8A5300">No reconocemos este prefijo. Elige el proveedor en la lista de abajo.</div></sc-if>
+<div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 12px">
+<span style="font-size: 12px; color: #8D8981; margin-right: 4px">Probar con una clave de ejemplo:</span>
+<sc-for list="{{samples}}" as="sm" hint-placeholder-count="5"><button onClick="{{sm.fill}}" class="hov" style="height: 32px; padding: 0 10px; border: 1px solid #E2DED5; border-radius: 8px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #17171A">{{sm.label}}</button></sc-for>
+</div>
+</div>
+
+<div style="display: flex; align-items: baseline; justify-content: space-between; margin: 30px 0 10px; gap: 12px; flex-wrap: wrap"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">NUBE</span><span style="font-size: 12px; color: #8D8981">Pagas por uso con tu propia clave</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 10px">
+<sc-for list="{{cloud}}" as="pv" hint-placeholder-count="9">
+<button onClick="{{pv.pick}}" class="lift" style="{{pv.style}}">
+<span style="{{pv.logoBox}}"><sc-if value="{{pv.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{pv.logo}}" alt="" width="22" height="22" style="display: block"></sc-if><sc-if value="{{pv.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600">{{pv.mono}}</span></sc-if></span>
+<span style="display: flex; flex-direction: column; gap: 1px; min-width: 0"><span style="font-weight: 600">{{pv.name}}</span><span style="font-size: 12px; color: #5E5B55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{pv.sub}}</span></span>
+</button>
+</sc-for>
+</div>
+
+<div style="display: flex; gap: 20px; flex-wrap: wrap; margin-top: 30px">
+<div style="flex: 2 1 420px; min-width: 0">
+<div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; gap: 12px; flex-wrap: wrap"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">EN TU EQUIPO</span><span style="font-size: 12px; color: #8D8981">Gratis y sin enviar datos</span></div>
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px">
+<sc-for list="{{local}}" as="pv" hint-placeholder-count="2">
+<button onClick="{{pv.pick}}" class="lift" style="{{pv.style}}">
+<span style="{{pv.logoBox}}"><img src="{{pv.logo}}" alt="" width="22" height="22" style="display: block"></span>
+<span style="display: flex; flex-direction: column; gap: 1px; min-width: 0; flex: 1"><span style="font-weight: 600">{{pv.name}}</span><span style="font-size: 12px; color: #5E5B55">{{pv.sub}}</span></span>
+<sc-if value="{{pv.det}}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; align-items: center; gap: 5px; flex: none; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 999px; background: #E3F2EC; color: #0B6B50; animation: drop .6s cubic-bezier(.34,1.56,.64,1) .5s both"><span class="pulse" style="width: 6px; height: 6px; border-radius: 50%; background: #0B6B50"></span>detectado</span></sc-if>
+</button>
+</sc-for>
+</div>
+</div>
+<div style="flex: 1 1 220px; min-width: 0">
+<div style="display: flex; align-items: baseline; margin-bottom: 10px"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">AVANZADO</span></div>
+<button onClick="{{pickCustom}}" class="lift" style="width: 100%; display: flex; align-items: center; gap: 12px; text-align: left; padding: 14px; min-height: 72px; box-sizing: border-box; border-radius: 16px; background: #FFFFFF; border: 1px solid #E2DED5; color: #17171A">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 11px; display: flex; align-items: center; justify-content: center; background: #EFECE5; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">{ }</span>
+<span style="display: flex; flex-direction: column; gap: 1px; min-width: 0"><span style="font-weight: 600">Compatible con OpenAI</span><span style="font-size: 12px; color: #5E5B55">Tu propio endpoint /v1</span></span>
+</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{is2}}" hint-placeholder-val="{{ false }}">
+<div style="{{pane}}">
+<div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start">
+<div style="flex: 1 1 520px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 20px; padding: 28px">
+<div style="display: flex; align-items: center; gap: 16px">
+<span style="{{cur.logoBox}}"><sc-if value="{{cur.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="34" height="34" style="display: block"></sc-if><sc-if value="{{cur.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 24px; font-weight: 600">{{cur.mono}}</span></sc-if></span>
+<div style="min-width: 0"><div style="font-family: 'Newsreader', serif; font-size: 30px; font-weight: 500; line-height: 1.1">{{cur.name}}</div><div style="font-size: 13px; color: #5E5B55; margin-top: 2px">{{cur.kindLabel}}</div></div>
+</div>
+<sc-if value="{{cur.isCustom}}" hint-placeholder-val="{{ false }}">
+<label for="kurl" style="display: block; font-weight: 600; margin: 24px 0 8px">Dirección base</label>
+<input id="kurl" value="{{url}}" onChange="{{onUrl}}" autocomplete="off" spellcheck="false" style="width: 100%; box-sizing: border-box; height: 48px; padding: 0 14px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 14px; color: #17171A">
+</sc-if>
+<label for="k2" style="display: block; font-weight: 600; margin: 24px 0 8px">{{keyLabel}}</label>
+<input id="k2" type="password" autocomplete="off" spellcheck="false" value="{{key}}" onChange="{{onKey}}" placeholder="{{cur.keyPh}}" style="width: 100%; box-sizing: border-box; height: 52px; padding: 0 14px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 15px; color: #17171A">
+<div style="min-height: 26px; margin-top: 10px">
+<sc-if value="{{hasDet}}" hint-placeholder-val="{{ false }}"><div style="{{detLine}}"><span style="width: 18px; height: 18px; border-radius: 50%; background: #0B6B50; color: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>Empieza por <span style="font-family: 'IBM Plex Mono', monospace; background: #E3F2EC; padding: 1px 6px; border-radius: 5px">{{det.pfx}}</span>: es una clave de {{det.name}}</div></sc-if>
+<sc-if value="{{unknownKey}}" hint-placeholder-val="{{ false }}"><div class="rise" style="font-size: 13px; color: #8A5300">No reconocemos el prefijo. Si es de {{cur.name}}, sigue adelante: lo comprobaremos en la prueba.</div></sc-if>
+</div>
+<div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 8px">
+<span style="font-size: 12px; color: #8D8981; margin-right: 4px">Claves de ejemplo:</span>
+<sc-for list="{{samples}}" as="sm" hint-placeholder-count="5"><button onClick="{{sm.fill}}" class="hov" style="height: 32px; padding: 0 10px; border: 1px solid #E2DED5; border-radius: 8px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #17171A">{{sm.label}}</button></sc-for>
+</div>
+<div style="display: flex; gap: 12px; align-items: flex-start; margin-top: 24px; padding: 14px 16px; background: #F6F4EF; border-radius: 14px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B6B50" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 1px"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>
+<div style="font-size: 13px; line-height: 1.5; color: #3D3B37">Tu clave se guarda en el llavero del sistema, cifrada. Nunca sale de tu equipo salvo hacia {{cur.name}}, y ni siquiera la ve la parte web de newpaper.</div>
+</div>
+</div>
+
+<aside style="flex: 1 1 320px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 20px; padding: 24px">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">¿NO TIENES CLAVE?</div>
+<button onClick="{{openSite}}" style="display: flex; align-items: center; gap: 8px; margin-top: 12px; height: 46px; padding: 0 16px; border: 1px solid #2340B8; border-radius: 12px; background: #E8ECFA; color: #2340B8; font-weight: 600">Consigue tu clave<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"></path></svg></button>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55; margin-top: 8px">{{cur.site}}</div>
+<sc-if value="{{opened}}" hint-placeholder-val="{{ false }}"><div class="rise" style="font-size: 12px; color: #0B6B50; margin-top: 6px">Abierta en tu navegador. Vuelve aquí cuando la tengas.</div></sc-if>
+<div style="display: flex; flex-direction: column; gap: 14px; margin-top: 20px">
+<sc-for list="{{cur.how}}" as="h" hint-placeholder-count="3">
+<div style="{{h.style}}">
+<span style="flex: none; width: 26px; height: 26px; border-radius: 50%; background: #17171A; color: #F6F4EF; font-family: 'IBM Plex Mono', monospace; font-size: 12px; display: flex; align-items: center; justify-content: center">{{h.n}}</span>
+<span style="font-size: 13px; line-height: 1.5; padding-top: 3px">{{h.t}}</span>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{cur.hasTip}}" hint-placeholder-val="{{ false }}"><div style="margin-top: 18px; padding: 12px 14px; background: #FBF5E8; color: #6B4100; border-radius: 12px; font-size: 12px; line-height: 1.5">{{cur.tip}}</div></sc-if>
+</aside>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px; flex-wrap: wrap">
+<button onClick="{{back}}" class="hov" style="height: 46px; padding: 0 18px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A">Atrás</button>
+<button onClick="{{test}}" aria-disabled="{{testAria}}" style="{{testBtn}}">Probar conexión<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{is3}}" hint-placeholder-val="{{ false }}">
+<div style="{{pane}}">
+<div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start">
+<div style="flex: 1 1 360px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 20px; padding: 24px">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 18px">
+<span style="{{cur.smallBox}}"><sc-if value="{{cur.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="22" height="22" style="display: block"></sc-if><sc-if value="{{cur.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 600">{{cur.mono}}</span></sc-if></span>
+<div><div style="font-family: 'Newsreader', serif; font-size: 22px">{{testTitle}}</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">{{cur.ep}}</div></div>
+</div>
+<sc-for list="{{checks}}" as="c" hint-placeholder-count="3">
+<div style="display: flex; gap: 14px; padding: 14px 0; border-top: 1px solid #EFECE6; align-items: flex-start">
+<span style="{{c.ico}}"><sc-if value="{{c.done}}" hint-placeholder-val="{{ false }}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if><sc-if value="{{c.run}}" hint-placeholder-val="{{ true }}"><span class="spin"></span></sc-if><sc-if value="{{c.wait}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px">{{c.n}}</span></sc-if></span>
+<div style="flex: 1; min-width: 0">
+<div style="{{c.titleStyle}}">{{c.label}}</div>
+<sc-if value="{{c.done}}" hint-placeholder-val="{{ false }}"><div class="rise" style="font-size: 13px; color: #5E5B55; margin-top: 2px">{{c.detail}}</div></sc-if>
+<sc-if value="{{c.isModels}}" hint-placeholder-val="{{ false }}"><div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px"><sc-for list="{{c.models}}" as="m" hint-placeholder-count="3"><span style="{{m.style}}">{{m.name}}</span></sc-for></div></sc-if>
+<sc-if value="{{c.isReply}}" hint-placeholder-val="{{ false }}"><div style="margin-top: 8px; padding: 10px 12px; background: #F6F4EF; border-radius: 4px 12px 12px 12px; font-family: 'Newsreader', serif; font-size: 16px; animation: drop .6s cubic-bezier(.34,1.56,.64,1) both">Listo para leer noticias contigo.</div></sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+
+<div style="flex: 1 1 520px; min-width: 0">
+<sc-if value="{{waiting}}" hint-placeholder-val="{{ false }}">
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 20px; padding: 24px; display: flex; flex-direction: column; gap: 12px">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #8D8981">ASIGNANDO MODELOS…</div>
+<div class="sk" style="height: 18px; width: 70%"></div>
+<div class="sk" style="height: 44px"></div><div class="sk" style="height: 44px"></div><div class="sk" style="height: 44px"></div><div class="sk" style="height: 44px"></div>
+</div>
+</sc-if>
+<sc-if value="{{assigned}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="background: #FFFFFF; border: 1.5px solid #17171A; border-radius: 20px; padding: 24px">
+<div style="display: flex; align-items: center; gap: 10px">
+<span style="width: 22px; height: 22px; border-radius: 50%; background: #0B6B50; color: #FFFFFF; display: flex; align-items: center; justify-content: center; animation: drop .6s cubic-bezier(.34,1.56,.64,1) both"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #0B6B50">ASIGNADO AUTOMÁTICAMENTE</span>
+</div>
+<div style="font-family: 'Newsreader', serif; font-size: 22px; line-height: 1.3; margin: 10px 0 16px">{{plain}}</div>
+<div class="stg">
+<sc-for list="{{tasks}}" as="t" hint-placeholder-count="6">
+<div style="display: flex; align-items: center; gap: 12px; padding: 11px 0; border-top: 1px solid #EFECE6">
+<span style="flex: none; width: 28px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">{{t.n}}</span>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px"><span style="font-weight: 500">{{t.name}}</span><span style="font-size: 12px; color: #5E5B55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{t.model}}</span></span>
+<span style="{{t.chip}}">{{t.where}}</span>
+<span style="flex: none; width: 96px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12px">{{t.cost}}</span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 8px; padding: 16px 18px; background: #17171A; color: #F6F4EF; border-radius: 14px">
+<div><div style="font-size: 12px; color: #B9B4A9">Coste estimado por análisis</div><div style="font-family: 'Newsreader', serif; font-size: 30px">{{total}}</div></div>
+<div style="text-align: right; font-size: 12px; color: #B9B4A9; line-height: 1.5">Agente aparte, {{agentCost}} por pregunta<br>Límite mensual: 15 € (cámbialo en Ajustes)</div>
+</div>
+<button onClick="{{toggleAdv}}" aria-expanded="{{advAria}}" class="hov" style="display: flex; align-items: center; gap: 8px; width: 100%; height: 46px; margin-top: 12px; padding: 0 10px; border: 0; border-radius: 10px; background: transparent; color: #5E5B55; font-size: 13px; text-align: left">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="{{chev}}"><path d="M9 6l6 6-6 6"></path></svg>Opciones avanzadas</button>
+<sc-if value="{{adv}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="padding: 4px 10px 6px 32px; font-size: 13px; color: #5E5B55; line-height: 1.55">Puedes cambiar el modelo de cada paso, la creatividad, el modelo de respaldo y los presets. <a href="Ajustes.dc.html">Abrir el configurador del pipeline</a></div>
+</sc-if>
+</div>
+</sc-if>
+</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-top: 24px; flex-wrap: wrap">
+<button onClick="{{back}}" class="hov" style="height: 46px; padding: 0 18px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A">Atrás</button>
+<button onClick="{{finish}}" aria-disabled="{{doneAria}}" style="{{doneBtn}}">Listo</button>
+</div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{closed}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; justify-content: center; padding-top: 80px">
+<div style="width: 100%; max-width: 520px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 24px; padding: 36px; text-align: center; animation: shut .7s cubic-bezier(.22,1,.36,1) both">
+<div style="position: relative; width: 72px; height: 72px; margin: 0 auto">
+<span style="{{cur.bigBox}}"><sc-if value="{{cur.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="36" height="36" style="display: block"></sc-if><sc-if value="{{cur.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 600">{{cur.mono}}</span></sc-if></span>
+<span style="position: absolute; right: -6px; bottom: -6px; width: 28px; height: 28px; border-radius: 50%; background: #0B6B50; color: #FFFFFF; border: 3px solid #FFFFFF; display: flex; align-items: center; justify-content: center; animation: drop .7s cubic-bezier(.34,1.56,.64,1) .3s both"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+</div>
+<div style="font-family: 'Newsreader', serif; font-size: 30px; font-weight: 500; margin-top: 20px">{{doneTitle}}</div>
+<div style="color: #5E5B55; margin-top: 6px; line-height: 1.5">{{doneSub}}</div>
+<div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 24px">
+<button onClick="{{restart}}" class="hov" style="height: 46px; padding: 0 18px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A">Conectar otro proveedor</button>
+<a href="Ajustes.dc.html" style="display: flex; align-items: center; height: 46px; padding: 0 18px; border-radius: 12px; background: #17171A; color: #F6F4EF; text-decoration: none; font-weight: 500">Volver a Ajustes</a>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { step: 1, dir: 'f', prov: 'openai', key: '', url: 'https://mi-servidor.local/v1', bk: 0, detId: null, opened: false, ph: 0, adv: false, closed: false };
+  }
+  componentWillUnmount() { (this.tm || []).forEach((t) => clearTimeout(t)); }
+  clearT() { (this.tm || []).forEach((t) => clearTimeout(t)); this.tm = []; }
+  startTest() {
+    this.clearT();
+    this.setState({ step: 3, dir: 'f', ph: 0, adv: false });
+    [[900, 1], [1900, 2], [3100, 3], [3800, 4]].forEach((p) => { this.tm.push(setTimeout(() => this.setState({ ph: p[1] }), p[0])); });
+  }
+  detect(k) {
+    const PFX = [['sk-ant-', 'anthropic'], ['sk-or-', 'openrouter'], ['nvapi-', 'nvidia'], ['xai-', 'xai'], ['AIza', 'gemini'], ['hf_', 'hf'], ['pplx-', 'perplexity'], ['sk-', 'openai']];
+    const v = (k || '').trim();
+    for (let i = 0; i < PFX.length; i++) if (v.indexOf(PFX[i][0]) === 0) return { pfx: PFX[i][0], id: PFX[i][1] };
+    return null;
+  }
+  setKey(v) {
+    const s = this.state, d = this.detect(v);
+    const nid = d ? d.id : null;
+    const patch = { key: v, detId: nid };
+    if (nid && nid !== s.detId) { patch.bk = s.bk + 1; if (s.step === 2) patch.prov = nid; }
+    this.setState(patch);
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', J = 'cubic-bezier(.34,1.56,.64,1)';
+    const B = '/_blob/';
+    const P = {
+      openai: { name: 'ChatGPT', sub: 'OpenAI', logo: B + 'a3e89b95754fab0b6e6d5b234cc85530', tint: '#ECECEA', ep: 'api.openai.com/v1', ping: '210 ms', site: 'platform.openai.com', sec: 'API keys', btn: 'Create new secret key', ph: 'sk-proj-…', big: ['GPT grande', 0.035], small: ['GPT mini', 0.004], models: ['GPT grande', 'GPT mini', 'GPT nano', 'o-razonador'], tip: 'La API se paga aparte de ChatGPT Plus: añade saldo en Billing, desde 5 $.' },
+      nous: { name: 'Nous Research', sub: 'Hermes, pesos abiertos', mono: 'N', tint: '#E9E4F7', ep: 'inference-api.nousresearch.com/v1', ping: '240 ms', site: 'portal.nousresearch.com', sec: 'API Keys', btn: 'Create key', ph: 'Pega la clave de Nous Portal', big: ['Hermes 4 405B', 0.01], small: ['Hermes 4 70B', 0.003], models: ['Hermes 4 405B', 'Hermes 4 70B', 'Hermes 3 8B'] },
+      anthropic: { name: 'Anthropic', sub: 'Claude', logo: B + 'ba377cf2a06c3e158b0b2aeacce903b7', tint: '#F6E7DD', ep: 'api.anthropic.com', ping: '180 ms', site: 'console.anthropic.com', sec: 'Settings → API keys', btn: 'Create Key', ph: 'sk-ant-…', big: ['Claude Sonnet', 0.015], small: ['Claude Haiku', 0.004], models: ['Claude Opus', 'Claude Sonnet', 'Claude Haiku'] },
+      gemini: { name: 'Gemini', sub: 'Google', logo: B + '51a886ba4778142cb4b9957c71e366f6', tint: '#E4EBFB', ep: 'generativelanguage.googleapis.com', ping: '160 ms', site: 'aistudio.google.com', sec: 'Get API key', btn: 'Create API key', ph: 'AIza…', big: ['Gemini Pro', 0.025], small: ['Gemini Flash', 0.003], models: ['Gemini Pro', 'Gemini Flash', 'Gemini Flash-Lite'], tip: 'Tiene un nivel gratuito con límites diarios: suficiente para probar.' },
+      deepseek: { name: 'DeepSeek', sub: 'V3 y R1', logo: B + '0a650a2d77b79d46568b3c30a33ae2c9', tint: '#E3E8FA', ep: 'api.deepseek.com', ping: '340 ms', site: 'platform.deepseek.com', sec: 'API keys', btn: 'Create new API key', ph: 'sk-…', big: ['DeepSeek R1', 0.009], small: ['DeepSeek V3', 0.004], models: ['DeepSeek V3', 'DeepSeek R1'] },
+      xai: { name: 'xAI', sub: 'Grok', logo: B + '20246f60aec5a544b9f0f7537d632e14', tint: '#EAEAEA', ep: 'api.x.ai/v1', ping: '230 ms', site: 'console.x.ai', sec: 'API Keys', btn: 'Create API key', ph: 'xai-…', big: ['Grok', 0.02], small: ['Grok mini', 0.005], models: ['Grok', 'Grok mini'] },
+      mistral: { name: 'Mistral', sub: 'Large y Small', logo: B + '3980b31a745ae93a87afafef0604abf8', tint: '#FCE9D6', ep: 'api.mistral.ai', ping: '150 ms', site: 'console.mistral.ai', sec: 'API Keys', btn: 'Create new key', ph: 'Pega tu clave de Mistral', big: ['Mistral Large', 0.015], small: ['Mistral Small', 0.002], models: ['Mistral Large', 'Mistral Small', 'Ministral 8B'] },
+      nvidia: { name: 'NVIDIA NIM', sub: 'build.nvidia.com', logo: B + '048157e8325fcfda7cee0ae95694d062', tint: '#E8F3DA', ep: 'integrate.api.nvidia.com/v1', ping: '190 ms', site: 'build.nvidia.com', sec: 'tu perfil → API Keys', btn: 'Generate API Key', ph: 'nvapi-…', big: ['Nemotron Ultra', 0.008], small: ['Llama 3.3 70B', 0.002], models: ['Nemotron Ultra', 'Llama 3.3 70B', 'Mistral NeMo'] },
+      perplexity: { name: 'Perplexity', sub: 'Sonar, con búsqueda', logo: B + '8812be03ab552d65051ad4dab501be9b', tint: '#DFF0F0', ep: 'api.perplexity.ai', ping: '260 ms', site: 'perplexity.ai/settings/api', sec: 'API Keys', btn: 'Generate', ph: 'pplx-…', big: ['Sonar Pro', 0.02], small: ['Sonar', 0.006], models: ['Sonar Pro', 'Sonar'] },
+      openrouter: { name: 'OpenRouter', sub: 'Cientos de modelos', logo: B + 'dd8c6ff2c71cb73bdcb2c252b050081d', tint: '#EAE8F6', ep: 'openrouter.ai/api/v1', ping: '200 ms', site: 'openrouter.ai/keys', sec: 'Keys', btn: 'Create Key', ph: 'sk-or-…', big: ['Claude Sonnet vía OpenRouter', 0.016], small: ['Llama 70B', 0.003], models: ['Claude Sonnet', 'GPT mini', 'Llama 70B', '+312'] },
+      hf: { name: 'Hugging Face', sub: 'Modelos abiertos', logo: B + '5ac192ecfbe7b570ec9433605b6637dd', tint: '#FFF1CC', ep: 'router.huggingface.co/v1', ping: '310 ms', site: 'huggingface.co/settings/tokens', sec: 'Settings → Access Tokens', btn: 'Create new token', ph: 'hf_…', big: ['Qwen 72B', 0.004], small: ['Llama 8B', 0.001], models: ['Qwen 72B', 'Llama 8B', 'Mixtral'] },
+      ollama: { name: 'Ollama', sub: 'Qwen 7B · Llama 8B · Mistral 7B', logo: B + 'a5ba83869b71d8f76e17ed7ed73b84d2', tint: '#EDEDEB', local: true, ep: 'localhost:11434', ping: '12 ms', big: ['Llama 8B', 0], small: ['Qwen 7B', 0], models: ['Qwen 7B', 'Llama 8B', 'Mistral 7B'] },
+      lmstudio: { name: 'LM Studio', sub: 'Ábrelo para detectarlo', logo: B + '176c4a1f00e7a1f59ede0c32da866dc3', tint: '#E6E5FA', local: true, ep: 'localhost:1234/v1', ping: '15 ms', big: ['Modelo cargado', 0], small: ['Modelo cargado', 0], models: ['Modelo cargado'] },
+      custom: { name: 'Compatible con OpenAI', sub: 'Tu propio endpoint', mono: '{ }', tint: '#EFECE5', custom: true, ep: s.url.replace(/^https?:\/\//, ''), ping: '45 ms', ph: 'Opcional', big: ['Tu modelo', 0.005], small: ['Tu modelo', 0.005], models: ['Tu modelo'] }
+    };
+    const cp = P[s.prov] || P.openai;
+    const go = (id) => {
+      const p = P[id];
+      if (p.local) { this.setState({ prov: id }); this.startTest(); return; }
+      const keep = s.detId === id;
+      this.setState({ prov: id, step: 2, dir: 'f', opened: false, key: keep ? s.key : '', detId: keep ? s.detId : null, bk: s.bk + 1 });
+    };
+    const boxOf = (p, size, rad) => 'flex:none;width:' + size + 'px;height:' + size + 'px;border-radius:' + rad + 'px;display:flex;align-items:center;justify-content:center;background:' + p.tint;
+    const recs = ['openai', 'nous'].map((id) => {
+      const p = P[id];
+      return {
+        name: p.name, logo: p.logo || '', hasLogo: !!p.logo, isMono: !p.logo, mono: p.mono || '', tag: 'Recomendado',
+        pitch: id === 'openai' ? 'El más fácil para empezar' : 'Modelos Hermes abiertos y sin censura editorial',
+        desc: id === 'openai' ? 'Los modelos de OpenAI con tu propia clave. Pagas solo lo que usas: un análisis cuesta céntimos.' : 'Pesos abiertos que cualquiera puede auditar, servidos desde Nous Portal con una API compatible con OpenAI.',
+        logoBox: boxOf(p, 56, 16), pick: () => go(id)
+      };
+    });
+    const tile = (id, i) => {
+      const p = P[id];
+      return {
+        name: p.name, sub: p.sub, logo: p.logo || '', hasLogo: !!p.logo, isMono: !p.logo, mono: p.mono || '', det: id === 'ollama',
+        pick: () => go(id), logoBox: boxOf(p, 40, 11),
+        style: 'display:flex;align-items:center;gap:12px;text-align:left;padding:14px;min-height:72px;box-sizing:border-box;border-radius:16px;background:#FFFFFF;border:1px solid #E2DED5;color:#17171A;animation:rise .6s ' + E + ' both;animation-delay:' + (120 + i * 35) + 'ms'
+      };
+    };
+    const cloud = ['anthropic', 'gemini', 'deepseek', 'xai', 'mistral', 'nvidia', 'perplexity', 'openrouter', 'hf'].map(tile);
+    const local = ['ollama', 'lmstudio'].map((id, i) => tile(id, i + 9));
+    const d = this.detect(s.key);
+    const dp = d ? P[d.id] : null;
+    const SAMPLES = [['sk-ant-', 'sk-ant-api03-demo7Hq2mV9pL0aR4tN8eW1'], ['nvapi-', 'nvapi-demo-Qm4xT1bW8kZ3yH6cJ0'], ['xai-', 'xai-demo9fK2pL7vR1sD4gH8'], ['AIza', 'AIzaSyDemo4bR7nQ2xW9cV5mL3'], ['sk-', 'sk-proj-demo2Lw8Zp5Kq1Xr7']];
+    const samples = SAMPLES.map((x) => ({ label: x[0] + '…', fill: () => this.setKey(x[1]) }));
+    const keyOk = cp.custom ? true : s.key.trim().length >= 8;
+    const steps = [['Elegir', 'Proveedor o clave'], ['Clave', 'Pégala y listo'], ['Prueba', 'Conexión y modelos']].map((x, i) => {
+      const n = i + 1, done = s.step > n, cur = s.step === n;
+      return {
+        n: String(n), name: x[0], sub: x[1], done, notDone: !done,
+        dot: 'width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:\'IBM Plex Mono\',monospace;font-size:13px;font-weight:500;box-sizing:border-box;transition:background-color .5s ' + E + ',color .5s ' + E + ',box-shadow .5s ' + E + ',transform .6s ' + J + ';' + (done ? 'background:#17171A;color:#F6F4EF' : cur ? 'background:#FFFFFF;color:#2340B8;box-shadow:0 0 0 2px #2340B8,0 0 0 7px rgba(35,64,184,.12);transform:scale(1.08)' : 'background:#F6F4EF;color:#8D8981;box-shadow:inset 0 0 0 1.5px #D9D5CC'),
+        label: 'font-weight:' + (cur ? 600 : 500) + ';color:' + (s.step >= n ? '#17171A' : '#8D8981') + ';transition:color .5s ' + E
+      };
+    });
+    const ph = s.ph;
+    const models = cp.models.map((m, i) => ({ name: m, style: 'display:inline-flex;align-items:center;height:28px;padding:0 10px;border-radius:999px;font-size:12px;background:#F6F4EF;border:1px solid #E2DED5;animation:drop .5s ' + J + ' both;animation-delay:' + (i * 90) + 'ms' }));
+    const checks = [
+      ['Conectar con el servidor', 'Responde en ' + cp.ping, 'ping'],
+      ['Listar modelos', cp.models.length + (cp.models.length === 1 ? ' modelo disponible' : ' modelos disponibles'), 'models'],
+      ['Prueba de respuesta', 'Respuesta correcta en 0,8 s', 'reply']
+    ].map((c, i) => {
+      const done = ph > i, run = ph === i;
+      return {
+        n: String(i + 1), label: c[0], detail: c[1], done, run, wait: !done && !run, models,
+        isModels: c[2] === 'models' && done, isReply: c[2] === 'reply' && done,
+        titleStyle: 'font-weight:500;transition:color .5s ' + E + ';color:' + (done || run ? '#17171A' : '#8D8981'),
+        ico: 'flex:none;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background-color .5s ' + E + ',color .5s ' + E + ';' + (done ? 'background:#0B6B50;color:#FFFFFF;animation:drop .5s ' + J + ' both' : run ? 'background:#E8ECFA;color:#2340B8' : 'background:#F1EEE7;color:#8D8981')
+      };
+    });
+    const eur = (v) => (v === 0 ? 'gratis' : v < 0.01 ? '<0,01 €' : '~' + v.toFixed(2).replace('.', ',') + ' €');
+    const isLocal = !!cp.local;
+    const LOCAL = ['Qwen 7B · Ollama', 0];
+    const T = [
+      ['01', 'Extracción', ['Readability · sin IA', 0], true, 0],
+      ['02', 'Afirmaciones', isLocal ? [cp.small[0] + ' · ' + cp.name, 0] : LOCAL, true, 1],
+      ['03', 'Verificación', [cp.big[0], cp.big[1]], isLocal, 2],
+      ['04', 'Neutralidad', [cp.small[0], cp.small[1]], isLocal, 1],
+      ['05', 'Síntesis', [cp.big[0], cp.big[1]], isLocal, 2],
+      ['06', 'Agente', [cp.small[0], cp.small[1]], isLocal, -1]
+    ];
+    let total = 0;
+    const tasks = T.map((t) => {
+      const c = t[4] > 0 ? t[2][1] * t[4] : t[4] === -1 ? t[2][1] : 0;
+      if (t[4] > 0) total += c;
+      const inHome = t[3] || c === 0;
+      return {
+        n: t[0], name: t[1], model: t[2][0], where: inHome ? 'tu equipo' : 'nube',
+        cost: t[4] === -1 ? (c === 0 ? 'gratis' : eur(c) + ' /preg.') : eur(c),
+        chip: 'flex:none;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;' + (inHome ? 'background:#E3F2EC;color:#0B6B50' : 'background:#E8ECFA;color:#2340B8')
+      };
+    });
+    const plain = isLocal ? 'Todo se hará en tu equipo con ' + cp.big[0] + '. Gratis y sin enviar nada fuera.' : 'Verificar y redactar la síntesis usarán ' + cp.big[0] + '; lo ligero, tu modelo local.';
+    const canDone = ph >= 4;
+    return {
+      open: !s.closed, closed: s.closed,
+      close: () => { this.clearT(); this.setState({ closed: true }); },
+      restart: () => { this.clearT(); this.setState({ closed: false, step: 1, dir: 'b', key: '', detId: null, ph: 0, adv: false, opened: false }); },
+      is1: s.step === 1, is2: s.step === 2, is3: s.step === 3,
+      steps,
+      trackFill: 'position:absolute;left:16.66%;top:17px;height:2px;background:#17171A;transition:width .9s ' + E + ';width:' + ((s.step - 1) * 33.33).toFixed(2) + '%',
+      pane: 'animation:' + (s.dir === 'b' ? 'swL' : 'swR') + ' .65s ' + E + ' both',
+      recs, cloud, local, samples,
+      pickCustom: () => go('custom'),
+      key: s.key, url: s.url,
+      onKey: (e) => this.setKey(e.target.value),
+      onUrl: (e) => this.setState({ url: e.target.value }),
+      hasDet: !!dp, unknownKey: !dp && s.key.trim().length >= 4,
+      det: dp ? {
+        name: dp.name, pfx: d.pfx, logo: dp.logo || '', hasLogo: !!dp.logo, isMono: !dp.logo, mono: dp.mono || '',
+        miniBox: boxOf(dp, 36, 10) + ';animation:bnc' + (s.bk % 2) + ' .7s ' + J + ' both'
+      } : { name: '', pfx: '', logo: '', hasLogo: false, isMono: false, mono: '', miniBox: '' },
+      detLine: 'display:flex;align-items:center;gap:8px;font-size:13px;color:#0B6B50;animation:drop' + ' .6s ' + J + ' both',
+      goDet: () => { if (d) this.setState({ prov: d.id, step: 2, dir: 'f', opened: false }); },
+      cur: {
+        name: cp.name, logo: cp.logo || '', hasLogo: !!cp.logo, isMono: !cp.logo, mono: cp.mono || '', ep: cp.ep, isCustom: !!cp.custom,
+        site: cp.site || 'La documentación de tu servidor', keyPh: cp.ph || 'Pega aquí tu clave', hasTip: !!cp.tip, tip: cp.tip || '',
+        kindLabel: cp.custom ? 'Cualquier servidor que hable la API de OpenAI' : 'En la nube · pagas por uso con tu propia clave',
+        logoBox: boxOf(cp, 68, 18) + ';animation:bnc' + (s.bk % 2) + ' .75s ' + J + ' both',
+        smallBox: boxOf(cp, 44, 12), bigBox: boxOf(cp, 72, 20),
+        how: (cp.custom
+          ? ['Copia la dirección base de tu servidor: suele terminar en /v1.', 'Si pide clave, pégala abajo; si no, déjalo vacío.', 'Pulsa «Probar conexión» y listo.']
+          : ['Entra o crea una cuenta en ' + cp.site + '.', 'Abre ' + cp.sec + ' y pulsa «' + cp.btn + '».', 'Copia la clave y pégala aquí. Solo se muestra una vez.']
+        ).map((t, i) => ({ n: String(i + 1), t, style: 'display:flex;gap:12px;align-items:flex-start;animation:rise .6s ' + E + ' both;animation-delay:' + (200 + i * 90) + 'ms' }))
+      },
+      keyLabel: cp.custom ? 'Clave (opcional)' : 'Pega tu clave de ' + cp.name,
+      opened: s.opened, openSite: () => this.setState({ opened: true }),
+      back: () => { this.clearT(); this.setState({ step: s.step === 3 && P[s.prov] && P[s.prov].local ? 1 : s.step - 1, dir: 'b', ph: 0 }); },
+      test: () => { if (keyOk) this.startTest(); },
+      testAria: keyOk ? 'false' : 'true',
+      testBtn: 'display:flex;align-items:center;gap:8px;height:46px;padding:0 20px;border:0;border-radius:12px;font-weight:500;' + (keyOk ? 'background:#17171A;color:#F6F4EF;cursor:pointer' : 'background:#E2DED5;color:#8D8981;cursor:not-allowed'),
+      testTitle: ph >= 3 ? cp.name + ' funciona' : 'Probando ' + cp.name + '…',
+      checks,
+      waiting: ph < 4, assigned: ph >= 4,
+      plain, tasks, total: total === 0 ? 'gratis' : eur(total), agentCost: eur(cp.small[1]),
+      adv: s.adv, advAria: s.adv ? 'true' : 'false', toggleAdv: () => this.setState({ adv: !s.adv }),
+      chev: 'transition:transform .5s ' + J + ';transform:rotate(' + (s.adv ? 90 : 0) + 'deg)',
+      finish: () => { if (canDone) this.setState({ closed: true }); },
+      doneAria: canDone ? 'false' : 'true',
+      doneBtn: 'height:46px;padding:0 28px;border:0;border-radius:12px;font-weight:600;' + (canDone ? 'background:#17171A;color:#F6F4EF;cursor:pointer' : 'background:#E2DED5;color:#8D8981;cursor:not-allowed'),
+      doneTitle: ph >= 4 ? cp.name + ' está conectado' : 'Asistente cerrado',
+      doneSub: ph >= 4 ? (isLocal ? 'Analizarás noticias gratis y sin que nada salga de tu equipo.' : 'Cada análisis costará unos ' + eur(total).replace('~', '') + '. Lo ligero sigue en tu equipo.') : 'No se ha guardado nada. Puedes volver a empezar cuando quieras.'
+    };
+  }
+}
+</script>
+</body>
+</html>

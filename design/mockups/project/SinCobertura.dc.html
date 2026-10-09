@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Hecho sin cobertura</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8}a:hover{color:#182E86}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .45s cubic-bezier(.22,1,.36,1),box-shadow .45s cubic-bezier(.22,1,.36,1)}
+button:active{transform:scale(.98)}
+.hov:hover{background:#EFECE5}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.fade{animation:fade .5s cubic-bezier(.22,1,.36,1) both}
+.modal{animation:modal .6s cubic-bezier(.34,1.4,.64,1) both}
+.shake{animation:shake .5s cubic-bezier(.36,.07,.19,.97) both}
+.pulse{animation:pulse 1.4s ease-in-out infinite}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes modal{from{opacity:0;transform:translateY(24px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes shake0{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(3px)}30%,50%,70%{transform:translateX(-5px)}40%,60%{transform:translateX(5px)}}
+@keyframes shake1{10%,90%{transform:translateX(-1px)}20%,80%{transform:translateX(3px)}30%,50%,70%{transform:translateX(-5px)}40%,60%{transform:translateX(5px)}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="position: relative; min-height: 1000px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #D9D5CC; background: #E7E3DA; flex-wrap: wrap">
+<a href="Main.dc.html" class="hov" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 10px; color: #17171A; text-decoration: none; background: #F6F4EF; border: 1px solid #D9D5CC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Volver</a>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">diariodeltietar.es/local/cierre-puente-valdelacasa</span>
+</div>
+<main style="width: 100%; max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+<div class="rise" style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">DIARIO DEL TIÉTAR · LOCAL · HACE 40 MIN</span>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 40px; line-height: 1.12; margin: 0">Cierran el puente de Valdelacasa por daños en la estructura</h1>
+<p style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.6; color: #3D3B37; margin: 0">Vecinos denuncian grietas desde hace meses. El ayuntamiento habla de un cierre preventivo de al menos tres semanas.</p>
+</div>
+
+<sc-if value="{{isEmpty}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 20px; animation-delay: 120ms">
+<div style="display: flex; gap: 16px; align-items: flex-start">
+<span style="flex: none; width: 44px; height: 44px; border-radius: 12px; background: #F1EEE7; display: flex; align-items: center; justify-content: center"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#5E5B55" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4M8 11h6"></path></svg></span>
+<div><div style="font-family: 'Newsreader', serif; font-size: 24px; line-height: 1.2">No hay suficiente cobertura para contrastar</div><div style="color: #5E5B55; margin-top: 6px; line-height: 1.55">Ningún otro medio de tu lista ni la búsqueda de respaldo han publicado este hecho. Tampoco hay fuentes oficiales todavía.</div></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<div style="background: #F6F4EF; border-radius: 12px; padding: 14px"><div style="font-family: 'Newsreader', serif; font-size: 28px">0</div><div style="font-size: 12px; color: #5E5B55">otras coberturas</div></div>
+<div style="background: #F6F4EF; border-radius: 12px; padding: 14px"><div style="font-family: 'Newsreader', serif; font-size: 28px">0</div><div style="font-size: 12px; color: #5E5B55">fuentes oficiales</div></div>
+<div style="background: #F6F4EF; border-radius: 12px; padding: 14px"><div style="font-family: 'Newsreader', serif; font-size: 28px">34</div><div style="font-size: 12px; color: #5E5B55">medios revisados</div></div>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<button onClick="{{watch}}" style="{{watchBtn}}">{{watchLabel}}</button>
+<button onClick="{{openModal}}" style="height: 46px; padding: 0 18px; border: 1px solid #B26A00; border-radius: 12px; background: #FBF0DC; color: #6B4100; font-weight: 500">Investigar con IA…</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isGen}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 26px; display: flex; flex-direction: column; gap: 12px">
+<div style="font-weight: 600; margin-bottom: 4px">Investigando sin fuentes contrastadas…</div>
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="4"><div style="{{st.row}}"><span style="{{st.dot}}"></span>{{st.t}}</div></sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="border: 2px dashed #B26A00; border-radius: 20px; background: #FFFFFF; overflow: hidden">
+<div style="background: #FBF0DC; padding: 14px 22px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; color: #6B4100">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; background: #6B4100; color: #FBF0DC; padding: 3px 8px; border-radius: 6px">GENERADO POR IA · SIN CONTRASTAR</span>
+<span style="font-size: 13px">No lo compartas ni lo tomes como cierto sin comprobarlo.</span>
+</div>
+<div style="padding: 24px 26px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap">
+<div style="font-family: 'Newsreader', serif; font-size: 26px">Lo que se puede decir hasta ahora</div>
+<div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #6B4100"><span>Confianza</span><span style="display: flex; gap: 2px"><span style="width: 12px; height: 5px; border-radius: 2px; background: #B26A00"></span><span style="width: 12px; height: 5px; border-radius: 2px; background: #E7E3DA"></span><span style="width: 12px; height: 5px; border-radius: 2px; background: #E7E3DA"></span><span style="width: 12px; height: 5px; border-radius: 2px; background: #E7E3DA"></span><span style="width: 12px; height: 5px; border-radius: 2px; background: #E7E3DA"></span></span><span style="font-weight: 600">baja</span></div>
+</div>
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{claims}}" as="c" hint-placeholder-count="4">
+<div style="{{c.row}}"><span style="{{c.tag}}">{{c.k}}</span><div style="flex: 1"><div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5">{{c.t}}</div><div style="font-size: 12px; color: #5E5B55; margin-top: 2px">{{c.src}}</div></div></div>
+</sc-for>
+</div>
+<div style="background: #F6F4EF; border-radius: 14px; padding: 18px 20px">
+<div style="font-weight: 600; margin-bottom: 10px">Cómo comprobarlo tú</div>
+<sc-for list="{{checks}}" as="k" hint-placeholder-count="3">
+<button onClick="{{k.toggle}}" style="display: flex; align-items: center; gap: 12px; width: 100%; border: 0; background: transparent; padding: 8px 0; text-align: left; color: #17171A"><span style="{{k.box}}">{{k.mark}}</span><span style="{{k.text}}">{{k.t}}</span></button>
+</sc-for>
+</div>
+<div style="font-size: 12px; color: #8D8981; font-family: 'IBM Plex Mono', monospace">FUENTES: 1 ARTÍCULO LOCAL · 2 PUBLICACIONES EN REDES · 1 FORO VECINAL · CLAUDE</div>
+</div>
+</div>
+</sc-if>
+</main>
+
+<sc-if value="{{modal}}" hint-placeholder-val="{{ false }}">
+<div class="fade" style="position: absolute; inset: 0; background: rgba(23,23,26,.42); display: flex; align-items: flex-start; justify-content: center; padding: 120px 24px 24px; z-index: 10">
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt" style="width: 100%; max-width: 520px; background: #FFFFFF; border-radius: 22px; box-shadow: 0 30px 80px rgba(23,23,26,.3); overflow: hidden">
+<div style="padding: 26px 26px 0; display: flex; flex-direction: column; gap: 14px">
+<span style="width: 48px; height: 48px; border-radius: 14px; background: #FBF0DC; display: flex; align-items: center; justify-content: center"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#8A5300" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17v.5"></path></svg></span>
+<div id="mt" style="font-family: 'Newsreader', serif; font-size: 26px; line-height: 1.2">La IA va a cubrir un hecho que nadie ha contrastado</div>
+<div style="color: #3D3B37; line-height: 1.6">Sin otras coberturas ni fuentes oficiales, el agente tendrá que apoyarse en el artículo original, redes sociales y foros. Eso significa que:</div>
+<ul style="margin: 0; padding-left: 20px; color: #3D3B37; line-height: 1.7">
+<li>La información <b style="font-weight: 600">puede no ser correcta</b> o estar incompleta.</li>
+<li>La IA puede equivocarse al resumir o inventar detalles.</li>
+<li><b style="font-weight: 600">No se recomienda usarla sin contrastarla tú</b> antes.</li>
+</ul>
+<div style="{{checkWrap}}">
+<button onClick="{{toggleAck}}" role="checkbox" aria-checked="{{ackAria}}" style="display: flex; align-items: flex-start; gap: 12px; width: 100%; border: 0; background: transparent; padding: 0; text-align: left; color: #17171A"><span style="{{ackBox}}">{{ackMark}}</span><span style="font-size: 14px; line-height: 1.5">Entiendo que el resultado puede ser incorrecto y que debo contrastarlo manualmente.</span></button>
+<sc-if value="{{ackErr}}" hint-placeholder-val="{{ false }}"><div class="rise" style="font-size: 13px; color: #A3271B; margin: 8px 0 0 34px">Marca la casilla para continuar.</div></sc-if>
+</div>
+</div>
+<div style="display: flex; gap: 10px; justify-content: flex-end; padding: 20px 26px 22px; margin-top: 18px; border-top: 1px solid #EFECE6; background: #FBFAF7">
+<button onClick="{{closeModal}}" class="hov" style="height: 44px; padding: 0 16px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A">Cancelar</button>
+<button onClick="{{confirm}}" style="height: 44px; padding: 0 18px; border: 0; border-radius: 12px; background: #8A5300; color: #FFFFFF; font-weight: 500">Generar igualmente</button>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { phase: 'empty', modal: false, ack: false, err: false, ek: 0, step: 0, watching: false, checks: {} }; }
+  componentWillUnmount() { clearInterval(this.iv); }
+  confirm() {
+    if (!this.state.ack) { this.setState({ err: true, ek: this.state.ek + 1 }); return; }
+    this.setState({ modal: false, phase: 'gen', step: 0 });
+    clearInterval(this.iv);
+    this.iv = setInterval(() => { const n = this.state.step + 1; if (n >= 4) { clearInterval(this.iv); this.setState({ phase: 'done' }); } else this.setState({ step: n }); }, 700);
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const stepNames = ['Releyendo el artículo original', 'Buscando en redes sociales y foros locales', 'Cruzando lo poco que coincide', 'Redactando con avisos en cada frase'];
+    const K = { unica: ['Fuente única', 'background:#FBF0DC;color:#8A5300'], redes: ['Solo en redes', 'background:#FBE7E4;color:#A3271B'], coincide: ['2 fuentes no oficiales', 'background:#ECEAE5;color:#57544E'] };
+    const C = [
+      ['coincide', 'El puente de Valdelacasa está cerrado al tráfico desde esta mañana.', 'Artículo original · 2 vecinos en redes con fotos'],
+      ['unica', 'El ayuntamiento lo describe como un cierre preventivo de al menos tres semanas.', 'Solo lo afirma el artículo original; no hay bando municipal publicado'],
+      ['redes', 'Vecinos aseguran haber avisado de grietas desde la primavera.', 'Publicaciones en redes y un foro vecinal; no verificable'],
+      ['unica', 'No se conocen todavía el coste ni el plazo de la reparación.', 'Ausencia de información en todas las fuentes revisadas']
+    ];
+    const CH = ['Buscar un bando o nota en la web del ayuntamiento', 'Revisar el Boletín Oficial de la Provincia', 'Llamar a la Policía Local o a Protección Civil'];
+    return {
+      isEmpty: s.phase === 'empty', isGen: s.phase === 'gen', isDone: s.phase === 'done',
+      modal: s.modal,
+      openModal: () => this.setState({ modal: true, ack: false, err: false }),
+      closeModal: () => this.setState({ modal: false }),
+      confirm: () => this.confirm(),
+      toggleAck: () => this.setState({ ack: !s.ack, err: false }),
+      ackAria: s.ack ? 'true' : 'false',
+      ackMark: s.ack ? '✓' : '',
+      ackBox: 'flex:none;width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;transition:all .4s cubic-bezier(.34,1.56,.64,1);' + (s.ack ? 'background:#8A5300;color:#FFFFFF;border:1.5px solid #8A5300;transform:scale(1.08)' : 'background:#FFFFFF;color:transparent;border:1.5px solid ' + (s.err ? '#A3271B' : '#B9B4A9')),
+      ackErr: s.err,
+      checkWrap: 'margin-top:4px;padding:14px;border-radius:12px;transition:background-color .4s ' + E + ';background:' + (s.err ? '#FBE7E4' : '#F6F4EF') + ';' + (s.err ? 'animation:shake' + (s.ek % 2) + ' .5s cubic-bezier(.36,.07,.19,.97) both' : ''),
+      watch: () => this.setState({ watching: !s.watching }),
+      watchLabel: s.watching ? '✓ Te avisaremos si aparece cobertura' : 'Avisarme cuando haya cobertura',
+      watchBtn: 'height:46px;padding:0 18px;border-radius:12px;font-weight:500;' + (s.watching ? 'background:#E3F2EC;color:#0B6B50;border:1px solid #0B6B50' : 'background:#17171A;color:#F6F4EF;border:1px solid #17171A'),
+      steps: stepNames.map((t, i) => ({ t, row: 'display:flex;align-items:center;gap:10px;font-size:13px;transition:color .5s ' + E + ';color:' + (i <= s.step ? '#17171A' : '#A9A59C'), dot: 'width:8px;height:8px;border-radius:50%;transition:all .5s ' + E + ';' + (i < s.step ? 'background:#B26A00' : i === s.step ? 'background:#B26A00;animation:pulse 1.2s ease-in-out infinite' : 'background:#E2DED5') })),
+      claims: C.map((c, i) => ({ k: K[c[0]][0], t: c[1], src: c[2], tag: 'flex:none;font-size:11px;font-weight:500;padding:3px 8px;border-radius:999px;margin-top:3px;min-width:96px;text-align:center;' + K[c[0]][1], row: 'display:flex;gap:14px;padding:14px 0;border-top:1px solid #EFECE6;animation:rise .8s ' + E + ' both;animation-delay:' + (i * 120) + 'ms' })),
+      checks: CH.map((t, i) => { const on = !!s.checks[i]; return { t, mark: on ? '✓' : '', toggle: () => this.setState({ checks: { ...s.checks, [i]: !on } }), box: 'flex:none;width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;transition:all .4s cubic-bezier(.34,1.56,.64,1);' + (on ? 'background:#0B6B50;color:#FFFFFF;border:1.5px solid #0B6B50' : 'background:#FFFFFF;color:transparent;border:1.5px solid #B9B4A9'), text: 'font-size:14px;transition:color .4s ' + E + ';' + (on ? 'color:#8D8981;text-decoration:line-through' : 'color:#17171A') }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Navegador, análisis y agente</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8;transition:color .45s cubic-bezier(.22,1,.36,1),background-color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1)}a:hover{color:#182E86}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .45s cubic-bezier(.22,1,.36,1),box-shadow .45s cubic-bezier(.22,1,.36,1)}
+button:active{transform:scale(.98)}
+input{transition:border-color .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1)}
+input:focus{outline:none;border-color:#2340B8!important;box-shadow:0 0 0 4px rgba(35,64,184,.1)}
+::selection{background:#DCE3FA;color:#17171A}
+.hov:hover{background:#EFECE5}
+.dk:hover{background:#2B2B2F}
+.mi:hover{background:#F1EEE7}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.slide{animation:slide .9s cubic-bezier(.22,1,.36,1) both}
+.pop{animation:pop .6s cubic-bezier(.34,1.56,.64,1) both}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+.scan{position:absolute;left:-24px;right:-24px;height:140px;background:rgba(35,64,184,.06);border-top:1px solid rgba(35,64,184,.35);pointer-events:none;animation:scan 2.4s cubic-bezier(.65,0,.35,1) infinite alternate}
+.dot{width:6px;height:6px;border-radius:50%;background:#8D8981;animation:bounce 1.2s ease-in-out infinite}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes rise0{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes rise1{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes slide{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:translate(-50%,6px) scale(.92)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+@keyframes menu{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+.ld{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#D8D4CB}
+@keyframes swL0{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+@keyframes swL1{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:none}}
+@keyframes swR0{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+@keyframes swR1{from{opacity:0;transform:translateX(16px)}to{opacity:1;transform:none}}
+.ping{animation:ping 2s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes ping{0%{transform:translate(-50%,-50%) scale(.6);opacity:.7}100%{transform:translate(-50%,-50%) scale(2.8);opacity:0}}
+@keyframes fly0{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes fly1{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes scan{from{top:0%}to{top:82%}}
+@keyframes bounce{0%,80%,100%{transform:translateY(0);opacity:.4}40%{transform:translateY(-4px);opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height: 900px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: flex-end; gap: 2px; padding: 8px 12px 0; background: #E7E3DA; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; background: #F6F4EF; border-radius: 10px 10px 0 0; min-width: 0; max-width: 270px">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: #C2412F; flex: none"></span>
+<span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px">El salario mínimo bate récords…</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A5300; background: #FBF0DC; padding: 1px 6px; border-radius: 4px">{{shown}}</span>
+</div>
+<div class="hov" style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; color: #5E5B55; max-width: 240px; border-radius: 10px 10px 0 0">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: #8D8981; flex: none"></span>
+<span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px">Patronal y sindicatos ante el SMI</span>
+</div>
+<a href="Inicio.dc.html" aria-label="Nueva pestaña" class="hov" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: #5E5B55; text-decoration: none; font-size: 20px; border-radius: 8px; margin-bottom: 3px">+</a>
+</div>
+<div style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid #D9D5CC; flex-wrap: wrap">
+<button aria-label="Atrás" class="hov" style="width: 36px; height: 36px; border: 0; background: transparent; border-radius: 8px; color: #5E5B55"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<button aria-label="Adelante" style="width: 36px; height: 36px; border: 0; background: transparent; border-radius: 8px; color: #A9A59C"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+<div style="flex: 1 1 300px; min-width: 0; display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 6px 0 12px; background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 12px">
+<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#0B6B50" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>
+<span style="flex: 1; min-width: 0; color: #5E5B55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">eldiariorojo.es/<span style="color: #17171A">economia/salario-minimo-record</span></span>
+<a href="Ajustes.dc.html" class="hov" style="display: flex; align-items: center; gap: 5px; height: 28px; padding: 0 8px; border-radius: 8px; color: #5E5B55; text-decoration: none; font-size: 12px">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6l8-3z"></path></svg><span style="font-family: 'IBM Plex Mono', monospace">47</span></a>
+<div style="position: relative">
+<button onClick="{{toggleTor}}" aria-expanded="{{torAria}}" style="{{torChip}}"><span class="pulse" style="width: 6px; height: 6px; border-radius: 50%; background: currentColor"></span>Tor · {{exitCode}}</button>
+<sc-if value="{{torPop}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; right: -6px; top: 40px; z-index: 20; width: 300px; background: #FFFFFF; color: #17171A; border: 1px solid #E2DED5; border-radius: 18px; box-shadow: 0 20px 50px rgba(23,23,26,.18); overflow: hidden; transform-origin: top right; animation: menu .45s cubic-bezier(.22,1,.36,1) both">
+<div style="position: relative; width: 300px; height: 118px; overflow: hidden; background: #FBFAF7; border-bottom: 1px solid #EFECE6">
+<div style="{{layer}}">
+<sc-for list="{{miniDots}}" as="d" hint-placeholder-count="0"><i class="ld" style="{{d}}"></i></sc-for>
+<svg width="1000" height="389" style="position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none"><path d="{{arc}}" fill="none" stroke="#4A2FB8" stroke-width="1.6" stroke-dasharray="3 5" stroke-linecap="round" vector-effect="non-scaling-stroke" style="{{arcStyle}}"></path></svg>
+<span style="{{exitPin}}"></span>
+<sc-if value="{{showCand}}" hint-placeholder-val="{{ true }}"><span style="{{candPin}}"></span></sc-if>
+<sc-if value="{{flying}}" hint-placeholder-val="{{ false }}"><div style="{{plane}}"><svg width="24" height="24" viewBox="0 0 24 24" fill="#17171A" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round"><path d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7h-4l-2 2h-3l2-4-2-4h3l2 2h4l-2-7h3z"></path></svg></div></sc-if>
+</div>
+<span style="position: absolute; left: 10px; top: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; color: #4A2FB8; background: rgba(255,255,255,.88); padding: 2px 7px; border-radius: 5px">{{routeLabel}}</span>
+</div>
+<div style="display: flex; align-items: center; gap: 4px; padding: 12px 8px 6px">
+<button onClick="{{prev}}" aria-label="País anterior" class="hov" style="flex: none; width: 40px; height: 48px; border: 0; background: transparent; border-radius: 10px; color: #17171A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<div style="flex: 1; min-width: 0; text-align: center; overflow: hidden">
+<div style="{{candAnim}}"><div style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 500; letter-spacing: 0.06em">{{candCode}}</div><div style="font-size: 13px; margin-top: 1px">{{candName}}</div><div style="font-size: 11px; color: #8D8981; margin-top: 2px">{{candMs}} · {{candRelays}} relés de salida</div></div>
+</div>
+<button onClick="{{next}}" aria-label="País siguiente" class="hov" style="flex: none; width: 40px; height: 48px; border: 0; background: transparent; border-radius: 10px; color: #17171A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+<div style="display: flex; justify-content: center; gap: 4px; padding-bottom: 12px"><sc-for list="{{pager}}" as="pg" hint-placeholder-count="14"><span style="{{pg}}"></span></sc-for></div>
+<div style="padding: 0 12px 12px"><button onClick="{{fly}}" style="{{flyBtn}}">{{flyLabel}}</button></div>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 10px 14px; border-top: 1px solid #EFECE6; font-size: 11px"><span style="display: flex; align-items: center; gap: 6px; color: #4A2FB8"><span class="pulse" style="width: 6px; height: 6px; border-radius: 50%; background: #4A2FB8"></span>{{torStatus}}</span><a href="Ajustes.dc.html" style="text-decoration: none; white-space: nowrap">Más opciones</a></div>
+</div>
+</sc-if>
+</div>
+</div>
+<button onClick="{{togglePanel}}" aria-label="Mostrar u ocultar panel" style="{{panelBtn}}">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M5 8h14M7 8l-3 6a3 3 0 006 0L7 8zM17 8l-3 6a3 3 0 006 0l-3-6z"></path></svg>Análisis</button>
+<a href="Ajustes.dc.html" aria-label="Ajustes" class="hov" style="display: flex; align-items: center; justify-content: center; width: 36px; height: 36px; color: #5E5B55; border-radius: 8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></a>
+</div>
+<div style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch">
+<div style="flex: 999 1 560px; min-width: 0; padding: 44px 40px 64px; display: flex; justify-content: center">
+<article class="rise" style="max-width: 680px; width: 100%">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 28px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55; letter-spacing: 0.02em">EL DIARIO ROJO · ECONOMÍA · HACE 2 H</span>
+<a href="Ajustes.dc.html" style="font-size: 12px; color: #5E5B55; text-decoration: none; border: 1px solid #D9D5CC; border-radius: 999px; padding: 2px 10px">Medio: izquierda · 12 ± 8</a>
+</div>
+<button onClick="{{toggleLens}}" role="switch" aria-checked="{{lensAria}}" style="{{lensPill}}"><span style="{{lensDot}}"></span>Lente de sesgo</button>
+</div>
+<div style="margin-bottom: 30px; border: 1px solid #F4C0D1; background: #FBEAF0; border-radius: 14px; overflow: hidden">
+<button onClick="{{toggleAi}}" aria-expanded="{{aiAria}}" style="width: 100%; border: 0; background: transparent; padding: 12px 14px; display: flex; align-items: center; gap: 12px; text-align: left; color: #72243E">
+<span style="flex: none; width: 30px; height: 30px; border-radius: 8px; background: #F4C0D1; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600">IA</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600; font-size: 14px">Posible texto generado o editado con IA</span><span style="font-size: 12px; color: #993556">2 de 5 párrafos · probabilidad 74 % · marcados al margen</span></span>
+<span style="{{aiChev}}">›</span>
+</button>
+<sc-if value="{{aiOpen}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="padding: 0 14px 16px 56px; font-size: 13px; line-height: 1.55; color: #72243E; display: flex; flex-direction: column; gap: 12px">
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{aiSignals}}" as="g" hint-placeholder-count="3">
+<div style="background: #FFFFFF; border-radius: 10px; padding: 10px 12px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 11px; color: #993556">{{g.label}}</span><span style="font-weight: 600">{{g.value}}</span><span style="height: 4px; background: #FBEAF0; border-radius: 2px; overflow: hidden"><span style="{{g.bar}}"></span></span></div>
+</sc-for>
+</div>
+<div>Los detectores de IA se equivocan a menudo, sobre todo con textos cortos o muy editados. Tómalo como un indicio para leer con más cuidado, nunca como una prueba.</div>
+</div>
+</sc-if>
+</div>
+<h1 style="{{h1}}">El salario mínimo bate <button onClick="{{c5.pick}}" style="{{c5.mark}}">récords</button> mientras la patronal sigue <button onClick="{{c6.pick}}" style="{{c6.mark}}">en pie de guerra</button></h1>
+<p style="{{lead}}">El Gobierno aprueba una nueva subida que, según el ministerio, beneficiará a 2,5 millones de trabajadores.</p>
+<div onMouseUp="{{onSel}}" onContextMenu="{{onCtx}}" onClick="{{closeMenu}}" style="position: relative">
+<sc-if value="{{analyzing}}" hint-placeholder-val="{{ false }}"><div class="scan"></div></sc-if>
+<div style="{{body}}">
+<p style="margin: 0 0 24px">El Consejo de Ministros ha aprobado este martes una subida del salario mínimo interprofesional que lo sitúa en <button onClick="{{c1.pick}}" style="{{c1.mark}}">el nivel más alto de toda Europa</button><sc-if value="{{c1.tagOn}}" hint-placeholder-val="{{ false }}"><sup style="{{c1.tag}}">{{c1.statusLabel}}</sup></sc-if>, una medida que según el ministerio <button onClick="{{c2.pick}}" style="{{c2.mark}}">beneficiará a 2,5 millones de trabajadores</button><sc-if value="{{c2.tagOn}}" hint-placeholder-val="{{ false }}"><sup style="{{c2.tag}}">{{c2.statusLabel}}</sup></sc-if>.</p>
+<p style="margin: 0 0 24px">Mientras tanto, <button onClick="{{c3.pick}}" style="{{c3.mark}}">la patronal, fiel a su costumbre, vuelve a anteponer sus beneficios</button><sc-if value="{{c3.tagOn}}" hint-placeholder-val="{{ false }}"><sup style="{{c3.tag}}">{{c3.statusLabel}}</sup></sc-if> a la dignidad de quienes sostienen el país, y amenaza con <button onClick="{{c7.pick}}" style="{{c7.mark}}">un apocalipsis de empleo que nunca llega</button>.</p>
+<p style="margin: 0 0 24px; position: relative"><span style="{{aiMark}}">IA</span>Desde 2018 el SMI <button onClick="{{c4.pick}}" style="{{c4.mark}}">ha crecido un 61 % sin que se haya destruido empleo</button><sc-if value="{{c4.tagOn}}" hint-placeholder-val="{{ false }}"><sup style="{{c4.tag}}">{{c4.statusLabel}}</sup></sc-if>, según fuentes sindicales consultadas por este diario.</p>
+<p style="margin: 0; position: relative"><span style="{{aiMark}}">IA</span>La medida entrará en vigor con efectos retroactivos desde el 1 de enero, y el ministerio prevé revisarla de nuevo el año próximo en función de la evolución de los precios.</p>
+</div>
+<sc-if value="{{selOn}}" hint-placeholder-val="{{ false }}">
+<div data-pop="1" style="{{selPos}}">
+<button onClick="{{askSel}}" class="dk" style="display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: #F6F4EF; font-size: 13px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"></path></svg>Preguntar</button>
+<button onClick="{{verifySel}}" class="dk" style="height: 34px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: #F6F4EF; font-size: 13px">Verificar</button>
+<button onClick="{{explainSel}}" class="dk" style="height: 34px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; color: #F6F4EF; font-size: 13px">Explicar</button>
+</div>
+</sc-if>
+<sc-if value="{{menuOn}}" hint-placeholder-val="{{ false }}">
+<div data-pop="1" style="{{menuPos}}">
+<div style="padding: 8px 12px 6px; font-size: 11px; color: #8D8981; font-family: 'IBM Plex Mono', monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">«{{selShort}}»</div>
+<button onClick="{{askSel}}" class="mi" style="display: flex; justify-content: space-between; width: 100%; height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; text-align: left; color: #17171A"><span>Preguntar al agente</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">Ctrl+K</span></button>
+<button onClick="{{verifySel}}" class="mi" style="display: block; width: 100%; height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; text-align: left; color: #17171A">Verificar este fragmento</button>
+<button onClick="{{explainSel}}" class="mi" style="display: block; width: 100%; height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; text-align: left; color: #17171A">Explicar de forma sencilla</button>
+<div style="height: 1px; background: #EFECE6; margin: 4px 0"></div>
+<button onClick="{{closeMenu}}" class="mi" style="display: block; width: 100%; height: 36px; padding: 0 12px; border: 0; border-radius: 8px; background: transparent; text-align: left; color: #5E5B55">Copiar</button>
+</div>
+</sc-if>
+</div>
+<div style="margin-top: 36px; padding-top: 16px; border-top: 1px solid #E2DED5; font-size: 13px; color: #8D8981">Selecciona cualquier parte del texto, o haz clic derecho, para preguntar al agente por ese fragmento.</div>
+</article>
+</div>
+<sc-if value="{{panelOpen}}" hint-placeholder-val="{{ true }}">
+<aside class="slide" style="flex: 1 1 440px; max-width: 100%; border-left: 1px solid #D9D5CC; background: #FBFAF7; box-sizing: border-box; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 2px; padding: 14px 20px 0; border-bottom: 1px solid #E2DED5">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="3">
+<button onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button>
+</sc-for>
+<button onClick="{{togglePanel}}" aria-label="Cerrar panel" class="hov" style="margin-left: auto; width: 34px; height: 34px; border: 0; background: transparent; color: #5E5B55; border-radius: 8px; font-size: 18px; margin-bottom: 6px">×</button>
+</div>
+
+<sc-if value="{{tabAnalysis}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="padding: 24px; display: flex; flex-direction: column; gap: 26px">
+<div style="display: flex; align-items: center; gap: 22px">
+<div style="position: relative; width: 124px; height: 124px; flex: none">
+<svg width="124" height="124" viewBox="0 0 124 124" style="transform: rotate(-90deg)"><circle cx="62" cy="62" r="54" fill="none" stroke="#ECE9E2" stroke-width="7"></circle><circle cx="62" cy="62" r="54" fill="none" stroke="#B26A00" stroke-width="7" stroke-linecap="round" stroke-dasharray="339.3" style="{{ring}}"></circle></svg>
+<div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center"><span style="font-family: 'Newsreader', serif; font-size: 48px; line-height: 1; font-weight: 500; color: #8A5300; letter-spacing: -0.03em">{{shown}}</span><span style="font-size: 10px; color: #8D8981; letter-spacing: 0.08em; margin-top: 4px">NEUTRALIDAD</span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-family: 'Newsreader', serif; font-size: 24px; line-height: 1.15">{{verdict}}</span>
+<span style="font-size: 13px; color: #5E5B55; line-height: 1.5">{{scoreNote}}</span>
+<span style="font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: #8D8981">{{tierLabel}}</span>
+</div>
+</div>
+<div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px"><span style="font-size: 12px; color: #5E5B55; letter-spacing: 0.06em">ENCUADRE FRENTE A 5 COBERTURAS</span></div>
+<div style="position: relative; height: 46px">
+<div style="position: absolute; left: 0; right: 0; top: 22px; height: 2px; display: flex; gap: 3px"><div style="flex: 2; background: #EBC7C0"></div><div style="flex: 1; background: #DAD6CD"></div><div style="flex: 2; background: #C3CFF2"></div></div>
+<sc-for list="{{others}}" as="o" hint-placeholder-count="5"><span title="{{o.name}}" style="{{o.style}}"></span></sc-for>
+<span style="{{avgStyle}}"></span>
+<div style="{{meStyle}}"><span style="width: 16px; height: 16px; border-radius: 50%; background: #17171A; box-shadow: 0 0 0 4px #FBFAF7"></span><span style="font-size: 11px; font-weight: 500; margin-top: 3px">este</span></div>
+</div>
+<div style="display: flex; justify-content: space-between; font-size: 11px; color: #8D8981; margin-top: 4px"><span>izquierda</span><span>centro</span><span>derecha</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid #E2DED5; border-bottom: 1px solid #E2DED5">
+<sc-for list="{{metrics}}" as="m" hint-placeholder-count="4">
+<div style="{{m.cell}}">
+<span style="font-family: 'Newsreader', serif; font-size: 22px; line-height: 1">{{m.value}}</span>
+<span style="font-size: 11px; color: #5E5B55; line-height: 1.3">{{m.label}}</span>
+</div>
+</sc-for>
+</div>
+<button onClick="{{toggleAi}}" class="hov" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin: -10px -12px; border: 0; background: transparent; border-radius: 10px; text-align: left; color: #17171A"><span style="flex: none; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: #993556; background: #FBEAF0; border: 1px solid #F4C0D1; padding: 2px 6px; border-radius: 5px">IA</span><span style="flex: 1; font-size: 13px">Autoría con IA probable en 2 de 5 párrafos</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #993556">74 %</span></button>
+<a href="Hemeroteca.dc.html" class="hov" style="display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin: -16px -12px -10px; border-radius: 10px; text-decoration: none; color: #17171A"><span style="flex: none; width: 9px; height: 9px; margin: 0 7px; transform: rotate(45deg); background: #B26A00; border-radius: 2px"></span><span style="flex: 1; font-size: 13px">Editada 3 veces tras publicarse, sin aviso</span><span style="font-size: 12px; color: #2340B8">Hemeroteca →</span></a>
+<sc-if value="{{analyzing}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="4"><div style="{{st.row}}"><span style="{{st.dot}}"></span><span>{{st.label}}</span></div></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{showUpgrade}}" hint-placeholder-val="{{ true }}">
+<button onClick="{{runFull}}" style="height: 48px; border: 0; background: #2340B8; color: #FFFFFF; border-radius: 12px; font-weight: 500; font-size: 14px">Contrastar y verificar</button>
+</sc-if>
+<div>
+<div style="font-size: 12px; color: #5E5B55; letter-spacing: 0.06em; margin-bottom: 4px">AFIRMACIONES</div>
+<sc-for list="{{claims}}" as="c" hint-placeholder-count="4">
+<div style="{{c.row}}">
+<button onClick="{{c.pick}}" class="hov" style="width: 100%; text-align: left; border: 0; background: transparent; padding: 12px 8px; margin: 0 -8px; border-radius: 8px; display: flex; gap: 12px; align-items: baseline; color: #17171A; box-sizing: content-box">
+<span style="{{c.badge}}"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; line-height: 1.4">{{c.text}}</span><span style="{{c.labelStyle}}">{{c.statusLabel}}</span></span>
+<span style="{{c.chev}}">›</span>
+</button>
+<sc-if value="{{c.open}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="padding: 0 0 14px 20px; font-size: 13px; line-height: 1.55; color: #3D3B37">
+<p style="margin: 0 0 8px">{{c.detail}}</p>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8">{{c.source}}</span><button onClick="{{c.ask}}" class="hov" style="height: 30px; padding: 0 10px; border: 1px solid #D9D5CC; border-radius: 8px; background: #FFFFFF; font-size: 12px">Preguntar</button></div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<a href="Sintesis.dc.html" style="display: flex; align-items: center; justify-content: center; height: 48px; background: #17171A; border-radius: 12px; color: #F6F4EF; text-decoration: none; font-weight: 500">Leer la noticia neutral</a>
+</div>
+</sc-if>
+
+<sc-if value="{{tabCoverage}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="padding: 24px; display: flex; flex-direction: column; gap: 4px">
+<div style="font-size: 13px; color: #5E5B55; margin-bottom: 8px">Así titula cada medio el mismo hecho:</div>
+<sc-for list="{{outlets}}" as="o" hint-placeholder-count="6">
+<div style="{{o.wrap}}">
+<div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px"><span style="{{o.dot}}"></span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55; flex: 1">{{o.name}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px">{{o.score}}</span></div>
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.35">{{o.head}}</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{tabAgent}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="flex: 1; display: flex; flex-direction: column; min-height: 0">
+<div style="flex: 1; padding: 20px 24px; display: flex; flex-direction: column; gap: 20px">
+<sc-if value="{{noMessages}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 12px; padding: 8px 0">
+<div style="font-family: 'Newsreader', serif; font-size: 24px; line-height: 1.2">Pregunta lo que quieras sobre esta noticia</div>
+<div style="font-size: 13px; color: #5E5B55; line-height: 1.55">El agente lee el artículo, las 6 coberturas y las fuentes primarias. Cita todo lo que dice. Selecciona un fragmento del texto para preguntar solo por él.</div>
+</div>
+</sc-if>
+<sc-for list="{{messages}}" as="m" hint-placeholder-count="0">
+<sc-if value="{{m.user}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="align-self: flex-end; max-width: 88%; display: flex; flex-direction: column; align-items: flex-end; gap: 6px">
+<sc-if value="{{m.hasSnip}}" hint-placeholder-val="{{ false }}"><div style="font-family: 'Newsreader', serif; font-style: italic; font-size: 14px; color: #3D3B37; border-left: 2px solid #2340B8; padding: 2px 0 2px 10px; text-align: left; border-radius: 0">«{{m.snip}}»</div></sc-if>
+<div style="background: #17171A; color: #F6F4EF; padding: 10px 14px; border-radius: 14px 14px 4px 14px; line-height: 1.5">{{m.text}}</div>
+</div>
+</sc-if>
+<sc-if value="{{m.bot}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 10px">
+<button onClick="{{m.toggleSteps}}" style="align-self: flex-start; display: flex; align-items: center; gap: 6px; border: 0; background: transparent; padding: 0; font-size: 12px; color: #5E5B55"><span style="{{m.chev}}">›</span>{{m.stepsLabel}}</button>
+<sc-if value="{{m.showSteps}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 6px; padding-left: 14px; border-left: 1px solid #E2DED5; border-radius: 0">
+<sc-for list="{{m.steps}}" as="s" hint-placeholder-count="3"><div style="font-size: 12px; color: #5E5B55; font-family: 'IBM Plex Mono', monospace">{{s}}</div></sc-for>
+</div>
+</sc-if>
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.6"><sc-for list="{{m.segs}}" as="g" hint-placeholder-count="3"><sc-if value="{{g.isCite}}" hint-placeholder-val="{{ false }}"><button onClick="{{g.pick}}" style="{{g.style}}">{{g.n}}</button></sc-if><sc-if value="{{g.isText}}" hint-placeholder-val="{{ true }}"><span>{{g.t}}</span></sc-if></sc-for></div>
+<sc-if value="{{m.hasSources}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{m.sources}}" as="src" hint-placeholder-count="2">
+<div style="{{src.style}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8; min-width: 18px">{{src.n}}</span><span style="flex: 1">{{src.name}}</span></div>
+</sc-for>
+</div>
+</sc-if>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{m.follow}}" as="f" hint-placeholder-count="2"><button onClick="{{f.ask}}" class="hov" style="height: 32px; padding: 0 12px; border: 1px solid #D9D5CC; border-radius: 999px; background: #FFFFFF; font-size: 12px; color: #17171A">{{f.q}}</button></sc-for>
+</div>
+</div>
+</sc-if>
+</sc-for>
+<sc-if value="{{thinking}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{liveSteps}}" as="s" hint-placeholder-count="3"><div style="{{s.style}}"><span style="{{s.dot}}"></span>{{s.t}}</div></sc-for>
+</div>
+</sc-if>
+</div>
+<div style="padding: 14px 20px 18px; border-top: 1px solid #E2DED5; display: flex; flex-direction: column; gap: 10px; background: #FBFAF7">
+<sc-if value="{{hasSnippet}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; background: #FFFFFF; border: 1px solid #DCE3FA; border-radius: 10px">
+<span style="flex: none; font-size: 11px; color: #2340B8; font-weight: 500; margin-top: 2px">FRAGMENTO</span>
+<span style="flex: 1; font-family: 'Newsreader', serif; font-style: italic; font-size: 14px; line-height: 1.4; color: #3D3B37">«{{snippetShort}}»</span>
+<button onClick="{{clearSnippet}}" aria-label="Quitar fragmento" style="flex: none; width: 28px; height: 28px; border: 0; background: transparent; color: #8D8981; font-size: 16px; border-radius: 6px">×</button>
+</div>
+</sc-if>
+<div style="display: flex; gap: 4px">
+<sc-for list="{{modes}}" as="md" hint-placeholder-count="3"><button onClick="{{md.pick}}" style="{{md.style}}">{{md.label}}</button></sc-for>
+</div>
+<form onSubmit="{{send}}" style="display: flex; gap: 8px">
+<label for="ask" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Tu pregunta</label>
+<input id="ask" value="{{draft}}" onChange="{{onDraft}}" placeholder="{{placeholder}}" style="flex: 1; min-width: 0; height: 46px; padding: 0 14px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A">
+<button type="submit" aria-label="Enviar" style="width: 46px; height: 46px; border: 0; border-radius: 12px; background: #17171A; color: #F6F4EF; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</form>
+</div>
+</div>
+</sc-if>
+</aside>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { panelOpen: true, full: false, analyzing: false, step: 0, open: null, tab: 'an', shown: 0, lens: true, placed: false,
+      sel: null, menu: null, snippet: '', mode: 'ask', draft: '', thinking: false, live: 0, messages: [], cite: null, stepsOpen: {}, torPop: false, exit: 'ES', flight: null, fk: 0, aiOpen: false, cand: 1, ck: 0, cdir: 'r' };
+  }
+  componentDidMount() { this.animateTo(44); this.t0 = setTimeout(() => this.setState({ placed: true }), 120); }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); clearInterval(this.iv); clearInterval(this.iv2); clearTimeout(this.t0); clearTimeout(this.tf); }
+  pickExit(k) {
+    if (this.state.flight || k === this.state.exit) return;
+    this.setState({ flight: { from: this.state.exit, to: k }, fk: this.state.fk + 1 });
+    clearTimeout(this.tf);
+    this.tf = setTimeout(() => this.setState({ exit: k, flight: null }), 1900);
+  }
+  animateTo(target) {
+    cancelAnimationFrame(this.raf);
+    const from = this.state.shown, t0 = performance.now(), dur = 1300;
+    const tick = (t) => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 4); this.setState({ shown: Math.round(from + (target - from) * e) }); if (k < 1) this.raf = requestAnimationFrame(tick); };
+    this.raf = requestAnimationFrame(tick);
+  }
+  runFull() {
+    this.setState({ analyzing: true, step: 0, tab: 'an' });
+    clearInterval(this.iv);
+    this.iv = setInterval(() => {
+      const n = this.state.step + 1;
+      if (n >= 4) { clearInterval(this.iv); this.setState({ analyzing: false, full: true, step: 4 }); this.animateTo(38); }
+      else this.setState({ step: n });
+    }, 750);
+  }
+  readSel(e) {
+    if (e.target.closest && e.target.closest('[data-pop]')) return null;
+    const s = window.getSelection();
+    const text = s ? s.toString().trim() : '';
+    if (!text || !s.rangeCount) return null;
+    const r = s.getRangeAt(0).getBoundingClientRect(), w = e.currentTarget.getBoundingClientRect();
+    return { text, x: r.left - w.left + r.width / 2, y: r.top - w.top };
+  }
+  answerFor(text, mode) {
+    const t = (text || '').toLowerCase();
+    if (mode === 'explain') return { segs: ['El salario mínimo interprofesional es el sueldo más bajo que se puede pagar legalmente por una jornada completa. Lo fija el Gobierno cada año por real decreto, tras consultar a sindicatos y patronal ', 1, '. Subirlo eleva el suelo de todos los sueldos más bajos, que en España afectan sobre todo a jóvenes, campo y hostelería ', 2, '.'], sources: ['Estatuto de los Trabajadores, art. 27', 'Banco de España · informe trimestral'], steps: ['Leyó el fragmento seleccionado', 'Consultó la definición legal del SMI', 'Simplificó el lenguaje'], follow: ['¿Cuánto es ahora?', '¿A quién afecta más?'] };
+    if (t.indexOf('europa') >= 0 || t.indexOf('alto') >= 0) return { segs: ['No. En salario mínimo nominal España es sexta de la UE ', 1, ', por detrás de Luxemburgo, Irlanda, Países Bajos, Alemania y Bélgica. Ajustado por poder adquisitivo, séptima ', 1, '. El artículo no indica de dónde saca la comparación ', 2, ', y ninguna de las otras 5 coberturas la repite ', 3, '.'], sources: ['Eurostat · earn_mw_cur · ene 2026', 'Artículo original · párrafo 1', '6 coberturas del mismo hecho'], steps: ['Leyó el fragmento seleccionado', 'Buscó «salario mínimo UE» en Eurostat', 'Comparó con 5 coberturas'], follow: ['¿Y ajustado por coste de vida?', '¿Quién publicó primero la cifra?'] };
+    if (t.indexOf('61') >= 0 || t.indexOf('empleo') >= 0) return { segs: ['El aumento del 61 % desde 2018 es correcto ', 1, '. Que no haya destruido empleo está en disputa: la AIReF estimó un efecto negativo moderado, concentrado en jóvenes y en el campo ', 2, ', mientras que CCOO no lo observa ', 3, '. El artículo solo cita la fuente sindical.'], sources: ['INE · EPA · serie SMI', 'AIReF · evaluación del SMI 2023', 'CCOO · informe propio'], steps: ['Leyó el fragmento seleccionado', 'Buscó la serie del SMI en el INE', 'Comparó 3 estudios sobre empleo'], follow: ['¿Qué dice exactamente la AIReF?', '¿Hay datos de 2026?'] };
+    if (t.indexOf('patronal') >= 0 || t.indexOf('beneficios') >= 0) return { segs: ['Es una atribución de intenciones, no un hecho verificable. La postura declarada de la CEOE es que la subida perjudica a pymes del campo y la hostelería ', 1, '. Ninguna de las 5 coberturas restantes usa una expresión parecida ', 2, '.'], sources: ['Comunicado de la CEOE', '6 coberturas del mismo hecho'], steps: ['Leyó el fragmento seleccionado', 'Buscó la postura oficial de la CEOE', 'Comparó el lenguaje con 5 coberturas'], follow: ['¿Qué datos da la CEOE?', '¿Cómo lo cuenta ABC?'] };
+    return { segs: ['En la app real, el agente responde aquí usando el fragmento como contexto y citando cada fuente que consulta ', 1, '.'], sources: ['Ejemplo del mockup'], steps: ['Leyó el fragmento seleccionado', 'Buscó en las fuentes', 'Redactó la respuesta'], follow: ['¿Qué falta en el artículo?'] };
+  }
+  ask(q, snippet, mode) {
+    const m = mode || this.state.mode;
+    const msg = { id: Date.now(), user: true, text: q, snip: snippet || '' };
+    this.setState({ messages: this.state.messages.concat([msg]), thinking: true, live: 0, draft: '', snippet: '', tab: 'ag', panelOpen: true, sel: null, menu: null });
+    clearInterval(this.iv2);
+    this.iv2 = setInterval(() => {
+      const n = this.state.live + 1;
+      if (n >= 3) {
+        clearInterval(this.iv2);
+        const a = this.answerFor((snippet || '') + ' ' + q, m);
+        this.setState({ thinking: false, messages: this.state.messages.concat([{ id: Date.now() + 1, bot: true, ...a }]) });
+      } else this.setState({ live: n });
+    }, 600);
+  }
+  fromSel(mode) {
+    const text = (this.state.sel || this.state.menu || {}).text || '';
+    const q = mode === 'verify' ? '¿Es cierto?' : mode === 'explain' ? 'Explícamelo de forma sencilla' : '';
+    window.getSelection && window.getSelection().removeAllRanges();
+    if (q) this.ask(q, text, mode);
+    else this.setState({ snippet: text, mode: 'ask', tab: 'ag', panelOpen: true, sel: null, menu: null });
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const base = [
+      { id: 'c1', text: '«El nivel más alto de toda Europa»', status: 'warn', label: 'Engañoso', detail: 'En términos nominales España ocupa el 6.º puesto. Ajustado por poder adquisitivo, el 7.º.', source: 'Eurostat · earn_mw_cur', claim: true, raw: 'el nivel más alto de toda Europa' },
+      { id: 'c2', text: '2,5 millones de beneficiarios', status: 'ok', label: 'Verificado', detail: 'Coincide con la memoria del ministerio. El Banco de España estima 2,1–2,5 M.', source: 'BOE · memoria de impacto · Banco de España', claim: true, raw: 'beneficiará a 2,5 millones de trabajadores' },
+      { id: 'c3', text: '«La patronal antepone sus beneficios»', status: 'na', label: 'Opinión', detail: 'Atribuye una intención: no es verificable. Cuenta como lenguaje cargado.', source: 'Sin fuente aplicable', claim: true, raw: 'la patronal, fiel a su costumbre, vuelve a anteponer sus beneficios' },
+      { id: 'c4', text: 'SMI +61 % desde 2018 sin destruir empleo', status: 'ctx', label: 'Falta contexto', detail: 'El +61 % es correcto. El efecto en el empleo está discutido y el artículo solo cita una fuente sindical.', source: 'INE · EPA · AIReF · CCOO', claim: true, raw: 'ha crecido un 61 % sin que se haya destruido empleo' },
+      { id: 'c5', status: 'load', claim: false }, { id: 'c6', status: 'load', claim: false }, { id: 'c7', status: 'load', claim: false }
+    ];
+    const tone = { ok: ['#0B6B50', '#CFE9DE'], warn: ['#8A5300', '#F7DFB0'], na: ['#57544E', '#E3DFD6'], ctx: ['#A3271B', '#F6CFC9'], pend: ['#8D8981', '#E7E3DA'], load: ['#A3271B', '#F6CFC9'] };
+    const all = base.map((c) => {
+      const known = s.full || c.status === 'na' || c.status === 'load';
+      const st = known ? c.status : 'pend', open = s.open === c.id;
+      return {
+        ...c, open,
+        statusLabel: known ? c.label : 'Pendiente de verificar',
+        detail: known ? c.detail : 'Se verificará al contrastar.',
+        source: known ? c.source : '—',
+        tagOn: s.lens && known && c.claim,
+        tag: 'font-family:IBM Plex Sans,sans-serif;font-size:10px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;margin-left:4px;color:' + tone[st][0] + ';animation:rise .6s ' + E + ' both',
+        badge: 'flex:none;width:8px;height:8px;border-radius:50%;transform:translateY(-1px);transition:background-color .6s ' + E + ';background:' + tone[st][0],
+        labelStyle: 'font-size:12px;font-weight:500;transition:color .6s ' + E + ';color:' + tone[st][0],
+        chev: 'flex:none;color:#8D8981;font-size:18px;line-height:1;transition:transform .5s ' + E + ';transform:rotate(' + (open ? '90' : '0') + 'deg)',
+        mark: 'all:unset;cursor:pointer;color:#17171A;border-radius:3px;padding:0 1px;transition:background-color .8s ' + E + ',box-shadow .5s ' + E + ';background:' + (s.lens ? tone[st][1] : 'transparent') + ';' + (open ? 'box-shadow:0 0 0 2px #17171A' : 'box-shadow:0 0 0 0 transparent'),
+        pick: () => this.setState({ open: open ? null : c.id, panelOpen: true, tab: 'an' }),
+        ask: () => this.ask('¿Qué hay detrás de esta afirmación?', c.raw, 'ask')
+      };
+    });
+    const byId = {}; all.forEach((c) => { byId[c.id] = c; });
+    const claims = all.filter((c) => c.claim).map((c, i) => ({ ...c, row: 'border-top:1px solid #E2DED5;animation:rise' + (s.full ? 1 : 0) + ' .7s ' + E + ' both;animation-delay:' + (i * 110) + 'ms' }));
+    const dim = s.lens ? '#ABA79E' : '#17171A';
+    const mt = s.full ? [['7', 'frases cargadas'], ['1/3', 'voces citadas'], ['1/3', 'datos exactos'], ['2', 'omisiones']] : [['7', 'frases cargadas'], ['—', 'voces citadas'], ['—', 'datos exactos'], ['—', 'omisiones']];
+    const stepNames = ['Extrayendo afirmaciones', 'Buscando 6 coberturas del mismo hecho', 'Verificando en INE, Eurostat y BOE', 'Puntuando y redactando síntesis'];
+    const steps = stepNames.map((label, i) => { const done = i < s.step, now = i === s.step; return { label, row: 'display:flex;align-items:center;gap:10px;font-size:13px;transition:color .5s ' + E + ';color:' + (done || now ? '#17171A' : '#A9A59C'), dot: 'flex:none;width:8px;height:8px;border-radius:50%;transition:all .5s ' + E + ';' + (done ? 'background:#0B6B50' : now ? 'background:#2340B8;animation:pulse 1.2s ease-in-out infinite' : 'background:#E2DED5') }; });
+    const pos = (v) => (s.placed ? v : 50);
+    const others = [['elDiario.es', 30, '#C2412F'], ['EFE', 49, '#8D8981'], ['El País', 42, '#8D8981'], ['Expansión', 68, '#2F5BD3'], ['ABC', 76, '#2F5BD3']].map((o, i) => ({ name: o[0], style: 'position:absolute;top:17px;width:12px;height:12px;margin-left:-6px;border-radius:50%;border:2px solid #FBFAF7;background:' + o[2] + ';transition:left 1.4s ' + E + ' ' + (i * 80) + 'ms;left:' + pos(o[1]) + '%' }));
+    const dot = (c) => 'flex:none;width:8px;height:8px;border-radius:50%;background:' + c;
+    const outlets = [
+      ['El Diario Rojo · este', 'El salario mínimo bate récords mientras la patronal sigue en pie de guerra', '38', '#C2412F', true],
+      ['elDiario.es', 'El SMI sube y llega a 2,5 millones de trabajadores', '61', '#C2412F', false],
+      ['EFE', 'El Gobierno aprueba la subida del SMI con el rechazo de la CEOE', '88', '#8D8981', false],
+      ['El País', 'Nueva subida del salario mínimo sin el apoyo de la patronal', '72', '#8D8981', false],
+      ['Expansión', 'La nueva subida del SMI amenaza el empleo en el campo', '64', '#2F5BD3', false],
+      ['ABC', 'El Gobierno impone otra subida del SMI de espaldas a las empresas', '52', '#2F5BD3', false]
+    ].map((o, i) => ({ name: o[0], head: o[1], score: o[2], dot: dot(o[3]), wrap: 'padding:14px 0;border-top:1px solid #E2DED5;animation:rise .8s ' + E + ' both;animation-delay:' + (i * 70) + 'ms;' + (o[4] ? 'opacity:1' : '') }));
+    const tabDefs = [['an', 'Análisis'], ['cov', 'Coberturas'], ['ag', 'Agente']];
+    const msgs = s.messages.map((m) => {
+      if (m.user) return { user: true, bot: false, text: m.text, hasSnip: !!m.snip, snip: m.snip.length > 120 ? m.snip.slice(0, 120) + '…' : m.snip };
+      const open = !!s.stepsOpen[m.id];
+      return {
+        user: false, bot: true,
+        stepsLabel: m.steps.length + ' pasos · ' + m.sources.length + ' fuentes',
+        showSteps: open, steps: m.steps,
+        chev: 'display:inline-block;transition:transform .45s ' + E + ';transform:rotate(' + (open ? '90' : '0') + 'deg)',
+        toggleSteps: () => this.setState({ stepsOpen: { ...s.stepsOpen, [m.id]: !open } }),
+        segs: m.segs.map((g) => (typeof g === 'number'
+          ? { isCite: true, isText: false, n: g, pick: () => this.setState({ cite: m.id + ':' + g }), style: 'all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;margin:0 1px;border-radius:5px;font-family:IBM Plex Mono,monospace;font-size:11px;vertical-align:2px;transition:all .4s ' + E + ';' + (s.cite === m.id + ':' + g ? 'background:#2340B8;color:#FFFFFF' : 'background:#E8ECFA;color:#2340B8') }
+          : { isCite: false, isText: true, t: g })),
+        hasSources: m.sources.length > 0,
+        sources: m.sources.map((n, i) => ({ n: i + 1, name: n, style: 'display:flex;gap:8px;align-items:baseline;font-size:12px;padding:6px 10px;border-radius:8px;transition:background-color .5s ' + E + ';' + (s.cite === m.id + ':' + (i + 1) ? 'background:#E8ECFA' : 'background:transparent') })),
+        follow: m.follow.map((q) => ({ q, ask: () => this.ask(q, '', 'ask') }))
+      };
+    });
+    const liveNames = ['Leyendo el contexto', 'Buscando en fuentes y coberturas', 'Redactando con citas'];
+    const modeDefs = [['ask', 'Preguntar'], ['verify', 'Verificar'], ['explain', 'Explicar']];
+    const snip = s.snippet || '';
+    const MW = 1000, MH = 389;
+    const R = [
+      [[16,22],[25,32],[39,39],[48,52]], [[10,22],[25,32],[46,62]], [[4,12],[14,22],[25,31],[40,44],[46,70]], [[2,9],[10,20],[22,23],[26,30],[32,33],[38,71]],
+      [[4,8],[9,23],[27,27],[37,70]], [[10,24],[34,36],[38,68]], [[11,25],[35,35],[36,64]], [[11,23],[36,63],[64,64]],
+      [[11,21],[34,36],[38,60],[64,64]], [[12,20],[35,42],[43,60],[62,63]], [[13,19],[34,48],[49,60]], [[14,16],[20,20],[33,43],[44,47],[50,60]],
+      [[15,18],[20,21],[32,43],[44,47],[50,53],[55,58],[60,60]], [[18,19],[32,45],[51,52],[55,57],[60,60]], [[19,24],[33,46],[51,51],[55,57],[61,61]], [[20,26],[34,45],[56,59]],
+      [[20,26],[38,44],[56,60]], [[20,29],[38,44],[57,66]], [[21,28],[38,44],[60,61],[62,65]], [[21,28],[38,44],[45,46],[61,65]],
+      [[22,28],[38,43],[45,46],[59,66]], [[22,26],[39,42],[58,66]], [[22,25],[39,42],[59,66]], [[22,24],[39,40],[59,62],[64,66]],
+      [[21,23],[65,65],[70,71]], [[21,22],[69,70]], [[21,22]], [[22,23]]
+    ];
+    if (!this.mdots) { this.mdots = []; R.forEach((row, r) => row.forEach((g) => { for (let c = g[0]; c <= g[1]; c++) this.mdots.push('left:' + ((c + 0.5) / 72 * MW).toFixed(1) + 'px;top:' + ((r + 0.5) / 28 * MH).toFixed(1) + 'px'); })); }
+    const mx = (lon) => ((lon + 180) / 5 + 0.5) / 72 * MW, my = (lat) => ((80 - lat) / 5 + 0.5) / 28 * MH;
+    const CT = { ES: ['España', 40.4, -3.7, '380 ms'], FR: ['Francia', 46.6, 2.3, '410 ms'], DE: ['Alemania', 51, 10, '360 ms'], NL: ['Países Bajos', 52.2, 5.3, '340 ms'], GB: ['Reino Unido', 53, -1.5, '420 ms'], CH: ['Suiza', 46.8, 8.2, '450 ms'], SE: ['Suecia', 60.1, 15, '470 ms'], IS: ['Islandia', 64.9, -18.5, '520 ms'], US: ['EE. UU.', 39.8, -98.6, '610 ms'], CA: ['Canadá', 52, -106, '640 ms'], BR: ['Brasil', -14, -51, '780 ms'], JP: ['Japón', 36, 138, '820 ms'], SG: ['Singapur', 1.35, 103.8, '860 ms'], AU: ['Australia', -25, 134, '910 ms'] };
+    const fl = s.flight;
+    const ORDER = ['ES', 'FR', 'DE', 'NL', 'GB', 'CH', 'SE', 'IS', 'US', 'CA', 'BR', 'JP', 'SG', 'AU'];
+    const candK = ORDER[s.cand];
+    const A = fl ? fl.from : s.exit, B = fl ? fl.to : candK;
+    const ax = mx(CT[A][2]), ay = my(CT[A][1]), bx = mx(CT[B][2]), by = my(CT[B][1]);
+    const dd = Math.hypot(bx - ax, by - ay);
+    let arc = 'M0 0';
+    if (A !== B) arc = 'M' + ax.toFixed(1) + ' ' + ay.toFixed(1) + ' Q' + ((ax + bx) / 2).toFixed(1) + ' ' + (Math.min(ay, by) - 20 - dd * 0.22).toFixed(1) + ' ' + bx.toFixed(1) + ' ' + by.toFixed(1);
+    const VW = 300, VH = 118;
+    const vs = Math.max(0.26, Math.min(1.7, (VW * 0.78) / (Math.abs(bx - ax) + 70), (VH * 0.62) / (Math.abs(by - ay) + 60 + dd * 0.12)));
+    const vcx = (ax + bx) / 2, vcy = (ay + by) / 2 - dd * 0.06;
+    const cur = CT[s.exit];
+    const tor = {
+      torPop: s.torPop, torAria: s.torPop ? 'true' : 'false',
+      toggleTor: () => this.setState({ torPop: !s.torPop }),
+      torChip: 'display:flex;align-items:center;gap:6px;height:28px;padding:0 10px;border:0;border-radius:8px;font-size:12px;font-weight:500;' + (s.torPop ? 'background:#4A2FB8;color:#FFFFFF' : 'background:#ECE8FB;color:#4A2FB8'),
+      exitCode: s.exit, exitName: cur[0], exitMs: cur[3],
+      miniDots: this.mdots,
+      miniPins: Object.keys(CT).map((k) => {
+        const c = CT[k], on = s.exit === k && !fl, tgt = !!fl && fl.to === k;
+        return { on, aria: 'Salir por ' + c[0], pick: () => this.pickExit(k),
+          hit: 'position:absolute;left:' + mx(c[2]).toFixed(1) + 'px;top:' + my(c[1]).toFixed(1) + 'px;width:22px;height:22px;margin:-11px 0 0 -11px;border:0;padding:0;background:transparent',
+          dot: 'position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;transition:all .5s ' + E + ';' + (on ? 'width:11px;height:11px;background:#4A2FB8;box-shadow:0 0 0 2px #FFFFFF' : tgt ? 'width:10px;height:10px;background:#FFFFFF;box-shadow:0 0 0 2px #4A2FB8' : 'width:7px;height:7px;background:#17171A;box-shadow:0 0 0 2px #FFFFFF') };
+      }),
+      flying: !!fl, arc,
+      arcStyle: 'opacity:' + (fl ? 1 : 0) + ';transition:opacity .4s ' + E,
+      plane: fl ? "position:absolute;left:0;top:0;width:22px;height:22px;z-index:3;offset-path:path('" + arc + "');offset-rotate:auto;animation:fly" + (s.fk % 2) + ' 1.8s cubic-bezier(.45,0,.2,1) forwards' : '',
+      torStatus: fl ? 'Volando a ' + CT[fl.to][0] + '… construyendo un circuito nuevo' : 'Conectado · salida en ' + cur[0] + ' · ' + cur[3],
+      torChips: ['ES', 'FR', 'DE', 'NL', 'CH', 'SE', 'US', 'JP'].map((k) => ({ label: CT[k][0], pick: () => this.pickExit(k), style: 'height:30px;padding:0 10px;border-radius:999px;font-size:12px;' + ((fl ? fl.to === k : s.exit === k) ? 'background:#ECE8FB;color:#4A2FB8;border:1px solid #4A2FB8' : 'background:#FFFFFF;color:#17171A;border:1px solid #D9D5CC') })),
+      aiOpen: s.aiOpen, aiAria: s.aiOpen ? 'true' : 'false',
+      toggleAi: () => this.setState({ aiOpen: !s.aiOpen }),
+      aiChev: 'flex:none;font-size:18px;color:#993556;transition:transform .5s ' + E + ';transform:rotate(' + (s.aiOpen ? '90' : '0') + 'deg)',
+      aiMark: 'position:absolute;left:-42px;top:7px;font-family:IBM Plex Mono,monospace;font-size:10px;font-weight:600;line-height:1.5;color:#993556;background:#FBEAF0;border:1px solid #F4C0D1;padding:1px 5px;border-radius:5px;user-select:none;transition:opacity .6s ' + E + ';opacity:' + (s.lens || s.aiOpen ? 1 : 0),
+      aiSignals: [['Uniformidad estadística', 'alta', 82], ['Frases plantilla', '3 detectadas', 60], ['Credenciales C2PA', 'ausentes', 40]].map((x) => ({ label: x[0], value: x[1], bar: 'display:block;height:4px;border-radius:2px;background:#D4537E;width:' + x[2] + '%' }))
+    };
+    const relays = { ES: 112, FR: 486, DE: 1320, NL: 610, GB: 240, CH: 260, SE: 300, IS: 40, US: 1010, CA: 190, BR: 30, JP: 60, SG: 45, AU: 70 };
+    const inv = (1 / vs).toFixed(3);
+    const pinSt = (k, kind) => 'position:absolute;left:' + mx(CT[k][2]).toFixed(1) + 'px;top:' + my(CT[k][1]).toFixed(1) + 'px;transition:transform 1s cubic-bezier(.65,0,.35,1);transform:translate(-50%,-50%) scale(' + inv + ');' + (kind === 'exit' ? 'width:14px;height:14px;border-radius:50%;background:#4A2FB8;box-shadow:0 0 0 3px #FFFFFF' : 'width:12px;height:12px;border-radius:50%;background:#FFFFFF;box-shadow:0 0 0 2.5px #4A2FB8');
+    const tor2 = {
+      layer: 'position:absolute;left:0;top:0;width:' + MW + 'px;height:' + MH + 'px;transform-origin:0 0;transition:transform 1s cubic-bezier(.65,0,.35,1);transform:translate(' + (VW / 2 - vcx * vs).toFixed(1) + 'px,' + (VH / 2 - vcy * vs).toFixed(1) + 'px) scale(' + vs.toFixed(3) + ')',
+      exitPin: pinSt(A, 'exit'),
+      showCand: A !== B, candPin: pinSt(B, 'cand'),
+      arcStyle: 'opacity:' + (A !== B ? 1 : 0) + ';transition:opacity .5s ' + E,
+      plane: fl ? "position:absolute;left:0;top:0;width:24px;height:24px;z-index:3;offset-path:path('" + arc + "');offset-rotate:auto;transform:scale(" + inv + ');animation:fly' + (s.fk % 2) + ' 1.8s cubic-bezier(.45,0,.2,1) forwards' : '',
+      routeLabel: A === B ? 'Salida · ' + A : A + ' → ' + B,
+      prev: () => { if (!fl) this.setState({ cand: (s.cand + ORDER.length - 1) % ORDER.length, ck: s.ck + 1, cdir: 'l' }); },
+      next: () => { if (!fl) this.setState({ cand: (s.cand + 1) % ORDER.length, ck: s.ck + 1, cdir: 'r' }); },
+      candCode: candK, candName: CT[candK][0], candMs: CT[candK][3], candRelays: relays[candK],
+      candAnim: 'animation:sw' + (s.cdir === 'l' ? 'L' : 'R') + (s.ck % 2) + ' .5s cubic-bezier(.22,1,.36,1) both',
+      fly: () => this.pickExit(candK),
+      flyLabel: fl ? 'Volando a ' + CT[fl.to][0] + '…' : candK === s.exit ? 'Ya sales por aquí' : 'Volar a ' + CT[candK][0],
+      flyBtn: 'width:100%;height:42px;border:0;border-radius:12px;font-weight:500;font-size:13px;' + (fl ? 'background:#ECE8FB;color:#4A2FB8' : candK === s.exit ? 'background:#F1EEE7;color:#5E5B55' : 'background:#4A2FB8;color:#FFFFFF'),
+      pager: ORDER.map((k, i) => 'display:block;height:5px;border-radius:3px;transition:all .5s ' + E + ';' + (i === s.cand ? 'width:16px;background:#4A2FB8' : 'width:5px;background:' + (k === s.exit ? '#B9AEE8' : '#E2DED5'))),
+      torStatus: fl ? 'Construyendo un circuito nuevo…' : 'Saliendo por ' + cur[0] + ' · ' + cur[3]
+    };
+    return {
+      ...tor, ...tor2,
+      panelOpen: s.panelOpen,
+      panelBtn: 'display:flex;align-items:center;gap:6px;height:38px;padding:0 14px;border:0;border-radius:12px;font-size:13px;font-weight:500;' + (s.panelOpen ? 'background:#17171A;color:#F6F4EF' : 'background:#E7E3DA;color:#17171A'),
+      togglePanel: () => this.setState({ panelOpen: !s.panelOpen }),
+      tabs: tabDefs.map((t) => ({ label: t[1], pick: () => this.setState({ tab: t[0] }), style: 'height:40px;padding:0 12px;border:0;background:transparent;font-size:14px;border-radius:0;transition:color .45s ' + E + ',box-shadow .45s ' + E + ';' + (s.tab === t[0] ? 'color:#17171A;font-weight:500;box-shadow:inset 0 -2px 0 #17171A' : 'color:#8D8981;box-shadow:inset 0 -2px 0 transparent') })),
+      tabAnalysis: s.tab === 'an', tabCoverage: s.tab === 'cov', tabAgent: s.tab === 'ag',
+      lensAria: s.lens ? 'true' : 'false',
+      toggleLens: () => this.setState({ lens: !s.lens }),
+      lensPill: 'display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:999px;font-size:13px;' + (s.lens ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:transparent;color:#5E5B55;border:1px solid #D9D5CC'),
+      lensDot: 'width:7px;height:7px;border-radius:50%;transition:background-color .5s ' + E + ';background:' + (s.lens ? '#F09595' : '#CFCAC0'),
+      h1: "font-family:'Newsreader',serif;font-weight:500;font-size:46px;line-height:1.1;margin:0 0 18px;letter-spacing:-0.015em;transition:color .9s " + E + ';color:' + dim,
+      lead: "font-family:'Newsreader',serif;font-size:21px;line-height:1.5;margin:0 0 36px;transition:color .9s " + E + ';color:' + (s.lens ? '#ABA79E' : '#3D3B37'),
+      body: "font-family:'Newsreader',serif;font-size:19px;line-height:1.8;transition:color .9s " + E + ';color:' + dim,
+      onSel: (e) => { const r = this.readSel(e); this.setState({ sel: r, menu: null }); },
+      onCtx: (e) => { const r = this.readSel(e); if (!r) return; e.preventDefault(); const w = e.currentTarget.getBoundingClientRect(); this.setState({ menu: { text: r.text, x: e.clientX - w.left, y: e.clientY - w.top }, sel: null }); },
+      closeMenu: () => { if (s.menu) this.setState({ menu: null }); },
+      selOn: !!s.sel,
+      selPos: s.sel ? 'position:absolute;z-index:5;display:flex;gap:2px;padding:4px;background:#17171A;border-radius:12px;box-shadow:0 10px 30px rgba(23,23,26,.25);white-space:nowrap;animation:pop .45s cubic-bezier(.34,1.56,.64,1) both;left:' + Math.round(s.sel.x) + 'px;top:' + Math.round(s.sel.y - 52) + 'px;transform:translateX(-50%)' : '',
+      menuOn: !!s.menu,
+      menuPos: s.menu ? 'position:absolute;z-index:6;width:250px;padding:4px;background:#FFFFFF;border:1px solid #E2DED5;border-radius:12px;box-shadow:0 14px 40px rgba(23,23,26,.16);transform-origin:top left;animation:menu .35s ' + E + ' both;left:' + Math.round(s.menu.x) + 'px;top:' + Math.round(s.menu.y + 6) + 'px' : '',
+      selShort: s.menu ? (s.menu.text.length > 40 ? s.menu.text.slice(0, 40) + '…' : s.menu.text) : '',
+      askSel: () => this.fromSel('ask'), verifySel: () => this.fromSel('verify'), explainSel: () => this.fromSel('explain'),
+      shown: s.shown,
+      ring: 'stroke-dashoffset:' + (339.3 * (1 - s.shown / 100)).toFixed(1),
+      tierLabel: s.full ? 'COMPLETO · CLAUDE · 6 COBERTURAS · 9 FUENTES' : 'RÁPIDO · LOCAL · QWEN 7B',
+      verdict: s.full ? 'Militante, con un dato inflado' : 'Probablemente sesgado',
+      scoreNote: s.full ? 'Los datos centrales son correctos; el tono y una cifra no.' : 'Solo se ha leído el lenguaje. Falta contrastar.',
+      others,
+      avgStyle: 'position:absolute;top:13px;width:2px;height:20px;margin-left:-1px;background:#17171A;opacity:.3;transition:left 1.4s ' + E + ';left:' + pos(53) + '%',
+      meStyle: 'position:absolute;top:15px;display:flex;flex-direction:column;align-items:center;transform:translateX(-50%);transition:left 1.6s ' + E + ';left:' + pos(s.full ? 14 : 24) + '%',
+      metrics: mt.map((x, i) => ({ value: x[0], label: x[1], cell: 'display:flex;flex-direction:column;gap:6px;padding:14px 12px;' + (i ? 'border-left:1px solid #E2DED5' : 'padding-left:0') })),
+      analyzing: s.analyzing, steps,
+      showUpgrade: !s.full && !s.analyzing,
+      runFull: () => this.runFull(),
+      claims, c1: byId.c1, c2: byId.c2, c3: byId.c3, c4: byId.c4, c5: byId.c5, c6: byId.c6, c7: byId.c7,
+      outlets,
+      noMessages: s.messages.length === 0 && !s.thinking,
+      messages: msgs,
+      thinking: s.thinking,
+      liveSteps: liveNames.map((t, i) => ({ t, style: 'display:flex;align-items:center;gap:10px;font-size:13px;transition:color .5s ' + E + ';color:' + (i <= s.live ? '#17171A' : '#A9A59C'), dot: 'width:8px;height:8px;border-radius:50%;transition:all .5s ' + E + ';' + (i < s.live ? 'background:#0B6B50' : i === s.live ? 'background:#2340B8;animation:pulse 1.2s ease-in-out infinite' : 'background:#E2DED5') })),
+      hasSnippet: !!snip,
+      snippetShort: snip.length > 140 ? snip.slice(0, 140) + '…' : snip,
+      clearSnippet: () => this.setState({ snippet: '' }),
+      modes: modeDefs.map((m) => ({ label: m[1], pick: () => this.setState({ mode: m[0] }), style: 'height:30px;padding:0 12px;border-radius:999px;font-size:12px;' + (s.mode === m[0] ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:transparent;color:#5E5B55;border:1px solid #D9D5CC') })),
+      placeholder: snip ? 'Pregunta sobre el fragmento…' : s.mode === 'verify' ? 'Pega una afirmación para verificar' : s.mode === 'explain' ? '¿Qué quieres que te explique?' : '¿De dónde sale la cifra del 61 %?',
+      draft: s.draft,
+      onDraft: (e) => this.setState({ draft: e.target.value }),
+      send: (e) => { e.preventDefault(); const q = s.draft.trim() || (snip ? (s.mode === 'verify' ? '¿Es cierto?' : '¿Qué hay detrás de esto?') : ''); if (q) this.ask(q, snip, s.mode); }
+    };
+  }
+}
+</script>
+</body>
+</html>

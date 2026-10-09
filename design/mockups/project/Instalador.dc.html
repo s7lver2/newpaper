@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Instalador de newpaper</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#2340B8}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.97)}
+.hov:hover{background:#EFECE5}
+.wc:hover{background:#E2DED5}
+.wx:hover{background:#C42B1C;color:#FFFFFF}
+.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+.roll{transform-box:fill-box;transform-origin:center;animation:turn 1s linear infinite}
+.sheet{animation:sheet 1.4s cubic-bezier(.45,0,.55,1) infinite}
+.pop{animation:pop .7s cubic-bezier(.34,1.56,.64,1) both}
+.check{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .6s .35s cubic-bezier(.65,0,.35,1) forwards}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes s0{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes s1{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes turn{to{transform:rotate(360deg)}}
+@keyframes sheet{0%{transform:translateY(-30px);opacity:0}25%{opacity:1}100%{transform:translateY(60px);opacity:0}}
+@keyframes pop{from{opacity:0;transform:scale(.5)}to{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes win{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.check{stroke-dashoffset:0}}
+</style>
+</helmet>
+<div style="width: 1100px; height: 720px; background: #DCD8CE; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; color: #17171A">
+<div style="width: 800px; height: 520px; background: #F6F4EF; border-radius: 12px; box-shadow: 0 30px 80px rgba(23,23,26,.28), 0 0 0 1px rgba(23,23,26,.08); overflow: hidden; display: flex; flex-direction: column; animation: win .8s cubic-bezier(.22,1,.36,1) both">
+<div style="height: 40px; flex: none; display: flex; align-items: center; padding-left: 14px; gap: 10px; border-bottom: 1px solid #E2DED5">
+<span style="width: 18px; height: 18px; border-radius: 5px; background: #17171A; color: #F6F4EF; font-family: 'Newsreader', serif; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center">n</span>
+<span style="font-size: 12px; color: #5E5B55">Instalar newpaper</span>
+<span style="margin-left: auto; display: flex">
+<button aria-label="Minimizar" class="wc" style="width: 46px; height: 40px; border: 0; background: transparent; color: #5E5B55">—</button>
+<button aria-label="Cerrar" class="wx" style="width: 46px; height: 40px; border: 0; background: transparent; color: #5E5B55; font-size: 16px">×</button>
+</span>
+</div>
+<div style="flex: 1; display: flex; min-height: 0">
+<div style="flex: none; width: 210px; padding: 24px 18px; border-right: 1px solid #E2DED5; background: #FBFAF7; display: flex; flex-direction: column; gap: 4px">
+<div style="font-family: 'Newsreader', serif; font-size: 24px; font-weight: 500; letter-spacing: -0.02em; margin: 0 0 18px 8px">newpaper</div>
+<sc-for list="{{steps}}" as="st" hint-placeholder-count="4">
+<div style="{{st.row}}"><span style="{{st.dot}}">{{st.mark}}</span>{{st.label}}</div>
+</sc-for>
+<div style="margin-top: auto; padding-left: 8px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #A9A59C">v0.1.0 · Windows x64</div>
+</div>
+<div style="flex: 1; min-width: 0; padding: 30px 34px 24px; display: flex; flex-direction: column">
+
+<sc-if value="{{is.welcome}}" hint-placeholder-val="{{ true }}">
+<div style="{{pane}}">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: #5E5B55">BIENVENIDA</div>
+<div style="font-family: 'Newsreader', serif; font-size: 36px; line-height: 1.1; margin: 10px 0 12px; letter-spacing: -0.01em">Lee las noticias.<br>Contrástalas.<br>Decide tú.</div>
+<div style="color: #3D3B37; line-height: 1.6; max-width: 440px">newpaper es un navegador hecho solo para leer noticias: bloquea anuncios, puede salir por Tor y usa IA para verificar lo que lees contra otras fuentes.</div>
+<div style="display: flex; gap: 18px; margin-top: 22px; font-size: 12px; color: #5E5B55"><span><b style="font-weight: 600; color: #17171A">38 MB</b> de descarga</span><span><b style="font-weight: 600; color: #17171A">WebView2</b> ya instalado</span><span><b style="font-weight: 600; color: #17171A">Sin cuenta</b> ni registro</span></div>
+<div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center">
+<button onClick="{{toOptions}}" class="hov" style="height: 42px; padding: 0 14px; border: 0; border-radius: 10px; background: transparent; color: #5E5B55">Personalizar instalación</button>
+<button onClick="{{install}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 12px; background: #17171A; color: #F6F4EF; font-weight: 500">Instalar</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{is.options}}" hint-placeholder-val="{{ false }}">
+<div style="{{pane}}">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: #5E5B55">OPCIONES</div>
+<div style="font-family: 'Newsreader', serif; font-size: 26px; margin: 8px 0 14px">Cómo quieres instalarlo</div>
+<label for="path" style="font-size: 12px; color: #5E5B55; margin-bottom: 6px">Carpeta</label>
+<div style="display: flex; gap: 8px; margin-bottom: 12px"><input id="path" value="C:\Users\usuario\AppData\Local\newpaper" readonly="" style="flex: 1; min-width: 0; height: 38px; padding: 0 12px; border: 1px solid #D9D5CC; border-radius: 10px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #3D3B37"><button class="hov" style="height: 38px; padding: 0 12px; border: 1px solid #D9D5CC; border-radius: 10px; background: transparent">Cambiar</button></div>
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{opts}}" as="o" hint-placeholder-count="5">
+<button onClick="{{o.toggle}}" role="checkbox" aria-checked="{{o.aria}}" style="display: flex; align-items: center; gap: 12px; width: 100%; padding: 8px 0; border: 0; background: transparent; text-align: left; color: #17171A">
+<span style="{{o.box}}">{{o.mark}}</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-size: 14px">{{o.label}}</span><span style="font-size: 12px; color: #5E5B55">{{o.desc}}</span></span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">{{o.size}}</span>
+</button>
+</sc-for>
+</div>
+<div style="margin-top: auto; display: flex; justify-content: space-between; align-items: center; padding-top: 10px">
+<span style="font-size: 12px; color: #5E5B55">Espacio necesario: <b style="font-weight: 600; color: #17171A">{{total}}</b></span>
+<span style="display: flex; gap: 8px"><button onClick="{{back}}" class="hov" style="height: 44px; padding: 0 16px; border: 1px solid #D9D5CC; border-radius: 12px; background: transparent">Atrás</button><button onClick="{{install}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 12px; background: #17171A; color: #F6F4EF; font-weight: 500">Instalar</button></span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{is.installing}}" hint-placeholder-val="{{ false }}">
+<div style="{{pane}}">
+<div style="display: flex; gap: 26px; align-items: center">
+<svg width="150" height="130" viewBox="0 0 150 130" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" style="flex: none">
+<rect x="10" y="10" width="130" height="58" rx="10" fill="#FFFFFF" stroke="#D9D5CC"></rect>
+<g class="roll"><circle cx="52" cy="39" r="20" fill="#F6F4EF"></circle><line x1="52" y1="19" x2="52" y2="59"></line><line x1="32" y1="39" x2="72" y2="39"></line></g>
+<g class="roll"><circle cx="98" cy="39" r="20" fill="#F6F4EF"></circle><line x1="84" y1="25" x2="112" y2="53"></line><line x1="112" y1="25" x2="84" y2="53"></line></g>
+<g class="sheet"><rect x="55" y="62" width="40" height="30" rx="2" fill="#FFFFFF"></rect><line x1="61" y1="70" x2="89" y2="70"></line><line x1="61" y1="77" x2="83" y2="77"></line><line x1="61" y1="84" x2="86" y2="84"></line></g>
+<g class="sheet" style="animation-delay: .7s"><rect x="55" y="62" width="40" height="30" rx="2" fill="#FFFFFF"></rect><line x1="61" y1="70" x2="89" y2="70"></line><line x1="61" y1="77" x2="83" y2="77"></line></g>
+</svg>
+<div>
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: #2340B8">INSTALANDO</div>
+<div style="font-family: 'Newsreader', serif; font-size: 48px; line-height: 1; margin-top: 6px">{{pct}} %</div>
+<div style="font-size: 13px; color: #5E5B55; margin-top: 6px">{{phaseLabel}}</div>
+</div>
+</div>
+<div style="height: 6px; background: #E7E3DA; border-radius: 3px; overflow: hidden; margin: 22px 0 16px"><div style="{{bar}}"></div></div>
+<div style="flex: 1; background: #17171A; border-radius: 12px; padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; line-height: 1.8; color: #B9B4A9; overflow: hidden; display: flex; flex-direction: column; justify-content: flex-end">
+<sc-for list="{{log}}" as="l" hint-placeholder-count="5"><div style="{{l.s}}"><span style="{{l.c}}">{{l.ok}}</span> {{l.t}}</div></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{is.done}}" hint-placeholder-val="{{ false }}">
+<div style="{{pane}}">
+<svg class="pop" width="64" height="64" viewBox="0 0 64 64" fill="none"><circle cx="32" cy="32" r="30" fill="#E3F2EC"></circle><path class="check" pathLength="1" d="M20 33 L28 41 L45 24" stroke="#0B6B50" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<div style="font-family: 'Newsreader', serif; font-size: 34px; margin: 16px 0 8px">Ya está en tu equipo</div>
+<div style="color: #3D3B37; line-height: 1.6; max-width: 440px">newpaper se ha instalado en 14 segundos. El primer arranque tarda un poco más: se descargan las listas de bloqueo y se construye el índice de noticias.</div>
+<button onClick="{{toggleTour}}" role="checkbox" aria-checked="{{tourAria}}" style="display: flex; align-items: center; gap: 12px; margin-top: 22px; border: 0; background: transparent; padding: 0; color: #17171A; text-align: left"><span style="{{tourBox}}">{{tourMark}}</span>Empezar con el recorrido de bienvenida (2 minutos)</button>
+<div style="margin-top: auto; display: flex; justify-content: flex-end; gap: 8px">
+<button class="hov" style="height: 44px; padding: 0 16px; border: 1px solid #D9D5CC; border-radius: 12px; background: transparent">Cerrar</button>
+<a href="{{openHref}}" style="display: flex; align-items: center; height: 44px; padding: 0 22px; border-radius: 12px; background: #17171A; color: #F6F4EF; text-decoration: none; font-weight: 500">Abrir newpaper</a>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1100,"height":720}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { step: 'welcome', k: 0, pct: 0, opts: { desk: true, start: false, links: true, imp: true, tor: true, model: false }, tour: true }; }
+  componentWillUnmount() { clearInterval(this.iv); }
+  go(step) { this.setState({ step, k: this.state.k + 1 }); }
+  install() {
+    this.go('installing');
+    this.setState({ pct: 0 });
+    clearInterval(this.iv);
+    this.iv = setInterval(() => { const p = this.state.pct + (this.state.opts.model ? 1 : 2); if (p >= 100) { clearInterval(this.iv); this.setState({ pct: 100 }); setTimeout(() => this.go('done'), 500); } else this.setState({ pct: p }); }, 70);
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const ORDER = ['welcome', 'options', 'installing', 'done'];
+    const idx = ORDER.indexOf(s.step);
+    const box = (on) => 'flex:none;width:20px;height:20px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;transition:all .4s cubic-bezier(.34,1.56,.64,1);' + (on ? 'background:#17171A;color:#FFFFFF;border:1.5px solid #17171A;transform:scale(1.05)' : 'background:#FFFFFF;color:transparent;border:1.5px solid #B9B4A9');
+    const OPTS = [['desk', 'Acceso directo en el escritorio', '', ''], ['start', 'Abrir al iniciar Windows', 'Para tener el briefing listo por la mañana', ''], ['links', 'Abrir enlaces de noticias con newpaper', 'Solo dominios de medios, el resto sigue en tu navegador', ''], ['imp', 'Importar marcadores de medios', 'Desde Chrome, Edge o Firefox', ''], ['tor', 'Incluir Tor (Arti)', 'Puedes activarlo o no después', '9 MB'], ['model', 'Descargar un modelo local (Qwen 7B)', 'Para analizar sin enviar nada a internet', '4,7 GB']];
+    const size = 120 + (s.opts.tor ? 9 : 0) + (s.opts.model ? 4700 : 0);
+    const PH = [[0, 'Copiando archivos'], [25, 'Instalando el motor de bloqueo'], [45, 'Preparando Tor'], [62, 'Descargando listas de filtros'], [80, s.opts.model ? 'Descargando Qwen 7B' : 'Creando el índice de noticias'], [95, 'Últimos retoques']];
+    const cur = PH.filter((p) => s.pct >= p[0]);
+    const LOG = ['newpaper.exe → AppData\\Local\\newpaper', 'adblock-rust 0.9 · 4 listas', 'arti 1.4 · directorio de nodos', 'EasyList, EasyPrivacy, uBlock filters', s.opts.model ? 'ollama pull qwen:7b' : 'índice SQLite · 34 feeds', 'accesos directos y asociaciones'];
+    return {
+      is: { welcome: s.step === 'welcome', options: s.step === 'options', installing: s.step === 'installing', done: s.step === 'done' },
+      pane: 'flex:1;display:flex;flex-direction:column;animation:s' + (s.k % 2) + ' .6s ' + E + ' both',
+      steps: [['Bienvenida', 0], ['Opciones', 1], ['Instalación', 2], ['Listo', 3]].map((x) => {
+        const done = x[1] < idx, on = x[1] === idx;
+        return { label: x[0], mark: done ? '✓' : String(x[1] + 1), row: 'display:flex;align-items:center;gap:10px;height:38px;padding:0 8px;border-radius:10px;font-size:13px;transition:all .5s ' + E + ';' + (on ? 'background:#EFECE5;color:#17171A;font-weight:500' : done ? 'color:#3D3B37' : 'color:#A9A59C'), dot: 'width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;transition:all .5s cubic-bezier(.34,1.56,.64,1);' + (done ? 'background:#0B6B50;color:#FFFFFF' : on ? 'background:#17171A;color:#FFFFFF;transform:scale(1.1)' : 'background:transparent;color:#A9A59C;box-shadow:inset 0 0 0 1.5px #D9D5CC') };
+      }),
+      toOptions: () => this.go('options'), back: () => this.go('welcome'), install: () => this.install(),
+      opts: OPTS.map((o) => { const on = s.opts[o[0]]; return { label: o[1], desc: o[2], size: o[3], aria: on ? 'true' : 'false', mark: on ? '✓' : '', box: box(on), toggle: () => this.setState({ opts: { ...s.opts, [o[0]]: !on } }) }; }),
+      total: size >= 1000 ? (size / 1000).toFixed(1).replace('.', ',') + ' GB' : size + ' MB',
+      pct: s.pct, phaseLabel: cur.length ? cur[cur.length - 1][1] + '…' : '',
+      bar: 'height:100%;border-radius:3px;background:#2340B8;transition:width .2s linear;width:' + s.pct + '%',
+      log: cur.map((p, i) => { const done = i < cur.length - 1 || s.pct >= 100; return { t: LOG[PH.indexOf(p)], ok: done ? '✓' : '›', c: 'color:' + (done ? '#5DCAA5' : '#F6F4EF'), s: 'animation:rise .4s ' + E + ' both;color:' + (done ? '#8D8981' : '#F6F4EF') }; }),
+      toggleTour: () => this.setState({ tour: !s.tour }), tourAria: s.tour ? 'true' : 'false', tourMark: s.tour ? '✓' : '', tourBox: box(s.tour),
+      openHref: s.tour ? 'Tour.dc.html' : 'Inicio.dc.html'
+    };
+  }
+}
+</script>
+</body>
+</html>

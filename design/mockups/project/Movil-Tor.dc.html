@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · Tor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s,transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.95)}
+.ld{position:absolute;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%;background:#D8D4CB}
+.up{animation:up .8s cubic-bezier(.22,1,.36,1) both}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes fly0{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes fly1{from{offset-distance:0%}to{offset-distance:100%}}
+@keyframes swL0{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+@keyframes swL1{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+@keyframes swR0{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes swR1{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="padding: 60px 22px 0; opacity: .4">
+<div style="font-family: 'Newsreader', serif; font-size: 28px; line-height: 1.15; color: #ABA79E">El salario mínimo bate récords mientras la patronal sigue en pie de guerra</div>
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.7; color: #ABA79E; margin-top: 14px">El Gobierno ha aprobado una subida del SMI que lo sitúa en el nivel más alto de toda Europa…</div>
+</div>
+<a href="Movil-Analisis.dc.html" aria-label="Cerrar" style="position: absolute; inset: 0; background: rgba(23,23,26,.35)"></a>
+<div class="up" style="position: absolute; left: 0; right: 0; bottom: 0; background: #FFFFFF; border-radius: 28px 28px 0 0; padding: 10px 16px 30px; box-shadow: 0 -12px 40px rgba(23,23,26,.2)">
+<div style="width: 40px; height: 5px; border-radius: 3px; background: #CFCAC0; margin: 0 auto 14px"></div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; padding: 0 4px 12px"><span style="font-family: 'Newsreader', serif; font-size: 22px">Salida de Tor</span><a href="Movil-Ajustes.dc.html" style="font-size: 13px; color: #2340B8">Más opciones</a></div>
+<div style="position: relative; width: 358px; height: 150px; overflow: hidden; background: #FBFAF7; border-radius: 18px">
+<div style="{{layer}}">
+<sc-for list="{{dots}}" as="d" hint-placeholder-count="0"><i class="ld" style="{{d}}"></i></sc-for>
+<svg width="1000" height="389" style="position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none"><path d="{{arc}}" fill="none" stroke="#4A2FB8" stroke-width="1.8" stroke-dasharray="3 5" stroke-linecap="round" vector-effect="non-scaling-stroke" style="{{arcStyle}}"></path></svg>
+<span style="{{exitPin}}"></span>
+<sc-if value="{{showCand}}" hint-placeholder-val="{{ true }}"><span style="{{candPin}}"></span></sc-if>
+<sc-if value="{{flying}}" hint-placeholder-val="{{ false }}"><div style="{{plane}}"><svg width="26" height="26" viewBox="0 0 24 24" fill="#17171A" stroke="#FFFFFF" stroke-width="1" stroke-linejoin="round"><path d="M16 10h4a2 2 0 0 1 0 4h-4l-4 7h-3l2-7h-4l-2 2h-3l2-4-2-4h3l2 2h4l-2-7h3z"></path></svg></div></sc-if>
+</div>
+<span style="position: absolute; left: 12px; top: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; color: #4A2FB8; background: rgba(255,255,255,.9); padding: 3px 8px; border-radius: 6px">{{routeLabel}}</span>
+</div>
+<div style="display: flex; align-items: center; gap: 4px; padding: 14px 0 6px">
+<button onClick="{{prev}}" aria-label="País anterior" style="width: 52px; height: 60px; border: 0; border-radius: 14px; background: #F6F4EF; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<div style="flex: 1; text-align: center; overflow: hidden"><div style="{{candAnim}}"><div style="font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 500; letter-spacing: 0.06em">{{candCode}}</div><div style="font-size: 14px">{{candName}}</div><div style="font-size: 12px; color: #8D8981">{{candMs}} · {{candRelays}} relés</div></div></div>
+<button onClick="{{next}}" aria-label="País siguiente" style="width: 52px; height: 60px; border: 0; border-radius: 14px; background: #F6F4EF; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+</div>
+<div style="display: flex; justify-content: center; gap: 4px; padding: 6px 0 16px"><sc-for list="{{pager}}" as="pg" hint-placeholder-count="14"><span style="{{pg}}"></span></sc-for></div>
+<button onClick="{{fly}}" style="{{flyBtn}}">{{flyLabel}}</button>
+<div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; font-size: 12px; color: #4A2FB8"><span style="width: 6px; height: 6px; border-radius: 50%; background: #4A2FB8; animation: pulse 1.4s infinite"></span>{{status}}</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { exit: 'ES', cand: 1, ck: 0, cdir: 'r', flight: null, fk: 0 }; }
+  componentWillUnmount() { clearTimeout(this.tf); }
+  pickExit(k) { if (this.state.flight || k === this.state.exit) return; this.setState({ flight: { from: this.state.exit, to: k }, fk: this.state.fk + 1 }); clearTimeout(this.tf); this.tf = setTimeout(() => this.setState({ exit: k, flight: null }), 1900); }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const MW = 1000, MH = 389, VW = 358, VH = 150;
+    const R = [[[16,22],[25,32],[39,39],[48,52]],[[10,22],[25,32],[46,62]],[[4,12],[14,22],[25,31],[40,44],[46,70]],[[2,9],[10,20],[22,23],[26,30],[32,33],[38,71]],[[4,8],[9,23],[27,27],[37,70]],[[10,24],[34,36],[38,68]],[[11,25],[35,35],[36,64]],[[11,23],[36,63],[64,64]],[[11,21],[34,36],[38,60],[64,64]],[[12,20],[35,42],[43,60],[62,63]],[[13,19],[34,48],[49,60]],[[14,16],[20,20],[33,43],[44,47],[50,60]],[[15,18],[20,21],[32,43],[44,47],[50,53],[55,58],[60,60]],[[18,19],[32,45],[51,52],[55,57],[60,60]],[[19,24],[33,46],[51,51],[55,57],[61,61]],[[20,26],[34,45],[56,59]],[[20,26],[38,44],[56,60]],[[20,29],[38,44],[57,66]],[[21,28],[38,44],[60,61],[62,65]],[[21,28],[38,44],[45,46],[61,65]],[[22,28],[38,43],[45,46],[59,66]],[[22,26],[39,42],[58,66]],[[22,25],[39,42],[59,66]],[[22,24],[39,40],[59,62],[64,66]],[[21,23],[65,65],[70,71]],[[21,22],[69,70]],[[21,22]],[[22,23]]];
+    if (!this.dots) { this.dots = []; R.forEach((row, r) => row.forEach((g) => { for (let c = g[0]; c <= g[1]; c++) this.dots.push('left:' + ((c + 0.5) / 72 * MW).toFixed(1) + 'px;top:' + ((r + 0.5) / 28 * MH).toFixed(1) + 'px'); })); }
+    const mx = (lon) => ((lon + 180) / 5 + 0.5) / 72 * MW, my = (lat) => ((80 - lat) / 5 + 0.5) / 28 * MH;
+    const CT = { ES: ['España', 40.4, -3.7, '380 ms', 112], FR: ['Francia', 46.6, 2.3, '410 ms', 486], DE: ['Alemania', 51, 10, '360 ms', 1320], NL: ['Países Bajos', 52.2, 5.3, '340 ms', 610], GB: ['Reino Unido', 53, -1.5, '420 ms', 240], CH: ['Suiza', 46.8, 8.2, '450 ms', 260], SE: ['Suecia', 60.1, 15, '470 ms', 300], IS: ['Islandia', 64.9, -18.5, '520 ms', 40], US: ['EE. UU.', 39.8, -98.6, '610 ms', 1010], CA: ['Canadá', 52, -106, '640 ms', 190], BR: ['Brasil', -14, -51, '780 ms', 30], JP: ['Japón', 36, 138, '820 ms', 60], SG: ['Singapur', 1.35, 103.8, '860 ms', 45], AU: ['Australia', -25, 134, '910 ms', 70] };
+    const ORDER = Object.keys(CT), fl = s.flight, candK = ORDER[s.cand];
+    const A = fl ? fl.from : s.exit, B = fl ? fl.to : candK;
+    const ax = mx(CT[A][2]), ay = my(CT[A][1]), bx = mx(CT[B][2]), by = my(CT[B][1]), dd = Math.hypot(bx - ax, by - ay);
+    const arc = A === B ? 'M0 0' : 'M' + ax.toFixed(1) + ' ' + ay.toFixed(1) + ' Q' + ((ax + bx) / 2).toFixed(1) + ' ' + (Math.min(ay, by) - 20 - dd * 0.22).toFixed(1) + ' ' + bx.toFixed(1) + ' ' + by.toFixed(1);
+    const vs = Math.max(0.3, Math.min(1.7, (VW * 0.78) / (Math.abs(bx - ax) + 70), (VH * 0.62) / (Math.abs(by - ay) + 60 + dd * 0.12)));
+    const vcx = (ax + bx) / 2, vcy = (ay + by) / 2 - dd * 0.06, inv = (1 / vs).toFixed(3);
+    const pin = (k, ex) => 'position:absolute;left:' + mx(CT[k][2]).toFixed(1) + 'px;top:' + my(CT[k][1]).toFixed(1) + 'px;transition:transform 1s cubic-bezier(.65,0,.35,1);transform:translate(-50%,-50%) scale(' + inv + ');' + (ex ? 'width:16px;height:16px;border-radius:50%;background:#4A2FB8;box-shadow:0 0 0 3px #FFFFFF' : 'width:14px;height:14px;border-radius:50%;background:#FFFFFF;box-shadow:0 0 0 3px #4A2FB8');
+    const cur = CT[s.exit];
+    return {
+      dots: this.dots,
+      layer: 'position:absolute;left:0;top:0;width:' + MW + 'px;height:' + MH + 'px;transform-origin:0 0;transition:transform 1s cubic-bezier(.65,0,.35,1);transform:translate(' + (VW / 2 - vcx * vs).toFixed(1) + 'px,' + (VH / 2 - vcy * vs).toFixed(1) + 'px) scale(' + vs.toFixed(3) + ')',
+      arc, arcStyle: 'opacity:' + (A !== B ? 1 : 0) + ';transition:opacity .5s',
+      exitPin: pin(A, true), showCand: A !== B, candPin: pin(B, false),
+      flying: !!fl, plane: fl ? "position:absolute;left:0;top:0;width:26px;height:26px;offset-path:path('" + arc + "');offset-rotate:auto;transform:scale(" + inv + ');animation:fly' + (s.fk % 2) + ' 1.8s cubic-bezier(.45,0,.2,1) forwards' : '',
+      routeLabel: A === B ? 'Salida · ' + A : A + ' → ' + B,
+      prev: () => { if (!fl) this.setState({ cand: (s.cand + ORDER.length - 1) % ORDER.length, ck: s.ck + 1, cdir: 'l' }); },
+      next: () => { if (!fl) this.setState({ cand: (s.cand + 1) % ORDER.length, ck: s.ck + 1, cdir: 'r' }); },
+      candCode: candK, candName: CT[candK][0], candMs: CT[candK][3], candRelays: CT[candK][4],
+      candAnim: 'animation:sw' + (s.cdir === 'l' ? 'L' : 'R') + (s.ck % 2) + ' .5s ' + E + ' both',
+      pager: ORDER.map((k, i) => 'display:block;height:5px;border-radius:3px;transition:all .5s ' + E + ';' + (i === s.cand ? 'width:16px;background:#4A2FB8' : 'width:5px;background:' + (k === s.exit ? '#B9AEE8' : '#E2DED5'))),
+      fly: () => this.pickExit(candK),
+      flyLabel: fl ? 'Volando a ' + CT[fl.to][0] + '…' : candK === s.exit ? 'Ya sales por aquí' : 'Volar a ' + CT[candK][0],
+      flyBtn: 'width:100%;height:54px;border:0;border-radius:16px;font-weight:500;font-size:15px;' + (fl ? 'background:#ECE8FB;color:#4A2FB8' : candK === s.exit ? 'background:#F1EEE7;color:#5E5B55' : 'background:#4A2FB8;color:#FFFFFF'),
+      status: fl ? 'Construyendo un circuito nuevo…' : 'Saliendo por ' + cur[0] + ' · ' + cur[3]
+    };
+  }
+}
+</script>
+</body>
+</html>

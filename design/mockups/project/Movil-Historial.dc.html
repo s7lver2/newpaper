@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · historial</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.96)}
+input:focus{outline:none;border-color:#17171A!important}
+.scr{scrollbar-width:none}.scr::-webkit-scrollbar{display:none}
+.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+.up{animation:up .7s cubic-bezier(.34,1.3,.64,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes up{from{opacity:0;transform:translateY(120%)}to{opacity:1;transform:none}}
+@keyframes tab0{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes tab1{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes leave{0%{opacity:1;transform:none;max-height:80px}45%{opacity:0;transform:translateX(-70px);max-height:80px}100%{opacity:0;transform:translateX(-70px);max-height:0;padding-top:0;padding-bottom:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+<div style="padding: 50px 20px 12px; border-bottom: 1px solid #E2DED5">
+<div style="display: flex; align-items: center; gap: 4px; margin-left: -12px">
+<a href="Movil-Ajustes.dc.html" aria-label="Volver a Ajustes" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<span style="flex: 1; font-family: 'Newsreader', serif; font-size: 30px; font-weight: 500; letter-spacing: -0.015em">Historial</span>
+<span style="font-size: 12px; color: #5E5B55">{{headSub}}</span>
+</div>
+<div style="position: relative; margin-top: 10px">
+<label for="hq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar en el historial</label>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8D8981" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 14px; top: 15px"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4 4"></path></svg>
+<input id="hq" value="{{q}}" onChange="{{onQ}}" autocomplete="off" placeholder="Busca por título, medio o consulta" style="width: 100%; box-sizing: border-box; height: 48px; padding: 0 16px 0 42px; border: 1px solid #D9D5CC; border-radius: 14px; background: #FFFFFF; color: #17171A; font-size: 15px; transition: border-color .4s">
+</div>
+<div role="tablist" aria-label="Tipo de entrada" style="position: relative; display: flex; margin-top: 10px; background: #E7E3DA; border-radius: 14px; padding: 3px">
+<span style="{{segHi}}"></span>
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="3"><button onClick="{{t.pick}}" role="tab" aria-selected="{{t.aria}}" style="{{t.style}}">{{t.label}}</button></sc-for>
+</div>
+</div>
+
+<div class="scr" style="flex: 1; overflow-y: auto; padding: 6px 20px 28px">
+<sc-if value="{{paused}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; align-items: center; gap: 10px; margin-top: 12px; padding: 10px 12px; border-radius: 12px; background: #E7E3DA; font-size: 13px; color: #3D3B37"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M9 6v12M15 6v12"></path></svg>Historial en pausa: no se guarda nada nuevo.</div>
+</sc-if>
+<div style="{{tabAnim}}">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin: 18px 0 2px"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">{{g.day}}</span><span style="font-size: 11px; color: #8D8981">{{g.count}}</span></div>
+<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="4">
+<div style="{{r.style}}">
+<a href="{{r.href}}" style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; min-height: 44px">
+<span style="{{r.ico}}"><sc-if value="{{r.isSearch}}" hint-placeholder-val="{{ false }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#5E5B55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4 4"></path></svg></sc-if><sc-if value="{{r.isVisit}}" hint-placeholder-val="{{ true }}"><span>{{r.mono}}</span></sc-if></span>
+<span style="flex: 1; min-width: 0"><span style="{{r.titleStyle}}">{{r.title}}</span><span style="display: flex; align-items: center; gap: 6px; margin-top: 3px; font-size: 12px; color: #5E5B55; white-space: nowrap"><span style="overflow: hidden; text-overflow: ellipsis">{{r.meta}}</span><sc-if value="{{r.analyzed}}" hint-placeholder-val="{{ false }}"><span style="flex: none; font-size: 10px; font-weight: 500; padding: 1px 7px; border-radius: 999px; background: #E3F2EC; color: #0B6B50">analizado</span></sc-if></span></span>
+</a>
+<button onClick="{{r.del}}" aria-label="{{r.delLabel}}" style="flex: none; width: 44px; height: 44px; border: 0; border-radius: 12px; background: transparent; color: #8D8981; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"></path></svg></button>
+</div>
+</sc-for>
+</div>
+</sc-for>
+<sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="padding: 40px 10px; text-align: center"><div style="font-family: 'Newsreader', serif; font-size: 22px">Nada por aquí</div><div style="font-size: 13px; color: #5E5B55; margin-top: 6px">{{emptySub}}</div></div>
+</sc-if>
+</div>
+
+<div style="font-size: 12px; font-weight: 600; color: #5E5B55; margin: 26px 0 8px">Privacidad del historial</div>
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 14px">
+<div style="font-weight: 500">Conservar durante</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px"><sc-for list="{{ret}}" as="o" hint-placeholder-count="5"><button onClick="{{o.pick}}" aria-pressed="{{o.aria}}" style="{{o.style}}">{{o.label}}</button></sc-for></div>
+<div style="font-size: 12px; color: #5E5B55; line-height: 1.45; margin-top: 8px">{{retNote}}</div>
+<div style="display: flex; align-items: center; gap: 12px; margin-top: 12px; padding-top: 6px; border-top: 1px solid #EFECE6">
+<div style="flex: 1; min-width: 0"><div style="font-weight: 500">Pausar historial</div><div style="font-size: 12px; color: #5E5B55; line-height: 1.45; margin-top: 2px">No se guarda nada nuevo hasta que lo reanudes.</div></div>
+<button onClick="{{togglePause}}" role="switch" aria-checked="{{pauseAria}}" aria-label="Pausar historial" style="{{pauseTrack}}"><span style="{{pauseKnob}}"></span></button>
+</div>
+<div style="display: flex; gap: 10px; align-items: center; padding: 12px 0 2px; border-top: 1px solid #EFECE6; font-size: 12px; color: #5E5B55; line-height: 1.45"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 018 0v3"></path></svg>Las pestañas privadas no registran nada.</div>
+<a href="Movil-Emparejar.dc.html" style="display: flex; gap: 10px; align-items: center; min-height: 44px; margin-top: 4px; border-top: 1px solid #EFECE6; font-size: 12px; color: #5E5B55"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M4 9h15l-4-4M20 15H5l4 4"></path></svg><span style="flex: 1">Se sincroniza con PC-ESCRITORIO</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8D8981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+<button onClick="{{wipe}}" style="{{wipeBtn}}">{{wipeLabel}}</button>
+</div>
+
+<sc-if value="{{toast}}" hint-placeholder-val="{{ false }}">
+<div class="up" style="position: absolute; left: 12px; right: 12px; bottom: 24px; z-index: 6; background: #17171A; color: #F6F4EF; border-radius: 16px; padding: 8px 8px 8px 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 12px 32px rgba(23,23,26,.28)">
+<span style="flex: 1; font-size: 13px">{{toastText}}</span>
+<button onClick="{{undo}}" style="height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: #2B2B2F; color: #F6F4EF; font-weight: 500">Deshacer</button>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { tab: 'all', tk: 0, q: '', leaving: {}, gone: {}, last: [], toast: false, ret: '90', paused: false, armed: false };
+  }
+  componentWillUnmount() { clearTimeout(this.lt); clearTimeout(this.tt); }
+  remove(ids) {
+    const s = this.state, lv = { ...s.leaving };
+    ids.forEach((id) => { lv[id] = true; });
+    this.setState({ leaving: lv, armed: false });
+    clearTimeout(this.lt);
+    this.lt = setTimeout(() => {
+      const g = { ...this.state.gone };
+      Object.keys(this.state.leaving).forEach((id) => { g[id] = true; });
+      this.setState({ gone: g, leaving: {}, last: ids, toast: true });
+      clearTimeout(this.tt);
+      this.tt = setTimeout(() => this.setState({ toast: false }), 4500);
+    }, 460);
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', BN = 'cubic-bezier(.34,1.56,.64,1)';
+    const DAYS = [
+      ['HOY · JUEVES 8 OCT', [
+        ['v1', 'v', 'El salario mínimo bate récords mientras la patronal sigue en pie de guerra', 'El País', '9:41', true, 'EP', '#E4EBFB'],
+        ['s1', 's', 'subida smi 2026', 'Barra de direcciones', '9:38'],
+        ['v2', 'v', 'Los alquileres de temporada suben un 18 % en las grandes ciudades', 'elDiario.es', '9:12', true, 'eD', '#FBE4DC'],
+        ['s2', 's', 'ley de vivienda enmiendas', 'Buscador de coberturas', '8:55'],
+        ['v3', 'v', 'El Congreso tramita la reforma de la ley de vivienda', 'Europa Press', '8:50', false, 'EP', '#ECECEA']
+      ]],
+      ['AYER · MIÉRCOLES 7 OCT', [
+        ['v4', 'v', 'Las empresas del campo alertan del coste del SMI en la vendimia', 'El Mundo', '22:14', true, 'EM', '#E3E8FA'],
+        ['s3', 's', 'elpais.com salario mínimo 2019', 'Hemeroteca', '21:50'],
+        ['v5', 'v', 'Un estudio vincula la ola de calor de agosto con 1.200 muertes', 'RTVE', '19:03', true, 'RT', '#DFF0F0'],
+        ['s4', 's', 'presupuesto defensa ue', 'Barra de direcciones', '13:20']
+      ]],
+      ['LUNES 5 OCT', [
+        ['v6', 'v', 'No, el SMI español no es el más alto de Europa', 'Maldita', '18:30', true, 'Ma', '#FFF1CC'],
+        ['v7', 'v', 'Evaluación del efecto del salario mínimo en el empleo', 'AIReF', '18:02', false, 'AI', '#E6E5FA'],
+        ['s5', 's', 'airef salario mínimo empleo', 'Barra de direcciones', '17:58']
+      ]]
+    ];
+    const q = s.q.trim().toLowerCase();
+    let visible = 0, total = 0;
+    const groups = [];
+    DAYS.forEach((d) => {
+      const rows = d[1].filter((r) => !s.gone[r[0]]);
+      total += rows.length;
+      const shown = rows.filter((r) => (s.tab === 'all' || (s.tab === 'v' ? r[1] === 'v' : r[1] === 's')) && (!q || (r[2] + ' ' + r[3]).toLowerCase().indexOf(q) >= 0));
+      if (!shown.length) return;
+      visible += shown.length;
+      groups.push({
+        day: d[0], count: shown.length + (shown.length === 1 ? ' entrada' : ' entradas'),
+        rows: shown.map((r, i) => {
+          const isS = r[1] === 's', lv = !!s.leaving[r[0]];
+          return {
+            isSearch: isS, isVisit: !isS, mono: r[6] || '', analyzed: !!r[5],
+            title: isS ? '«' + r[2] + '»' : r[2],
+            meta: r[3] + ' · ' + r[4],
+            href: isS ? 'Movil-Inicio.dc.html' : 'Movil-Analisis.dc.html',
+            delLabel: 'Borrar «' + r[2] + '» del historial',
+            del: () => this.remove([r[0]]),
+            ico: "flex:none;width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:600;background:" + (isS ? '#F1EEE7' : r[7]),
+            titleStyle: isS ? 'display:block;font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis' : "display:block;font-family:'Newsreader',serif;font-size:16px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden",
+            style: 'display:flex;align-items:center;gap:6px;padding:10px 0;border-top:1px solid #E2DED5;overflow:hidden;max-height:80px;box-sizing:border-box;' + (lv ? 'animation:leave .46s ' + E + ' forwards;pointer-events:none' : 'animation:rise .6s ' + E + ' both;animation-delay:' + (i * 40) + 'ms')
+          };
+        })
+      });
+    });
+    const sw = (on) => ({
+      aria: on ? 'true' : 'false',
+      track: 'flex:none;position:relative;width:46px;height:28px;border-radius:14px;border:0;padding:0;margin:8px 0;transition:background-color .5s ' + E + ';background:' + (on ? '#17171A' : '#CFCAC0'),
+      knob: 'position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(23,23,26,.2);transition:transform .65s ' + BN + ';transform:translateX(' + (on ? '18px' : '0') + ')'
+    });
+    const ps = sw(s.paused);
+    const RET = [['7', '7 días'], ['30', '30 días'], ['90', '90 días'], ['365', '1 año'], ['inf', 'Siempre']];
+    const retNotes = { '7': 'Lo de hace más de una semana se borra solo cada noche.', '30': 'Lo de hace más de un mes se borra solo cada noche.', '90': 'Por defecto. Lo de hace más de 90 días se borra solo.', '365': 'Lo de hace más de un año se borra solo.', inf: 'No se borra nada automáticamente.' };
+    const TD = [['all', 'Todo'], ['v', 'Visitas'], ['s', 'Búsquedas']];
+    const ti = TD.findIndex((t) => t[0] === s.tab);
+    const allIds = [];
+    DAYS.forEach((d) => d[1].forEach((r) => { if (!s.gone[r[0]]) allIds.push(r[0]); }));
+    const n = s.last.length;
+    return {
+      headSub: total + (total === 1 ? ' entrada' : ' entradas'),
+      q: s.q, onQ: (e) => this.setState({ q: e.target.value }),
+      segHi: 'position:absolute;top:3px;left:3px;width:calc((100% - 6px) / 3);height:44px;border-radius:11px;background:#17171A;box-shadow:0 4px 12px rgba(23,23,26,.18);transition:transform .6s cubic-bezier(.34,1.3,.64,1);transform:translateX(' + (ti * 100) + '%)',
+      tabs: TD.map((t) => ({ label: t[1], aria: s.tab === t[0] ? 'true' : 'false', pick: () => { if (s.tab !== t[0]) this.setState({ tab: t[0], tk: s.tk + 1 }); }, style: 'position:relative;z-index:1;flex:1;height:44px;border:0;border-radius:11px;background:transparent;font-size:14px;transition:color .45s ' + E + ';' + (s.tab === t[0] ? 'color:#F6F4EF;font-weight:500' : 'color:#3D3B37') })),
+      tabAnim: 'animation:tab' + (s.tk % 2) + ' .55s ' + E + ' both',
+      paused: s.paused, groups, empty: visible === 0,
+      emptySub: q ? 'Ninguna entrada contiene «' + s.q.trim() + '».' : 'El historial está vacío.',
+      ret: RET.map((r) => ({ label: r[1], aria: s.ret === r[0] ? 'true' : 'false', pick: () => this.setState({ ret: r[0] }), style: 'height:36px;padding:0 12px;border-radius:999px;font-size:13px;' + (s.ret === r[0] ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:#FFFFFF;color:#17171A;border:1px solid #D9D5CC') })),
+      retNote: retNotes[s.ret],
+      togglePause: () => this.setState({ paused: !s.paused }), pauseAria: ps.aria, pauseTrack: ps.track, pauseKnob: ps.knob,
+      wipe: () => { if (!allIds.length) return; if (s.armed) this.remove(allIds); else this.setState({ armed: true }); },
+      wipeLabel: !allIds.length ? 'Historial vacío' : s.armed ? 'Toca otra vez para borrar ' + allIds.length + ' entradas' : 'Borrar todo el historial',
+      wipeBtn: 'width:100%;height:48px;margin-top:12px;border-radius:12px;font-weight:500;' + (s.armed ? 'background:#C2412F;color:#FFFFFF;border:1px solid #C2412F' : 'background:transparent;color:#C2412F;border:1px solid #E6B9B0'),
+      toast: s.toast, toastText: n === 1 ? 'Entrada borrada' : n + ' entradas borradas',
+      undo: () => { const g = { ...s.gone }; s.last.forEach((id) => { delete g[id]; }); clearTimeout(this.tt); this.setState({ gone: g, toast: false, last: [] }); }
+    };
+  }
+}
+</script>
+</body>
+</html>

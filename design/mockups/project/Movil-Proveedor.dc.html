@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · conectar un proveedor</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.96)}
+button:disabled{cursor:default}
+input:focus{outline:none;border-color:#17171A!important}
+.scr{scrollbar-width:none}.scr::-webkit-scrollbar{display:none}
+.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes st0{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes st1{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes bounce0{0%{transform:scale(.6)}55%{transform:scale(1.18)}75%{transform:scale(.94)}100%{transform:scale(1)}}
+@keyframes bounce1{0%{transform:scale(.6)}55%{transform:scale(1.18)}75%{transform:scale(.94)}100%{transform:scale(1)}}
+@keyframes pop{0%{opacity:0;transform:scale(.4)}70%{opacity:1;transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+@keyframes open0{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes open1{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+<div style="padding: 50px 12px 0; border-bottom: 1px solid #E2DED5">
+<div style="display: flex; align-items: center; gap: 8px">
+<sc-if value="{{isFirst}}" hint-placeholder-val="{{ true }}"><a href="Movil-Ajustes.dc.html" aria-label="Volver a Ajustes" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a></sc-if>
+<sc-if value="{{notFirst}}" hint-placeholder-val="{{ false }}"><button onClick="{{back}}" aria-label="Paso anterior" style="width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: #17171A; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button></sc-if>
+<div style="flex: 1; min-width: 0"><div style="font-weight: 600">Conectar un proveedor</div><div style="font-size: 11px; color: #5E5B55">{{headSub}}</div></div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #5E5B55; border: 1px solid #D9D5CC; border-radius: 6px; padding: 3px 6px; margin-right: 8px">{{stepTag}}</span>
+</div>
+<div style="display: flex; gap: 4px; padding: 10px 8px 12px"><sc-for list="{{bars}}" as="b" hint-placeholder-count="3"><span style="flex: 1; height: 3px; border-radius: 2px; background: #E2DED5; overflow: hidden"><span style="{{b.fill}}"></span></span></sc-for></div>
+</div>
+
+<div class="scr" style="flex: 1; overflow-y: auto; padding: 18px 20px 16px">
+
+<sc-if value="{{is.s1}}" hint-placeholder-val="{{ true }}">
+<div style="{{anim}}">
+<h1 style="margin: 0; font-family: 'Newsreader', serif; font-weight: 400; font-size: 28px; line-height: 1.12; letter-spacing: -0.02em">¿Con qué IA quieres analizar?</h1>
+<p style="margin: 8px 0 0; font-size: 13px; line-height: 1.55; color: #5E5B55">Elige uno; después repartimos el trabajo por ti. Puedes añadir más cuando quieras.</p>
+
+<div style="font-size: 12px; font-weight: 600; color: #5E5B55; margin: 20px 0 8px">Recomendados</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{recs}}" as="r" hint-placeholder-count="2">
+<button onClick="{{r.pick}}" style="{{r.style}}">
+<span style="{{r.logoBox}}"><sc-if value="{{r.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{r.logo}}" alt="" width="28" height="28" style="display: block"></sc-if><sc-if value="{{r.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{r.mono}}</span></sc-if></span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-family: 'Newsreader', serif; font-size: 22px; line-height: 1.15">{{r.name}}</span><span style="display: block; font-size: 12px; color: #5E5B55; line-height: 1.45; margin-top: 3px">{{r.desc}}</span><span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 11px; margin-top: 6px">{{r.cost}}</span></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8D8981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M9 6l6 6-6 6"></path></svg>
+</button>
+</sc-for>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin: 22px 0 8px"><span style="font-size: 12px; font-weight: 600; color: #5E5B55">Más proveedores</span><span style="font-size: 12px; color: #8D8981">10 en la nube</span></div>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{more}}" as="m" hint-placeholder-count="10"><button onClick="{{m.pick}}" aria-label="{{m.name}}" style="{{m.style}}"><span style="{{m.logoBox}}"><sc-if value="{{m.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{m.logo}}" alt="" width="20" height="20" style="display: block"></sc-if><sc-if value="{{m.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600">{{m.mono}}</span></sc-if></span><span style="font-size: 10px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%">{{m.short}}</span></button></sc-for>
+</div>
+
+<div style="font-size: 12px; font-weight: 600; color: #5E5B55; margin: 22px 0 8px">En tu equipo</div>
+<div class="rise" style="display: flex; align-items: center; gap: 12px; padding: 14px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; animation-delay: 300ms">
+<span style="flex: none; width: 44px; height: 44px; border-radius: 12px; background: #EDEDEB; display: flex; align-items: center; justify-content: center"><img src="/_blob/a5ba83869b71d8f76e17ed7ed73b84d2" alt="" width="24" height="24" style="display: block"></span>
+<div style="flex: 1; min-width: 0"><div style="font-weight: 500">Usar el Ollama de tu PC</div><div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #0B6B50; margin-top: 3px"><span style="width: 6px; height: 6px; border-radius: 50%; background: #0B6B50; animation: pulse 1.6s infinite"></span>Detectado en PC-ESCRITORIO · gratis</div></div>
+<button onClick="{{useOllama}}" style="flex: none; height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: #17171A; color: #F6F4EF; font-weight: 500">Usar</button>
+</div>
+<button onClick="{{pasteFirst}}" style="width: 100%; min-height: 44px; margin-top: 12px; border: 1px dashed #CFCAC0; border-radius: 12px; background: transparent; color: #3D3B37; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"></circle><path d="M11 12l9-9M17 6l3 3M15 8l2 2"></path></svg>¿Ya tienes una clave? Pégala y lo detectamos</button>
+</div>
+</sc-if>
+
+<sc-if value="{{is.s2}}" hint-placeholder-val="{{ false }}">
+<div style="{{anim}}">
+<div style="display: flex; align-items: center; gap: 14px; padding: 16px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px">
+<span style="{{cur.logoBox}}"><sc-if value="{{cur.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="30" height="30" style="display: block"></sc-if><sc-if value="{{cur.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{cur.mono}}</span></sc-if></span>
+<div style="flex: 1; min-width: 0"><div style="font-family: 'Newsreader', serif; font-size: 22px; line-height: 1.15">{{cur.name}}</div><div style="{{cur.statusStyle}}">{{cur.status}}</div></div>
+</div>
+
+<label for="pkey" style="display: block; font-size: 12px; font-weight: 600; color: #5E5B55; margin: 18px 0 8px">Clave de API</label>
+<input id="pkey" value="{{key}}" onChange="{{onKey}}" autocomplete="off" spellcheck="false" placeholder="Pega aquí tu clave" style="{{keyStyle}}">
+<button onClick="{{pasteSample}}" style="width: 100%; min-height: 44px; margin-top: 8px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 2px 5px; border-radius: 4px; border: 1px solid currentColor; opacity: .6">DEMO</span>Pegar clave de ejemplo</button>
+<div style="font-size: 12px; color: #8D8981; line-height: 1.5; margin-top: 10px">Reconocemos el proveedor por el principio de la clave: sk-ant-, nvapi-, gsk_, xai-, AIza, sk-or-, hf_…</div>
+
+<sc-if value="{{hasProv}}" hint-placeholder-val="{{ true }}">
+<div style="margin-top: 16px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 4px 14px">
+<button onClick="{{toggleGet}}" aria-expanded="{{getAria}}" style="width: 100%; min-height: 48px; border: 0; padding: 0; background: transparent; color: #2340B8; font-weight: 500; display: flex; align-items: center; gap: 10px; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"></path></svg><span style="flex: 1">Consigue tu clave</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">{{cur.getHost}}</span></button>
+<sc-if value="{{showGet}}" hint-placeholder-val="{{ false }}"><div style="{{getAnim}}">Se abrirá {{cur.getKey}} en tu navegador. Crea una clave, cópiala y vuelve aquí: la pegaremos por ti.</div></sc-if>
+</div>
+</sc-if>
+
+<div style="display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 12px; color: #5E5B55; line-height: 1.5"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B6B50" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 018 0v3"></path></svg>La clave se guarda en el llavero del móvil. Solo la usa el núcleo de la app para hablar con el proveedor; nunca pasa por newpaper.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{is.s3}}" hint-placeholder-val="{{ false }}">
+<div style="{{anim}}">
+<sc-if value="{{testing}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 14px">
+<span style="{{cur.logoBox}}"><sc-if value="{{cur.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="30" height="30" style="display: block"></sc-if><sc-if value="{{cur.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{cur.mono}}</span></sc-if></span>
+<div><div style="font-family: 'Newsreader', serif; font-size: 26px; line-height: 1.1">Probando la conexión…</div><div style="font-size: 12px; color: #5E5B55; margin-top: 3px">{{cur.name}}</div></div>
+</div>
+<div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 6px 14px">
+<sc-for list="{{checks}}" as="c" hint-placeholder-count="4"><div style="{{c.row}}"><span style="{{c.dot}}"></span><span style="flex: 1">{{c.t}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">{{c.r}}</span></div></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 4px">
+<span style="width: 64px; height: 64px; border-radius: 50%; background: #0B6B50; display: flex; align-items: center; justify-content: center; animation: pop .7s cubic-bezier(.34,1.56,.64,1) both"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+<div class="rise" style="font-family: 'Newsreader', serif; font-size: 28px; line-height: 1.12; letter-spacing: -0.015em; margin-top: 14px; animation-delay: 120ms">Listo, asignado automáticamente</div>
+<div class="rise" style="font-size: 13px; color: #5E5B55; line-height: 1.55; margin-top: 8px; max-width: 320px; animation-delay: 200ms">{{summary}}</div>
+</div>
+<div style="margin-top: 18px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 4px 12px">
+<sc-for list="{{tasks}}" as="t" hint-placeholder-count="6">
+<div style="{{t.row}}">
+<span style="{{t.node}}"><sc-if value="{{t.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{t.logo}}" alt="" width="18" height="18" style="display: block"></sc-if><sc-if value="{{t.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">{{t.mono}}</span></sc-if></span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">{{t.name}}</span><span style="display: block; font-size: 12px; color: #5E5B55">{{t.model}}</span></span>
+<span style="{{t.chip}}">{{t.where}}</span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; padding: 0 4px; font-size: 12px; color: #5E5B55"><span>Coste estimado</span><span style="font-family: 'IBM Plex Mono', monospace; color: #17171A">{{costLine}}</span></div>
+</sc-if>
+</div>
+</sc-if>
+</div>
+
+<div style="padding: 12px 20px 28px; border-top: 1px solid #E2DED5; background: #F6F4EF; display: flex; gap: 8px">
+<sc-if value="{{is.s1}}" hint-placeholder-val="{{ true }}"><div style="flex: 1; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #8D8981; text-align: center; line-height: 1.45">Las claves nunca salen de tus dispositivos.</div></sc-if>
+<sc-if value="{{is.s2}}" hint-placeholder-val="{{ false }}"><button onClick="{{toTest}}" disabled="{{cantTest}}" style="{{testBtn}}">Probar conexión</button></sc-if>
+<sc-if value="{{is.s3}}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{testing}}" hint-placeholder-val="{{ true }}"><div style="flex: 1; height: 52px; border-radius: 14px; background: #E7E3DA; color: #3D3B37; display: flex; align-items: center; justify-content: center; gap: 10px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #2340B8; animation: pulse 1.2s infinite"></span>Probando…</div></sc-if>
+<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+<a href="Movil-Ajustes.dc.html" style="flex: 1; height: 52px; border: 1px solid #D9D5CC; border-radius: 14px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; box-sizing: border-box; font-size: 13px">Opciones avanzadas</a>
+<a href="Movil-Ajustes.dc.html" style="flex: 1; height: 52px; border-radius: 14px; background: #17171A; color: #F6F4EF; font-weight: 500; display: flex; align-items: center; justify-content: center">Hecho</a>
+</sc-if>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { step: 1, k: 0, sel: null, key: '', bk: 0, get: false, gk: 0, lv: 0, done: false };
+  }
+  componentWillUnmount() { clearInterval(this.iv); }
+  go(step, extra) {
+    clearInterval(this.iv);
+    this.setState(Object.assign({ step, k: this.state.k + 1, lv: 0, done: false, get: false }, extra || {}));
+    if (step === 3) {
+      this.iv = setInterval(() => {
+        const n = this.state.lv + 1;
+        if (n >= 4) { clearInterval(this.iv); this.setState({ lv: 4, done: true }); }
+        else this.setState({ lv: n });
+      }, 650);
+    }
+  }
+  detect(key, sel) {
+    const k = key.trim();
+    const RULES = [['sk-ant-', 'anthropic'], ['sk-or-', 'openrouter'], ['sk-proj-', 'openai'], ['nvapi-', 'nvidia'], ['gsk_', 'groq'], ['xai-', 'xai'], ['AIza', 'gemini'], ['hf_', 'hf'], ['pplx-', 'perplexity']];
+    for (let i = 0; i < RULES.length; i++) if (k.indexOf(RULES[i][0]) === 0) return { id: RULES[i][1], prefix: RULES[i][0] };
+    if (k.indexOf('sk-') === 0) return { id: sel === 'deepseek' ? 'deepseek' : 'openai', prefix: 'sk-' };
+    return null;
+  }
+  setKey(key) {
+    const s = this.state, d = this.detect(key, s.sel);
+    const next = d ? d.id : s.sel;
+    this.setState({ key, sel: next, bk: d && d.id !== this.lastDet ? s.bk + 1 : s.bk });
+    this.lastDet = d ? d.id : null;
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', BN = 'cubic-bezier(.34,1.56,.64,1)', B = '/_blob/';
+    const P = {
+      openai: { name: 'ChatGPT', short: 'ChatGPT', logo: B + 'a3e89b95754fab0b6e6d5b234cc85530', tint: '#ECECEA', sample: 'sk-proj-Q7mX2c9LwT4hVb8ZkR1nE5pY', host: 'api.openai.com', getKey: 'platform.openai.com/api-keys', models: ['GPT grande', 'GPT mini'], cost: '~0,03 €', ms: 412 },
+      nous: { name: 'Nous Research', short: 'Nous', mono: 'N', tint: '#E6E5FA', sample: 'b3f1c8e2a9d74e5691c0f27a4be8d613', host: 'Nous Portal', getKey: 'portal.nousresearch.com', models: ['Hermes 4 405B', 'Hermes 4 70B'], cost: '~0,01 €', ms: 486 },
+      anthropic: { name: 'Anthropic', short: 'Anthropic', logo: B + 'ba377cf2a06c3e158b0b2aeacce903b7', tint: '#F6E7DD', sample: 'sk-ant-api03-x8Lq2VnR5tYw9ZcK4mJ1', host: 'api.anthropic.com', getKey: 'console.anthropic.com', models: ['Claude Sonnet', 'Claude Haiku'], cost: '~0,04 €', ms: 390 },
+      gemini: { name: 'Gemini', short: 'Gemini', logo: B + '51a886ba4778142cb4b9957c71e366f6', tint: '#E4EBFB', sample: 'AIzaSyD4k9Qm2Lx7Vb1Nc8Rt5Wz3Hp6Jf0Eg', host: 'generativelanguage.googleapis.com', getKey: 'aistudio.google.com', models: ['Gemini Pro', 'Gemini Flash'], cost: '~0,02 €', ms: 350 },
+      deepseek: { name: 'DeepSeek', short: 'DeepSeek', logo: B + '0a650a2d77b79d46568b3c30a33ae2c9', tint: '#E3E8FA', sample: 'sk-5e1a9c7f3b2d48e6a0c4f8b1d7e2a93c', host: 'api.deepseek.com', getKey: 'platform.deepseek.com', models: ['DeepSeek R1', 'DeepSeek V3'], cost: '~0,01 €', ms: 520 },
+      xai: { name: 'Grok', short: 'Grok', logo: B + '20246f60aec5a544b9f0f7537d632e14', tint: '#EAEAEA', sample: 'xai-Rk3vP8mQ2wL6cN9tY4hB7sD1', host: 'api.x.ai', getKey: 'console.x.ai', models: ['Grok', 'Grok mini'], cost: '~0,03 €', ms: 430 },
+      mistral: { name: 'Mistral', short: 'Mistral', logo: B + '3980b31a745ae93a87afafef0604abf8', tint: '#FCE9D6', sample: 'q8Vw2Lm5Xn9Rc4Tb7Kp1Hz6Jd3Fs0Ag', host: 'api.mistral.ai', getKey: 'console.mistral.ai', models: ['Mistral Large', 'Mistral Small'], cost: '~0,02 €', ms: 310 },
+      perplexity: { name: 'Perplexity', short: 'Perplexity', logo: B + '8812be03ab552d65051ad4dab501be9b', tint: '#DFF0F0', sample: 'pplx-7Gh2Kq9Mv4Xc1Ln8Rb5Tw3Zp6', host: 'api.perplexity.ai', getKey: 'perplexity.ai/settings/api', models: ['Sonar Pro', 'Sonar'], cost: '~0,03 €', ms: 470 },
+      openrouter: { name: 'OpenRouter', short: 'OpenRouter', logo: B + 'dd8c6ff2c71cb73bdcb2c252b050081d', tint: '#EAE8F6', sample: 'sk-or-v1-4d8e2a7c1f9b3e6d0a5c8f2b', host: 'openrouter.ai', getKey: 'openrouter.ai/keys', models: ['Modelo grande', 'Modelo ligero'], cost: '~0,02 €', ms: 455 },
+      nvidia: { name: 'NVIDIA', short: 'NVIDIA', logo: B + '048157e8325fcfda7cee0ae95694d062', tint: '#E9F3DC', sample: 'nvapi-Hc4Lw9Qm2Vx7Rb1Kn8Tz5Jp3', host: 'integrate.api.nvidia.com', getKey: 'build.nvidia.com', models: ['Nemotron Super', 'Nemotron Nano'], cost: '~0,02 €', ms: 380 },
+      hf: { name: 'Hugging Face', short: 'HuggingFace', logo: B + '5ac192ecfbe7b570ec9433605b6637dd', tint: '#FFF1CC', sample: 'hf_Tq8Mv2Lx6Rc9Kb4Wn1Zp7Hd3Js', host: 'huggingface.co', getKey: 'huggingface.co/settings/tokens', models: ['Modelos abiertos', 'Modelos abiertos ligeros'], cost: '~0,01 €', ms: 610 },
+      groq: { name: 'Groq', short: 'Groq', mono: 'gq', tint: '#FBE4DC', sample: 'gsk_Zr5Kc9Lm2Xv7Qb4Wn1Tp8Hd3', host: 'api.groq.com', getKey: 'console.groq.com/keys', models: ['Llama 70B', 'Llama 8B'], cost: '~0,01 €', ms: 120 },
+      ollama: { name: 'Ollama de PC-ESCRITORIO', short: 'Ollama', logo: B + 'a5ba83869b71d8f76e17ed7ed73b84d2', tint: '#EDEDEB', local: true, host: 'PC-ESCRITORIO:11434', getKey: '', models: ['Llama 8B', 'Qwen 7B'], cost: 'gratis', ms: 38 }
+    };
+    const MORE = ['anthropic', 'gemini', 'deepseek', 'xai', 'mistral', 'perplexity', 'openrouter', 'nvidia', 'hf', 'groq'];
+    const sel = s.sel ? P[s.sel] : null;
+    const d = this.detect(s.key, s.sel);
+    const keyOk = s.key.trim().length >= 16 && !!sel;
+    const lb = (p, size, rad) => 'flex:none;width:' + size + 'px;height:' + size + 'px;border-radius:' + rad + 'px;display:flex;align-items:center;justify-content:center;background:' + p.tint;
+    const SUBS = ['Elige un proveedor', 'Pega tu clave', s.done ? 'Conectado' : 'Probando la conexión'];
+    let cur = { name: 'Detectaremos el proveedor', hasLogo: false, isMono: true, mono: '?', logo: '', getKey: '', getHost: '', status: 'Pega una clave y lo reconocemos por su prefijo.', statusStyle: 'font-size:12px;color:#5E5B55;margin-top:3px;line-height:1.4', logoBox: 'flex:none;width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:#F1EEE7;color:#8D8981' };
+    if (sel) {
+      const st = d && d.id === s.sel ? 'Detectado por el prefijo «' + d.prefix + '»' : s.key.trim() ? (s.key.trim().length < 16 ? 'La clave parece incompleta' : 'Sin prefijo conocido: usaremos ' + sel.name) : 'Pega la clave de tu cuenta de ' + sel.name;
+      cur = {
+        name: sel.name, hasLogo: !!sel.logo, isMono: !sel.logo, mono: sel.mono || '', logo: sel.logo || '', getKey: sel.getKey, getHost: sel.getKey.split('/')[0],
+        status: st, statusStyle: 'font-size:12px;margin-top:3px;line-height:1.4;transition:color .45s ' + E + ';color:' + (d && d.id === s.sel ? '#0B6B50' : '#5E5B55'),
+        logoBox: lb(sel, 56, 16) + ';animation:bounce' + (s.bk % 2) + ' .7s ' + BN + ' both'
+      };
+    }
+    const local = !!(sel && sel.local);
+    const TASKS = [['Afirmaciones', 1], ['Verificar', 0], ['Puntuar', 1], ['Síntesis y gráficos', 0], ['Detector IA', 'ollama'], ['Agente', 1]];
+    const OL = P.ollama;
+    const tasks = TASKS.map((t, i) => {
+      const useOl = local || t[1] === 'ollama';
+      const prov = useOl ? OL : sel || P.openai;
+      const model = useOl ? (t[1] === 'ollama' ? 'Qwen 7B' : OL.models[t[1]]) : prov.models[t[1]];
+      return {
+        name: t[0], model: (useOl ? 'Ollama' : prov.name) + ' · ' + model, hasLogo: !!prov.logo, isMono: !prov.logo, mono: prov.mono || '', logo: prov.logo || '',
+        where: useOl ? 'local' : 'nube',
+        node: lb(prov, 34, 10),
+        chip: 'flex:none;font-size:11px;font-weight:500;padding:2px 8px;border-radius:999px;' + (useOl ? 'background:#E3F2EC;color:#0B6B50' : 'background:#E8ECFA;color:#2340B8'),
+        row: 'display:flex;align-items:center;gap:10px;padding:9px 0;' + (i ? 'border-top:1px solid #EFECE6;' : '') + 'animation:rise .6s ' + E + ' both;animation-delay:' + (250 + i * 70) + 'ms'
+      };
+    });
+    const pp = sel || P.openai;
+    const checkT = local ? ['Buscando PC-ESCRITORIO en la red local', 'Conectando con Ollama', 'Leyendo modelos instalados', 'Midiendo latencia'] : ['Conectando con ' + pp.host, 'Comprobando la clave', 'Leyendo modelos disponibles', 'Midiendo latencia'];
+    const checkR = local ? ['192.168.1.34', 'v0.12', '3 modelos', pp.ms + ' ms'] : ['TLS', 'válida', pp.models.length + ' usados', pp.ms + ' ms'];
+    return {
+      is: { s1: s.step === 1, s2: s.step === 2, s3: s.step === 3 },
+      isFirst: s.step === 1, notFirst: s.step > 1,
+      back: () => this.go(s.step === 3 && local ? 1 : s.step - 1),
+      headSub: SUBS[s.step - 1], stepTag: s.step + ' / 3',
+      bars: [1, 2, 3].map((i) => ({ fill: 'display:block;height:100%;border-radius:2px;background:#17171A;transition:width .7s ' + E + ';width:' + (i <= s.step ? '100%' : '0%') })),
+      anim: 'animation:st' + (s.k % 2) + ' .55s ' + E + ' both',
+      recs: [['openai', 'De OpenAI. Bueno en todo y el más fácil para empezar.'], ['nous', 'Modelos abiertos Hermes, a través de Nous Portal.']].map((r, i) => {
+        const p = P[r[0]];
+        return {
+          name: p.name, desc: r[1], cost: p.cost + ' por noticia', hasLogo: !!p.logo, isMono: !p.logo, mono: p.mono || '', logo: p.logo || '',
+          logoBox: lb(p, 56, 16),
+          pick: () => { this.lastDet = null; this.go(2, { sel: r[0], key: '', bk: s.bk + 1 }); },
+          style: 'width:100%;display:flex;align-items:center;gap:14px;padding:16px 14px;border:1px solid #E2DED5;border-radius:18px;background:#FFFFFF;color:#17171A;text-align:left;animation:rise .7s ' + E + ' both;animation-delay:' + (80 + i * 80) + 'ms'
+        };
+      }),
+      more: MORE.map((id, i) => {
+        const p = P[id];
+        return {
+          name: p.name, short: p.short, hasLogo: !!p.logo, isMono: !p.logo, mono: p.mono || '', logo: p.logo || '',
+          logoBox: lb(p, 36, 10),
+          pick: () => { this.lastDet = null; this.go(2, { sel: id, key: '', bk: s.bk + 1 }); },
+          style: 'display:flex;flex-direction:column;align-items:center;gap:5px;min-height:70px;padding:8px 2px 6px;border:1px solid #E2DED5;border-radius:12px;background:#FFFFFF;color:#17171A;animation:rise .6s ' + E + ' both;animation-delay:' + (200 + i * 30) + 'ms'
+        };
+      }),
+      useOllama: () => this.go(3, { sel: 'ollama', key: '' }),
+      pasteFirst: () => { this.lastDet = null; this.go(2, { sel: null, key: '' }); },
+      cur, key: s.key,
+      onKey: (e) => this.setKey(e.target.value),
+      pasteSample: () => this.setKey((sel && !sel.local ? sel : P.openai).sample),
+      keyStyle: "width:100%;box-sizing:border-box;height:52px;padding:0 16px;border-radius:14px;background:#FFFFFF;color:#17171A;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:border-color .4s " + E + ';border:1px solid ' + (d && d.id === s.sel ? '#0B6B50' : '#D9D5CC'),
+      hasProv: !!sel && !local,
+      toggleGet: () => this.setState({ get: !s.get, gk: s.gk + 1 }), getAria: s.get ? 'true' : 'false', showGet: s.get,
+      getAnim: 'font-size:12px;color:#5E5B55;line-height:1.5;padding:0 0 12px 26px;animation:open' + (s.gk % 2) + ' .45s ' + E + ' both',
+      cantTest: !keyOk,
+      toTest: () => { if (keyOk) this.go(3); },
+      testBtn: 'flex:1;height:52px;border-radius:14px;font-weight:500;transition:background-color .45s ' + E + ',color .45s ' + E + ';' + (keyOk ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:#E7E3DA;color:#A9A59C;border:1px solid #E7E3DA'),
+      testing: s.step === 3 && !s.done, done: s.done,
+      checks: checkT.map((t, i) => ({
+        t, r: i < s.lv ? checkR[i] : '',
+        row: 'display:flex;align-items:center;gap:12px;min-height:44px;font-size:13px;transition:color .4s;' + (i ? 'border-top:1px solid #EFECE6;' : '') + 'color:' + (i <= s.lv ? '#17171A' : '#A9A59C'),
+        dot: 'flex:none;width:8px;height:8px;border-radius:50%;transition:background-color .4s;' + (i < s.lv ? 'background:#0B6B50' : i === s.lv ? 'background:#2340B8;animation:pulse 1.2s infinite' : 'background:#E2DED5')
+      })),
+      summary: local ? 'Todo se queda en tu red: el PC hace el trabajo y nada sale a internet.' : 'Verificar y la síntesis usarán ' + pp.models[0] + '; lo ligero, ' + pp.models[1] + '. El detector de IA, el Ollama de tu PC.',
+      tasks,
+      costLine: local ? 'gratis' : pp.cost + ' por noticia'
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Recorrido de bienvenida</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1),opacity .45s}
+button:active{transform:scale(.97)}
+.hov:hover{background:#EFECE5}
+.lift{transition:transform .55s cubic-bezier(.34,1.56,.64,1),box-shadow .5s,background-color .45s,border-color .45s,color .45s}
+.lift:hover{transform:translateY(-3px);box-shadow:0 10px 24px rgba(23,23,26,.08)}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.word{display:inline-block;animation:word .9s cubic-bezier(.22,1,.36,1) both}
+.ring{animation:ring 1.8s cubic-bezier(.22,1,.36,1) infinite}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes word{from{opacity:0;transform:translateY(40%) rotate(3deg)}to{opacity:1;transform:none}}
+@keyframes p0{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes p1{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+@keyframes ring{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.12)}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes fall{0%{transform:translateY(-40px) rotate(0);opacity:0}10%{opacity:1}100%{transform:translateY(900px) rotate(540deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div id="tour-root" style="position: relative; min-height: 900px; width: 100%; overflow: hidden; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+
+<div style="display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #D9D5CC; background: #E7E3DA; flex-wrap: wrap">
+<div style="flex: 1 1 300px; min-width: 0; display: flex; align-items: center; height: 38px; padding: 0 6px 0 12px; background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 12px; gap: 10px">
+<span style="flex: 1; min-width: 0; color: #5E5B55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">eldiariorojo.es/economia/salario-minimo-record</span>
+<span id="t-tor" style="display: flex; align-items: center; gap: 6px; height: 28px; padding: 0 10px; background: #ECE8FB; color: #4A2FB8; border-radius: 8px; font-size: 12px; font-weight: 500">Tor · ES</span>
+</div>
+<span style="display: flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; border-radius: 12px; background: #17171A; color: #F6F4EF; font-size: 13px; font-weight: 500">Análisis</span>
+<span id="t-settings" style="display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 10px; color: #5E5B55"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></span>
+</div>
+<div style="flex: 1; display: flex; flex-wrap: wrap">
+<div style="flex: 999 1 560px; min-width: 0; padding: 44px 40px; display: flex; justify-content: center">
+<article style="max-width: 660px; width: 100%">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 26px; gap: 10px; flex-wrap: wrap"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">EL DIARIO ROJO · ECONOMÍA</span><span id="t-lens" style="display: flex; align-items: center; gap: 8px; height: 32px; padding: 0 12px; border-radius: 999px; background: #17171A; color: #F6F4EF; font-size: 13px"><span style="width: 7px; height: 7px; border-radius: 50%; background: #F09595"></span>Lente de sesgo</span></div>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 44px; line-height: 1.1; margin: 0 0 22px; color: #ABA79E">El salario mínimo bate récords mientras la patronal sigue en pie de guerra</h1>
+<p style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.8; color: #ABA79E; margin: 0">El Consejo de Ministros ha aprobado una subida del salario mínimo que lo sitúa en <span id="t-phrase" style="color: #17171A; background: #F7DFB0; border-radius: 3px; padding: 0 2px">el nivel más alto de toda Europa</span>, una medida que según el ministerio beneficiará a 2,5 millones de trabajadores.</p>
+</article>
+</div>
+<aside style="flex: 1 1 400px; border-left: 1px solid #D9D5CC; background: #FBFAF7; padding: 26px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 22px">
+<div id="t-score" style="display: flex; align-items: center; gap: 18px; padding: 6px">
+<div style="width: 96px; height: 96px; border-radius: 50%; box-shadow: inset 0 0 0 7px #B26A00; display: flex; align-items: center; justify-content: center; font-family: 'Newsreader', serif; font-size: 40px; color: #8A5300">38</div>
+<div><div style="font-family: 'Newsreader', serif; font-size: 22px">Militante, con un dato inflado</div><div style="font-size: 13px; color: #5E5B55">Neutralidad · 6 coberturas</div></div>
+</div>
+<div style="height: 1px; background: #E2DED5"></div>
+<div style="display: flex; flex-direction: column; gap: 10px; font-size: 14px; color: #3D3B37"><span>● Engañoso · «el más alto de Europa»</span><span>● Verificado · 2,5 millones</span><span>● Opinión · «la patronal antepone…»</span></div>
+<span id="t-neutral" style="margin-top: auto; display: flex; align-items: center; justify-content: center; height: 48px; background: #17171A; border-radius: 12px; color: #F6F4EF; font-weight: 500">Leer la noticia neutral</span>
+</aside>
+</div>
+
+<sc-if value="{{isWelcome}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; inset: 0; z-index: 30; background: #F6F4EF; display: flex; align-items: center; justify-content: center; padding: 40px; animation: fade .5s both">
+<div style="max-width: 760px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 22px">
+<div class="rise" style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; letter-spacing: 0.14em; color: #5E5B55">BIENVENIDO A NEWPAPER</div>
+<div style="font-family: 'Newsreader', serif; font-size: 76px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 500"><span class="word" style="animation-delay: .15s">Lee.</span> <span class="word" style="animation-delay: .45s">Contrasta.</span> <span class="word" style="animation-delay: .75s; font-style: italic; color: #2340B8">Decide&nbsp;tú.</span></div>
+<div class="rise" style="font-family: 'Newsreader', serif; font-size: 21px; line-height: 1.5; color: #3D3B37; max-width: 560px; animation-delay: 1.1s">Vamos a dejarlo a tu gusto en tres pasos y luego te enseñamos dónde está cada cosa. Son dos minutos.</div>
+<div class="rise" style="display: flex; gap: 10px; animation-delay: 1.3s">
+<button onClick="{{start}}" style="height: 50px; padding: 0 24px; border: 0; border-radius: 14px; background: #17171A; color: #F6F4EF; font-weight: 500; font-size: 15px">Empezar</button>
+<a href="Inicio.dc.html" class="hov" style="display: flex; align-items: center; height: 50px; padding: 0 18px; border-radius: 14px; color: #5E5B55; text-decoration: none">Saltar el recorrido</a>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isSetup}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 30; background: rgba(246,244,239,.86); display: flex; align-items: flex-start; justify-content: center; padding: 70px 24px 24px; animation: fade .5s both">
+<div style="width: 100%; max-width: 620px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 24px; box-shadow: 0 30px 80px rgba(23,23,26,.14); overflow: hidden">
+<div style="display: flex; gap: 4px; padding: 18px 24px 0"><sc-for list="{{bars}}" as="b" hint-placeholder-count="3"><span style="{{b}}"></span></sc-for></div>
+<div style="{{setupPane}}">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">PASO {{setupN}} DE 3</div>
+<div style="font-family: 'Newsreader', serif; font-size: 30px; line-height: 1.15; margin: 6px 0 6px">{{setupTitle}}</div>
+<div style="color: #5E5B55; line-height: 1.5; margin-bottom: 20px">{{setupDesc}}</div>
+<sc-if value="{{s1}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{topics}}" as="t" hint-placeholder-count="10"><button onClick="{{t.toggle}}" aria-pressed="{{t.aria}}" style="{{t.style}}">{{t.mark}}{{t.name}}</button></sc-for></div>
+</sc-if>
+<sc-if value="{{s2}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px"><sc-for list="{{aiOpts}}" as="o" hint-placeholder-count="3"><button onClick="{{o.pick}}" class="lift" style="{{o.style}}"><span style="{{o.radio}}"><span style="{{o.dot}}"></span></span><span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 600">{{o.name}}</span><span style="display: block; font-size: 13px; color: #5E5B55; margin-top: 2px; line-height: 1.45">{{o.desc}}</span></span><span style="{{o.tagStyle}}">{{o.tag}}</span></button></sc-for></div>
+</sc-if>
+<sc-if value="{{s3}}" hint-placeholder-val="{{ false }}">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px"><sc-for list="{{netOpts}}" as="o" hint-placeholder-count="2"><button onClick="{{o.pick}}" class="lift" style="{{o.style}}"><span style="font-weight: 600; font-size: 15px">{{o.name}}</span><span style="font-size: 13px; line-height: 1.45; opacity: .8">{{o.desc}}</span></button></sc-for></div>
+<sc-if value="{{torOn}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="display: flex; align-items: center; gap: 6px; margin-top: 14px; padding: 8px; background: #F4F1FC; border-radius: 14px">
+<button onClick="{{cPrev}}" aria-label="País anterior" style="width: 40px; height: 44px; border: 0; border-radius: 10px; background: transparent; color: #4A2FB8; font-size: 18px">‹</button>
+<div style="flex: 1; text-align: center"><div style="{{cAnim}}"><span style="font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 18px; color: #4A2FB8">{{cCode}}</span> <span style="color: #3D3B37">{{cName}}</span></div><div style="font-size: 11px; color: #8D8981">país de salida</div></div>
+<button onClick="{{cNext}}" aria-label="País siguiente" style="width: 40px; height: 44px; border: 0; border-radius: 10px; background: transparent; color: #4A2FB8; font-size: 18px">›</button>
+</div>
+</sc-if>
+</sc-if>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 14px 24px 20px; border-top: 1px solid #EFECE6">
+<button onClick="{{sBack}}" class="hov" style="height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: transparent; color: #5E5B55">{{backLabel}}</button>
+<button onClick="{{sNext}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 12px; background: #17171A; color: #F6F4EF; font-weight: 500">{{nextLabel}}</button>
+</div>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isCoach}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 30; pointer-events: none">
+<div style="{{spot}}"></div>
+<div class="ring" style="{{spotRing}}"></div>
+</div>
+<div style="{{tip}}">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">{{coachN}} DE {{coachTotal}}</span><button onClick="{{finish}}" style="border: 0; background: transparent; color: #8D8981; font-size: 12px; padding: 4px">Saltar</button></div>
+<div style="{{tipBody}}">
+<div style="font-family: 'Newsreader', serif; font-size: 22px; line-height: 1.2; margin-bottom: 6px">{{coachTitle}}</div>
+<div style="font-size: 14px; line-height: 1.55; color: #3D3B37">{{coachText}}</div>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 16px">
+<span style="display: flex; gap: 4px"><sc-for list="{{coachDots}}" as="d" hint-placeholder-count="6"><span style="{{d}}"></span></sc-for></span>
+<span style="display: flex; gap: 6px"><button onClick="{{cBack}}" class="hov" style="height: 38px; padding: 0 12px; border: 0; border-radius: 10px; background: transparent; color: #5E5B55">Atrás</button><button onClick="{{cNextStep}}" style="height: 38px; padding: 0 16px; border: 0; border-radius: 10px; background: #17171A; color: #F6F4EF; font-weight: 500">{{coachNext}}</button></span>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; z-index: 30; background: rgba(246,244,239,.92); display: flex; align-items: center; justify-content: center; animation: fade .5s both">
+<sc-for list="{{confetti}}" as="c" hint-placeholder-count="0"><span style="{{c}}"></span></sc-for>
+<div class="rise" style="text-align: center; max-width: 560px; display: flex; flex-direction: column; align-items: center; gap: 14px; padding: 24px">
+<div style="font-family: 'Newsreader', serif; font-size: 64px; letter-spacing: -0.03em">Listo.</div>
+<div style="font-family: 'Newsreader', serif; font-size: 20px; color: #3D3B37; line-height: 1.5">Tu edición está montada. Puedes cambiar cualquier cosa en Ajustes.</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center"><sc-for list="{{summary}}" as="x" hint-placeholder-count="3"><span style="font-size: 13px; padding: 6px 12px; border-radius: 999px; background: #FFFFFF; border: 1px solid #E2DED5">{{x}}</span></sc-for></div>
+<div style="display: flex; gap: 10px; margin-top: 10px">
+<a href="Inicio.dc.html" style="display: flex; align-items: center; height: 50px; padding: 0 22px; border-radius: 14px; background: #17171A; color: #F6F4EF; text-decoration: none; font-weight: 500">Leer el briefing de hoy</a>
+<button onClick="{{restart}}" class="hov" style="height: 50px; padding: 0 18px; border: 0; border-radius: 14px; background: transparent; color: #5E5B55">Repetir el recorrido</button>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.COACH = [
+      ['t-lens', 'La lente de sesgo', 'Apaga el texto neutro y deja encendido solo lo que conviene mirar con lupa. Puedes quitarla cuando quieras.'],
+      ['t-phrase', 'Frases con veredicto', 'Pulsa una frase marcada para ver si es cierta y de dónde sale. O selecciona cualquier trozo y pregunta al agente.'],
+      ['t-score', 'La nota de neutralidad', 'Una estimación rápida y local al abrir la noticia. Al contrastar, se verifica con otras coberturas y fuentes oficiales.'],
+      ['t-neutral', 'La noticia limpia', 'La versión contrastada: hechos, lo que dice cada parte, gráficos y lo que aún no se sabe.'],
+      ['t-tor', 'Tu salida a internet', 'Por aquí sales a la red. Púlsalo para cambiar de país; el avión va incluido.'],
+      ['t-settings', 'Todo es configurable', 'Modelos de IA, fuentes, red y bloqueo. Nada es obligatorio y nada se envía sin que lo sepas.']
+    ];
+    this.C = [['ES', 'España'], ['FR', 'Francia'], ['DE', 'Alemania'], ['NL', 'Países Bajos'], ['CH', 'Suiza'], ['SE', 'Suecia']];
+    this.state = { phase: 'welcome', sp: 0, sk: 0, cs: 0, ck: 0, spot: null, rw: 1440, rh: 900, topics: { Economía: true, Política: true, Europa: true }, ai: 'local', net: 'tor', ci: 0, cdk: 0 };
+    this.onResize = () => this.measure();
+  }
+  componentDidMount() { window.addEventListener('resize', this.onResize); }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); clearTimeout(this.tm); }
+  componentDidUpdate(pp, ps) { if (this.state.phase === 'coach' && (ps.cs !== this.state.cs || ps.phase !== 'coach')) { clearTimeout(this.tm); this.tm = setTimeout(() => this.measure(), 30); } }
+  measure() {
+    const root = document.getElementById('tour-root'), id = this.COACH[this.state.cs][0], el = document.getElementById(id);
+    if (!root || !el) return;
+    const r = root.getBoundingClientRect(), e = el.getBoundingClientRect(), pad = 8;
+    this.setState({ spot: { x: e.left - r.left - pad, y: e.top - r.top - pad, w: e.width + pad * 2, h: e.height + pad * 2 }, rw: r.width, rh: r.height });
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const T = ['Economía', 'Política', 'Europa', 'Internacional', 'Vivienda', 'Clima', 'Tecnología', 'Ciencia', 'Sanidad', 'Educación'];
+    const AI = [['local', 'Todo en mi equipo', 'Usa Ollama con un modelo local. Gratis y privado, algo menos preciso.', 'Ollama detectado'], ['equil', 'Equilibrado', 'Nube para verificar bien, local para lo ligero. Necesitarás una clave de API.', 'Recomendado'], ['later', 'Lo decido luego', 'Empiezas solo con el análisis rápido local. Puedes conectar proveedores en Ajustes.', '']];
+    const NET = [['direct', 'Conexión directa', 'Lo más rápido. Los medios ven tu IP.'], ['tor', 'A través de Tor', 'Anónimo y con país de salida a elegir. Más lento.']];
+    const SET = [['Qué te interesa', 'Lo usamos para tu briefing diario. No sale de tu equipo.'], ['Cómo quieres usar la IA', 'Puedes cambiarlo cuando quieras, paso a paso, en Ajustes.'], ['Cómo sales a internet', 'También tendrás un bloqueador de anuncios y rastreadores activado.']];
+    const sp = s.spot || { x: s.rw / 2 - 60, y: s.rh / 2 - 30, w: 120, h: 60 };
+    const TW = 340, below = sp.y + sp.h + 16 + 200 < s.rh;
+    const tx = Math.max(16, Math.min(s.rw - TW - 16, sp.x + sp.w / 2 - TW / 2)), ty = below ? sp.y + sp.h + 16 : Math.max(16, sp.y - 16 - 196);
+    const goCoach = (d) => { const n = s.cs + d; if (n < 0) return; if (n >= this.COACH.length) this.setState({ phase: 'done' }); else this.setState({ cs: n, ck: s.ck + 1 }); };
+    const goSetup = (d) => { const n = s.sp + d; if (n < 0) { this.setState({ phase: 'welcome' }); return; } if (n > 2) { this.setState({ phase: 'coach', cs: 0, spot: null }); return; } this.setState({ sp: n, sk: s.sk + 1 }); };
+    const COLS = ['#2340B8', '#A3271B', '#B26A00', '#0B6B50', '#17171A', '#4A2FB8'];
+    return {
+      isWelcome: s.phase === 'welcome', isSetup: s.phase === 'setup', isCoach: s.phase === 'coach', isDone: s.phase === 'done',
+      start: () => this.setState({ phase: 'setup', sp: 0, sk: s.sk + 1 }),
+      bars: [0, 1, 2].map((i) => 'flex:1;height:4px;border-radius:2px;transition:background-color .6s ' + E + ';background:' + (i <= s.sp ? '#17171A' : '#E7E3DA')),
+      setupPane: 'padding:22px 24px 22px;animation:p' + (s.sk % 2) + ' .55s ' + E + ' both',
+      setupN: s.sp + 1, setupTitle: SET[s.sp][0], setupDesc: SET[s.sp][1],
+      s1: s.sp === 0, s2: s.sp === 1, s3: s.sp === 2,
+      topics: T.map((t) => { const on = !!s.topics[t]; return { name: t, mark: on ? '✓ ' : '', aria: on ? 'true' : 'false', toggle: () => this.setState({ topics: { ...s.topics, [t]: !on } }), style: 'height:40px;padding:0 16px;border-radius:999px;font-size:14px;' + (on ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:#FFFFFF;color:#17171A;border:1px solid #D9D5CC') }; }),
+      aiOpts: AI.map((o) => { const on = s.ai === o[0]; return { name: o[1], desc: o[2], tag: o[3], pick: () => this.setState({ ai: o[0] }), tagStyle: o[3] ? 'flex:none;font-size:11px;font-weight:500;padding:3px 8px;border-radius:999px;' + (o[0] === 'local' ? 'background:#E3F2EC;color:#0B6B50' : 'background:#E8ECFA;color:#2340B8') : 'display:none', radio: 'flex:none;width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:all .4s;box-shadow:inset 0 0 0 ' + (on ? '2px #17171A' : '1.5px #B9B4A9'), dot: 'width:10px;height:10px;border-radius:50%;background:#17171A;transition:transform .5s cubic-bezier(.34,1.56,.64,1);transform:scale(' + (on ? 1 : 0) + ')', style: 'display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border-radius:16px;background:#FFFFFF;color:#17171A;' + (on ? 'border:1.5px solid #17171A' : 'border:1px solid #E2DED5') }; }),
+      netOpts: NET.map((o) => { const on = s.net === o[0]; return { name: o[1], desc: o[2], pick: () => this.setState({ net: o[0] }), style: 'display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:18px;border-radius:16px;min-height:110px;' + (on ? (o[0] === 'tor' ? 'background:#4A2FB8;color:#FFFFFF;border:1px solid #4A2FB8' : 'background:#17171A;color:#F6F4EF;border:1px solid #17171A') : 'background:#FFFFFF;color:#17171A;border:1px solid #E2DED5') }; }),
+      torOn: s.net === 'tor',
+      cCode: this.C[s.ci][0], cName: this.C[s.ci][1], cAnim: 'animation:p' + (s.cdk % 2) + ' .45s ' + E + ' both',
+      cPrev: () => this.setState({ ci: (s.ci + this.C.length - 1) % this.C.length, cdk: s.cdk + 1 }), cNext: () => this.setState({ ci: (s.ci + 1) % this.C.length, cdk: s.cdk + 1 }),
+      sBack: () => goSetup(-1), sNext: () => goSetup(1), backLabel: s.sp === 0 ? 'Volver' : 'Atrás', nextLabel: s.sp === 2 ? 'Ver dónde está todo' : 'Siguiente',
+      spot: 'position:absolute;border-radius:14px;box-shadow:0 0 0 9999px rgba(23,23,26,.55);transition:all .7s ' + E + ';left:' + sp.x + 'px;top:' + sp.y + 'px;width:' + sp.w + 'px;height:' + sp.h + 'px',
+      spotRing: 'position:absolute;border-radius:16px;border:2px solid #F6F4EF;transition:all .7s ' + E + ';left:' + (sp.x - 4) + 'px;top:' + (sp.y - 4) + 'px;width:' + (sp.w + 8) + 'px;height:' + (sp.h + 8) + 'px',
+      tip: 'position:absolute;z-index:31;width:' + TW + 'px;box-sizing:border-box;background:#FFFFFF;border-radius:18px;padding:16px 18px;box-shadow:0 20px 50px rgba(23,23,26,.3);transition:left .7s ' + E + ',top .7s ' + E + ';left:' + tx + 'px;top:' + ty + 'px',
+      tipBody: 'animation:p' + (s.ck % 2) + ' .5s ' + E + ' both',
+      coachN: s.cs + 1, coachTotal: this.COACH.length, coachTitle: this.COACH[s.cs][1], coachText: this.COACH[s.cs][2],
+      coachDots: this.COACH.map((c, i) => 'display:block;height:5px;border-radius:3px;transition:all .5s ' + E + ';' + (i === s.cs ? 'width:14px;background:#17171A' : 'width:5px;background:#D9D5CC')),
+      cBack: () => goCoach(-1), cNextStep: () => goCoach(1), coachNext: s.cs === this.COACH.length - 1 ? 'Terminar' : 'Siguiente',
+      finish: () => this.setState({ phase: 'done' }),
+      restart: () => this.setState({ phase: 'welcome', sp: 0, cs: 0 }),
+      summary: [Object.keys(s.topics).filter((k) => s.topics[k]).length + ' temas', s.ai === 'local' ? 'IA en tu equipo' : s.ai === 'equil' ? 'IA equilibrada' : 'IA más tarde', s.net === 'tor' ? 'Tor · ' + this.C[s.ci][1] : 'Conexión directa'],
+      confetti: Array.from({ length: 26 }, (_, i) => 'position:absolute;top:0;left:' + ((i * 37) % 100) + '%;width:' + (6 + (i % 3) * 3) + 'px;height:' + (10 + (i % 4) * 3) + 'px;border-radius:2px;background:' + COLS[i % COLS.length] + ';animation:fall ' + (2.4 + (i % 5) * 0.4) + 's cubic-bezier(.3,.6,.5,1) ' + ((i % 7) * 0.12) + 's both')
+    };
+  }
+}
+</script>
+</body>
+</html>

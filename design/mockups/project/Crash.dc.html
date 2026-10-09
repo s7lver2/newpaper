@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>La pestaña se ha colgado</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.96)}
+.hov:hover{background:#EFECE5}
+.rise{animation:rise .9s cubic-bezier(.22,1,.36,1) both}
+.roll{transform-box:fill-box;transform-origin:center}
+.jam{animation:jam .18s linear infinite}
+.turn{animation:turn 1s linear infinite}
+.flow{stroke-dasharray:14 10;animation:flow .6s linear infinite}
+.pop{animation:pop .7s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes jam{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes turn{to{transform:rotate(360deg)}}
+@keyframes flow{to{stroke-dashoffset:-24}}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height: 900px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #D9D5CC; background: #E7E3DA">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: #A3271B"></span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">El salario mínimo bate récords… · pestaña 3</span>
+</div>
+<main style="flex: 1; width: 100%; max-width: 980px; margin: 0 auto; padding: 80px 32px; box-sizing: border-box; display: flex; gap: 56px; align-items: center; flex-wrap: wrap">
+<div class="rise" style="flex: none; width: 300px">
+<svg width="300" height="230" viewBox="0 0 300 230" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+<rect x="20" y="30" width="260" height="120" rx="14" fill="#FFFFFF" stroke="#D9D5CC"></rect>
+<g class="{{rollCls}}"><circle cx="105" cy="90" r="38" fill="#F6F4EF"></circle><circle cx="105" cy="90" r="6" fill="#17171A"></circle><line x1="105" y1="52" x2="105" y2="128"></line><line x1="67" y1="90" x2="143" y2="90"></line></g>
+<g class="{{rollCls}}"><circle cx="195" cy="90" r="38" fill="#F6F4EF"></circle><circle cx="195" cy="90" r="6" fill="#17171A"></circle><line x1="168" y1="63" x2="222" y2="117"></line><line x1="222" y1="63" x2="168" y2="117"></line></g>
+<sc-if value="{{jammed}}" hint-placeholder-val="{{ true }}">
+<path d="M150 128 l-14 18 l22 10 l-26 14 l24 12 l-20 16 l18 12" stroke="#A3271B"></path>
+<path d="M134 196 l40 -6" stroke="#A3271B"></path>
+</sc-if>
+<sc-if value="{{flowing}}" hint-placeholder-val="{{ false }}">
+<path class="flow" d="M150 128 L150 210" stroke="#17171A" stroke-width="10" stroke-linecap="butt" style="opacity: .85"></path>
+</sc-if>
+<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+<g class="pop"><rect x="110" y="150" width="80" height="62" rx="4" fill="#FFFFFF"></rect><line x1="122" y1="166" x2="178" y2="166"></line><line x1="122" y1="180" x2="166" y2="180"></line><line x1="122" y1="194" x2="172" y2="194"></line></g>
+</sc-if>
+</svg>
+<div style="height: 4px; background: #E7E3DA; border-radius: 2px; overflow: hidden; margin-top: 10px"><div style="{{bar}}"></div></div>
+</div>
+<div style="flex: 1 1 380px">
+<div style="{{kickStyle}}">{{kick}}</div>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 42px; line-height: 1.1; margin: 0">{{title}}</h1>
+<p style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.55; color: #3D3B37; margin: 14px 0 26px">{{body}}</p>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<sc-if value="{{done}}" hint-placeholder-val="{{ false }}"><a href="Main.dc.html" class="pop" style="display: flex; align-items: center; height: 46px; padding: 0 18px; border-radius: 12px; background: #0B6B50; color: #FFFFFF; text-decoration: none; font-weight: 500">Volver a la noticia</a></sc-if>
+<sc-if value="{{notDone}}" hint-placeholder-val="{{ true }}"><button onClick="{{reload}}" style="{{reloadBtn}}">{{reloadLabel}}</button></sc-if>
+<a href="Inicio.dc.html" class="hov" style="display: flex; align-items: center; height: 46px; padding: 0 16px; border: 1px solid #D9D5CC; border-radius: 12px; color: #17171A; text-decoration: none">Cerrar pestaña</a>
+</div>
+<div style="margin-top: 26px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 14px; padding: 14px 16px">
+<div style="display: flex; align-items: center; gap: 14px">
+<div style="flex: 1"><div style="font-weight: 500">Enviar un informe del error</div><div style="font-size: 12px; color: #5E5B55">Opcional. Solo datos técnicos, sin URL ni contenido.</div></div>
+<button onClick="{{toggleReport}}" role="switch" aria-checked="{{reportAria}}" aria-label="Enviar informe del error" style="{{track}}"><span style="{{knob}}"></span></button>
+</div>
+<sc-if value="{{report}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #EFECE6; font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.8; color: #3D3B37">RENDERER_OUT_OF_MEMORY · pestaña 3<br>Memoria: 1,2 GB · WebView2 128.0<br>newpaper 0.1 · Windows 11</div>
+</sc-if>
+</div>
+<div style="margin-top: 14px; font-size: 13px; color: #5E5B55">Tus otras pestañas y los análisis guardados están a salvo.</div>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { phase: 'jam', prog: 0, report: false }; }
+  componentWillUnmount() { clearInterval(this.iv); }
+  reload() {
+    if (this.state.phase !== 'jam') return;
+    this.setState({ phase: 'fix', prog: 0 });
+    clearInterval(this.iv);
+    this.iv = setInterval(() => { const p = this.state.prog + 4; if (p >= 100) { clearInterval(this.iv); this.setState({ prog: 100, phase: 'ok' }); } else this.setState({ prog: p }); }, 70);
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const T = {
+      jam: ['LA PESTAÑA SE HA COLGADO', '#A3271B', 'Se ha atascado la rotativa', 'Esta página ha usado demasiada memoria y ha dejado de responder. Puede ser la web, un anuncio que se coló o un fallo nuestro.'],
+      fix: ['RECARGANDO', '#2340B8', 'Desatascando…', 'Liberando memoria y volviendo a imprimir la página.'],
+      ok: ['RECUPERADA', '#0B6B50', 'Todo en orden', 'La pestaña vuelve a funcionar. Hemos restaurado tu posición de lectura y tu análisis.']
+    }[s.phase];
+    const on = s.report;
+    return {
+      kick: T[0], kickStyle: 'font-size:11px;font-weight:600;letter-spacing:.12em;margin-bottom:10px;transition:color .5s ' + E + ';color:' + T[1],
+      title: T[2], body: T[3],
+      jammed: s.phase === 'jam', flowing: s.phase === 'fix', done: s.phase === 'ok', notDone: s.phase !== 'ok',
+      rollCls: 'roll ' + (s.phase === 'jam' ? 'jam' : s.phase === 'fix' ? 'turn' : ''),
+      bar: 'height:100%;border-radius:2px;transition:width .2s linear,background-color .5s;width:' + (s.phase === 'jam' ? 100 : s.prog) + '%;background:' + (s.phase === 'jam' ? '#A3271B' : s.phase === 'fix' ? '#2340B8' : '#0B6B50'),
+      reload: () => this.reload(),
+      reloadLabel: s.phase === 'fix' ? 'Recargando… ' + s.prog + ' %' : 'Recargar pestaña',
+      reloadBtn: 'height:46px;padding:0 18px;border:0;border-radius:12px;font-weight:500;' + (s.phase === 'fix' ? 'background:#E8ECFA;color:#2340B8' : 'background:#17171A;color:#F6F4EF'),
+      report: on, reportAria: on ? 'true' : 'false', toggleReport: () => this.setState({ report: !on }),
+      track: 'flex:none;position:relative;width:46px;height:28px;border-radius:14px;border:0;padding:0;transition:background-color .5s ' + E + ';background:' + (on ? '#0B6B50' : '#CFCAC0'),
+      knob: 'position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(23,23,26,.2);transition:transform .65s cubic-bezier(.34,1.56,.64,1);transform:translateX(' + (on ? '18px' : '0') + ')'
+    };
+  }
+}
+</script>
+</body>
+</html>

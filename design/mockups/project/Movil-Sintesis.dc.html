@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · síntesis</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:var(--ink);text-decoration:none}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s,box-shadow .45s,transform .5s cubic-bezier(.34,1.56,.64,1)}
+.scr{scrollbar-width:none}.scr::-webkit-scrollbar{display:none}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;transition:background-color .6s,border-color .6s}
+.kick{font-size:10px;font-weight:600;letter-spacing:.1em;color:var(--muted)}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes r0{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes r1{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="{{root}}">
+<div style="display: flex; align-items: center; gap: 6px; padding: 50px 12px 10px">
+<a href="Movil-Analisis.dc.html" aria-label="Volver" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex: none"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<div style="flex: 1; display: flex; background: var(--soft); border-radius: 12px; padding: 3px; gap: 3px"><sc-for list="{{modes}}" as="m" hint-placeholder-count="3"><button onClick="{{m.pick}}" style="{{m.style}}">{{m.label}}</button></sc-for></div>
+<button onClick="{{toggleTheme}}" aria-label="Cambiar tema" style="width: 40px; height: 40px; border: 0; border-radius: 12px; background: var(--soft); color: var(--ink); flex: none; font-size: 16px">{{themeIcon}}</button>
+</div>
+<div class="scr" style="flex: 1; overflow-y: auto; padding: 4px 20px 110px">
+<div class="rise" style="font-size: 10px; font-weight: 600; letter-spacing: 0.1em; color: var(--ok); margin-top: 8px">VERSIÓN NEUTRAL · 4 DE 5 HECHOS CON CONFIANZA ALTA</div>
+<h1 class="rise" style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 28px; line-height: 1.15; margin: 8px 0 16px">El Gobierno aprueba una subida del salario mínimo; la patronal la rechaza</h1>
+
+<sc-if value="{{notDiff}}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px">
+<sc-for list="{{keyData}}" as="k" hint-placeholder-count="3"><div style="border-top: 2px solid var(--ink); padding-top: 8px; border-radius: 0"><div style="font-family: 'Newsreader', serif; font-size: 26px; line-height: 1">{{k.v}}</div><div style="font-size: 11px; color: var(--ink2); margin-top: 6px; line-height: 1.3">{{k.l}}</div></div></sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{isFull}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 14px">
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.7"><sc-for list="{{facts}}" as="x" hint-placeholder-count="4"><button onClick="{{x.pick}}" style="{{x.style}}">{{x.text}}</button> </sc-for></div>
+<div class="card" style="padding: 16px 16px 12px">
+<div class="kick">EVOLUCIÓN · € AL MES</div>
+<div style="display: flex; align-items: baseline; gap: 8px; margin: 2px 0 12px"><span style="font-family: 'Newsreader', serif; font-size: 18px">Salario mínimo</span><span style="font-family: 'Newsreader', serif; font-size: 22px; color: var(--accent); margin-left: auto">+61 %</span></div>
+<div style="position: relative; height: 130px; display: flex; gap: 4px; border-bottom: 1px solid var(--line3)">
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="9"><button onClick="{{b.tap}}" aria-label="{{b.aria}}" style="flex: 1; height: 100%; border: 0; background: transparent; padding: 0; position: relative; display: flex; align-items: flex-end; justify-content: center"><sc-if value="{{b.hov}}" hint-placeholder-val="{{ false }}"><span style="{{b.tip}}">{{b.label}}</span></sc-if><span style="{{b.bar}}"></span></button></sc-for>
+</div>
+<div style="display: flex; gap: 4px; margin-top: 6px"><sc-for list="{{bars}}" as="b" hint-placeholder-count="9"><span style="flex: 1; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 9px; color: var(--faint)">{{b.y}}</span></sc-for></div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--accent); margin-top: 10px">BOE · INE · toca una barra</div>
+</div>
+<div class="card" style="padding: 16px">
+<div class="kick">VOCES CITADAS</div>
+<div style="font-family: 'Newsreader', serif; font-size: 18px; margin: 2px 0 12px">¿A quién da voz cada medio?</div>
+<sc-for list="{{voices}}" as="v" hint-placeholder-count="4"><div style="display: flex; align-items: center; gap: 10px; margin-bottom: 7px"><span style="width: 84px; font-size: 11px; flex: none; color: var(--ink2)">{{v.name}}</span><div style="flex: 1; display: flex; height: 14px; border-radius: 4px; overflow: hidden; gap: 2px"><sc-for list="{{v.parts}}" as="p" hint-placeholder-count="3"><span style="{{p}}"></span></sc-for></div></div></sc-for>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; font-size: 10px; color: var(--muted)"><sc-for list="{{legend}}" as="lg" hint-placeholder-count="4"><span style="display: flex; align-items: center; gap: 4px"><span style="{{lg.s}}"></span>{{lg.l}}</span></sc-for></div>
+</div>
+<div class="card" style="padding: 16px">
+<div class="kick" style="color: var(--warn)">EN DISPUTA</div>
+<div style="font-family: 'Newsreader', serif; font-size: 18px; margin: 2px 0 12px">¿Ha destruido empleo el SMI?</div>
+<sc-for list="{{positions}}" as="p" hint-placeholder-count="3"><div style="padding: 8px 0; border-top: 1px solid var(--line2)"><div style="display: flex; justify-content: space-between; gap: 8px"><span style="font-family: 'Newsreader', serif; font-size: 15px">{{p.c}}</span><span style="font-size: 11px; color: var(--muted); white-space: nowrap">{{p.w}}</span></div><div style="height: 5px; background: var(--soft); border-radius: 3px; overflow: hidden; margin-top: 6px"><div style="{{p.bar}}"></div></div></div></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isBrief}}" hint-placeholder-val="{{ false }}">
+<ol class="rise" style="margin: 0; padding-left: 20px; font-family: 'Newsreader', serif; font-size: 18px; line-height: 1.55; display: flex; flex-direction: column; gap: 10px">
+<li>El Gobierno aprobó el martes una subida del SMI, con efectos desde enero.</li>
+<li>Afecta a unos 2,5 millones; España es sexta de la UE en SMI nominal.</li>
+<li>La CEOE la rechaza. El efecto en el empleo sigue en debate.</li>
+</ol>
+</sc-if>
+
+<sc-if value="{{isDiff}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 10px"><sc-for list="{{rewrites}}" as="w" hint-placeholder-count="4"><div style="{{w.wrap}}"><div style="font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.45; color: var(--bad); text-decoration: line-through">{{w.from}}</div><div style="font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.45; color: var(--ok)">{{w.to}}</div><div style="font-size: 11px; color: var(--muted)">{{w.why}}</div></div></sc-for></div>
+</sc-if>
+</div>
+<sc-if value="{{hasSel}}" hint-placeholder-val="{{ false }}">
+<div style="{{card}}">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px"><span style="{{selBadge}}">{{selKind}}</span><button onClick="{{close}}" aria-label="Cerrar" style="width: 34px; height: 34px; border: 0; background: transparent; color: #B9B4A9; font-size: 20px">×</button></div>
+<sc-for list="{{selSources}}" as="x" hint-placeholder-count="2"><div style="display: flex; gap: 10px; padding: 8px 0; border-top: 1px solid #2B2B2F"><span style="{{x.dot}}"></span><div><div style="font-size: 14px">{{x.name}}</div><div style="font-size: 12px; color: #B9B4A9">{{x.note}}</div></div></div></sc-for>
+</div>
+</sc-if>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 30px; background: var(--paper); border-top: 1px solid var(--line); transition: background-color .6s">
+<a href="Movil-Agente.dc.html" style="display: flex; align-items: center; height: 50px; padding: 0 18px; border: 1px solid var(--line3); border-radius: 16px; background: var(--card); color: var(--muted); gap: 10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"></path></svg>Pregunta sobre esta noticia</a>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { theme: 'paper', mode: 'full', sel: null, n: 0, hov: 7, grown: false }; }
+  componentDidMount() { this.tg = setTimeout(() => this.setState({ grown: true }), 250); }
+  componentWillUnmount() { clearTimeout(this.tg); }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const P = {
+      paper: { paper: '#F6F4EF', card: '#FFFFFF', ink: '#17171A', ink2: '#3D3B37', muted: '#5E5B55', faint: '#8D8981', line: '#E2DED5', line2: '#EFECE6', line3: '#D9D5CC', soft: '#EFECE5', accent: '#2340B8', accentSoft: '#E8ECFA', ok: '#0B6B50', okBg: '#E3F2EC', warn: '#8A5300', warnMid: '#B26A00', warnBg: '#FBF0DC', bad: '#A3271B' },
+      ink: { paper: '#131315', card: '#1C1C1F', ink: '#ECE9E2', ink2: '#CBC7BE', muted: '#A29E95', faint: '#77736C', line: '#2B2B2F', line2: '#232327', line3: '#36363B', soft: '#242428', accent: '#8EA3F2', accentSoft: '#1F2643', ok: '#5DCAA5', okBg: '#12302A', warn: '#E8A951', warnMid: '#E8A951', warnBg: '#33260F', bad: '#F09595' }
+    }[s.theme];
+    const vars = Object.keys(P).map((k) => '--' + k + ':' + P[k]).join(';');
+    const K = { h: ['Hecho verificado', 'background:#1F3D33;color:#9FE1CB', 'var(--okBg)'], a: ['Afirmación atribuida', 'background:#232B4A;color:#B5C4F4', 'var(--accentSoft)'], d: ['En disputa', 'background:#4A3412;color:#FAC775', 'var(--warnBg)'] };
+    const F = [['s1', 'h', 'El Gobierno aprobó el martes una subida del SMI, con efectos desde el 1 de enero.', [['BOE · Real Decreto', 'Fuente primaria', '#5DCAA5'], ['EFE, Europa Press', 'Coinciden', '#888780']]], ['s2', 'a', 'Según el ministerio, afectará a unos 2,5 millones de trabajadores.', [['Memoria del ministerio', 'Cifra oficial', '#85B7EB'], ['Banco de España', 'Estima 2,1–2,5 M', '#5DCAA5']]], ['s3', 'h', 'España queda sexta en la UE en salario mínimo nominal.', [['Eurostat', 'Enero de 2026', '#5DCAA5'], ['El Diario Rojo', 'Decía «el más alto»', '#F09595']]], ['s4', 'd', 'Su efecto sobre el empleo sigue en debate.', [['AIReF', 'Efecto negativo moderado', '#FAC775'], ['CCOO', 'Sin destrucción de empleo', '#FAC775']]]];
+    const cur = F.find((x) => x[0] === s.sel);
+    const SMI = [[2018, 736], [2019, 900], [2020, 950], [2021, 965], [2022, 1000], [2023, 1080], [2024, 1134], [2025, 1184], [2026, 1221, true]];
+    const seg = (on) => 'flex:1;height:36px;border:0;border-radius:9px;font-size:13px;' + (on ? 'background:var(--card);color:var(--ink);font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.12)' : 'background:transparent;color:var(--muted)');
+    const VC = ['var(--accent)', 'var(--warnMid)', 'var(--ok)', 'var(--faint)'];
+    return {
+      root: vars + ";width:390px;height:844px;position:relative;overflow:hidden;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;font-size:14px;transition:background-color .6s " + E + ',color .6s',
+      modes: [['brief', 'Breve'], ['full', 'Completa'], ['diff', 'Cambios']].map((m) => ({ label: m[1], pick: () => this.setState({ mode: m[0], sel: null }), style: seg(s.mode === m[0]) })),
+      toggleTheme: () => this.setState({ theme: s.theme === 'paper' ? 'ink' : 'paper' }), themeIcon: s.theme === 'paper' ? '◐' : '◑',
+      isFull: s.mode === 'full', isBrief: s.mode === 'brief', isDiff: s.mode === 'diff', notDiff: s.mode !== 'diff',
+      keyData: [{ v: '+61 %', l: 'SMI desde 2018' }, { v: '2,5 M', l: 'afectados' }, { v: '6.º', l: 'en la UE' }],
+      facts: F.map((x) => ({ text: x[2], pick: () => this.setState({ sel: s.sel === x[0] ? null : x[0], n: s.n + 1 }), style: 'all:unset;cursor:pointer;display:inline;border-radius:3px;transition:background-color .7s ' + E + ';' + (s.sel === x[0] ? 'background:' + K[x[1]][2] : 'background:transparent;box-shadow:0 1px 0 var(--line3)') })),
+      bars: SMI.map((d, i) => { const pct = d[1] / 1300 * 100, hov = s.hov === i, isNew = !!d[2]; return { y: "'" + String(d[0]).slice(2), hov, aria: d[0] + ': ' + d[1] + ' €', label: isNew ? '2026 · nuevo' : d[1].toLocaleString('es-ES') + ' €', tap: () => this.setState({ hov: i }), bar: 'display:block;width:70%;border-radius:4px 4px 1px 1px;transition:height 1.2s ' + E + ' ' + (i * 60) + 'ms,background-color .35s;height:' + (s.grown ? pct : 0) + '%;' + (isNew ? 'background:repeating-linear-gradient(135deg,var(--accent) 0 2px,transparent 2px 5px);box-shadow:inset 0 0 0 1.5px var(--accent)' : 'background:' + (hov ? 'var(--accent)' : 'color-mix(in srgb,var(--accent) 50%,var(--card))')), tip: "position:absolute;bottom:calc(" + pct + "% + 6px);left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--ink);color:var(--paper);font-family:'IBM Plex Mono',monospace;font-size:10px;padding:3px 6px;border-radius:5px;z-index:2;animation:rise .3s " + E + ' both' }; }),
+      voices: [['El Diario Rojo', [30, 0, 70, 0]], ['EFE', [35, 30, 25, 10]], ['El País', [30, 25, 20, 25]], ['ABC', [20, 55, 10, 15]]].map((v, vi) => ({ name: v[0], parts: v[1].map((x, j) => ({ x, j })).filter((o) => o.x > 0).map((o) => 'display:block;height:100%;transition:flex-grow 1.2s ' + E + ' ' + (vi * 60 + o.j * 80) + 'ms;flex-basis:0;flex-grow:' + (s.grown ? o.x : 1) + ';background:' + VC[o.j]) })),
+      legend: ['Gobierno', 'Patronal', 'Sindicatos', 'Expertos'].map((l, i) => ({ l, s: 'width:8px;height:8px;border-radius:2px;background:' + VC[i] })),
+      positions: [['«No ha destruido empleo»', 'peso bajo', 25, 'var(--faint)'], ['«Ha frenado el campo»', 'peso bajo', 35, 'var(--faint)'], ['Efecto moderado y concentrado', 'peso alto', 80, 'var(--ok)']].map((p) => ({ c: p[0], w: p[1], bar: 'height:100%;border-radius:3px;transition:width 1.3s ' + E + ';width:' + (s.grown ? p[2] : 0) + '%;background:' + p[3] })),
+      rewrites: [['«el nivel más alto de toda Europa»', 'sexta en la UE', 'Corregido con Eurostat'], ['«la patronal antepone sus beneficios»', 'La CEOE votó en contra', 'Opinión → hecho atribuido'], ['«apocalipsis de empleo»', '(eliminado)', 'Lenguaje cargado'], ['«sin destruir empleo»', 'efecto en debate', 'Se añaden fuentes']].map((w, i) => ({ from: w[0], to: w[1], why: w[2], wrap: 'display:flex;flex-direction:column;gap:3px;padding:14px;background:var(--card);border:1px solid var(--line);border-radius:14px;animation:rise .7s ' + E + ' both;animation-delay:' + (i * 80) + 'ms' })),
+      hasSel: !!cur && s.mode === 'full', close: () => this.setState({ sel: null }),
+      card: 'position:absolute;left:12px;right:12px;bottom:104px;z-index:4;background:#17171A;color:#F6F4EF;border-radius:20px;padding:12px 16px 10px;box-shadow:0 14px 34px rgba(0,0,0,.35);animation:r' + (s.n % 2) + ' .6s ' + E + ' both',
+      selKind: cur ? K[cur[1]][0] : '', selBadge: 'font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;' + (cur ? K[cur[1]][1] : ''),
+      selSources: cur ? cur[3].map((x) => ({ name: x[0], note: x[1], dot: 'flex:none;width:8px;height:8px;margin-top:6px;border-radius:50%;background:' + x[2] })) : []
+    };
+  }
+}
+</script>
+</body>
+</html>

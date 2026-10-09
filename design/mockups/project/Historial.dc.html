@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Historial</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8;transition:color .45s cubic-bezier(.22,1,.36,1)}a:hover{color:#182E86}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .45s cubic-bezier(.22,1,.36,1),box-shadow .45s cubic-bezier(.22,1,.36,1),opacity .45s cubic-bezier(.22,1,.36,1)}
+button:active{transform:scale(.98)}
+input{transition:border-color .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1)}
+input:focus{outline:none;border-color:#2340B8!important;box-shadow:0 0 0 4px rgba(35,64,184,.1)}
+.hov:hover{background:#EFECE5}
+.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+.row{transition:background-color .4s cubic-bezier(.22,1,.36,1)}
+.row:hover{background:#FFFFFF}
+.row .del{opacity:0;transform:scale(.85)}
+.row:hover .del,.row:focus-within .del{opacity:1;transform:none}
+.del:hover{background:#FBE9E6!important;color:#A3321F!important}
+.row a{color:#17171A;text-decoration:none}
+.row a:hover .tt{text-decoration:underline;text-decoration-color:#CFCAC0;text-underline-offset:3px}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes inR0{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes inR1{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes out{0%{opacity:1;transform:none;max-height:64px}55%{opacity:0;transform:translateX(36px);max-height:64px;padding-top:10px;padding-bottom:10px}100%{opacity:0;transform:translateX(36px);max-height:0;padding-top:0;padding-bottom:0}}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes menu{from{opacity:0;transform:translateY(-6px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height: 900px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: flex-end; gap: 2px; padding: 8px 12px 0; background: #E7E3DA; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; background: #F6F4EF; border-radius: 10px 10px 0 0; min-width: 0; max-width: 270px">
+<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#5E5B55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+<span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px">Historial</span>
+</div>
+<a href="Main.dc.html" class="hov" style="display: flex; align-items: center; gap: 8px; padding: 9px 14px; color: #5E5B55; max-width: 240px; border-radius: 10px 10px 0 0; text-decoration: none">
+<span style="width: 8px; height: 8px; border-radius: 50%; background: #C2412F; flex: none"></span>
+<span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 13px">El salario mínimo bate récords…</span>
+</a>
+<a href="Inicio.dc.html" aria-label="Nueva pestaña" class="hov" style="display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; color: #5E5B55; text-decoration: none; font-size: 20px; border-radius: 8px; margin-bottom: 3px">+</a>
+</div>
+<div style="display: flex; align-items: center; gap: 6px; padding: 8px 12px; border-bottom: 1px solid #D9D5CC; flex-wrap: wrap">
+<a href="Main.dc.html" aria-label="Atrás" class="hov" style="width: 36px; height: 36px; border-radius: 8px; color: #5E5B55; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<button aria-label="Adelante" style="width: 36px; height: 36px; border: 0; background: transparent; border-radius: 8px; color: #A9A59C"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+<div style="flex: 1 1 300px; min-width: 0; display: flex; align-items: center; gap: 10px; height: 38px; padding: 0 12px; background: #FFFFFF; border: 1px solid #D9D5CC; border-radius: 12px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; color: #5E5B55">newpaper://<span style="color: #17171A">historial</span></span>
+</div>
+</div>
+
+<div style="flex: 1; display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0">
+<main style="flex: 999 1 640px; min-width: 0; padding: 32px 40px 56px; box-sizing: border-box">
+<div style="max-width: 820px">
+<div style="display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap">
+<div style="font-family: 'Newsreader', serif; font-size: 38px; font-weight: 500; line-height: 1.1">Historial</div>
+<div style="position: relative; flex: 0 1 340px; min-width: 220px">
+<label for="hq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar en el historial</label>
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8D8981" stroke-width="2" stroke-linecap="round" style="position: absolute; left: 14px; top: 14px; pointer-events: none"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg>
+<input id="hq" value="{{q}}" onChange="{{onQ}}" autocomplete="off" placeholder="Buscar en el historial" style="width: 100%; box-sizing: border-box; height: 44px; padding: 0 44px 0 40px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A">
+<sc-if value="{{hasQ}}" hint-placeholder-val="{{ false }}"><button onClick="{{clearQ}}" aria-label="Borrar búsqueda" class="hov" style="position: absolute; right: 4px; top: 4px; width: 36px; height: 36px; border: 0; border-radius: 9px; background: transparent; color: #5E5B55; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button></sc-if>
+</div>
+</div>
+
+<div role="tablist" style="display: flex; gap: 4px; margin-top: 18px; border-bottom: 1px solid #E2DED5; flex-wrap: wrap">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="4">
+<button role="tab" aria-selected="{{t.aria}}" onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}<span style="{{t.countStyle}}">{{t.count}}</span></button>
+</sc-for>
+</div>
+
+<sc-if value="{{paused}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; align-items: center; gap: 12px; margin-top: 18px; padding: 12px 16px; background: #FBF0DC; color: #6B4100; border-radius: 12px; font-size: 13px">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6v12M15 6v12"></path></svg>
+<span style="flex: 1">El historial está en pausa: no se guarda nada nuevo hasta que lo reanudes.</span>
+<button onClick="{{togglePause}}" style="height: 34px; padding: 0 12px; border: 1px solid #E3C892; border-radius: 9px; background: transparent; color: #6B4100; font-size: 13px">Reanudar</button>
+</div>
+</sc-if>
+
+<div style="{{listWrap}}">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<section style="{{g.style}}">
+<div style="display: flex; align-items: baseline; justify-content: space-between; padding: 0 12px 8px; border-bottom: 1px solid #E2DED5">
+<span style="font-family: 'Newsreader', serif; font-size: 22px; font-weight: 500">{{g.label}}</span>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">{{g.meta}}</span>
+</div>
+<sc-for list="{{g.rows}}" as="r" hint-placeholder-count="4">
+<div class="row" style="{{r.style}}">
+<span style="flex: none; width: 44px; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #8D8981">{{r.time}}</span>
+<a href="{{r.href}}" style="flex: 1; min-width: 0; display: flex; align-items: center; gap: 12px; min-height: 44px">
+<sc-if value="{{r.isSearch}}" hint-placeholder-val="{{ false }}"><span style="flex: none; width: 30px; height: 30px; border-radius: 8px; background: #EFECE5; color: #5E5B55; display: flex; align-items: center; justify-content: center"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg></span></sc-if>
+<sc-if value="{{r.notSearch}}" hint-placeholder-val="{{ true }}"><span style="{{r.fav}}">{{r.mono}}</span></sc-if>
+<span style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px">
+<sc-if value="{{r.isSearch}}" hint-placeholder-val="{{ false }}"><span class="tt" style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><sc-for list="{{r.parts}}" as="p" hint-placeholder-count="1"><span style="{{p.s}}">{{p.t}}</span></sc-for></span></sc-if>
+<sc-if value="{{r.notSearch}}" hint-placeholder-val="{{ true }}"><span class="tt" style="font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><sc-for list="{{r.parts}}" as="p" hint-placeholder-count="1"><span style="{{p.s}}">{{p.t}}</span></sc-for></span></sc-if>
+<span style="font-size: 12px; color: #5E5B55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis"><sc-for list="{{r.subParts}}" as="p" hint-placeholder-count="1"><span style="{{p.s}}">{{p.t}}</span></sc-for></span>
+</span>
+<sc-if value="{{r.hasBadge}}" hint-placeholder-val="{{ true }}"><span style="{{r.badge}}">{{r.badgeText}}</span></sc-if>
+</a>
+<button onClick="{{r.del}}" aria-label="{{r.delLabel}}" class="del" style="flex: none; width: 44px; height: 44px; border: 0; border-radius: 10px; background: transparent; color: #8D8981; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 002 2h6a2 2 0 002-2l1-12M9 7V4h6v3"></path></svg></button>
+</div>
+</sc-for>
+</section>
+</sc-for>
+<sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="padding: 64px 12px; text-align: center">
+<div style="font-family: 'Newsreader', serif; font-size: 24px">{{emptyTitle}}</div>
+<div style="color: #5E5B55; margin-top: 6px">{{emptySub}}</div>
+</div>
+</sc-if>
+</div>
+</div>
+</main>
+
+<aside style="flex: 1 1 320px; max-width: 100%; box-sizing: border-box; padding: 32px 24px 48px; border-left: 1px solid #E2DED5; display: flex; flex-direction: column; gap: 16px">
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 18px">
+<div style="font-weight: 600">Conservar el historial</div>
+<div style="font-size: 13px; color: #5E5B55; margin-top: 2px">Lo más antiguo se borra solo.</div>
+<div role="radiogroup" aria-label="Retención del historial" style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px">
+<sc-for list="{{ret}}" as="o" hint-placeholder-count="5">
+<button role="radio" aria-checked="{{o.aria}}" onClick="{{o.pick}}" style="{{o.style}}">{{o.label}}</button>
+</sc-for>
+</div>
+<div style="{{retNote}}">{{retText}}</div>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 4px 18px">
+<div style="display: flex; align-items: center; gap: 14px; padding: 14px 0; border-bottom: 1px solid #EFECE6">
+<div style="flex: 1; min-width: 0"><div style="font-weight: 500">Pausar historial</div><div style="font-size: 13px; color: #5E5B55">No guarda visitas, búsquedas ni análisis</div></div>
+<button onClick="{{togglePause}}" role="switch" aria-checked="{{pauseSw.aria}}" aria-label="Pausar historial" style="{{pauseSw.track}}"><span style="{{pauseSw.knob}}"></span></button>
+</div>
+<div style="padding: 14px 0">
+<button onClick="{{toggleClear}}" aria-expanded="{{clearAria}}" class="hov" style="display: flex; align-items: center; justify-content: space-between; width: 100%; height: 44px; padding: 0 12px; border: 1px solid #D9D5CC; border-radius: 10px; background: #FFFFFF; color: #17171A">Borrar…<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="{{clearChev}}"><path d="M6 9l6 6 6-6"></path></svg></button>
+<sc-if value="{{clearOpen}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 12px; animation: menu .45s cubic-bezier(.22,1,.36,1) both">
+<div style="font-size: 12px; color: #5E5B55; margin-bottom: 8px">Rango</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{ranges}}" as="o" hint-placeholder-count="5">
+<button onClick="{{o.pick}}" aria-pressed="{{o.aria}}" style="{{o.style}}">{{o.label}}</button>
+</sc-for>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: 12px; flex-wrap: wrap">
+<span style="font-size: 13px; color: #5E5B55">{{rangeCount}}</span>
+<button onClick="{{doClear}}" style="{{clearBtn}}">Borrar</button>
+</div>
+</div>
+</sc-if>
+</div>
+</div>
+
+<div style="display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; background: #ECE8FB; color: #3A2590; border-radius: 14px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 1px"><path d="M3 12c2.5-4 5.5-6 9-6s6.5 2 9 6c-2.5 4-5.5 6-9 6s-6.5-2-9-6z"></path><path d="M4 4l16 16"></path></svg>
+<div style="font-size: 13px; line-height: 1.5">Las pestañas privadas no guardan nada: ni visitas, ni búsquedas, ni análisis.</div>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 16px 18px">
+<div style="display: flex; align-items: center; gap: 12px">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #E3F2EC; color: #0B6B50; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"></rect><path d="M11 18h2"></path></svg></span>
+<div style="flex: 1; min-width: 0"><div style="font-weight: 500">Se sincroniza con tu móvil</div><div style="font-size: 12px; color: #5E5B55">Pixel 8 de usuario · hace 4 min</div></div>
+<span class="pulse" style="width: 8px; height: 8px; border-radius: 50%; background: #0B6B50; flex: none"></span>
+</div>
+<div style="font-size: 12px; color: #5E5B55; margin-top: 10px; line-height: 1.5">Cifrado de extremo a extremo y solo con el ámbito «Historial» activo. <a href="Sincronizar.dc.html">Cambiar en Dispositivos</a></div>
+</div>
+
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981; padding: 0 4px; line-height: 1.6">{{stats}}<br>Búsqueda local con SQLite FTS5</div>
+</aside>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { tab: 'all', q: '', gone: {}, leaving: {}, ret: '90', paused: false, clearOpen: false, range: 'hour', ik: 0 };
+  }
+  componentWillUnmount() { (this.tm || []).forEach((t) => clearTimeout(t)); }
+  remove(ids) {
+    if (!ids.length) return;
+    const s = this.state, leaving = { ...s.leaving };
+    ids.forEach((id) => { leaving[id] = true; });
+    this.setState({ leaving });
+    this.tm = this.tm || [];
+    this.tm.push(setTimeout(() => {
+      const st = this.state, gone = { ...st.gone }, lv = { ...st.leaving };
+      ids.forEach((id) => { gone[id] = true; delete lv[id]; });
+      this.setState({ gone, leaving: lv });
+    }, 560));
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', J = 'cubic-bezier(.34,1.56,.64,1)';
+    const O = {
+      rojo: ['El Diario Rojo', 'DR', '#F7E1DC', '#A3321F'], efe: ['EFE', 'EFE', '#E4EBFB', '#2340B8'], pais: ['El País', 'P', '#ECECEA', '#17171A'],
+      ine: ['INE', 'INE', '#E3F2EC', '#0B6B50'], exp: ['Expansión', 'Ex', '#FBEEDD', '#8A5300'], abc: ['ABC', 'abc', '#E6EAF3', '#1F3A73'],
+      eldiario: ['elDiario.es', 'eD', '#E5EEF4', '#1E5A7A'], rtve: ['RTVE', 'tve', '#F4E4E2', '#9B2B22'], ser: ['Cadena SER', 'SER', '#F7E7D8', '#8C3B0E'],
+      mundo: ['El Mundo', 'M', '#E6EEF5', '#244B6E'], np: ['newpaper', 'np', '#17171A', '#F6F4EF']
+    };
+    const ITEMS = [
+      ['h1', 'hoy', '11:31', 'visit', 'ine', 'Encuesta anual de estructura salarial 2024', 'ine.es/estructura-salarial', null],
+      ['h2', 'hoy', '11:30', 'search', null, 'smi 2026 ine', 'Barra de direcciones', null],
+      ['h3', 'hoy', '10:12', 'visit', 'pais', 'Qué supone la subida del salario mínimo para 2,5 millones de trabajadores', 'elpais.com', 72],
+      ['h4', 'hoy', '10:05', 'visit', 'efe', 'Trabajo y sindicatos firman la subida del SMI sin la patronal', 'efe.com', 88],
+      ['h5', 'hoy', '09:58', 'analysis', 'np', 'Síntesis neutral: el salario mínimo bate récords', '6 coberturas · 2 discrepancias', 'syn'],
+      ['h6', 'hoy', '09:51', 'search', null, 'salario mínimo patronal', 'Buscador de coberturas', null],
+      ['h7', 'hoy', '09:42', 'visit', 'rojo', 'El salario mínimo bate récords: 1.184 euros en 14 pagas', 'eldiariorojo.es', 38],
+      ['y1', 'ayer', '18:20', 'visit', 'exp', 'La CEOE avisa del impacto del SMI en el empleo agrario', 'expansion.com', 64],
+      ['y2', 'ayer', '17:58', 'visit', 'abc', 'Las empresas del campo, ante la nueva subida del salario mínimo', 'abc.es', 57],
+      ['y3', 'ayer', '17:40', 'search', null, 'ley de vivienda congreso', 'Barra de direcciones', null],
+      ['y4', 'ayer', '13:05', 'visit', 'eldiario', 'El Congreso tramita la reforma de la ley de vivienda', 'eldiario.es', 61],
+      ['y5', 'ayer', '12:47', 'visit', 'rtve', 'La UE acuerda el marco del nuevo presupuesto de defensa', 'rtve.es', null],
+      ['l1', 'lun', '21:14', 'visit', 'ser', 'Un estudio vincula la ola de calor de agosto con 1.200 muertes', 'cadenaser.com', 79],
+      ['l2', 'lun', '20:02', 'search', null, 'ola de calor muertes agosto', 'Hemeroteca', null],
+      ['l3', 'lun', '19:30', 'visit', 'mundo', 'Sanidad revisa el plan de calor para el verano de 2027', 'elmundo.es', null],
+      ['l4', 'lun', '08:15', 'analysis', 'np', 'Síntesis neutral: ola de calor y mortalidad', '7 coberturas · 1 dato discutido', 'syn']
+    ];
+    const DAYS = [['hoy', 'Hoy', 'jueves 8 oct'], ['ayer', 'Ayer', 'miércoles 7 oct'], ['lun', 'Lunes 5 oct', '']];
+    const isAn = (it) => it[3] === 'analysis' || typeof it[7] === 'number';
+    const ofTab = (it, tab) => tab === 'all' || (tab === 'visit' && it[3] === 'visit') || (tab === 'search' && it[3] === 'search') || (tab === 'analysis' && isAn(it));
+    const q = s.q.trim().toLowerCase();
+    const outName = (it) => (it[4] ? O[it[4]][0] : '');
+    const matchQ = (it) => !q || (it[5] + ' ' + it[6] + ' ' + outName(it)).toLowerCase().indexOf(q) >= 0;
+    const alive = ITEMS.filter((it) => !s.gone[it[0]]);
+    const hl = (text) => {
+      if (!q) return [{ t: text, s: '' }];
+      const low = text.toLowerCase(), out = [];
+      let i = 0;
+      while (i < text.length) {
+        const j = low.indexOf(q, i);
+        if (j < 0) { out.push({ t: text.slice(i), s: '' }); break; }
+        if (j > i) out.push({ t: text.slice(i, j), s: '' });
+        out.push({ t: text.slice(j, j + q.length), s: 'background:#FFE7A3;color:#17171A;border-radius:3px;box-shadow:0 0 0 1px #FFE7A3' });
+        i = j + q.length;
+      }
+      return out;
+    };
+    const TABS = [['all', 'Todo'], ['visit', 'Visitas'], ['search', 'Búsquedas'], ['analysis', 'Análisis']];
+    const tabs = TABS.map((t) => {
+      const on = s.tab === t[0], n = alive.filter((it) => ofTab(it, t[0]) && matchQ(it)).length;
+      return {
+        label: t[1], count: String(n), aria: on ? 'true' : 'false',
+        pick: () => this.setState({ tab: t[0], ik: s.ik + 1 }),
+        style: 'display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border:0;background:transparent;font-size:14px;border-radius:0;transition:color .45s ' + E + ',box-shadow .45s ' + E + ';' + (on ? 'color:#17171A;font-weight:500;box-shadow:inset 0 -2px 0 #17171A' : 'color:#8D8981;box-shadow:inset 0 -2px 0 transparent'),
+        countStyle: 'font-family:\'IBM Plex Mono\',monospace;font-size:11px;padding:1px 6px;border-radius:999px;transition:background-color .45s ' + E + ';' + (on ? 'background:#17171A;color:#F6F4EF' : 'background:#EFECE5;color:#8D8981')
+      };
+    });
+    const badgeOf = (it) => {
+      if (it[7] === 'syn') return ['Síntesis', 'background:#E8ECFA;color:#2340B8'];
+      if (typeof it[7] !== 'number') return null;
+      const v = it[7];
+      return ['Neutralidad ' + v, v >= 75 ? 'background:#E3F2EC;color:#0B6B50' : v >= 55 ? 'background:#F1EEE7;color:#3D3B37' : 'background:#FBF0DC;color:#8A5300'];
+    };
+    let shown = 0, rowIdx = 0;
+    const groups = DAYS.map((d, gi) => {
+      const its = alive.filter((it) => it[1] === d[0] && ofTab(it, s.tab) && matchQ(it));
+      shown += its.length;
+      const rows = its.map((it) => {
+        const b = badgeOf(it), leaving = !!s.leaving[it[0]], o = it[4] ? O[it[4]] : null, srch = it[3] === 'search';
+        const k = rowIdx++;
+        return {
+          time: it[2], isSearch: srch, notSearch: !srch, mono: o ? o[1] : '',
+          parts: hl(it[5]), subParts: hl(srch ? it[6] : (o && it[3] === 'visit' ? o[0] + ' · ' + it[6] : it[6])),
+          href: it[3] === 'analysis' ? 'Sintesis.dc.html' : srch ? 'Inicio.dc.html' : 'Main.dc.html',
+          hasBadge: !!b, badgeText: b ? b[0] : '',
+          badge: 'flex:none;font-size:11px;font-weight:500;padding:3px 9px;border-radius:999px;white-space:nowrap;' + (b ? b[1] : ''),
+          fav: 'flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:\'IBM Plex Mono\',monospace;font-size:' + (o && o[1].length > 2 ? 10 : 12) + 'px;font-weight:600;letter-spacing:-.02em;' + (o ? 'background:' + o[2] + ';color:' + o[3] : ''),
+          delLabel: 'Borrar del historial: ' + it[5],
+          del: () => this.remove([it[0]]),
+          style: 'display:flex;align-items:center;gap:12px;padding:10px 4px 10px 12px;border-radius:12px;overflow:hidden;box-sizing:border-box;' + (leaving ? 'animation:out .56s ' + E + ' forwards;pointer-events:none' : 'animation:inR' + (s.ik % 2) + ' .55s ' + E + ' both;animation-delay:' + Math.min(k * 30, 360) + 'ms')
+        };
+      });
+      return {
+        label: d[1], meta: (d[2] ? d[2] + ' · ' : '') + its.length + (its.length === 1 ? ' elemento' : ' elementos'), rows, has: rows.length > 0,
+        style: rows.length ? 'margin-top:' + (gi === 0 ? 8 : 28) + 'px' : 'display:none'
+      };
+    });
+    const RANGES = [['hour', 'Última hora', (it) => it[1] === 'hoy' && it[2] >= '10:42'], ['today', 'Hoy', (it) => it[1] === 'hoy'], ['yest', 'Ayer', (it) => it[1] === 'ayer'], ['week', 'Últimos 7 días', () => true], ['all', 'Todo', () => true]];
+    const curR = RANGES.find((r) => r[0] === s.range) || RANGES[0];
+    const toClear = alive.filter(curR[2]).map((it) => it[0]);
+    const ranges = RANGES.map((r) => ({
+      label: r[1], aria: s.range === r[0] ? 'true' : 'false', pick: () => this.setState({ range: r[0] }),
+      style: 'height:36px;padding:0 12px;border-radius:999px;font-size:13px;' + (s.range === r[0] ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:#FFFFFF;color:#17171A;border:1px solid #D9D5CC')
+    }));
+    const RET = [['7', '7 días'], ['30', '30 días'], ['90', '90 días'], ['365', '1 año'], ['inf', 'Siempre']];
+    const ret = RET.map((r) => ({
+      label: r[1] + (r[0] === '90' ? ' · por defecto' : ''), aria: s.ret === r[0] ? 'true' : 'false',
+      pick: () => this.setState({ ret: r[0], rk: (s.rk || 0) + 1 }),
+      style: 'height:36px;padding:0 12px;border-radius:999px;font-size:13px;transition:background-color .45s ' + E + ',color .45s ' + E + ',transform .5s ' + J + ';' + (s.ret === r[0] ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A;transform:scale(1.04)' : 'background:#FFFFFF;color:#17171A;border:1px solid #D9D5CC')
+    }));
+    const RT = { '7': 'Se borra lo anterior al 1 oct.', '30': 'Se borra lo anterior al 8 sep.', '90': 'Se borra lo anterior al 10 jul.', '365': 'Se borra lo anterior al 8 oct de 2025.', inf: 'No se borra nada automáticamente.' };
+    const sw = (on, col) => ({
+      aria: on ? 'true' : 'false',
+      track: 'flex:none;position:relative;width:46px;height:28px;border-radius:14px;border:0;padding:0;transition:background-color .5s ' + E + ';background:' + (on ? (col || '#0B6B50') : '#CFCAC0'),
+      knob: 'position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(23,23,26,.2);transition:transform .65s ' + J + ';transform:translateX(' + (on ? '18px' : '0') + ') rotate(' + (on ? '180deg' : '0deg') + ')'
+    });
+    const nv = alive.filter((it) => it[3] === 'visit').length, ns = alive.filter((it) => it[3] === 'search').length, na = alive.filter(isAn).length;
+    return {
+      q: s.q, hasQ: !!s.q, onQ: (e) => this.setState({ q: e.target.value, ik: s.ik + 1 }), clearQ: () => this.setState({ q: '', ik: s.ik + 1 }),
+      tabs, groups,
+      listWrap: 'margin-top:8px;transition:opacity .5s ' + E + ';opacity:' + (s.paused ? 0.6 : 1),
+      empty: shown === 0,
+      emptyTitle: q ? 'Nada coincide con «' + s.q + '»' : 'No hay nada aquí',
+      emptySub: q ? 'Prueba con otra palabra o cambia de pestaña.' : 'Lo que visites, busques o analices aparecerá aquí.',
+      paused: s.paused, togglePause: () => this.setState({ paused: !s.paused }), pauseSw: sw(s.paused, '#8A5300'),
+      ret, retText: RT[s.ret], retNote: 'font-size:12px;color:#5E5B55;margin-top:10px;font-family:\'IBM Plex Mono\',monospace;animation:inR' + ((s.rk || 0) % 2) + ' .5s ' + E + ' both',
+      clearOpen: s.clearOpen, clearAria: s.clearOpen ? 'true' : 'false', toggleClear: () => this.setState({ clearOpen: !s.clearOpen }),
+      clearChev: 'transition:transform .5s ' + J + ';transform:rotate(' + (s.clearOpen ? 180 : 0) + 'deg)',
+      ranges, rangeCount: toClear.length ? 'Se borrarán ' + toClear.length + (toClear.length === 1 ? ' elemento' : ' elementos') : 'No hay nada en ese rango',
+      clearBtn: 'height:40px;padding:0 16px;border:0;border-radius:10px;font-weight:500;' + (toClear.length ? 'background:#A3321F;color:#FFFFFF' : 'background:#E2DED5;color:#8D8981;cursor:not-allowed'),
+      doClear: () => { if (toClear.length) { this.remove(toClear); this.setState({ clearOpen: false }); } },
+      stats: nv + ' visitas · ' + ns + ' búsquedas · ' + na + ' análisis'
+    };
+  }
+}
+</script>
+</body>
+</html>

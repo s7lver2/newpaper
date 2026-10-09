@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Dispositivos y sincronización</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8;transition:color .45s cubic-bezier(.22,1,.36,1)}a:hover{color:#182E86}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .45s cubic-bezier(.22,1,.36,1),box-shadow .45s cubic-bezier(.22,1,.36,1),opacity .45s cubic-bezier(.22,1,.36,1)}
+button:active{transform:scale(.98)}
+input{transition:border-color .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1)}
+input:focus{outline:none;border-color:#2340B8!important;box-shadow:0 0 0 4px rgba(35,64,184,.1)}
+.hov:hover{background:#EFECE5}
+.dk:hover{background:#2B2B2F}
+.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+.stg>*{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.stg>*:nth-child(2){animation-delay:.08s}.stg>*:nth-child(3){animation-delay:.16s}.stg>*:nth-child(4){animation-delay:.24s}
+.q{position:absolute;background:#17171A;border-radius:1px;animation:qin .6s cubic-bezier(.34,1.56,.64,1) both}
+.pulse{animation:pulse 1.6s ease-in-out infinite}
+.ring{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:1.5px solid #2340B8;animation:ring 1.8s cubic-bezier(.22,1,.36,1) infinite}
+.spin{width:14px;height:14px;border-radius:50%;border:2px solid #D9D5CC;border-top-color:#2340B8;animation:spin .8s linear infinite;box-sizing:border-box}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes qin{from{opacity:0;transform:scale(.2)}to{opacity:1;transform:none}}
+@keyframes drop{from{opacity:0;transform:translateY(-12px) scale(.8)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes ring{0%{transform:scale(.5);opacity:.8}100%{transform:scale(2.6);opacity:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes out{0%{opacity:1;transform:none;max-height:200px}50%{opacity:0;transform:translateX(30px);max-height:200px}100%{opacity:0;transform:translateX(30px);max-height:0;padding-top:0;padding-bottom:0}}
+@keyframes scan{from{top:-4%}to{top:100%}}
+@keyframes sh0{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes sh1{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height: 900px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #D9D5CC; background: #E7E3DA; flex-wrap: wrap">
+<a href="Ajustes.dc.html" class="hov" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 10px; color: #17171A; text-decoration: none; background: #F6F4EF; border: 1px solid #D9D5CC">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Ajustes</a>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">newpaper://ajustes/dispositivos</span>
+</div>
+<main style="flex: 1; padding: 32px 32px 56px; box-sizing: border-box">
+<div style="max-width: 1240px; margin: 0 auto">
+<div style="font-family: 'Newsreader', serif; font-size: 38px; font-weight: 500; line-height: 1.1">Dispositivos</div>
+<div style="color: #5E5B55; margin-top: 6px; font-size: 15px">Sincroniza el PC y el móvil directamente entre ellos. Nunca pasa por Tor ni por terceros.</div>
+
+<div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; margin-top: 26px">
+
+<div class="stg" style="flex: 1 1 380px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 22px; padding: 28px; display: flex; flex-direction: column; align-items: center; text-align: center">
+<div style="position: relative; width: 100%; max-width: 300px; padding: 14px; box-sizing: border-box; border-radius: 18px; background: #FFFFFF; box-shadow: 0 0 0 1px #E2DED5">
+<div role="img" aria-label="Código QR para emparejar" style="position: relative; width: 100%; padding-bottom: 100%; overflow: hidden">
+<sc-for list="{{qr}}" as="c" hint-placeholder-count="0"><i class="q" style="{{c}}"></i></sc-for>
+<span style="position: absolute; left: 50%; top: 50%; width: 22%; height: 22%; transform: translate(-50%,-50%); border-radius: 12px; background: #17171A; color: #F6F4EF; display: flex; align-items: center; justify-content: center; font-family: 'Newsreader', serif; font-size: 22px; box-shadow: 0 0 0 5px #FFFFFF; animation: drop .7s cubic-bezier(.34,1.56,.64,1) .6s both">np</span>
+<sc-if value="{{searching}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: -4%; right: -4%; height: 3px; background: #2340B8; box-shadow: 0 0 18px 6px rgba(35,64,184,.25); animation: scan 1.6s cubic-bezier(.65,0,.35,1) infinite alternate"></span></sc-if>
+</div>
+</div>
+<div style="font-family: 'Newsreader', serif; font-size: 24px; margin-top: 20px">Escanéalo con newpaper en tu móvil</div>
+<div style="font-size: 13px; color: #5E5B55; margin-top: 4px">Ajustes → Dispositivos → Emparejar con un PC</div>
+<div style="margin-top: 16px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #8D8981">HUELLA DE ESTE PC</div>
+<div style="display: flex; gap: 8px; margin-top: 6px">
+<sc-for list="{{fpPc}}" as="f" hint-placeholder-count="3"><span style="{{f.style}}">{{f.t}}</span></sc-for>
+</div>
+<div style="display: flex; align-items: center; gap: 8px; margin-top: 18px; font-size: 13px; color: #0B6B50">
+<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V7a4 4 0 018 0v4"></path></svg>Sin cuenta, sin servidor: cifrado de extremo a extremo</div>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 22px; padding: 20px">
+<div style="display: flex; align-items: center; gap: 14px">
+<div style="position: relative; flex: none; width: 52px; height: 52px; border-radius: 14px; background: #E8ECFA; color: #2340B8; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{searching}}" hint-placeholder-val="{{ false }}"><span class="ring"></span><span class="ring" style="animation-delay: .6s"></span></sc-if>
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5a10 10 0 0114 0M8.5 15.5a5 5 0 017 0"></path><circle cx="12" cy="19" r="1"></circle></svg>
+</div>
+<div style="flex: 1; min-width: 0"><div style="font-weight: 600">{{pairTitle}}</div><div style="font-size: 13px; color: #5E5B55">{{pairSub}}</div></div>
+</div>
+<sc-if value="{{showSteps}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 14px">
+<sc-for list="{{psteps}}" as="p" hint-placeholder-count="4">
+<div style="display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-top: 1px solid #EFECE6">
+<span style="{{p.ico}}"><sc-if value="{{p.done}}" hint-placeholder-val="{{ false }}"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if><sc-if value="{{p.run}}" hint-placeholder-val="{{ true }}"><span class="spin"></span></sc-if><sc-if value="{{p.wait}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px">{{p.n}}</span></sc-if></span>
+<div style="flex: 1; min-width: 0">
+<div style="{{p.titleStyle}}">{{p.label}}</div>
+<sc-if value="{{p.showDetail}}" hint-placeholder-val="{{ false }}"><div class="rise" style="font-size: 12px; color: #5E5B55; margin-top: 2px">{{p.detail}}</div></sc-if>
+<sc-if value="{{p.isFound}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; gap: 10px; margin-top: 8px; padding: 10px 12px; background: #F6F4EF; border-radius: 12px; animation: drop .6s cubic-bezier(.34,1.56,.64,1) both">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"></rect><path d="M11 18h2"></path></svg>
+<span style="flex: 1; font-weight: 500">Pixel 8 de usuario</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55">192.168.1.34</span>
+</div>
+</sc-if>
+<sc-if value="{{p.isCmp}}" hint-placeholder-val="{{ false }}">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 8px">
+<div style="background: #F6F4EF; border-radius: 12px; padding: 10px 12px"><div style="font-size: 11px; color: #8D8981">Este PC</div><div style="display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap"><sc-for list="{{fpA}}" as="f" hint-placeholder-count="3"><span style="{{f.style}}">{{f.t}}</span></sc-for></div></div>
+<div style="background: #F6F4EF; border-radius: 12px; padding: 10px 12px"><div style="font-size: 11px; color: #8D8981">Pixel 8</div><div style="display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap"><sc-for list="{{fpB}}" as="f" hint-placeholder-count="3"><span style="{{f.style}}">{{f.t}}</span></sc-for></div></div>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<button onClick="{{simulate}}" style="{{simBtn}}">{{simLabel}}</button>
+</div>
+</div>
+
+<div style="flex: 1.5 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<div class="rise" style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 22px; padding: 6px 22px 10px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0 6px">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">EMPAREJADOS · {{devCount}}</span>
+<span style="font-size: 12px; color: #8D8981">Se sincroniza al abrir y cada 5 min si os veis</span>
+</div>
+<sc-for list="{{devs}}" as="d" hint-placeholder-count="2">
+<div style="{{d.wrap}}">
+<div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap">
+<span style="flex: none; width: 44px; height: 44px; border-radius: 12px; background: #F1EEE7; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{d.isPhone}}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2"></rect><path d="M11 18h2"></path></svg></sc-if>
+<sc-if value="{{d.isTablet}}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M11 18h2"></path></svg></sc-if>
+</span>
+<div style="flex: 1 1 200px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap"><span style="font-weight: 600">{{d.name}}</span><sc-if value="{{d.isNew}}" hint-placeholder-val="{{ false }}"><span style="font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: 999px; background: #E8ECFA; color: #2340B8; animation: drop .6s cubic-bezier(.34,1.56,.64,1) .3s both">nuevo</span></sc-if></div>
+<div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #5E5B55; margin-top: 2px; flex-wrap: wrap"><span style="{{d.dot}}"></span>{{d.via}}<span style="font-family: 'IBM Plex Mono', monospace; color: #8D8981">{{d.addr}}</span></div>
+<div style="font-size: 12px; color: #5E5B55; margin-top: 2px">Última sincronización: <span style="{{d.lastStyle}}">{{d.last}}</span></div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button onClick="{{d.sync}}" style="{{d.syncBtn}}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="{{d.syncIco}}"><path d="M20 11a8 8 0 00-14.3-4.9L4 8M4 4v4h4M4 13a8 8 0 0014.3 4.9L20 16M20 20v-4h-4"></path></svg>{{d.syncLabel}}</button>
+<button onClick="{{d.askRevoke}}" class="hov" style="height: 44px; padding: 0 14px; border: 1px solid #D9D5CC; border-radius: 10px; background: #FFFFFF; color: #A3321F">Revocar</button>
+</div>
+</div>
+<sc-if value="{{d.confirming}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; padding: 12px 14px; background: #FBE9E6; color: #7A2416; border-radius: 12px; font-size: 13px">
+<span style="flex: 1 1 240px">Dejará de sincronizar y se borrará su clave de este PC. Para volver, habrá que escanear el QR otra vez.</span>
+<button onClick="{{d.cancelRevoke}}" class="hov" style="height: 40px; padding: 0 12px; border: 1px solid #E8BDB4; border-radius: 9px; background: transparent; color: #7A2416">Cancelar</button>
+<button onClick="{{d.revoke}}" style="height: 40px; padding: 0 14px; border: 0; border-radius: 9px; background: #A3321F; color: #FFFFFF; font-weight: 500">Revocar</button>
+</div>
+</sc-if>
+<sc-if value="{{d.syncing}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="margin-top: 14px; padding: 14px 16px; background: #F6F4EF; border-radius: 14px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px">
+<sc-for list="{{d.prog}}" as="g" hint-placeholder-count="6">
+<div>
+<div style="display: flex; justify-content: space-between; gap: 8px; font-size: 12px"><span>{{g.name}}</span><span style="{{g.numStyle}}">{{g.num}}</span></div>
+<div style="height: 4px; border-radius: 2px; background: #E2DED5; margin-top: 5px; overflow: hidden"><div style="{{g.bar}}"></div></div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<sc-if value="{{noDevs}}" hint-placeholder-val="{{ false }}"><div class="rise" style="padding: 24px 0; color: #5E5B55; text-align: center">Ningún dispositivo emparejado. Escanea el QR desde el móvil.</div></sc-if>
+<div style="display: flex; align-items: center; gap: 8px; padding: 12px 0 4px; font-size: 12px; color: #5E5B55; border-top: 1px solid #EFECE6"><span style="width: 7px; height: 7px; border-radius: 50%; background: #4A2FB8"></span>Fuera de casa: Tailscale detectado en este PC · <span style="font-family: 'IBM Plex Mono', monospace">100.84.12.3</span></div>
+</div>
+
+<div class="rise" style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 22px; padding: 6px 22px 12px; animation-delay: .1s">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 0 6px">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">QUÉ SE SINCRONIZA</span>
+<span style="font-size: 12px; color: #8D8981">{{scopeCount}}</span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); column-gap: 28px">
+<sc-for list="{{scopes}}" as="g" hint-placeholder-count="6">
+<div style="display: flex; align-items: center; gap: 14px; padding: 12px 0; border-bottom: 1px solid #EFECE6">
+<div style="flex: 1; min-width: 0"><div style="font-weight: 500">{{g.name}}</div><div style="font-size: 12px; color: #5E5B55">{{g.desc}}</div></div>
+<button onClick="{{g.toggle}}" role="switch" aria-checked="{{g.aria}}" aria-label="Sincronizar {{g.name}}" style="{{g.track}}"><span style="{{g.knob}}"></span></button>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; align-items: center; gap: 14px; padding: 14px 0 6px">
+<span style="flex: none; width: 34px; height: 34px; border-radius: 10px; background: #FBF0DC; color: #8A5300; display: flex; align-items: center; justify-content: center"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="15" r="4"></circle><path d="M11 12l9-9M17 6l3 3M15 8l2 2"></path></svg></span>
+<div style="flex: 1; min-width: 0"><div style="font-weight: 500">Claves de API</div><div style="font-size: 12px; color: #5E5B55">Apagado por defecto. Cada dispositivo usa las suyas.</div></div>
+<button onClick="{{keys.toggle}}" role="switch" aria-checked="{{keys.aria}}" aria-label="Sincronizar claves de API" style="{{keys.track}}"><span style="{{keys.knob}}"></span></button>
+</div>
+<sc-if value="{{keysOn}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 12px; align-items: flex-start; margin: 8px 0 6px; padding: 12px 14px; background: #FBF0DC; color: #6B4100; border-radius: 12px; font-size: 13px; line-height: 1.5; animation: drop .55s cubic-bezier(.34,1.56,.64,1) both">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex: none; margin-top: 2px"><path d="M12 3l10 18H2L12 3z"></path><path d="M12 10v5M12 18v.5"></path></svg>
+<span>Tus claves viajarán cifradas con la clave de este par y se guardarán en el llavero del móvil. Quien desbloquee el móvil podrá gastar a tu cargo.</span>
+</div>
+</sc-if>
+</div>
+</div>
+</div>
+
+<div class="rise" style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 22px; padding: 22px; display: flex; gap: 24px; flex-wrap: wrap; align-items: flex-end; animation-delay: .2s">
+<div style="flex: 1 1 280px; min-width: 0">
+<div style="display: flex; align-items: center; gap: 10px"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">SIN RED</span></div>
+<div style="font-family: 'Newsreader', serif; font-size: 24px; margin-top: 4px">Pasa los datos con un archivo</div>
+<div style="font-size: 13px; color: #5E5B55; margin-top: 2px">Un .npsync cifrado con tu frase de paso (Argon2id). Llévalo en un USB o por donde quieras.</div>
+</div>
+<div style="flex: 1 1 320px; min-width: 0">
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 6px"><label for="pass" style="font-size: 12px; color: #5E5B55">Frase de paso</label><button onClick="{{suggest}}" style="height: 28px; padding: 0 4px; border: 0; background: transparent; color: #2340B8; font-size: 12px">Sugerir una</button></div>
+<input id="pass" type="text" autocomplete="off" spellcheck="false" value="{{pass}}" onChange="{{onPass}}" placeholder="Al menos 4 palabras" style="width: 100%; box-sizing: border-box; height: 44px; padding: 0 12px; border: 1px solid #D9D5CC; border-radius: 10px; background: #FFFFFF; font-family: 'IBM Plex Mono', monospace; color: #17171A">
+<div style="display: flex; gap: 4px; margin-top: 8px"><sc-for list="{{strength}}" as="b" hint-placeholder-count="4"><span style="{{b}}"></span></sc-for></div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<button onClick="{{doExport}}" style="{{exportBtn}}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5M5 15v4a2 2 0 002 2h10a2 2 0 002-2v-4"></path></svg>Exportar .npsync</button>
+<button onClick="{{doImport}}" class="hov" style="display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 16px; border: 1px solid #D9D5CC; border-radius: 10px; background: #FFFFFF; color: #17171A"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5M5 15v4a2 2 0 002 2h10a2 2 0 002-2v-4"></path></svg>Importar</button>
+</div>
+<sc-if value="{{hasFileMsg}}" hint-placeholder-val="{{ false }}">
+<div style="{{fileMsgStyle}}">{{fileMsg}}</div>
+</sc-if>
+</div>
+
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":900}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = {
+      pair: 0, cmp: 0,
+      devs: [{ id: 'ipad', name: 'iPad de usuario', kind: 'tablet', via: 'ts', last: 'hace 2 h', isNew: false }],
+      sync: {}, revoking: null, leaving: {},
+      sc: { settings: true, history: true, saved: true, analysis: true, topics: true, sources: false }, keys: false,
+      pass: '', file: null, fk: 0
+    };
+  }
+  componentWillUnmount() { (this.tm || []).forEach((t) => clearTimeout(t)); }
+  later(ms, fn) { this.tm = this.tm || []; this.tm.push(setTimeout(fn, ms)); }
+  simulate() {
+    if (this.state.pair > 0 && this.state.pair < 4) return;
+    if (this.state.pair === 4) { this.setState({ pair: 0, cmp: 0 }); return; }
+    this.setState({ pair: 1, cmp: 0 });
+    this.later(1900, () => this.setState({ pair: 2 }));
+    this.later(3300, () => this.setState({ pair: 3 }));
+    [3700, 4200, 4700].forEach((t, i) => this.later(t, () => this.setState({ cmp: i + 1 })));
+    this.later(5500, () => {
+      const s = this.state;
+      const devs = s.devs.filter((d) => d.id !== 'pixel').concat([{ id: 'pixel', name: 'Pixel 8 de usuario', kind: 'phone', via: 'lan', last: 'ahora mismo', isNew: true }]);
+      this.setState({ pair: 4, devs });
+    });
+  }
+  startSync(id) {
+    const s = this.state;
+    if (s.sync[id] !== undefined) return;
+    const n = 6;
+    this.setState({ sync: { ...s.sync, [id]: 0 } });
+    for (let k = 1; k <= n; k++) this.later(k * 420, () => this.setState({ sync: { ...this.state.sync, [id]: k } }));
+    this.later(n * 420 + 1100, () => {
+      const st = this.state, sync = { ...st.sync };
+      delete sync[id];
+      this.setState({ sync, devs: st.devs.map((d) => (d.id === id ? { ...d, last: 'ahora mismo' } : d)) });
+    });
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', J = 'cubic-bezier(.34,1.56,.64,1)';
+    if (!this.qr) {
+      const N = 29, g = [];
+      for (let y = 0; y < N; y++) { g.push([]); for (let x = 0; x < N; x++) g[y].push(-1); }
+      const finder = (x0, y0) => {
+        for (let y = -1; y <= 7; y++) for (let x = -1; x <= 7; x++) {
+          const X = x0 + x, Y = y0 + y;
+          if (X < 0 || Y < 0 || X >= N || Y >= N) continue;
+          const ring = (x === 0 || x === 6 || y === 0 || y === 6) && x >= 0 && x <= 6 && y >= 0 && y <= 6;
+          const core = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+          g[Y][X] = ring || core ? 1 : 0;
+        }
+      };
+      finder(0, 0); finder(N - 7, 0); finder(0, N - 7);
+      for (let y = 20; y <= 24; y++) for (let x = 20; x <= 24; x++) g[y][x] = (x === 20 || x === 24 || y === 20 || y === 24 || (x === 22 && y === 22)) ? 1 : 0;
+      for (let i = 8; i < N - 8; i++) { if (g[6][i] < 0) g[6][i] = i % 2 === 0 ? 1 : 0; if (g[i][6] < 0) g[i][6] = i % 2 === 0 ? 1 : 0; }
+      let seed = 0x7F3A91C2 & 0x7fffffff;
+      const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return (seed >> 16) & 1; };
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+        if (g[y][x] >= 0) continue;
+        g[y][x] = x >= 11 && x <= 17 && y >= 11 && y <= 17 ? 0 : rnd();
+      }
+      const w = 100 / N, out = [];
+      for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) if (g[y][x] === 1) out.push('left:' + (x * w).toFixed(3) + '%;top:' + (y * w).toFixed(3) + '%;width:' + (w + 0.08).toFixed(3) + '%;height:' + (w + 0.08).toFixed(3) + '%;animation-delay:' + ((x + y) * 14) + 'ms');
+      this.qr = out;
+    }
+    const FP = ['7F3A', '91C2', 'E04B'];
+    const fpBox = (t, i, on, small) => ({ t, style: 'font-family:\'IBM Plex Mono\',monospace;font-size:' + (small ? 12 : 16) + 'px;font-weight:500;padding:' + (small ? '2px 6px' : '6px 10px') + ';border-radius:8px;transition:background-color .45s ' + E + ',color .45s ' + E + ';' + (on ? 'background:#E3F2EC;color:#0B6B50;animation:sh' + (i % 2) + ' .5s ' + J + ' both' : 'background:#F1EEE7;color:#17171A') });
+    const pair = s.pair;
+    const PS = [
+      ['Buscando en la red local', 'mDNS · _newpaper._tcp', 'scan'],
+      ['Dispositivo encontrado', '', 'found'],
+      ['Comparar huellas', 'Comprueba que en el móvil ves lo mismo', 'cmp'],
+      ['Emparejado', 'Clave de sesión acordada (X25519 + HKDF)', 'ok']
+    ];
+    const psteps = PS.map((p, i) => {
+      const n = i + 1, done = pair > n || pair === 4, run = pair === n && pair < 4;
+      return {
+        n: String(n), label: p[0], detail: p[1], done, run, wait: !done && !run,
+        showDetail: (done || run) && !!p[1] && p[2] !== 'found',
+        isFound: p[2] === 'found' && (done || run), isCmp: p[2] === 'cmp' && (done || run),
+        titleStyle: 'font-weight:500;transition:color .5s ' + E + ';color:' + (done || run ? '#17171A' : '#8D8981'),
+        ico: 'flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;' + (done ? 'background:#0B6B50;color:#FFFFFF;animation:drop .5s ' + J + ' both' : run ? 'background:#E8ECFA;color:#2340B8' : 'background:#F1EEE7;color:#8D8981')
+      };
+    });
+    const T = ['Listo para emparejar', 'Buscando en la red local…', 'Pixel 8 de usuario encontrado', 'Comparando huellas…', 'Emparejado con Pixel 8 de usuario'];
+    const ST = ['El móvil y el PC deben estar en la misma red', 'Anunciando este PC por mDNS', 'Mismo wifi · 192.168.1.34', 'Deben coincidir los tres bloques', 'Ya aparece en la lista de la derecha'];
+    const busy = pair > 0 && pair < 4;
+    const SC = [
+      ['settings', 'Ajustes', 'Apariencia, red y pipeline', 3], ['history', 'Historial', 'Visitas, búsquedas y análisis', 42], ['saved', 'Artículos guardados', 'Con su texto para leer sin conexión', 7],
+      ['analysis', 'Análisis y síntesis', 'Para no pagar dos veces', 12], ['topics', 'Temas seguidos', 'Economía, Vivienda, Europa', 1], ['sources', 'Fuentes personalizadas', 'Medios y feeds que añadiste', 2]
+    ];
+    const sw = (on, col) => ({
+      aria: on ? 'true' : 'false',
+      track: 'flex:none;position:relative;width:46px;height:28px;border-radius:14px;border:0;padding:0;transition:background-color .5s ' + E + ';background:' + (on ? (col || '#0B6B50') : '#CFCAC0'),
+      knob: 'position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(23,23,26,.2);transition:transform .65s ' + J + ';transform:translateX(' + (on ? '18px' : '0') + ') rotate(' + (on ? '180deg' : '0deg') + ')'
+    });
+    const scopes = SC.map((c) => Object.assign({ name: c[1], desc: c[2], toggle: () => this.setState({ sc: { ...s.sc, [c[0]]: !s.sc[c[0]] } }) }, sw(!!s.sc[c[0]])));
+    const onScopes = SC.filter((c) => s.sc[c[0]]);
+    const devs = s.devs.map((d) => {
+      const k = s.sync[d.id], syncing = k !== undefined, leaving = !!s.leaving[d.id];
+      const list = onScopes.concat(s.keys ? [['keys', 'Claves de API', '', 2]] : []);
+      return {
+        name: d.name, isPhone: d.kind === 'phone', isTablet: d.kind === 'tablet', isNew: d.isNew,
+        via: d.via === 'lan' ? 'En red local' : 'Por Tailscale', addr: d.via === 'lan' ? '192.168.1.34' : '100.84.12.7',
+        dot: 'width:7px;height:7px;border-radius:50%;flex:none;background:' + (d.via === 'lan' ? '#0B6B50' : '#4A2FB8'),
+        last: d.last, lastStyle: 'transition:color .5s ' + E + ';color:' + (d.last === 'ahora mismo' ? '#0B6B50' : '#17171A'),
+        syncing, confirming: s.revoking === d.id,
+        sync: () => this.startSync(d.id),
+        syncLabel: syncing ? (k >= 6 ? 'Sincronizado' : 'Sincronizando…') : 'Sincronizar ahora',
+        syncBtn: 'display:flex;align-items:center;gap:8px;height:44px;padding:0 14px;border:0;border-radius:10px;font-weight:500;' + (syncing && k >= 6 ? 'background:#0B6B50;color:#FFFFFF' : 'background:#17171A;color:#F6F4EF'),
+        syncIco: syncing && k < 6 ? 'animation:spin 1s linear infinite' : '',
+        askRevoke: () => this.setState({ revoking: s.revoking === d.id ? null : d.id }),
+        cancelRevoke: () => this.setState({ revoking: null }),
+        revoke: () => {
+          this.setState({ revoking: null, leaving: { ...s.leaving, [d.id]: true } });
+          this.later(600, () => { const st = this.state, lv = { ...st.leaving }; delete lv[d.id]; this.setState({ devs: st.devs.filter((x) => x.id !== d.id), leaving: lv }); });
+        },
+        prog: list.map((c, i) => {
+          const done = syncing && k > i;
+          const up = Math.max(1, Math.round(c[3] / 3)), down = c[3];
+          return {
+            name: c[1], num: done ? '↑' + up + ' ↓' + down : '…',
+            numStyle: 'font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:' + (done ? '#0B6B50' : '#8D8981'),
+            bar: 'height:100%;border-radius:2px;background:' + (done ? '#0B6B50' : '#2340B8') + ';transition:width .42s ' + E + ';width:' + (done ? '100%' : k === i ? '45%' : '0%')
+          };
+        }),
+        wrap: 'padding:16px 0;border-top:1px solid #EFECE6;overflow:hidden;' + (leaving ? 'animation:out .6s ' + E + ' forwards' : d.isNew ? 'animation:drop .7s ' + J + ' both' : '')
+      };
+    });
+    const words = s.pass.trim().split(/[\s\-·]+/).filter((w) => w.length > 1).length;
+    const lvl = Math.min(4, s.pass.length >= 24 ? 4 : words);
+    const lvlCol = ['#CFCAC0', '#A3321F', '#8A5300', '#2340B8', '#0B6B50'][lvl];
+    const canExp = lvl >= 3;
+    const fileMsg = s.file === 'exp' ? 'Guardado newpaper-2026-10-08.npsync · 2,4 MB · cifrado con XChaCha20 y Argon2id' : s.file === 'weak' ? 'Usa al menos 3 palabras en la frase de paso.' : s.file === 'imp' ? 'Elige un archivo .npsync y escribe su frase de paso. Los cambios se mezclan: gana el más reciente.' : '';
+    return {
+      qr: this.qr,
+      fpPc: FP.map((t, i) => fpBox(t, i, pair === 4, false)),
+      fpA: FP.map((t, i) => fpBox(t, i, s.cmp > i, true)),
+      fpB: FP.map((t, i) => fpBox(t, i, s.cmp > i, true)),
+      searching: pair === 1,
+      pairTitle: T[pair], pairSub: ST[pair],
+      showSteps: pair > 0, psteps,
+      simulate: () => this.simulate(),
+      simLabel: pair === 4 ? 'Emparejar otro dispositivo' : busy ? 'Emparejando…' : 'Simular emparejamiento',
+      simBtn: 'width:100%;height:46px;margin-top:16px;border:0;border-radius:12px;font-weight:500;' + (busy ? 'background:#E2DED5;color:#5E5B55;cursor:progress' : pair === 4 ? 'background:#FFFFFF;color:#17171A;box-shadow:inset 0 0 0 1px #D9D5CC' : 'background:#17171A;color:#F6F4EF'),
+      devs, devCount: String(s.devs.length), noDevs: s.devs.length === 0,
+      scopes, scopeCount: onScopes.length + ' de 6 activos',
+      keys: Object.assign({ toggle: () => this.setState({ keys: !s.keys }) }, sw(s.keys, '#8A5300')), keysOn: s.keys,
+      pass: s.pass, onPass: (e) => this.setState({ pass: e.target.value, file: null }),
+      suggest: () => this.setState({ pass: 'marea tinta otoño faro bisagra', file: null }),
+      strength: [1, 2, 3, 4].map((i) => 'flex:1;height:4px;border-radius:2px;transition:background-color .5s ' + E + ';background:' + (lvl >= i ? lvlCol : '#E7E3DA')),
+      exportBtn: 'display:flex;align-items:center;gap:8px;height:44px;padding:0 16px;border:0;border-radius:10px;font-weight:500;' + (canExp ? 'background:#17171A;color:#F6F4EF' : 'background:#E2DED5;color:#5E5B55'),
+      doExport: () => this.setState({ file: canExp ? 'exp' : 'weak', fk: s.fk + 1 }),
+      doImport: () => this.setState({ file: 'imp', fk: s.fk + 1 }),
+      hasFileMsg: !!fileMsg, fileMsg,
+      fileMsgStyle: 'flex:1 1 100%;font-size:13px;padding:10px 14px;border-radius:10px;animation:drop .55s ' + J + ' both;' + (s.file === 'exp' ? 'background:#E3F2EC;color:#0B6B50;font-family:\'IBM Plex Mono\',monospace;font-size:12px' : s.file === 'weak' ? 'background:#FBF0DC;color:#6B4100' : 'background:#F6F4EF;color:#3D3B37')
+    };
+  }
+}
+</script>
+</body>
+</html>

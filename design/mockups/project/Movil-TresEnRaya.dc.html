@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · tres en raya</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.95)}
+.drw{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .38s cubic-bezier(.65,0,.35,1) forwards}
+.stamp{animation:stamp .5s cubic-bezier(.34,1.56,.64,1) both}
+.grid line{stroke-dasharray:1;stroke-dashoffset:1;animation:draw .7s cubic-bezier(.65,0,.35,1) forwards}
+.blinker{animation:blink 4.2s infinite;transform-box:fill-box;transform-origin:center}
+.tick{animation:tick 38s linear infinite}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes stamp{0%{opacity:0;transform:scale(1.6) rotate(-14deg)}100%{opacity:1;transform:none}}
+@keyframes blink{0%,94%,100%{transform:scaleY(1)}96%{transform:scaleY(.1)}}
+@keyframes q0{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes q1{from{opacity:0;transform:translateY(8px) scale(.96)}to{opacity:1;transform:none}}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@keyframes jump{0%,100%{transform:translateY(0) rotate(0)}30%{transform:translateY(-14px) rotate(-4deg)}55%{transform:translateY(0) rotate(3deg)}75%{transform:translateY(-5px)}}
+@keyframes sag{to{transform:translateY(5px) rotate(-7deg)}}
+@keyframes think{0%,100%{transform:rotate(0)}50%{transform:rotate(3deg)}}
+@keyframes banner{from{transform:translateX(-110%)}to{transform:none}}
+@keyframes bump0{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes bump1{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.drw,.grid line{stroke-dashoffset:0!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 6px; padding: 50px 12px 4px">
+<a href="Movil-Sistema.dc.html" aria-label="Volver" style="flex: none; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<span style="flex: 1; display: flex; align-items: center; gap: 8px; font-size: 13px; color: #5E5B55"><span style="width: 8px; height: 8px; border-radius: 50%; background: #8D8981"></span>Sin conexión</span>
+<a href="Movil-Sistema.dc.html" style="height: 44px; padding: 0 10px; display: flex; align-items: center; font-size: 13px; color: #2340B8">Reintentar</a>
+</div>
+
+<div style="flex: 1; display: flex; flex-direction: column; padding: 0 20px; gap: 10px">
+<div style="display: flex; align-items: center; justify-content: space-between">
+<div><span style="font-family: 'Newsreader', serif; font-size: 26px; font-weight: 500">Tres en raya</span> <span style="font-family: 'Newsreader', serif; font-style: italic; font-size: 16px; color: #5E5B55">contra El Diario</span></div>
+<button onClick="{{reset}}" aria-label="Nueva partida" style="flex: none; width: 44px; height: 44px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 103-6.3M4 4v5h5"></path></svg></button>
+</div>
+
+<div style="display: flex; align-items: flex-end; gap: 12px; height: 108px">
+<div style="flex: none; width: 88px; height: 102px; {{bodyAnim}}">
+<svg width="88" height="102" viewBox="0 0 200 230" fill="none" stroke="#17171A" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+<path d="M34 22 H150 L172 44 V206 a6 6 0 0 1 -6 6 H40 a6 6 0 0 1 -6 -6 Z" fill="#FFFFFF"></path>
+<path d="M150 22 V44 H172" fill="#EFECE5"></path>
+<text x="48" y="52" font-family="Newsreader, serif" font-size="21" font-weight="600" fill="#17171A" stroke="none">EL DIARIO</text>
+<line x1="46" y1="62" x2="160" y2="62" stroke-width="2"></line>
+<sc-if value="{{blush}}" hint-placeholder-val="{{ false }}"><circle cx="64" cy="128" r="10" fill="#F4C0D1" stroke="none" opacity=".8"></circle><circle cx="136" cy="128" r="10" fill="#F4C0D1" stroke="none" opacity=".8"></circle></sc-if>
+<path d="{{brows}}" stroke-width="5" style="transition: d .4s"></path>
+<g class="blinker"><g style="{{pupils}}"><circle cx="76" cy="108" r="8" fill="#17171A" stroke="none"></circle><circle cx="124" cy="108" r="8" fill="#17171A" stroke="none"></circle><circle cx="78" cy="105" r="2.5" fill="#FFFFFF" stroke="none"></circle><circle cx="126" cy="105" r="2.5" fill="#FFFFFF" stroke="none"></circle></g></g>
+<path d="{{mouth}}" stroke-width="5" style="transition: d .4s"></path>
+<line x1="48" y1="170" x2="96" y2="170" stroke-width="3" stroke="#CFCAC0"></line><line x1="48" y1="184" x2="90" y2="184" stroke-width="3" stroke="#CFCAC0"></line>
+<line x1="108" y1="170" x2="158" y2="170" stroke-width="3" stroke="#CFCAC0"></line><line x1="108" y1="184" x2="150" y2="184" stroke-width="3" stroke="#CFCAC0"></line>
+</svg>
+</div>
+<div role="status" aria-live="polite" style="{{bubble}}">
+<sc-if value="{{thinking}}" hint-placeholder-val="{{ false }}"><span style="display: inline-flex; gap: 4px; margin-right: 8px; vertical-align: middle"><span style="width: 5px; height: 5px; border-radius: 50%; background: #8D8981; animation: pulse 1s infinite"></span><span style="width: 5px; height: 5px; border-radius: 50%; background: #8D8981; animation: pulse 1s .15s infinite"></span><span style="width: 5px; height: 5px; border-radius: 50%; background: #8D8981; animation: pulse 1s .3s infinite"></span></span></sc-if>{{quip}}
+<span style="position: absolute; left: -8px; bottom: 22px; width: 14px; height: 14px; background: #FFFFFF; border-left: 1px solid #E2DED5; border-bottom: 1px solid #E2DED5; transform: rotate(45deg); border-radius: 0 0 0 4px"></span>
+</div>
+</div>
+
+<div style="position: relative; width: 350px; height: 330px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 22px; overflow: hidden; box-shadow: 0 10px 26px rgba(23,23,26,.06); box-sizing: border-box">
+<div style="position: absolute; left: 24px; top: 14px; width: 300px; height: 300px">
+<svg class="grid" width="300" height="300" viewBox="0 0 300 300" fill="none" stroke="#17171A" stroke-width="3" stroke-linecap="round" style="position: absolute; inset: 0; pointer-events: none">
+<line x1="100" y1="8" x2="101" y2="292" pathLength="1"></line>
+<line x1="200" y1="10" x2="199" y2="290" pathLength="1" style="animation-delay: .12s"></line>
+<line x1="8" y1="100" x2="292" y2="99" pathLength="1" style="animation-delay: .24s"></line>
+<line x1="10" y1="200" x2="290" y2="201" pathLength="1" style="animation-delay: .36s"></line>
+</svg>
+<div style="position: absolute; inset: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, 100px)">
+<sc-for list="{{cells}}" as="c" hint-placeholder-count="9">
+<button onClick="{{c.play}}" aria-label="{{c.aria}}" style="{{c.style}}">
+<sc-if value="{{c.isX}}" hint-placeholder-val="{{ false }}"><svg width="62" height="62" viewBox="0 0 100 100" fill="none" stroke="#17171A" stroke-width="9" stroke-linecap="round"><path class="drw" pathLength="1" d="M26 24 Q50 50 75 76"></path><path class="drw" pathLength="1" d="M75 25 Q48 52 25 75" style="animation-delay: .2s"></path></svg></sc-if>
+<sc-if value="{{c.isO}}" hint-placeholder-val="{{ false }}"><svg class="stamp" width="66" height="66" viewBox="0 0 100 100" fill="none" stroke="#A3271B" stroke-width="9" stroke-linecap="round"><circle class="drw" pathLength="1" cx="50" cy="50" r="27" transform="rotate(-80 50 50)"></circle><circle cx="50" cy="50" r="37" stroke-width="1.5" stroke-dasharray="2 5" opacity=".45"></circle></svg></sc-if>
+</button>
+</sc-for>
+</div>
+<sc-if value="{{hasLine}}" hint-placeholder-val="{{ false }}">
+<svg width="300" height="300" viewBox="0 0 300 300" fill="none" style="position: absolute; inset: 0; pointer-events: none"><line class="drw" pathLength="1" x1="{{line.x1}}" y1="{{line.y1}}" x2="{{line.x2}}" y2="{{line.y2}}" stroke="{{line.col}}" stroke-width="9" stroke-linecap="round" style="animation-duration: .6s; animation-delay: .25s"></line></svg>
+</sc-if>
+</div>
+<sc-if value="{{over}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 0; right: 0; bottom: 16px; display: flex; flex-direction: column; animation: banner .8s cubic-bezier(.34,1.3,.64,1) .7s both">
+<div style="display: flex; align-items: stretch; background: #17171A; color: #F6F4EF; box-shadow: 0 12px 26px rgba(23,23,26,.3)">
+<span style="{{bannerTag}}">{{bannerKick}}</span>
+<span style="flex: 1; padding: 10px 12px; font-family: 'Newsreader', serif; font-size: 15px; line-height: 1.3">{{bannerText}}</span>
+</div>
+<div style="display: flex; justify-content: center; margin-top: 10px"><button onClick="{{reset}}" style="height: 44px; padding: 0 22px; border: 0; border-radius: 999px; background: #FFFFFF; color: #17171A; font-weight: 500; box-shadow: 0 6px 18px rgba(23,23,26,.2)">Revancha</button></div>
+</div>
+</sc-if>
+</div>
+
+<div role="group" aria-label="Dificultad" style="display: flex; background: #E7E3DA; border-radius: 12px; padding: 3px; gap: 3px">
+<sc-for list="{{diffs}}" as="d" hint-placeholder-count="3"><button onClick="{{d.pick}}" aria-pressed="{{d.aria}}" style="{{d.style}}">{{d.label}}</button></sc-for>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-top: 2px solid #17171A; border-bottom: 1px solid #D9D5CC">
+<div style="padding: 8px 0; display: flex; align-items: baseline; gap: 8px"><span style="{{scX}}">{{score.x}}</span><span style="font-size: 12px; color: #5E5B55">Tú · ×</span></div>
+<div style="padding: 8px 0 8px 12px; border-left: 1px solid #E2DED5; display: flex; align-items: baseline; gap: 8px"><span style="{{scT}}">{{score.t}}</span><span style="font-size: 12px; color: #5E5B55">Tablas</span></div>
+<div style="padding: 8px 0 8px 12px; border-left: 1px solid #E2DED5; display: flex; align-items: baseline; gap: 8px"><span style="{{scO}}">{{score.o}}</span><span style="font-size: 12px; color: #A3271B">El Diario</span></div>
+</div>
+<div style="font-size: 12px; color: #5E5B55; margin-top: -4px">{{turnNote}}</div>
+</div>
+
+<div style="background: #17171A; color: #F6F4EF; display: flex; align-items: stretch; overflow: hidden; margin-top: 8px; padding-bottom: 22px">
+<span style="flex: none; background: #A3271B; padding: 10px 12px; font-size: 11px; font-weight: 600; letter-spacing: 0.1em">EN DIRECTO</span>
+<div style="flex: 1; overflow: hidden; display: flex; align-items: center">
+<div class="tick" style="display: flex; white-space: nowrap; font-family: 'Newsreader', serif; font-size: 14px"><span style="padding-right: 40px">{{ticker}}</span><span style="padding-right: 40px">{{ticker}}</span></div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.LINES = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+    this.state = { b: Array(9).fill(null), turn: 'X', win: null, line: null, mood: 'idle', quip: 'Tú pones las X. Yo pongo la línea editorial.', qk: 0, score: { x: 0, o: 0, t: 0 }, sk: { x: 0, o: 0, t: 0 }, diff: 'red', starter: 'X', thinking: false, game: 1 };
+  }
+  componentWillUnmount() { clearTimeout(this.t); }
+  winner(b) {
+    for (const l of this.LINES) { if (b[l[0]] && b[l[0]] === b[l[1]] && b[l[0]] === b[l[2]]) return { w: b[l[0]], l }; }
+    return b.every(Boolean) ? { w: 'T', l: null } : null;
+  }
+  minimax(b, me) {
+    const r = this.winner(b);
+    if (r) return { s: r.w === 'O' ? 10 : r.w === 'X' ? -10 : 0 };
+    let best = { s: me === 'O' ? -99 : 99, i: -1 };
+    b.forEach((v, i) => {
+      if (v) return;
+      b[i] = me; const sc = this.minimax(b, me === 'O' ? 'X' : 'O').s; b[i] = null;
+      if ((me === 'O' && sc > best.s) || (me === 'X' && sc < best.s)) best = { s: sc, i };
+    });
+    return best;
+  }
+  pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  say(mood, quip) { this.setState({ mood, quip, qk: this.state.qk + 1 }); }
+  end(r) {
+    const s = this.state, k = r.w === 'X' ? 'x' : r.w === 'O' ? 'o' : 't';
+    const score = { ...s.score, [k]: s.score[k] + 1 }, sk = { ...s.sk, [k]: s.sk[k] + 1 };
+    const q = r.w === 'X' ? ['sad', 'Rectificamos: el lector ha ganado. Fe de erratas mañana, página 47.'] : r.w === 'O' ? ['smug', 'Lo dijimos antes que nadie. Exclusiva mundial.'] : ['surprised', 'Empate técnico, según fuentes de ambas partes.'];
+    this.setState({ win: r.w, line: r.l, score, sk, thinking: false, mood: q[0], quip: q[1], qk: s.qk + 1 });
+  }
+  aiMove() {
+    const s = this.state, b = s.b.slice();
+    const free = b.map((v, i) => (v ? -1 : i)).filter((i) => i >= 0);
+    if (!free.length) return;
+    const rand = { bec: 0.7, red: 0.3, dir: 0 }[s.diff];
+    const i = Math.random() < rand ? this.pick(free) : this.minimax(b.slice(), 'O').i;
+    b[i] = 'O';
+    const r = this.winner(b);
+    this.setState({ b, turn: 'X', thinking: false });
+    if (r) { this.end(r); return; }
+    const threat = this.LINES.some((l) => l.filter((j) => b[j] === 'X').length === 2 && l.some((j) => !b[j]));
+    if (threat) this.say('worried', this.pick(['Hmm. Esa diagonal no la habíamos previsto.', 'Nuestros analistas empiezan a sudar tinta.']));
+    else this.say('smug', this.pick(['Exclusiva: ficha colocada.', 'Esto va en portada.', 'Lo vimos venir antes que nadie.']));
+  }
+  play(i) {
+    const s = this.state;
+    if (s.b[i] || s.win || s.turn !== 'X' || s.thinking) return;
+    const b = s.b.slice(); b[i] = 'X';
+    const r = this.winner(b);
+    this.setState({ b, turn: 'O' });
+    if (r) { this.end(r); return; }
+    this.setState({ thinking: true, mood: 'thinking', quip: this.pick(['Consultando con la redacción…', 'Contrastando con tres fuentes…', 'Esperando el visto bueno del director…']), qk: s.qk + 1 });
+    clearTimeout(this.t);
+    this.t = setTimeout(() => this.aiMove(), 850);
+  }
+  reset() {
+    const starter = this.state.starter === 'X' ? 'O' : 'X';
+    clearTimeout(this.t);
+    this.setState({ b: Array(9).fill(null), win: null, line: null, starter, turn: starter, game: this.state.game + 1, thinking: starter === 'O', mood: starter === 'O' ? 'thinking' : 'idle', quip: starter === 'O' ? 'Esta vez abro yo la edición.' : 'Revancha. Tú pones las X.', qk: this.state.qk + 1 });
+    if (starter === 'O') this.t = setTimeout(() => this.aiMove(), 900);
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const inLine = (i) => !!s.line && s.line.indexOf(i) >= 0;
+    const cells = s.b.map((v, i) => ({
+      isX: v === 'X', isO: v === 'O',
+      aria: v ? (v === 'X' ? 'Casilla ' + (i + 1) + ': equis' : 'Casilla ' + (i + 1) + ': círculo de El Diario') : 'Casilla ' + (i + 1) + ' vacía',
+      play: () => this.play(i),
+      style: 'border:0;background:transparent;display:flex;align-items:center;justify-content:center;border-radius:14px;transition:opacity .6s ' + E + ',background-color .3s;opacity:' + (s.win && s.win !== 'T' && !inLine(i) ? 0.22 : 1) + ';cursor:' + (v || s.win ? 'default' : 'pointer')
+    }));
+    let line = null;
+    if (s.line) {
+      const c = (i) => [(i % 3) * 100 + 50, Math.floor(i / 3) * 100 + 50];
+      const a = c(s.line[0]), z = c(s.line[2]);
+      const dx = z[0] - a[0], dy = z[1] - a[1], L = Math.hypot(dx, dy), ex = dx / L * 28, ey = dy / L * 28;
+      line = { x1: a[0] - ex, y1: a[1] - ey, x2: z[0] + ex, y2: z[1] + ey, col: s.win === 'X' ? '#2340B8' : '#A3271B' };
+    }
+    const M = {
+      idle: ['M66 92 L84 90 M116 90 L134 92', 'M88 138 Q100 145 112 138', '0px,0px'],
+      thinking: ['M66 88 L84 90 M116 84 L134 88', 'M92 141 L110 139', '4px,-4px'],
+      smug: ['M66 90 L84 95 M116 86 L134 81', 'M84 135 Q102 152 118 132', '0px,0px'],
+      worried: ['M66 95 L84 88 M116 88 L134 95', 'M88 143 Q100 135 112 143', '-4px,2px'],
+      sad: ['M66 97 L84 90 M116 90 L134 97', 'M86 147 Q100 133 114 147', '0px,4px'],
+      surprised: ['M66 84 L84 81 M116 81 L134 84', 'M94 140 a6 7 0 1 0 12 0 a6 7 0 1 0 -12 0', '0px,-2px']
+    }[s.mood];
+    const anim = s.win === 'O' ? 'animation:jump .9s cubic-bezier(.34,1.56,.64,1) both' : s.win === 'X' ? 'animation:sag .8s ' + E + ' forwards' : s.mood === 'thinking' ? 'animation:think .9s ease-in-out infinite' : 'animation:bob 2.6s ease-in-out infinite';
+    const sc = (k, col) => "display:inline-block;font-family:'Newsreader',serif;font-size:30px;line-height:1;color:" + col + ';transform-origin:left center;' + (s.sk[k] ? 'animation:bump' + (s.sk[k] % 2) + ' .6s cubic-bezier(.34,1.56,.64,1)' : '');
+    const diffs = [['bec', 'Becario'], ['red', 'Redactor'], ['dir', 'Director']];
+    const banner = s.win === 'X' ? ['FE DE ERRATAS', '#2340B8', 'El lector gana al Diario, que promete rectificar'] : s.win === 'O' ? ['ÚLTIMA HORA', '#A3271B', 'El Diario se impone y lo celebra en portada'] : ['EMPATE', '#8A5300', 'Tablas: ambas partes reclaman la victoria'];
+    return {
+      cells, hasLine: !!line, line: line || { x1: 0, y1: 0, x2: 0, y2: 0, col: '#17171A' },
+      over: !!s.win,
+      bannerKick: banner[0], bannerText: banner[2],
+      bannerTag: 'flex:none;display:flex;align-items:center;padding:0 10px;font-size:10px;font-weight:600;letter-spacing:.1em;background:' + banner[1],
+      reset: () => this.reset(),
+      diffs: diffs.map((d) => ({ label: d[1], aria: s.diff === d[0] ? 'true' : 'false', pick: () => this.setState({ diff: d[0] }), style: 'flex:1;height:44px;border:0;border-radius:9px;font-size:14px;' + (s.diff === d[0] ? 'background:#FFFFFF;color:#17171A;font-weight:500;box-shadow:0 1px 2px rgba(23,23,26,.1)' : 'background:transparent;color:#5E5B55') })),
+      brows: M[0], mouth: M[1], blush: s.mood === 'smug',
+      pupils: 'transition:transform .45s ' + E + ';transform:translate(' + M[2] + ')',
+      bodyAnim: anim,
+      thinking: s.thinking,
+      quip: s.quip,
+      bubble: "position:relative;flex:1;background:#FFFFFF;border:1px solid #E2DED5;border-radius:16px;padding:10px 14px;margin-bottom:24px;font-family:'Newsreader',serif;font-size:15px;line-height:1.35;box-shadow:0 6px 16px rgba(23,23,26,.06);animation:q" + (s.qk % 2) + ' .5s ' + E + ' both',
+      score: s.score, scX: sc('x', '#17171A'), scT: sc('t', '#5E5B55'), scO: sc('o', '#A3271B'),
+      turnNote: s.win ? 'Partida ' + s.game + ' terminada' : s.thinking ? 'Turno de El Diario' : 'Tu turno · partida ' + s.game,
+      ticker: 'Lector ' + s.score.x + ' – El Diario ' + s.score.o + ' · Tablas: ' + s.score.t + '   ◆   El Diario niega haber perdido nunca una partida   ◆   Fuentes de la redacción aseguran que el centro es la mejor casilla   ◆   El becario jura que dejó ganar a propósito   ◆   Se recomienda contrastar cada jugada con al menos dos fuentes'
+    };
+  }
+}
+</script>
+</body>
+</html>

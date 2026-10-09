@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · análisis</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s,transform .5s cubic-bezier(.34,1.56,.64,1)}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.up{animation:up 1s cubic-bezier(.22,1,.36,1) both}
+.pop{animation:pop .45s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes pop{from{opacity:0;transform:translate(-50%,8px) scale(.9)}to{opacity:1;transform:translate(-50%,0)}}
+@keyframes t0{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes t1{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 6px; padding: 50px 12px 10px; border-bottom: 1px solid #E2DED5">
+<a href="Movil-Inicio.dc.html" aria-label="Volver" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 500">El Diario Rojo</div><div style="font-size: 11px; color: #5E5B55; font-family: 'IBM Plex Mono', monospace">izquierda · 47 bloqueados</div></div>
+<a href="Movil-Tor.dc.html" style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 10px; border-radius: 999px; background: #ECE8FB; color: #4A2FB8; font-size: 12px; font-weight: 500"><span style="width: 6px; height: 6px; border-radius: 50%; background: #4A2FB8"></span>ES</a>
+<button onClick="{{toggleLens}}" aria-label="Lente de sesgo" aria-pressed="{{lensAria}}" style="{{lensBtn}}"><span style="{{lensDot}}"></span></button>
+</div>
+<div style="padding: 16px 20px 240px; height: 100%; box-sizing: border-box; overflow: hidden; position: relative">
+<button onClick="{{toggleAi}}" style="width: 100%; display: flex; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid #F4C0D1; background: #FBEAF0; border-radius: 12px; text-align: left; color: #72243E; margin-bottom: 14px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; background: #F4C0D1; padding: 2px 5px; border-radius: 4px">IA</span>
+<span style="flex: 1; font-size: 12px">{{aiText}}</span>
+</button>
+<h1 class="rise" style="{{h1}}">El salario mínimo bate <span style="{{m.load}}">récords</span> mientras la patronal sigue <span style="{{m.load}}">en pie de guerra</span></h1>
+<div class="rise" style="{{body}}">
+<p style="margin: 0 0 14px">El Gobierno ha aprobado una subida del SMI que lo sitúa en <button onClick="{{pickC1}}" style="{{m.c1}}">el nivel más alto de toda Europa</button><sc-if value="{{lens}}" hint-placeholder-val="{{ true }}"><sup style="font-family: 'IBM Plex Sans', sans-serif; font-size: 9px; font-weight: 600; color: #8A5300; margin-left: 3px">ENGAÑOSO</sup></sc-if>, una medida que beneficiará a <span style="{{m.ok}}">2,5 millones</span>.</p>
+<p style="margin: 0; position: relative">Desde 2018 el SMI ha crecido un 61 % <button onClick="{{select}}" style="{{m.sel}}">sin que se haya destruido empleo</button>, según fuentes sindicales…</p>
+<sc-if value="{{selOn}}" hint-placeholder-val="{{ false }}">
+<div class="pop" style="position: absolute; left: 50%; bottom: -46px; display: flex; background: #17171A; border-radius: 10px; overflow: hidden; box-shadow: 0 10px 24px rgba(23,23,26,.3); font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; z-index: 4">
+<button onClick="{{select}}" style="height: 38px; padding: 0 12px; border: 0; background: transparent; color: #F6F4EF; border-right: 1px solid #3A3A3F">Copiar</button>
+<a href="Movil-Agente.dc.html" style="display: flex; align-items: center; height: 38px; padding: 0 12px; color: #F6F4EF; border-right: 1px solid #3A3A3F; font-weight: 500">Preguntar</a>
+<a href="Movil-Agente.dc.html" style="display: flex; align-items: center; height: 38px; padding: 0 12px; color: #F6F4EF">Verificar</a>
+</div>
+</sc-if>
+</div>
+<div style="font-size: 12px; color: #8D8981; margin-top: 18px; font-family: 'IBM Plex Sans', sans-serif">{{hint}}</div>
+</div>
+<div class="up" style="{{sheet}}">
+<button onClick="{{toggle}}" aria-label="{{handleLabel}}" style="width: 100%; height: 28px; border: 0; background: transparent; display: flex; align-items: center; justify-content: center"><span style="width: 40px; height: 5px; border-radius: 3px; background: #CFCAC0"></span></button>
+<div style="display: flex; align-items: center; gap: 16px; padding: 0 20px">
+<div style="position: relative; width: 76px; height: 76px; flex: none">
+<svg width="76" height="76" viewBox="0 0 76 76" style="transform: rotate(-90deg)"><circle cx="38" cy="38" r="32" fill="none" stroke="#ECE9E2" stroke-width="7"></circle><circle cx="38" cy="38" r="32" fill="none" stroke="#B26A00" stroke-width="7" stroke-linecap="round" stroke-dasharray="201.1" style="{{ring}}"></circle></svg>
+<span style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Newsreader', serif; font-size: 28px; color: #8A5300">{{shown}}</span>
+</div>
+<div style="flex: 1; min-width: 0"><div style="font-family: 'Newsreader', serif; font-size: 20px; line-height: 1.2">Militante, con un dato inflado</div><div style="font-size: 12px; color: #5E5B55; margin-top: 4px">Neutralidad · 6 coberturas</div></div>
+</div>
+<sc-if value="{{open}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="padding: 16px 20px 0; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; border-bottom: 1px solid #E2DED5"><sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button></sc-for><a href="Movil-Agente.dc.html" style="flex: 1; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #8D8981">Agente ↗</a></div>
+<sc-if value="{{tabA}}" hint-placeholder-val="{{ true }}">
+<div style="{{tabPane}}">
+<sc-for list="{{claims}}" as="c" hint-placeholder-count="4"><div style="{{c.row}}"><span style="{{c.dot}}"></span><span style="flex: 1"><span style="display: block; font-size: 14px; line-height: 1.35">{{c.text}}</span><span style="{{c.lab}}">{{c.label}}</span></span></div></sc-for>
+<a href="Movil-Hemeroteca.dc.html" style="display: flex; align-items: center; gap: 10px; padding: 12px 0; border-top: 1px solid #EFECE6; font-size: 13px"><span style="width: 9px; height: 9px; transform: rotate(45deg); background: #B26A00; border-radius: 2px; margin: 0 4px"></span><span style="flex: 1">Editada 3 veces sin aviso</span><span style="color: #2340B8">Hemeroteca →</span></a>
+</div>
+</sc-if>
+<sc-if value="{{tabC}}" hint-placeholder-val="{{ false }}">
+<div style="{{tabPane}}"><sc-for list="{{outlets}}" as="o" hint-placeholder-count="5"><div style="padding: 10px 0; border-top: 1px solid #EFECE6"><div style="display: flex; align-items: center; gap: 8px; margin-bottom: 3px"><span style="{{o.dot}}"></span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55; flex: 1">{{o.name}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px">{{o.score}}</span></div><div style="font-family: 'Newsreader', serif; font-size: 15px; line-height: 1.35">{{o.head}}</div></div></sc-for></div>
+</sc-if>
+<a href="Movil-Sintesis.dc.html" style="height: 52px; border-radius: 14px; background: #17171A; color: #F6F4EF; display: flex; align-items: center; justify-content: center; font-weight: 500">Leer la noticia neutral</a>
+</div>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { open: false, shown: 0, lens: true, ai: false, sel: false, tab: 'a', tk: 0 }; }
+  componentDidMount() { const t0 = performance.now(); const tick = (t) => { const k = Math.min(1, (t - t0) / 1400), e = 1 - Math.pow(1 - k, 4); this.setState({ shown: Math.round(38 * e) }); if (k < 1) this.raf = requestAnimationFrame(tick); }; this.raf = requestAnimationFrame(tick); }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', o = s.open;
+    const mk = (bg) => 'all:unset;color:#17171A;border-radius:3px;padding:0 2px;transition:background-color .8s ' + E + ';background:' + (s.lens ? bg : 'transparent');
+    const B = { ok: ['#0B6B50'], warn: ['#8A5300'], ctx: ['#A3271B'], na: ['#57544E'] };
+    const CL = [['warn', 'Engañoso', '«El más alto de Europa»: 6.º en la UE'], ['ok', 'Verificado', '2,5 millones de beneficiarios'], ['ctx', 'Falta contexto', 'SMI +61 % «sin destruir empleo»'], ['na', 'Opinión', '«La patronal antepone sus beneficios»']];
+    return {
+      lens: s.lens, lensAria: s.lens ? 'true' : 'false', toggleLens: () => this.setState({ lens: !s.lens }),
+      lensBtn: 'width:36px;height:36px;border-radius:50%;border:0;display:flex;align-items:center;justify-content:center;' + (s.lens ? 'background:#17171A' : 'background:#E7E3DA'),
+      lensDot: 'width:8px;height:8px;border-radius:50%;background:' + (s.lens ? '#F09595' : '#8D8981'),
+      toggleAi: () => this.setState({ ai: !s.ai }),
+      aiText: s.ai ? 'Señales: uniformidad alta, 3 frases plantilla, sin C2PA. Es un indicio, no una prueba.' : 'Posible texto con IA en 2 de 5 párrafos · 74 %',
+      h1: "font-family:'Newsreader',serif;font-weight:500;font-size:28px;line-height:1.15;margin:0 0 14px;transition:color .9s " + E + ';color:' + (s.lens ? '#ABA79E' : '#17171A'),
+      body: "position:relative;font-family:'Newsreader',serif;font-size:17px;line-height:1.7;transition:color .9s " + E + ';color:' + (s.lens ? '#ABA79E' : '#17171A'),
+      m: { load: mk('#F6CFC9'), c1: mk('#F7DFB0') + ';cursor:pointer', ok: mk('#CFE9DE'), sel: 'all:unset;cursor:pointer;color:#17171A;border-radius:2px;transition:background-color .3s;background:' + (s.sel ? '#B5C4F4' : s.lens ? '#F6CFC9' : 'transparent') },
+      pickC1: () => this.setState({ open: true, tab: 'a', tk: s.tk + 1 }),
+      select: () => this.setState({ sel: !s.sel }), selOn: s.sel,
+      hint: s.sel ? '' : 'Mantén pulsado cualquier frase para preguntar por ella.',
+      open: o, toggle: () => this.setState({ open: !o }), handleLabel: o ? 'Contraer' : 'Expandir',
+      sheet: 'position:absolute;left:0;right:0;bottom:0;z-index:3;background:#FFFFFF;border-radius:28px 28px 0 0;box-shadow:0 -10px 40px rgba(23,23,26,.12);padding-bottom:30px;transition:height .9s ' + E + ';overflow:hidden;height:' + (o ? 620 : 180) + 'px',
+      shown: s.shown, ring: 'stroke-dashoffset:' + (201.1 * (1 - s.shown / 100)).toFixed(1),
+      tabs: [['a', 'Análisis'], ['c', 'Coberturas']].map((t) => ({ label: t[1], pick: () => this.setState({ tab: t[0], tk: s.tk + 1 }), style: 'flex:1;height:40px;border:0;background:transparent;font-size:14px;transition:box-shadow .4s,color .4s;' + (s.tab === t[0] ? 'color:#17171A;font-weight:500;box-shadow:inset 0 -2px 0 #17171A' : 'color:#8D8981') })),
+      tabA: s.tab === 'a', tabC: s.tab === 'c', tabPane: 'animation:t' + (s.tk % 2) + ' .5s ' + E + ' both',
+      claims: CL.map((c, i) => ({ text: c[2], label: c[1], dot: 'flex:none;width:8px;height:8px;border-radius:50%;margin-top:6px;background:' + B[c[0]][0], lab: 'font-size:12px;font-weight:500;color:' + B[c[0]][0], row: 'display:flex;gap:12px;padding:10px 0;border-top:' + (i ? '1px solid #EFECE6' : '0') + ';animation:rise .6s ' + E + ' both;animation-delay:' + (i * 80) + 'ms' })),
+      outlets: [['elDiario.es', 'El SMI sube y llega a 2,5 millones de trabajadores', '61', '#C2412F'], ['EFE', 'El Gobierno aprueba la subida del SMI con el rechazo de la CEOE', '88', '#8D8981'], ['El País', 'Nueva subida del salario mínimo sin el apoyo de la patronal', '72', '#8D8981'], ['Expansión', 'La nueva subida del SMI amenaza el empleo en el campo', '64', '#2F5BD3'], ['ABC', 'El Gobierno impone otra subida del SMI de espaldas a las empresas', '52', '#2F5BD3']].map((x) => ({ name: x[0], head: x[1], score: x[2], dot: 'width:7px;height:7px;border-radius:50%;background:' + x[3] }))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Hemeroteca</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1),box-shadow .45s cubic-bezier(.22,1,.36,1)}
+button:active{transform:scale(.96)}
+.hov:hover{background:#EFECE5}
+.cap:hover>span{transform:translate(-50%,-50%) scale(1.5)!important}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.del{background:#FBE7E4;color:#A3271B;text-decoration:line-through;text-decoration-color:rgba(163,39,27,.55);border-radius:3px;padding:0 2px}
+.add{background:#E3F2EC;color:#0B6B50;border-radius:3px;padding:0 2px;box-shadow:inset 0 -2px 0 #0B6B50}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes d0{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes d1{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes mk{from{opacity:0;transform:translate(-50%,-6px) scale(.5)}to{opacity:1;transform:translate(-50%,0)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height: 1300px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #D9D5CC; background: #E7E3DA; flex-wrap: wrap">
+<a href="Main.dc.html" class="hov" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 10px; color: #17171A; text-decoration: none; background: #F6F4EF; border: 1px solid #D9D5CC"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Volver a la noticia</a>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">newpaper://hemeroteca/eldiariorojo.es/economia/salario-minimo-record</span>
+<span style="margin-left: auto; font-size: 12px; color: #5E5B55">Capturas del Internet Archive · leídas por Tor</span>
+</div>
+<main style="width: 100%; max-width: 1180px; margin: 0 auto; padding: 40px 32px 72px; box-sizing: border-box; display: flex; flex-direction: column; gap: 28px">
+<div class="rise" style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap">
+<div>
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: #5E5B55; margin-bottom: 8px">HEMEROTECA</div>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 38px; line-height: 1.1; margin: 0; max-width: 720px">Así ha cambiado esta noticia desde que se publicó</h1>
+<div style="font-size: 14px; color: #5E5B55; margin-top: 8px">El Diario Rojo · 14 capturas entre las 09:12 y las 21:30 del 6 de octubre</div>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: #FBF0DC; border: 1px solid #E2C48A; border-radius: 14px; color: #6B4100">
+<span style="font-family: 'Newsreader', serif; font-size: 32px; line-height: 1">3</span>
+<span style="font-size: 13px; line-height: 1.35">ediciones tras publicarse<br><b style="font-weight: 600">sin nota de rectificación</b></span>
+</div>
+</div>
+
+<div class="rise" style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 20px; padding: 22px 24px 18px; animation-delay: 100ms">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 30px">
+<span style="font-weight: 600">Línea de tiempo</span>
+<span style="display: flex; gap: 14px; font-size: 12px; color: #5E5B55; flex-wrap: wrap"><span style="display: flex; align-items: center; gap: 6px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #B9B4A9"></span>captura sin cambios</span><span style="display: flex; align-items: center; gap: 6px"><span style="width: 9px; height: 9px; transform: rotate(45deg); background: #B26A00; border-radius: 2px"></span>contenido editado</span><span>Pulsa una captura para compararla</span></span>
+</div>
+<div style="position: relative; height: 70px; margin: 0 14px">
+<div style="position: absolute; left: 0; right: 0; top: 34px; height: 2px; background: #E7E3DA; border-radius: 1px"></div>
+<div style="{{band}}"></div>
+<sc-for list="{{marks}}" as="m" hint-placeholder-count="3"><div style="{{m.style}}"><span style="width: 9px; height: 9px; transform: rotate(45deg); background: #B26A00; border-radius: 2px"></span><span style="font-size: 11px; color: #8A5300; white-space: nowrap; margin-top: 4px">{{m.label}}</span></div></sc-for>
+<sc-for list="{{caps}}" as="c" hint-placeholder-count="14">
+<button onClick="{{c.pick}}" class="cap" aria-label="{{c.aria}}" style="{{c.hit}}"><span style="{{c.dot}}"></span><sc-if value="{{c.tagged}}" hint-placeholder-val="{{ false }}"><span style="{{c.tagStyle}}">{{c.tag}}</span></sc-if></button>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; margin: 10px 14px 0; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #A9A59C"><span>09:00</span><span>12:00</span><span>15:00</span><span>18:00</span><span>21:00</span></div>
+</div>
+
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 14px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap">
+<div style="display: flex; align-items: center; gap: 4px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 12px; padding: 4px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: #FFFFFF; background: #17171A; border-radius: 6px; padding: 3px 7px; margin-left: 4px">A</span>
+<button onClick="{{aPrev}}" aria-label="Captura A anterior" class="hov" style="width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent">‹</button>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; min-width: 44px; text-align: center">{{aTime}}</span>
+<button onClick="{{aNext}}" aria-label="Captura A siguiente" class="hov" style="width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent">›</button>
+</div>
+<span style="color: #8D8981">frente a</span>
+<div style="display: flex; align-items: center; gap: 4px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 12px; padding: 4px">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 600; color: #FFFFFF; background: #2340B8; border-radius: 6px; padding: 3px 7px; margin-left: 4px">B</span>
+<button onClick="{{bPrev}}" aria-label="Captura B anterior" class="hov" style="width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent">‹</button>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; min-width: 44px; text-align: center">{{bTime}}</span>
+<button onClick="{{bNext}}" aria-label="Captura B siguiente" class="hov" style="width: 32px; height: 32px; border: 0; border-radius: 8px; background: transparent">›</button>
+</div>
+</div>
+<div style="display: flex; background: #E7E3DA; border-radius: 10px; padding: 3px; gap: 3px">
+<sc-for list="{{views}}" as="v" hint-placeholder-count="3"><button onClick="{{v.pick}}" style="{{v.style}}">{{v.label}}</button></sc-for>
+</div>
+</div>
+
+<div style="display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start">
+<div style="flex: 999 1 640px; min-width: 0">
+<sc-if value="{{same}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 40px; text-align: center; color: #5E5B55"><div style="font-family: 'Newsreader', serif; font-size: 22px; color: #17171A; margin-bottom: 6px">Sin cambios entre estas dos capturas</div>El texto es idéntico. Mueve A o B a un rombo de la línea de tiempo.</div>
+</sc-if>
+<sc-if value="{{unified}}" hint-placeholder-val="{{ true }}">
+<article style="{{docStyle}}">
+<sc-for list="{{blocks}}" as="bk" hint-placeholder-count="4">
+<div style="{{bk.wrap}}">
+<sc-if value="{{bk.changed}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; left: -22px; top: 8px; width: 6px; height: 6px; border-radius: 50%; background: #B26A00"></span></sc-if>
+<div style="{{bk.text}}"><sc-for list="{{bk.u}}" as="g" hint-placeholder-count="3"><span class="{{g.cls}}">{{g.t}}</span> </sc-for></div>
+</div>
+</sc-for>
+</article>
+</sc-if>
+<sc-if value="{{split}}" hint-placeholder-val="{{ false }}">
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<article style="{{docStyle}}">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55; margin-bottom: 14px">A · {{aTime}}</div>
+<sc-for list="{{blocks}}" as="bk" hint-placeholder-count="4"><div style="{{bk.wrap}}"><div style="{{bk.textS}}"><sc-for list="{{bk.a}}" as="g" hint-placeholder-count="3"><span class="{{g.cls}}">{{g.t}}</span> </sc-for></div></div></sc-for>
+</article>
+<article style="{{docStyle}}">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8; margin-bottom: 14px">B · {{bTime}}</div>
+<sc-for list="{{blocks}}" as="bk" hint-placeholder-count="4"><div style="{{bk.wrap}}"><div style="{{bk.textS}}"><sc-for list="{{bk.b}}" as="g" hint-placeholder-count="3"><span class="{{g.cls}}">{{g.t}}</span> </sc-for></div></div></sc-for>
+</article>
+</div>
+</sc-if>
+<sc-if value="{{reading}}" hint-placeholder-val="{{ false }}">
+<article style="{{docStyle}}">
+<div style="display: inline-flex; align-items: center; gap: 8px; font-size: 12px; color: #5E5B55; background: #F1EEE7; padding: 4px 10px; border-radius: 999px; margin-bottom: 18px">Captura del {{bTime}} · como se veía entonces, sin anuncios</div>
+<sc-for list="{{blocks}}" as="bk" hint-placeholder-count="4"><div style="{{bk.wrap}}"><div style="{{bk.text}}">{{bk.plainB}}</div></div></sc-for>
+</article>
+</sc-if>
+</div>
+<aside style="flex: 1 1 300px; display: flex; flex-direction: column; gap: 14px">
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 18px 20px">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55; margin-bottom: 10px">CAMBIOS ENTRE A Y B</div>
+<sc-if value="{{noChanges}}" hint-placeholder-val="{{ false }}"><div style="font-size: 13px; color: #8D8981">Ninguno.</div></sc-if>
+<sc-for list="{{changes}}" as="ch" hint-placeholder-count="3">
+<div style="{{ch.row}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A5300; width: 40px; flex: none; padding-top: 2px">{{ch.time}}</span><div><div style="font-weight: 500">{{ch.title}}</div><div style="font-size: 12px; color: #5E5B55; line-height: 1.45">{{ch.note}}</div></div></div>
+</sc-for>
+<div style="display: flex; gap: 12px; margin-top: 12px; padding-top: 12px; border-top: 1px solid #EFECE6; font-family: 'IBM Plex Mono', monospace; font-size: 12px"><span style="color: #A3271B">−{{stats.del}} palabras</span><span style="color: #0B6B50">+{{stats.add}} palabras</span></div>
+</div>
+<div style="background: #E8ECFA; border-radius: 18px; padding: 18px 20px; color: #182E86">
+<div style="font-weight: 600; margin-bottom: 6px">Qué significa</div>
+<div style="font-size: 13px; line-height: 1.55">El medio corrigió la cifra que newpaper marcó como engañosa y suavizó el titular, pero no añadió ninguna nota de rectificación. Quien leyó la versión de las 09:12 nunca lo sabrá.</div>
+</div>
+<div style="font-size: 12px; color: #8D8981; line-height: 1.5; padding: 0 4px">Las capturas proceden del Internet Archive (Wayback Machine). newpaper las descarga y las muestra con su propio lector.</div>
+</aside>
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1300}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { a: 0, b: 13, view: 'uni', k: 0 }; }
+  diff(x, y) {
+    const A = x.split(' '), B = y.split(' '), n = A.length, m = B.length;
+    const dp = Array.from({ length: n + 1 }, () => Array(m + 1).fill(0));
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) dp[i][j] = A[i] === B[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    const out = []; let i = 0, j = 0;
+    const push = (t, ty) => { const l = out[out.length - 1]; if (l && l.ty === ty) l.t += ' ' + t; else out.push({ t, ty }); };
+    while (i < n && j < m) { if (A[i] === B[j]) { push(A[i], 'same'); i++; j++; } else if (dp[i + 1][j] >= dp[i][j + 1]) { push(A[i], 'del'); i++; } else { push(B[j], 'add'); j++; } }
+    while (i < n) push(A[i++], 'del');
+    while (j < m) push(B[j++], 'add');
+    return out;
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const T1 = 'El salario mínimo bate récords mientras la patronal sigue en pie de guerra';
+    const T2 = 'El salario mínimo bate récords y la patronal se opone a la subida';
+    const L = 'El Gobierno aprueba una nueva subida que, según el ministerio, beneficiará a 2,5 millones de trabajadores.';
+    const P1a = 'El Consejo de Ministros ha aprobado este martes una subida del salario mínimo interprofesional que lo sitúa en el nivel más alto de toda Europa, una medida que según el ministerio beneficiará a 2,5 millones de trabajadores.';
+    const P1b = 'El Consejo de Ministros ha aprobado este martes una subida del salario mínimo interprofesional que lo sitúa entre los más altos de Europa, una medida que según el ministerio beneficiará a 2,5 millones de trabajadores.';
+    const P2 = 'Mientras tanto, la patronal, fiel a su costumbre, vuelve a anteponer sus beneficios a la dignidad de quienes sostienen el país.';
+    const P3a = 'Desde 2018 el SMI ha crecido un 61 % sin que se haya destruido empleo, según fuentes sindicales consultadas por este diario.';
+    const P3b = 'Desde 2018 el SMI ha crecido un 61 % sin que se haya destruido empleo, según fuentes sindicales consultadas por este diario, aunque la AIReF matiza que ha frenado la contratación en algunos sectores.';
+    const C = { 1: [T1, L, P1a, P2, P3a], 3: [T2, L, P1a, P2, P3a], 4: [T2, L, P1b, P2, P3a], 5: [T2, L, P1b, P2, P3b] };
+    const CAPS = [['09:12', 1], ['09:40', 1], ['10:10', 1], ['10:30', 1], ['11:48', 3], ['12:20', 3], ['12:45', 3], ['13:20', 4], ['14:22', 4], ['15:00', 4], ['16:02', 5], ['17:00', 5], ['19:00', 5], ['21:30', 5]];
+    const EDITS = { 4: ['Titular suavizado', '«en pie de guerra» desaparece del titular'], 7: ['Dato corregido sin aviso', '«el más alto de toda Europa» pasa a «entre los más altos»'], 10: ['Párrafo ampliado', 'Se añade la matización de la AIReF']};
+    const min = (t) => { const p = t.split(':'); return (+p[0] - 9) * 60 + +p[1]; };
+    const pos = (t) => min(t) / 780 * 100;
+    const a = Math.min(s.a, s.b), b = Math.max(s.a, s.b);
+    const ca = C[CAPS[a][1]], cb = C[CAPS[b][1]];
+    let del = 0, add = 0;
+    const blocks = ca.map((txt, i) => {
+      const d = this.diff(txt, cb[i]);
+      d.forEach((g) => { if (g.ty === 'del') del += g.t.split(' ').length; if (g.ty === 'add') add += g.t.split(' ').length; });
+      const changed = d.some((g) => g.ty !== 'same');
+      const head = i === 0, lead = i === 1;
+      const text = "font-family:'Newsreader',serif;" + (head ? 'font-size:32px;line-height:1.18;font-weight:500' : lead ? 'font-size:20px;line-height:1.5;color:#3D3B37' : 'font-size:18px;line-height:1.75');
+      return {
+        changed,
+        u: d.map((g) => ({ t: g.t, cls: g.ty === 'same' ? '' : g.ty })),
+        a: d.filter((g) => g.ty !== 'add').map((g) => ({ t: g.t, cls: g.ty === 'del' ? 'del' : '' })),
+        b: d.filter((g) => g.ty !== 'del').map((g) => ({ t: g.t, cls: g.ty === 'add' ? 'add' : '' })),
+        plainB: cb[i],
+        wrap: 'position:relative;margin-bottom:' + (head ? 14 : 20) + 'px;animation:d' + (s.k % 2) + ' .6s ' + E + ' both;animation-delay:' + (i * 60) + 'ms',
+        text, textS: text.replace('32px', '24px').replace('20px', '17px').replace('18px', '16px')
+      };
+    });
+    const changes = Object.keys(EDITS).map(Number).filter((i) => i > a && i <= b).map((i, j) => ({ time: CAPS[i][0], title: EDITS[i][0], note: EDITS[i][1], row: 'display:flex;gap:12px;padding:10px 0;border-top:' + (j ? '1px solid #EFECE6' : '0') + ';animation:d' + (s.k % 2) + ' .6s ' + E + ' both;animation-delay:' + (j * 80) + 'ms' }));
+    const set = (key, v) => this.setState({ [key]: Math.max(0, Math.min(CAPS.length - 1, v)), k: s.k + 1 });
+    return {
+      caps: CAPS.map((c, i) => {
+        const isA = i === s.a, isB = i === s.b, edit = !!EDITS[i];
+        return {
+          aria: 'Captura de las ' + c[0] + (edit ? ', con cambios' : ''),
+          pick: () => { if (i < s.b && Math.abs(i - s.a) <= Math.abs(i - s.b)) set('a', i); else if (i > s.a) set('b', i); else set('a', i); },
+          hit: 'position:absolute;top:35px;left:' + pos(c[0]) + '%;width:26px;height:26px;margin:-13px 0 0 -13px;border:0;background:transparent;padding:0',
+          dot: 'position:absolute;left:50%;top:50%;border-radius:50%;transition:all .5s cubic-bezier(.34,1.56,.64,1);transform:translate(-50%,-50%);' + (isA ? 'width:16px;height:16px;background:#17171A;box-shadow:0 0 0 3px #FFFFFF' : isB ? 'width:16px;height:16px;background:#2340B8;box-shadow:0 0 0 3px #FFFFFF' : edit ? 'width:10px;height:10px;background:#B26A00;box-shadow:0 0 0 2px #FFFFFF' : 'width:8px;height:8px;background:#B9B4A9;box-shadow:0 0 0 2px #FFFFFF'),
+          tagged: isA || isB, tag: isA ? 'A ' + c[0] : 'B ' + c[0],
+          tagStyle: "position:absolute;top:20px;left:50%;transform:translateX(-50%);white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;color:#FFFFFF;padding:2px 6px;border-radius:5px;background:" + (isA ? '#17171A' : '#2340B8')
+        };
+      }),
+      marks: Object.keys(EDITS).map(Number).map((i, j) => ({ label: EDITS[i][0].split(' ')[0].toLowerCase(), style: 'position:absolute;top:0;left:' + pos(CAPS[i][0]) + '%;display:flex;flex-direction:column;align-items:center;animation:mk .6s cubic-bezier(.34,1.56,.64,1) both;animation-delay:' + (300 + j * 120) + 'ms;transform:translateX(-50%)' })),
+      band: 'position:absolute;top:33px;height:6px;border-radius:3px;background:#2340B8;opacity:.25;transition:all .6s ' + E + ';left:' + pos(CAPS[a][0]) + '%;width:' + (pos(CAPS[b][0]) - pos(CAPS[a][0])) + '%',
+      aTime: CAPS[s.a][0], bTime: CAPS[s.b][0],
+      aPrev: () => set('a', s.a - 1), aNext: () => set('a', Math.min(s.a + 1, s.b - 1)),
+      bPrev: () => set('b', Math.max(s.b - 1, s.a + 1)), bNext: () => set('b', s.b + 1),
+      views: [['uni', 'Unificado'], ['split', 'Lado a lado'], ['read', 'Leer captura B']].map((v) => ({ label: v[1], pick: () => this.setState({ view: v[0], k: s.k + 1 }), style: 'height:34px;padding:0 14px;border:0;border-radius:8px;font-size:13px;' + (s.view === v[0] ? 'background:#FFFFFF;color:#17171A;font-weight:500;box-shadow:0 1px 2px rgba(23,23,26,.1)' : 'background:transparent;color:#3D3B37') })),
+      same: del + add === 0 && s.view !== 'read',
+      unified: s.view === 'uni' && del + add > 0, split: s.view === 'split' && del + add > 0, reading: s.view === 'read',
+      blocks,
+      docStyle: 'background:#FFFFFF;border:1px solid #E2DED5;border-radius:18px;padding:32px 36px 16px 40px',
+      changes, noChanges: changes.length === 0,
+      stats: { del, add }
+    };
+  }
+}
+</script>
+</body>
+</html>

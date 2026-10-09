@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · agente con hemiciclo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.96)}
+input:focus{outline:none;border-color:#2340B8!important}
+.scr{scrollbar-width:none}.scr::-webkit-scrollbar{display:none}
+.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes seatIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes bump0{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes bump1{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+@keyframes open0{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes open1{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 8px; padding: 50px 12px 10px; border-bottom: 1px solid #E2DED5">
+<a href="Movil-Analisis.dc.html" aria-label="Volver" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<div style="flex: 1; min-width: 0"><div style="font-weight: 600">Agente</div><div style="font-size: 11px; color: #5E5B55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">El salario mínimo bate récords… · 6 coberturas · 9 fuentes</div></div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #5E5B55; border: 1px solid #D9D5CC; border-radius: 6px; padding: 3px 6px">Claude</span>
+</div>
+
+<div class="scr" style="flex: 1; overflow-y: auto; padding: 18px 18px 12px; display: flex; flex-direction: column; gap: 18px">
+<div class="rise" style="align-self: flex-end; max-width: 86%; background: #17171A; color: #F6F4EF; padding: 10px 14px; border-radius: 16px 16px 4px 16px; line-height: 1.45">¿Cómo quedaría la votación del SMI en el Congreso?</div>
+
+<sc-if value="{{ready}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 10px">
+<button onClick="{{toggleSteps}}" style="align-self: flex-start; min-height: 32px; border: 0; background: transparent; padding: 0; font-size: 12px; color: #5E5B55"><span style="{{chev}}">›</span> 4 pasos · 3 fuentes · 1 gráfico</button>
+<sc-if value="{{showSteps}}" hint-placeholder-val="{{ false }}"><div class="rise" style="padding-left: 12px; border-left: 1px solid #E2DED5; display: flex; flex-direction: column; gap: 4px; border-radius: 0"><sc-for list="{{steps}}" as="st" hint-placeholder-count="4"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55">{{st}}</span></sc-for></div></sc-if>
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.6"><sc-for list="{{segs}}" as="g" hint-placeholder-count="5"><sc-if value="{{g.isCite}}" hint-placeholder-val="{{ false }}"><button onClick="{{g.pick}}" aria-label="{{g.label}}" style="{{g.style}}">{{g.n}}</button></sc-if><sc-if value="{{g.isText}}" hint-placeholder-val="{{ true }}"><span>{{g.t}}</span></sc-if></sc-for></div>
+
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 14px 14px 12px; margin-top: 2px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px">
+<div style="min-width: 0"><div style="font-family: 'Newsreader', serif; font-size: 18px; line-height: 1.2">Votación prevista en el Congreso</div><div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #5E5B55; margin-top: 4px">350 escaños · mayoría absoluta 176</div></div>
+<span style="flex: none; font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 999px; background: #FBF0DC; color: #8A5300">datos de ejemplo</span>
+</div>
+<div style="position: relative; width: 320px; height: 176px; margin: 12px auto 0; max-width: 100%">
+<svg width="320" height="172" viewBox="0 0 320 172" role="img" aria-label="{{hemiLabel}}" style="display: block">
+<path d="{{seats.a.d}}" style="{{seats.a.style}}"></path>
+<path d="{{seats.b.d}}" style="{{seats.b.style}}"></path>
+<path d="{{seats.c.d}}" style="{{seats.c.style}}"></path>
+<path d="{{seats.d.d}}" style="{{seats.d.style}}"></path>
+<path d="{{seats.e.d}}" style="{{seats.e.style}}"></path>
+<path d="{{seats.f.d}}" style="{{seats.f.style}}"></path>
+<path d="M160 104V4" fill="none" stroke="#17171A" stroke-width="1.2" stroke-dasharray="3 3"></path>
+<text x="166" y="11" font-family="IBM Plex Mono, monospace" font-size="10" fill="#5E5B55">176</text>
+</svg>
+<div style="position: absolute; left: 50%; bottom: 4px; width: 116px; margin-left: -58px; text-align: center">
+<div style="{{countStyle}}">{{shown}}</div>
+<div style="{{verdictStyle}}">{{verdict}}</div>
+</div>
+</div>
+
+<div style="font-size: 11px; color: #5E5B55; margin: 12px 0 8px">Constructor de mayorías · toca los grupos que votarían sí</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px">
+<sc-for list="{{chips}}" as="c" hint-placeholder-count="6"><button onClick="{{c.toggle}}" aria-pressed="{{c.aria}}" style="{{c.style}}"><span style="{{c.dot}}"></span><span style="flex: 1; text-align: left; white-space: nowrap">{{c.name}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px">{{c.seats}}</span></button></sc-for>
+</div>
+
+<sc-if value="{{showData}}" hint-placeholder-val="{{ false }}">
+<div style="{{dataAnim}}">
+<div style="display: flex; font-size: 11px; color: #5E5B55; padding: 6px 2px; border-bottom: 1px solid #E2DED5"><span style="flex: 1">Grupo</span><span style="width: 64px; text-align: right">Escaños</span><span style="width: 92px; text-align: right">Postura</span></div>
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="6"><div style="display: flex; align-items: center; font-size: 13px; padding: 7px 2px; border-bottom: 1px solid #EFECE6"><span style="flex: 1; display: flex; align-items: center; gap: 8px"><span style="{{r.dot}}"></span>{{r.name}}</span><span style="width: 64px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12px">{{r.seats}}</span><span style="width: 92px; text-align: right; font-size: 12px; color: #5E5B55">{{r.pos}}</span></div></sc-for>
+<div style="font-size: 11px; color: #8D8981; line-height: 1.45; margin-top: 6px">Posturas según declaraciones públicas de los portavoces [3]. Partidos anonimizados.</div>
+</div>
+</sc-if>
+
+<div style="display: flex; gap: 8px; margin-top: 12px">
+<button onClick="{{toggleData}}" aria-expanded="{{dataAria}}" style="flex: 1; height: 44px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A; font-size: 13px">{{dataLabel}}</button>
+<button onClick="{{addSynth}}" style="{{addStyle}}"><sc-if value="{{added}}" hint-placeholder-val="{{ false }}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>{{addLabel}}</button>
+</div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 2px"><sc-for list="{{sources}}" as="src" hint-placeholder-count="3"><div style="{{src.style}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8; min-width: 16px">{{src.n}}</span>{{src.name}}</div></sc-for></div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap"><sc-for list="{{follow}}" as="f" hint-placeholder-count="2"><button onClick="{{f.ask}}" style="min-height: 36px; padding: 0 12px; border: 1px solid #D9D5CC; border-radius: 999px; background: #FFFFFF; font-size: 12px; color: #17171A">{{f.q}}</button></sc-for></div>
+</div>
+</sc-if>
+
+<sc-for list="{{extra}}" as="m" hint-placeholder-count="0">
+<sc-if value="{{m.user}}" hint-placeholder-val="{{ true }}"><div class="rise" style="align-self: flex-end; max-width: 86%; background: #17171A; color: #F6F4EF; padding: 10px 14px; border-radius: 16px 16px 4px 16px; line-height: 1.45">{{m.text}}</div></sc-if>
+<sc-if value="{{m.bot}}" hint-placeholder-val="{{ false }}"><div class="rise" style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.6">{{m.text}}</div></sc-if>
+</sc-for>
+
+<sc-if value="{{thinking}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 8px"><sc-for list="{{live}}" as="l" hint-placeholder-count="4"><div style="{{l.s}}"><span style="{{l.d}}"></span>{{l.t}}</div></sc-for></div>
+</sc-if>
+</div>
+
+<div style="padding: 10px 14px 28px; border-top: 1px solid #E2DED5; display: flex; flex-direction: column; gap: 8px; background: #F6F4EF">
+<div style="display: flex; gap: 4px"><sc-for list="{{modes}}" as="md" hint-placeholder-count="3"><button onClick="{{md.pick}}" style="{{md.style}}">{{md.label}}</button></sc-for></div>
+<form onSubmit="{{send}}" style="display: flex; gap: 8px">
+<label for="vask" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Tu pregunta</label>
+<input id="vask" value="{{draft}}" onChange="{{onDraft}}" placeholder="Pregunta lo que quieras…" style="flex: 1; min-width: 0; height: 48px; padding: 0 16px; border: 1px solid #D9D5CC; border-radius: 24px; background: #FFFFFF; color: #17171A; font-size: 15px">
+<button type="submit" aria-label="Enviar" style="width: 48px; height: 48px; border: 0; border-radius: 50%; background: #17171A; color: #F6F4EF; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</form>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { ready: false, thinking: true, lv: 0, steps: false, cite: null, on: { a: true, b: true, c: true, d: false, e: false, f: false }, shown: 0, bk: 0, data: false, dk: 0, added: false, mode: 'ask', draft: '', extra: [] };
+  }
+  componentDidMount() {
+    this.iv = setInterval(() => {
+      const n = this.state.lv + 1;
+      if (n >= 4) { clearInterval(this.iv); this.setState({ thinking: false, ready: true }); this.count(178); }
+      else this.setState({ lv: n });
+    }, 600);
+  }
+  componentWillUnmount() { clearInterval(this.iv); clearInterval(this.iv2); cancelAnimationFrame(this.raf); }
+  count(to) {
+    cancelAnimationFrame(this.raf);
+    const from = this.state.shown, t0 = performance.now(), dur = 700;
+    const tick = (t) => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3); this.setState({ shown: Math.round(from + (to - from) * e) }); if (k < 1) this.raf = requestAnimationFrame(tick); };
+    this.raf = requestAnimationFrame(tick);
+  }
+  setOn(on) {
+    const P = { a: 31, b: 121, c: 26, d: 137, e: 33, f: 2 };
+    const sum = Object.keys(P).reduce((acc, k) => acc + (on[k] ? P[k] : 0), 0);
+    this.setState({ on, bk: this.state.bk + 1 });
+    this.count(sum);
+  }
+  ask(q, fn) {
+    const s = this.state;
+    this.setState({ extra: s.extra.concat([{ user: true, text: q }]), thinking: true, lv: 0, draft: '' });
+    clearInterval(this.iv2);
+    this.iv2 = setInterval(() => {
+      const n = this.state.lv + 1;
+      if (n >= 3) { clearInterval(this.iv2); const r = fn ? fn() : 'Puedo responderlo con las fuentes recuperadas. Mientras tanto, prueba combinaciones en el constructor de mayorías de arriba.'; this.setState({ thinking: false, lv: 4, extra: this.state.extra.concat([{ bot: true, text: r }]) }); }
+      else this.setState({ lv: n });
+    }, 550);
+  }
+  seatGeometry() {
+    if (this.geo) return this.geo;
+    const cx = 160, cy = 164, R0 = 62, R1 = 152, ROWS = 9, TOTAL = 350;
+    const radii = []; for (let i = 0; i < ROWS; i++) radii.push(R0 + i * (R1 - R0) / (ROWS - 1));
+    const sumR = radii.reduce((a, b) => a + b, 0);
+    const counts = radii.map((r) => Math.round(TOTAL * r / sumR));
+    counts[ROWS - 1] += TOTAL - counts.reduce((a, b) => a + b, 0);
+    const pts = [];
+    radii.forEach((r, i) => { const n = counts[i]; for (let j = 0; j < n; j++) { const th = Math.PI - j * Math.PI / (n - 1); pts.push([th, r, cx + r * Math.cos(th), cy - r * Math.sin(th)]); } });
+    pts.sort((p, q) => (q[0] - p[0]) || (p[1] - q[1]));
+    this.geo = pts;
+    return pts;
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', BN = 'cubic-bezier(.34,1.56,.64,1)';
+    const PARTIES = [['a', 'Partido A', 31, '#7D6A8C', 'Sí'], ['b', 'Partido B', 121, '#A86A5C', 'Sí'], ['c', 'Partido C', 26, '#9A8B5E', 'Sí, con condiciones'], ['d', 'Partido D', 137, '#5C7088', 'No'], ['e', 'Partido E', 33, '#6F8A7A', 'Abstención'], ['f', 'Partido F', 2, '#8E8A82', 'No']];
+    const pts = this.seatGeometry(), dr = 3.4;
+    const seats = {};
+    let idx = 0, sum = 0;
+    PARTIES.forEach((p, pi) => {
+      const mine = pts.slice(idx, idx + p[2]); idx += p[2];
+      const on = !!s.on[p[0]]; if (on) sum += p[2];
+      seats[p[0]] = {
+        d: mine.map((q) => 'M' + (q[2] - dr).toFixed(1) + ' ' + q[3].toFixed(1) + 'a' + dr + ' ' + dr + ' 0 1 0 ' + (2 * dr) + ' 0a' + dr + ' ' + dr + ' 0 1 0 -' + (2 * dr) + ' 0').join(''),
+        style: 'fill:' + (on ? p[3] : '#E2DED5') + ';transition:fill .6s ' + E + ';animation:seatIn .8s ' + E + ' both;animation-delay:' + (pi * 90) + 'ms'
+      };
+    });
+    const ok = sum >= 176, missing = 176 - sum;
+    const CITE = { 1: 'BOE · Real Decreto del SMI 2026', 2: 'Congreso · composición e iniciativas en trámite', 3: 'Europa Press · posición de los grupos' };
+    const SEGS = ['El SMI se fija por real decreto, sin votación en el Congreso ', 1, '. Lo que sí llega a la Cámara es la proposición de ley que obliga a revisarlo cada año ', 2, '. Con los apoyos anunciados, A, B y C sumarían 178 escaños, dos por encima de la mayoría absoluta ', 3, '. C es decisivo: sin sus 26 diputados, el sí se quedaría en 152.'];
+    return {
+      ready: s.ready, thinking: s.thinking,
+      live: (s.ready ? ['Leyendo el contexto', 'Buscando en fuentes', 'Redactando con citas'] : ['Leyendo el contexto', 'Buscando la composición del Congreso', 'Contando apoyos declarados', 'Dibujando el hemiciclo']).map((t, i) => ({ t, s: 'display:flex;align-items:center;gap:10px;font-size:13px;color:' + (i <= s.lv ? '#17171A' : '#A9A59C'), d: 'width:8px;height:8px;border-radius:50%;' + (i < s.lv ? 'background:#0B6B50' : i === s.lv ? 'background:#2340B8;animation:pulse 1.2s infinite' : 'background:#E2DED5') })),
+      toggleSteps: () => this.setState({ steps: !s.steps }), showSteps: s.steps,
+      chev: 'display:inline-block;transition:transform .4s ' + E + ';transform:rotate(' + (s.steps ? 90 : 0) + 'deg)',
+      steps: ['Leyó la pregunta y el artículo', 'Consultó la composición del Congreso', 'Cruzó declaraciones de 6 portavoces', 'renderVisualization · parliament'],
+      segs: SEGS.map((g) => (typeof g === 'number' ? { isCite: true, isText: false, n: g, label: 'Fuente ' + g + ': ' + CITE[g], pick: () => this.setState({ cite: s.cite === g ? null : g }), style: "all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 4px;margin:0 1px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:11px;vertical-align:2px;transition:all .4s;" + (s.cite === g ? 'background:#2340B8;color:#FFFFFF' : 'background:#E8ECFA;color:#2340B8') } : { isCite: false, isText: true, t: g })),
+      sources: [1, 2, 3].map((n) => ({ n, name: CITE[n], style: 'display:flex;gap:8px;align-items:baseline;font-size:12px;padding:6px 8px;border-radius:8px;transition:background-color .5s;background:' + (s.cite === n ? '#E8ECFA' : 'transparent') })),
+      seats,
+      hemiLabel: 'Hemiciclo de 350 escaños: el bloque marcado suma ' + sum + (ok ? ', mayoría absoluta' : ', faltan ' + missing + ' para 176'),
+      shown: s.shown,
+      countStyle: "font-family:'Newsreader',serif;font-size:34px;line-height:1;letter-spacing:-0.02em;animation:bump" + (s.bk % 2) + ' .5s ' + BN + ';color:' + (ok ? '#0B6B50' : '#17171A'),
+      verdict: ok ? 'Mayoría absoluta' : 'Faltan ' + missing,
+      verdictStyle: 'font-size:11px;font-weight:600;margin-top:3px;transition:color .5s ' + E + ';color:' + (ok ? '#0B6B50' : '#8A5300'),
+      chips: PARTIES.map((p) => {
+        const on = !!s.on[p[0]];
+        return {
+          name: p[1], seats: p[2], aria: on ? 'true' : 'false',
+          toggle: () => this.setOn({ ...s.on, [p[0]]: !on }),
+          dot: 'flex:none;width:9px;height:9px;border-radius:50%;transition:background-color .5s ' + E + ';background:' + (on ? p[3] : 'transparent') + ';box-shadow:inset 0 0 0 1.5px ' + p[3],
+          style: 'display:flex;align-items:center;gap:6px;height:44px;padding:0 12px;border-radius:12px;font-size:13px;' + (on ? 'background:#F6F4EF;color:#17171A;border:1.5px solid ' + p[3] : 'background:transparent;color:#8D8981;border:1.5px dashed #D9D5CC')
+        };
+      }),
+      showData: s.data, dataAria: s.data ? 'true' : 'false', dataLabel: s.data ? 'Ocultar datos' : 'Ver datos',
+      toggleData: () => this.setState({ data: !s.data, dk: s.dk + 1 }),
+      dataAnim: 'margin-top:12px;animation:open' + (s.dk % 2) + ' .5s ' + E + ' both',
+      rows: PARTIES.map((p) => ({ name: p[1], seats: p[2], pos: p[4], dot: 'width:8px;height:8px;border-radius:50%;background:' + p[3] })),
+      added: s.added, addLabel: s.added ? 'En la síntesis' : 'Añadir a la síntesis',
+      addSynth: () => this.setState({ added: !s.added }),
+      addStyle: 'flex:1;height:44px;border-radius:12px;font-size:13px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:6px;' + (s.added ? 'background:#E3F2EC;color:#0B6B50;border:1px solid #0B6B50' : 'background:#17171A;color:#F6F4EF;border:1px solid #17171A'),
+      follow: [
+        { q: '¿Y si C se abstiene?', ask: () => this.ask('¿Y si C se abstiene?', () => { this.setOn({ ...this.state.on, c: false }); return 'Sin C, el bloque del sí baja a 152 escaños y no alcanza la mayoría absoluta. Aun así, si D y F votan no (139), el sí ganaría por mayoría simple. Lo he marcado arriba.'; }) },
+        { q: '¿Qué apoyos tuvo en 2025?', ask: () => this.ask('¿Qué apoyos tuvo en 2025?') }
+      ],
+      extra: s.extra.map((m) => ({ user: !!m.user, bot: !!m.bot, text: m.text })),
+      modes: [['ask', 'Preguntar'], ['verify', 'Verificar'], ['explain', 'Explicar']].map((m) => ({ label: m[1], pick: () => this.setState({ mode: m[0] }), style: 'height:32px;padding:0 12px;border-radius:999px;font-size:12px;' + (s.mode === m[0] ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:transparent;color:#5E5B55;border:1px solid #D9D5CC') })),
+      draft: s.draft, onDraft: (e) => this.setState({ draft: e.target.value }),
+      send: (e) => { e.preventDefault(); const q = s.draft.trim(); if (q) this.ask(q); }
+    };
+  }
+}
+</script>
+</body>
+</html>

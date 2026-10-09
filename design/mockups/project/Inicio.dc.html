@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Nueva pestaña</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#17171A;text-decoration:none;transition:color .45s cubic-bezier(.22,1,.36,1),background-color .45s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.34,1.56,.64,1)}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .55s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.96)}
+input{transition:border-color .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1),border-radius .4s cubic-bezier(.22,1,.36,1)}
+input:focus{outline:none}
+.row:hover{background:#EFECE5}
+.row:hover .arr{transform:translateX(4px);opacity:1}
+.arr{transition:transform .5s cubic-bezier(.34,1.56,.64,1),opacity .4s;opacity:.35}
+.chip:hover{transform:translateY(-2px)}
+.rise{animation:rise 1s cubic-bezier(.22,1,.36,1) both}
+.drop{animation:dropIn .45s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height: 900px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 20px; font-size: 13px; color: #5E5B55">
+<span style="font-family: 'Newsreader', serif; font-size: 18px; font-weight: 500; color: #17171A; letter-spacing: -0.01em">newpaper</span>
+<span style="display: flex; align-items: center; gap: 18px">
+<a href="Main.dc.html" style="display: flex; align-items: center; gap: 6px; color: #4A2FB8"><span style="width: 6px; height: 6px; border-radius: 50%; background: #4A2FB8"></span>Tor · España</a>
+<a href="Ajustes.dc.html" style="color: #5E5B55">Ajustes</a>
+</span>
+</div>
+<main style="flex: 1; width: 100%; max-width: 640px; margin: 0 auto; padding: 110px 24px 64px; box-sizing: border-box; display: flex; flex-direction: column; gap: 40px">
+<div class="rise">
+<div style="font-family: 'Newsreader', serif; font-size: 52px; line-height: 1.05; letter-spacing: -0.025em">Buenos días.</div>
+<div style="font-family: 'Newsreader', serif; font-style: italic; font-size: 20px; color: #5E5B55; margin-top: 8px">Martes, 6 de octubre · 4 hechos importantes, 2 con discrepancias</div>
+</div>
+<div class="rise" style="position: relative; animation-delay: 100ms">
+<label for="q" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar un tema o pegar una URL</label>
+<input id="q" value="{{q}}" onChange="{{onQ}}" autocomplete="off" placeholder="Busca un tema o pega una URL" style="{{inputStyle}}">
+<span style="position: absolute; right: 18px; top: 20px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #A9A59C; border: 1px solid #E2DED5; border-radius: 6px; padding: 2px 6px">Ctrl L</span>
+<sc-if value="{{hasQ}}" hint-placeholder-val="{{ false }}">
+<div class="drop" style="position: absolute; left: 0; right: 0; top: 62px; z-index: 5; background: #FFFFFF; border: 1px solid #17171A; border-top: 0; border-radius: 0 0 18px 18px; padding: 6px; box-shadow: 0 20px 40px rgba(23,23,26,.10)">
+<sc-for list="{{results}}" as="r" hint-placeholder-count="3">
+<a href="{{r.href}}" class="row" style="{{r.style}}">
+<span style="{{r.icoStyle}}">{{r.ico}}</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.3">{{r.title}}</span><span style="font-size: 12px; color: #5E5B55">{{r.meta}}</span></span>
+<span class="arr" style="font-size: 16px">→</span>
+</a>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<section class="rise" style="animation-delay: 200ms">
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px"><span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">TU BRIEFING</span><span style="font-size: 12px; color: #8D8981">neutral · 34 medios · hace 4 min</span></div>
+<sc-for list="{{brief}}" as="b" hint-placeholder-count="4">
+<a href="{{b.href}}" class="row" style="{{b.style}}">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #A9A59C; width: 18px; flex: none; padding-top: 5px">{{b.n}}</span>
+<span style="flex: 1; min-width: 0">
+<span style="display: block; font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.4">{{b.text}}</span>
+<span style="display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 12px; color: #5E5B55"><span style="display: flex; height: 4px; width: 48px; border-radius: 2px; overflow: hidden; gap: 1px"><span style="{{b.l}}"></span><span style="{{b.c}}"></span><span style="{{b.r}}"></span></span>{{b.count}}<span style="{{b.flagStyle}}">{{b.flag}}</span></span>
+</span>
+<span class="arr" style="font-size: 16px; padding-top: 4px">→</span>
+</a>
+</sc-for>
+</section>
+<section class="rise" style="animation-delay: 300ms; display: flex; flex-direction: column; gap: 22px">
+<div>
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55; margin-bottom: 10px">SIGUES</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<sc-for list="{{topics}}" as="t" hint-placeholder-count="5">
+<button onClick="{{t.toggle}}" class="chip" style="{{t.style}}">{{t.name}}<sc-if value="{{t.hasNew}}" hint-placeholder-val="{{ false }}"><span style="{{t.badge}}">{{t.n}}</span></sc-if></button>
+</sc-for>
+</div>
+</div>
+<a href="Main.dc.html" class="row" style="display: flex; align-items: center; gap: 14px; padding: 14px 12px; margin: 0 -12px; border-radius: 14px">
+<span style="flex: none; width: 40px; height: 40px; border-radius: 10px; background: #E7E3DA; display: flex; align-items: center; justify-content: center; font-family: 'Newsreader', serif; font-size: 18px; color: #8A5300">38</span>
+<span style="flex: 1; min-width: 0"><span style="display: block; font-size: 12px; color: #5E5B55">Continúa leyendo · El Diario Rojo</span><span style="display: block; font-family: 'Newsreader', serif; font-size: 17px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">El salario mínimo bate récords mientras la patronal…</span><span style="display: block; height: 3px; background: #E7E3DA; border-radius: 2px; margin-top: 8px; overflow: hidden"><span style="display: block; height: 100%; width: 62%; background: #17171A; border-radius: 2px"></span></span></span>
+<span class="arr" style="font-size: 16px">→</span>
+</a>
+</section>
+</main>
+<div style="padding: 20px; text-align: center; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #A9A59C">RSS al día · 1.832 bloqueos hoy · Ctrl+Shift+A analizar</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { q: '', follow: { Economía: true, Vivienda: true, Europa: true, Clima: false, Tecnología: false } }; }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const seg = (n, c) => 'flex:' + n + ';background:' + c;
+    const ev = [
+      ['El Gobierno aprueba una subida del salario mínimo; la patronal la rechaza', [5, 4, 5], '14 medios', '2 discrepancias', true, 'Sintesis.dc.html', 'salario mínimo smi patronal ceoe sueldo'],
+      ['La UE acuerda el marco del nuevo presupuesto de defensa', [2, 5, 2], '9 medios', 'consenso', false, 'Sintesis.dc.html', 'ue europa defensa presupuesto'],
+      ['El Congreso tramita la reforma de la ley de vivienda', [6, 2, 3], '11 medios', 'cobertura desigual', true, 'Sintesis.dc.html', 'vivienda alquiler congreso ley'],
+      ['Un estudio vincula la ola de calor de agosto con 1.200 muertes', [3, 3, 1], '7 medios', '1 dato discutido', true, 'Sintesis.dc.html', 'calor clima muertes verano']
+    ];
+    const q = s.q.trim().toLowerCase();
+    let results = [];
+    if (q) {
+      if (q.indexOf('http') === 0 || q.indexOf('www') === 0 || q.indexOf('.es') > 0 || q.indexOf('.com') > 0) results.push({ title: 'Abrir y analizar esta URL', meta: s.q, ico: '↗', href: 'Main.dc.html', tone: 'url' });
+      ev.forEach((e) => { if (q.split(/\s+/).some((w) => w.length > 2 && (e[0].toLowerCase().indexOf(w) >= 0 || e[6].indexOf(w) >= 0))) results.push({ title: e[0], meta: e[2] + ' · ' + e[3], ico: '◆', href: e[5], tone: 'ev' }); });
+      if (!results.length) results.push({ title: 'Ningún medio ha cubierto «' + s.q + '»', meta: 'Avisarme cuando aparezca, o investigar con IA (con aviso)', ico: '!', href: 'SinCobertura.dc.html', tone: 'none' });
+    }
+    const icoTone = { url: 'background:#E8ECFA;color:#2340B8', ev: 'background:#EFECE5;color:#17171A', none: 'background:#FBF0DC;color:#8A5300' };
+    const T = [['Economía', 3], ['Vivienda', 1], ['Europa', 2], ['Clima', 1], ['Tecnología', 0]];
+    return {
+      q: s.q,
+      onQ: (e) => this.setState({ q: e.target.value }),
+      hasQ: !!q,
+      inputStyle: 'width:100%;box-sizing:border-box;height:62px;padding:0 70px 0 22px;background:#FFFFFF;font-size:18px;color:#17171A;' + (q ? 'border:1px solid #17171A;border-radius:18px 18px 0 0;box-shadow:0 20px 40px rgba(23,23,26,.10)' : 'border:1px solid #D9D5CC;border-radius:18px;box-shadow:0 0 0 0 transparent'),
+      results: results.map((r, i) => ({ ...r, icoStyle: 'flex:none;width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;' + icoTone[r.tone], style: 'display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;animation:dropIn .45s ' + E + ' both;animation-delay:' + (i * 50) + 'ms' })),
+      brief: ev.map((e, i) => ({
+        n: '0' + (i + 1), text: e[0], href: e[5], count: e[2] + ' ·', flag: e[3],
+        flagStyle: 'color:' + (e[4] ? '#8A5300' : '#0B6B50'),
+        l: seg(e[1][0], '#C2412F'), c: seg(e[1][1], '#B9B4A9'), r: seg(e[1][2], '#2F5BD3'),
+        style: 'display:flex;gap:14px;align-items:flex-start;padding:14px 12px;margin:0 -12px;border-radius:14px;border-top:1px solid #E2DED5;animation:rise .9s ' + E + ' both;animation-delay:' + (300 + i * 90) + 'ms'
+      })),
+      topics: T.map((t) => {
+        const on = !!s.follow[t[0]];
+        return {
+          name: t[0], n: t[1], hasNew: on && t[1] > 0,
+          toggle: () => this.setState({ follow: { ...s.follow, [t[0]]: !on } }),
+          style: 'display:flex;align-items:center;gap:8px;height:36px;padding:0 14px;border-radius:999px;font-size:13px;' + (on ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:transparent;color:#5E5B55;border:1px dashed #CFCAC0'),
+          badge: 'min-width:18px;height:18px;padding:0 5px;box-sizing:border-box;border-radius:9px;background:#F6F4EF;color:#17171A;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;animation:dropIn .5s cubic-bezier(.34,1.56,.64,1) both'
+        };
+      })
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · edición sin conexión</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.98)}
+.scr{scrollbar-width:none}.scr::-webkit-scrollbar{display:none}
+.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes tab0{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes tab1{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes rd0{from{transform:translateX(100%)}to{transform:none}}
+@keyframes rd1{from{transform:translateX(100%)}to{transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 54px 20px 0">
+<span style="font-family: 'Newsreader', serif; font-size: 20px; font-weight: 500; letter-spacing: -0.01em">newpaper</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #8A5300; background: #FBF0DC; padding: 7px 11px; border-radius: 999px; font-weight: 500"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9a13 13 0 0114.5-2.6M6 12.5a8.5 8.5 0 019.4-1.8M9 16a4 4 0 014.6-.7M12 19.5v.01M4 4l16 16"></path></svg>Sin conexión</span>
+</div>
+
+<div class="scr" style="flex: 1; overflow-y: auto; padding: 18px 20px 20px">
+<div class="rise">
+<div style="font-family: 'Newsreader', serif; font-size: 32px; line-height: 1.08; letter-spacing: -0.02em">Edición del jueves 8 oct · 7:00</div>
+<div style="font-family: 'Newsreader', serif; font-style: italic; font-size: 15px; color: #5E5B55; margin-top: 5px">Economía, Vivienda y Europa · descargada con Wi-Fi · caduca el 15 oct</div>
+</div>
+
+<div role="tablist" aria-label="Contenido sin conexión" class="rise" style="position: relative; display: flex; margin-top: 16px; background: #E7E3DA; border-radius: 14px; padding: 3px; animation-delay: 80ms">
+<span style="{{segHi}}"></span>
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="2"><button onClick="{{t.pick}}" role="tab" aria-selected="{{t.aria}}" style="{{t.style}}">{{t.label}}</button></sc-for>
+</div>
+
+<div class="rise" style="margin-top: 12px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 14px; padding: 12px 14px; animation-delay: 140ms">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><span style="font-size: 12px; font-weight: 600; color: #5E5B55">Espacio sin conexión</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px"><span style="color: #17171A">214</span><span style="color: #8D8981"> de 500 MB</span></span></div>
+<div style="display: flex; gap: 2px; height: 8px; border-radius: 4px; overflow: hidden; background: #EFECE6; margin-top: 8px">
+<span style="width: 33.6%; background: #17171A; transform-origin: left center; animation: grow 1.1s cubic-bezier(.22,1,.36,1) both; animation-delay: 300ms"></span>
+<span style="width: 9.2%; background: #7E93D8; transform-origin: left center; animation: grow 1.1s cubic-bezier(.22,1,.36,1) both; animation-delay: 500ms"></span>
+</div>
+<div style="display: flex; gap: 12px; margin-top: 8px; font-size: 11px; color: #5E5B55"><span style="display: flex; align-items: center; gap: 5px"><span style="width: 7px; height: 7px; border-radius: 2px; background: #17171A"></span>Edición 168 MB</span><span style="display: flex; align-items: center; gap: 5px"><span style="width: 7px; height: 7px; border-radius: 2px; background: #7E93D8"></span>Guardados 46 MB</span><span style="margin-left: auto">Limpieza a los 7 días</span></div>
+</div>
+
+<div style="{{tabAnim}}">
+<sc-if value="{{isEd}}" hint-placeholder-val="{{ true }}"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55; margin: 20px 0 2px">PORTADA · 6 PIEZAS</div></sc-if>
+<sc-if value="{{isSaved}}" hint-placeholder-val="{{ false }}"><div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55; margin: 20px 0 2px">LEER MÁS TARDE · 4 ARTÍCULOS</div></sc-if>
+<sc-for list="{{pieces}}" as="p" hint-placeholder-count="5">
+<button onClick="{{p.open}}" style="{{p.style}}">
+<span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5E5B55"><span style="font-weight: 500; color: #3D3B37">{{p.outlet}}</span><span>{{p.time}}</span><span style="{{p.badge}}">{{p.badgeText}}</span></span>
+<span style="display: block; font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.28; margin-top: 6px">{{p.title}}</span>
+<span style="display: flex; align-items: center; gap: 8px; margin-top: 8px; font-size: 12px; color: #5E5B55"><span style="display: flex; height: 4px; width: 46px; border-radius: 2px; overflow: hidden; gap: 1px"><span style="{{p.l}}"></span><span style="{{p.c}}"></span><span style="{{p.r}}"></span></span>{{p.count}} · <span style="{{p.flagStyle}}">{{p.flag}}</span><span style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">{{p.size}}</span></span>
+</button>
+</sc-for>
+<div style="font-size: 12px; color: #8D8981; line-height: 1.5; margin-top: 14px">La búsqueda funciona en local. Lo que necesite red se pondrá en cola hasta que vuelva la conexión.</div>
+</div>
+</div>
+
+<nav style="display: flex; justify-content: space-around; padding: 8px 8px 28px; border-top: 1px solid #E2DED5; background: #F6F4EF">
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="4"><a href="{{n.href}}" aria-current="{{n.cur}}" style="{{n.style}}"><span style="{{n.pill}}">{{n.icon}}</span>{{n.label}}</a></sc-for>
+</nav>
+
+<sc-if value="{{reading}}" hint-placeholder-val="{{ false }}">
+<div style="{{readerStyle}}">
+<div style="display: flex; align-items: center; gap: 8px; padding: 50px 12px 10px; border-bottom: 1px solid #E2DED5">
+<button onClick="{{close}}" aria-label="Volver a la edición" style="width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: #17171A; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<div style="flex: 1; min-width: 0"><div style="font-size: 13px; font-weight: 500">{{rd.outlet}}</div><div style="font-size: 11px; color: #5E5B55; font-family: 'IBM Plex Mono', monospace">modo lector · guardado en el móvil</div></div>
+<span style="display: flex; align-items: center; gap: 5px; height: 32px; padding: 0 10px; border-radius: 999px; background: #FBF0DC; color: #8A5300; font-size: 12px; font-weight: 500; margin-right: 4px"><span style="width: 6px; height: 6px; border-radius: 50%; background: #8A5300"></span>Sin red</span>
+</div>
+<div class="scr" style="flex: 1; overflow-y: auto; padding: 16px 20px 24px">
+<div style="display: inline-flex; align-items: center; gap: 8px; padding: 7px 11px; border-radius: 999px; background: #E8ECFA; color: #2340B8; font-size: 12px; font-weight: 500"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"></ellipse><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"></path></svg>{{rd.cacheNote}}</div>
+<h1 class="rise" style="margin: 14px 0 0; font-family: 'Newsreader', serif; font-weight: 400; font-size: 28px; line-height: 1.15; letter-spacing: -0.015em">{{rd.title}}</h1>
+<div style="font-size: 12px; color: #5E5B55; margin-top: 8px">{{rd.byline}}</div>
+<div class="rise" style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.62; margin-top: 14px; animation-delay: 120ms"><sc-for list="{{rd.body}}" as="para" hint-placeholder-count="2"><p style="margin: 0 0 14px">{{para}}</p></sc-for></div>
+
+<div class="rise" style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 16px; margin-top: 6px; animation-delay: 220ms">
+<div style="display: flex; align-items: center; gap: 14px">
+<span style="{{rd.ring}}">{{rd.score}}</span>
+<div style="flex: 1; min-width: 0"><div style="font-family: 'Newsreader', serif; font-size: 18px; line-height: 1.2">{{rd.verdict}}</div><div style="font-size: 12px; color: #5E5B55; margin-top: 3px">Neutralidad · nota provisional del análisis rápido</div></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 14px">
+<div style="background: #F6F4EF; border-radius: 12px; padding: 10px"><div style="font-family: 'Newsreader', serif; font-size: 22px; line-height: 1">{{rd.claims}}</div><div style="font-size: 11px; color: #5E5B55; margin-top: 4px">afirmaciones</div></div>
+<div style="background: #F6F4EF; border-radius: 12px; padding: 10px"><div style="font-family: 'Newsreader', serif; font-size: 22px; line-height: 1">{{rd.loaded}}</div><div style="font-size: 11px; color: #5E5B55; margin-top: 4px">frases cargadas</div></div>
+<div style="background: #F6F4EF; border-radius: 12px; padding: 10px"><div style="font-family: 'Newsreader', serif; font-size: 22px; line-height: 1">{{rd.cov}}</div><div style="font-size: 11px; color: #5E5B55; margin-top: 4px">coberturas</div></div>
+</div>
+<button onClick="{{toggleQueue}}" style="{{queueBtn}}"><sc-if value="{{queued}}" hint-placeholder-val="{{ false }}"><span style="width: 8px; height: 8px; border-radius: 50%; background: #2340B8; animation: pulse 1.2s infinite"></span></sc-if>{{queueLabel}}</button>
+<a href="Movil-Ajustes.dc.html" style="display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 10px 12px; border-radius: 12px; background: #F6F4EF; font-size: 12px; color: #3D3B37; line-height: 1.45; min-height: 44px; box-sizing: border-box"><span style="flex: none; font-size: 15px">✳</span><span style="flex: 1">Sin red, el agente necesita un modelo en este móvil. Configúralo en Ajustes → IA.</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#8D8981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"></path></svg></a>
+</div>
+</div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { tab: 'ed', tk: 0, open: null, ok: 0, queue: {} }; }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const seg = (n, c) => 'flex:' + n + ';background:' + c;
+    const ED = [
+      { id: 'smi', outlet: 'Síntesis newpaper', time: '6:58', title: 'El salario mínimo bate récords mientras la patronal pide frenar la subida', mix: [2, 2, 2], count: '6 coberturas', flag: '2 discrepancias', warn: true, size: '3,8 MB', score: 41, verdict: 'Militante, con un dato inflado', claims: 7, loaded: 4, cov: 6,
+        byline: 'Redacción neutral a partir de 6 coberturas · 8 oct, 6:58',
+        body: ['El Consejo de Ministros aprobó el martes una nueva subida del salario mínimo interprofesional, que alcanza su máximo histórico en términos nominales. El Gobierno calcula que beneficiará a unos 2,5 millones de trabajadores.', 'Las organizaciones empresariales rechazan el aumento y piden vincular las próximas subidas a la productividad. Los sindicatos lo consideran insuficiente frente a la inflación acumulada desde 2021.'] },
+      { id: 'ue', outlet: 'EFE', time: '6:41', title: 'La UE acuerda el marco del nuevo presupuesto de defensa', mix: [2, 5, 2], count: '9 coberturas', flag: 'consenso', warn: false, size: '2,6 MB', score: 78, verdict: 'Informativo y equilibrado', claims: 5, loaded: 1, cov: 9,
+        byline: 'Bruselas · 8 oct, 6:41',
+        body: ['Los Veintisiete cerraron anoche el marco del fondo común de defensa para los próximos siete años, que se financiará con una mezcla de aportaciones nacionales y deuda conjunta.', 'El acuerdo deja para la primavera el reparto por países, el punto que más dividió la negociación.'] },
+      { id: 'viv', outlet: 'Europa Press', time: '6:30', title: 'El Congreso tramita la reforma de la ley de vivienda', mix: [6, 2, 3], count: '11 coberturas', flag: 'cobertura desigual', warn: true, size: '2,9 MB', score: 63, verdict: 'Correcto, con voces desiguales', claims: 6, loaded: 2, cov: 11,
+        byline: 'Madrid · 8 oct, 6:30',
+        body: ['La Mesa del Congreso calificó ayer la proposición de reforma de la ley de vivienda, que amplía las zonas tensionadas y limita los alquileres de temporada.', 'Los grupos tienen quince días para presentar enmiendas a la totalidad.'] },
+      { id: 'calor', outlet: 'RTVE', time: '6:12', title: 'Un estudio vincula la ola de calor de agosto con 1.200 muertes', mix: [3, 3, 1], count: '7 coberturas', flag: '1 dato discutido', warn: true, size: '4,1 MB', score: 70, verdict: 'Informativo, con una cifra sin contexto', claims: 4, loaded: 1, cov: 7,
+        byline: 'Sociedad · 8 oct, 6:12',
+        body: ['Un análisis del Instituto de Salud Carlos III atribuye unas 1.200 muertes al exceso de temperatura durante la ola de calor de agosto.', 'La cifra procede del sistema de vigilancia de mortalidad diaria y es una estimación, no un recuento de casos.'] },
+      { id: 'bce', outlet: 'El Confidencial', time: '5:55', title: 'El BCE mantiene los tipos y avisa del frenazo en la eurozona', mix: [2, 3, 3], count: '8 coberturas', flag: 'consenso', warn: false, size: '2,2 MB', score: 74, verdict: 'Informativo y equilibrado', claims: 5, loaded: 1, cov: 8,
+        byline: 'Mercados · 8 oct, 5:55',
+        body: ['El Banco Central Europeo dejó sin cambios los tipos de interés y rebajó su previsión de crecimiento para la eurozona.', 'La presidenta del BCE no descartó nuevos recortes si la inflación sigue moderándose.'] },
+      { id: 'alq', outlet: 'elDiario.es', time: '5:40', title: 'Los alquileres de temporada suben un 18 % en las grandes ciudades', mix: [4, 1, 0], count: '5 coberturas', flag: 'análisis en cola', warn: true, size: '1,9 MB', pending: true, score: 52, verdict: 'Pendiente del análisis completo', claims: 3, loaded: 3, cov: 5,
+        byline: 'Economía · 8 oct, 5:40',
+        body: ['Los contratos de alquiler de temporada se encarecieron un 18 % en el último año en Madrid, Barcelona y Valencia, según datos de portales inmobiliarios.', 'El análisis completo se hará cuando vuelva la conexión; de momento solo hay una lectura rápida.'] }
+    ];
+    const SV = [
+      { id: 'sv1', outlet: 'El País', time: 'guardado el 6 oct', title: 'Qué cambia con la nueva ley de vivienda, punto por punto', mix: [3, 3, 2], count: '4 coberturas', flag: 'consenso', warn: false, size: '1,4 MB', score: 81, verdict: 'Explicativo y equilibrado', claims: 9, loaded: 0, cov: 4,
+        byline: 'Guardado el 6 oct', body: ['Una guía de los cambios que introduce la reforma: zonas tensionadas, contratos de temporada y bonificaciones fiscales para los propietarios.', 'El análisis se guardó junto al artículo.'] },
+      { id: 'sv2', outlet: 'El Mundo', time: 'guardado el 5 oct', title: 'Las empresas del campo alertan del coste del SMI en la vendimia', mix: [1, 2, 4], count: '6 coberturas', flag: '1 dato discutido', warn: true, size: '1,1 MB', score: 48, verdict: 'Sesgado en la selección de voces', claims: 5, loaded: 3, cov: 6,
+        byline: 'Guardado el 5 oct', body: ['Las cooperativas agrarias calculan que la subida del salario mínimo encarecerá la campaña de vendimia y reclaman ayudas específicas.', 'El texto solo recoge la versión de las organizaciones agrarias.'] },
+      { id: 'sv3', outlet: 'Maldita', time: 'guardado el 3 oct', title: 'No, el SMI español no es el más alto de Europa', mix: [2, 3, 2], count: '3 coberturas', flag: 'verificación', warn: false, size: '0,8 MB', score: 86, verdict: 'Verificación bien documentada', claims: 4, loaded: 0, cov: 3,
+        byline: 'Guardado el 3 oct', body: ['Comparado con Eurostat, el salario mínimo español queda por detrás del de Luxemburgo, Irlanda, Países Bajos, Alemania, Bélgica y Francia.', 'En paridad de poder adquisitivo la distancia se reduce, pero tampoco encabeza la lista.'] },
+      { id: 'sv4', outlet: 'AIReF', time: 'guardado el 1 oct', title: 'Evaluación del efecto del salario mínimo en el empleo', mix: [0, 1, 0], count: 'fuente primaria', flag: 'PDF', warn: false, size: '6,2 MB', score: 92, verdict: 'Documento técnico', claims: 12, loaded: 0, cov: 1,
+        byline: 'Guardado el 1 oct', body: ['La AIReF compara la evolución del empleo en los grupos más expuestos a la subida con otros similares.', 'Encuentra menos contratación de la esperada en jóvenes y en el sector agrario, sin efecto apreciable en el total.'] }
+    ];
+    const list = s.tab === 'ed' ? ED : SV;
+    const all = ED.concat(SV);
+    const cur = all.find((x) => x.id === s.open);
+    const pieces = list.map((x, i) => ({
+      outlet: x.outlet, time: x.time, title: x.title, count: x.count, flag: x.flag, size: x.size,
+      badgeText: x.pending ? 'rápido' : 'analizado',
+      badge: 'margin-left:auto;font-size:10px;font-weight:500;padding:2px 7px;border-radius:999px;' + (x.pending ? 'background:#F1EEE7;color:#5E5B55' : 'background:#E3F2EC;color:#0B6B50'),
+      flagStyle: 'color:' + (x.warn ? '#8A5300' : '#0B6B50'),
+      l: seg(x.mix[0], '#C2412F'), c: seg(x.mix[1], '#B9B4A9'), r: seg(x.mix[2], '#2F5BD3'),
+      open: () => this.setState({ open: x.id, ok: s.ok + 1 }),
+      style: 'display:block;width:100%;text-align:left;padding:14px 0;border:0;border-top:1px solid #E2DED5;background:transparent;color:#17171A;animation:rise .7s ' + E + ' both;animation-delay:' + (i * 60) + 'ms'
+    }));
+    const queued = !!(cur && s.queue[cur.id]);
+    const rc = cur ? (cur.score < 50 ? '#8A5300' : cur.score < 70 ? '#5E5B55' : '#0B6B50') : '#5E5B55';
+    const ringCol = "flex:none;width:58px;height:58px;border-radius:50%;border:5px solid " + rc + ";box-sizing:border-box;display:flex;align-items:center;justify-content:center;font-family:'Newsreader',serif;font-size:22px;color:" + rc;
+    const NAV = [['Hoy', '◉', 'Movil-Inicio.dc.html', true], ['Leyendo', '¶', 'Movil-Analisis.dc.html'], ['Agente', '✳', 'Movil-Agente.dc.html'], ['Ajustes', '⚙', 'Movil-Ajustes.dc.html']];
+    const TD = [['ed', 'Edición · 6'], ['saved', 'Guardados · 4']];
+    const ti = TD.findIndex((t) => t[0] === s.tab);
+    return {
+      segHi: 'position:absolute;top:3px;left:3px;width:calc((100% - 6px) / 2);height:44px;border-radius:11px;background:#17171A;box-shadow:0 4px 12px rgba(23,23,26,.18);transition:transform .6s cubic-bezier(.34,1.3,.64,1);transform:translateX(' + (ti * 100) + '%)',
+      tabs: TD.map((t) => ({ label: t[1], aria: s.tab === t[0] ? 'true' : 'false', pick: () => { if (s.tab !== t[0]) this.setState({ tab: t[0], tk: s.tk + 1 }); }, style: 'position:relative;z-index:1;flex:1;height:44px;border:0;border-radius:11px;background:transparent;font-size:14px;transition:color .45s ' + E + ';' + (s.tab === t[0] ? 'color:#F6F4EF;font-weight:500' : 'color:#3D3B37') })),
+      tabAnim: 'animation:tab' + (s.tk % 2) + ' .55s ' + E + ' both',
+      isEd: s.tab === 'ed', isSaved: s.tab === 'saved',
+      pieces,
+      reading: !!cur,
+      readerStyle: 'position:absolute;left:0;top:0;right:0;bottom:0;z-index:10;background:#F6F4EF;display:flex;flex-direction:column;box-shadow:-12px 0 30px rgba(23,23,26,.12);animation:rd' + (s.ok % 2) + ' .6s ' + E + ' both',
+      close: () => this.setState({ open: null }),
+      rd: cur ? { outlet: cur.outlet, title: cur.title, byline: cur.byline, body: cur.body, score: cur.score, verdict: cur.verdict, claims: cur.claims, loaded: cur.loaded, cov: cur.cov, ring: ringCol,
+        cacheNote: cur.pending ? 'Análisis en caché · solo lectura rápida' : 'Análisis en caché · ' + (s.tab === 'ed' ? 'hecho a las 7:02' : 'guardado con el artículo') } : { outlet: '', title: '', byline: '', body: [], score: 0, verdict: '', claims: 0, loaded: 0, cov: 0, ring: ringCol, cacheNote: '' },
+      queued,
+      queueLabel: queued ? 'En cola · se verificará al volver la red' : 'Verificar datos cuando vuelva la red',
+      toggleQueue: () => { if (cur) this.setState({ queue: { ...s.queue, [cur.id]: !queued } }); },
+      queueBtn: 'width:100%;height:46px;margin-top:14px;border-radius:12px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;font-weight:500;' + (queued ? 'background:#E8ECFA;color:#2340B8;border:1px solid #C3CCEE' : 'background:#17171A;color:#F6F4EF;border:1px solid #17171A'),
+      nav: NAV.map((n) => ({ label: n[0], icon: n[1], href: n[2], cur: n[3] ? 'page' : 'false', style: 'display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;min-width:70px;min-height:44px;padding-top:4px;color:' + (n[3] ? '#17171A' : '#8D8981'), pill: 'display:flex;align-items:center;justify-content:center;width:52px;height:30px;border-radius:15px;font-size:16px;' + (n[3] ? 'background:#E7E3DA' : '') }))
+    };
+  }
+}
+</script>
+</body>
+</html>

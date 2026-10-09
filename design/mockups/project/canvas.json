@@ -1,0 +1,417 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "Ajustes.dc.html": {
+      "expand": "fill",
+      "h": 2200,
+      "is_interactive": true,
+      "title": "5 · Ajustes",
+      "w": 1440,
+      "x": 1520,
+      "y": 2220
+    },
+    "Crash.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "S3 · La pestaña se ha colgado",
+      "w": 1440,
+      "x": 3040,
+      "y": 4840
+    },
+    "Error404.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "S1 · 404",
+      "w": 1440,
+      "x": 0,
+      "y": 4840
+    },
+    "Errores.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "S2 · Errores de conexión",
+      "w": 1440,
+      "x": 1520,
+      "y": 4840
+    },
+    "Hemeroteca.dc.html": {
+      "expand": "fill",
+      "h": 1300,
+      "is_interactive": true,
+      "title": "3b · Hemeroteca: versiones y ediciones",
+      "w": 1440,
+      "x": 4560,
+      "y": 0
+    },
+    "Inicio.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "is_interactive": true,
+      "title": "4 · Nueva pestaña",
+      "w": 1440,
+      "x": 0,
+      "y": 2220
+    },
+    "Instalador.dc.html": {
+      "h": 720,
+      "is_interactive": true,
+      "title": "P1 · Instalador",
+      "w": 1100,
+      "x": 0,
+      "y": 6160
+    },
+    "Main.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "1 · Navegador, análisis y agente",
+      "w": 1440,
+      "x": 0,
+      "y": 0
+    },
+    "Movil-Agente.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M4 · Agente",
+      "w": 390,
+      "x": 1880,
+      "y": 7480
+    },
+    "Movil-Ajustes.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M8 · Ajustes",
+      "w": 390,
+      "x": 940,
+      "y": 8444
+    },
+    "Movil-Analisis.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M2 · Lectura y análisis",
+      "w": 390,
+      "x": 940,
+      "y": 7480
+    },
+    "Movil-Bienvenida.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M0 · Bienvenida",
+      "w": 390,
+      "x": 0,
+      "y": 7480
+    },
+    "Movil-Hemeroteca.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M6 · Hemeroteca",
+      "w": 390,
+      "x": 0,
+      "y": 8444
+    },
+    "Movil-Inicio.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M1 · Hoy",
+      "w": 390,
+      "x": 470,
+      "y": 7480
+    },
+    "Movil-SinCobertura.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M7 · Sin cobertura",
+      "w": 390,
+      "x": 470,
+      "y": 8444
+    },
+    "Movil-Sintesis.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M3 · Síntesis neutral",
+      "w": 390,
+      "x": 1410,
+      "y": 7480
+    },
+    "Movil-Sistema.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M9 · 404, errores y cuelgues",
+      "w": 390,
+      "x": 1410,
+      "y": 8444
+    },
+    "Movil-Tor.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M5 · Salida de Tor",
+      "w": 390,
+      "x": 2350,
+      "y": 7480
+    },
+    "Movil-TresEnRaya.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 40,
+      "title": "M10 · Tres en raya",
+      "w": 390,
+      "x": 1880,
+      "y": 8444
+    },
+    "SinCobertura.dc.html": {
+      "expand": "fill",
+      "h": 1000,
+      "is_interactive": true,
+      "title": "3 · Hecho sin cobertura: cubrir con IA",
+      "w": 1440,
+      "x": 3040,
+      "y": 0
+    },
+    "Sintesis.dc.html": {
+      "expand": "fill",
+      "h": 2100,
+      "is_interactive": true,
+      "title": "2 · Síntesis neutral con gráficos",
+      "w": 1440,
+      "x": 1520,
+      "y": 0
+    },
+    "Tour.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "P2 · Recorrido de bienvenida",
+      "w": 1440,
+      "x": 1180,
+      "y": 6160
+    },
+    "TresEnRaya.dc.html": {
+      "expand": "fill",
+      "h": 900,
+      "is_interactive": true,
+      "title": "S4 · Sin conexión: tres en raya contra El Diario",
+      "w": 1440,
+      "x": 4560,
+      "y": 4840
+    },
+    "Proveedores.dc.html": {
+      "x": 0,
+      "y": 9920,
+      "w": 1440,
+      "h": 1000,
+      "title": "N1 · Conectar un proveedor",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "AgenteVisual.dc.html": {
+      "x": 1520,
+      "y": 9920,
+      "w": 1440,
+      "h": 1000,
+      "title": "N2 · Agente con gráficos y hemiciclo",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Posicion.dc.html": {
+      "x": 3040,
+      "y": 9920,
+      "w": 1440,
+      "h": 1100,
+      "title": "N3 · Posición desde el texto, a ciegas",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Historial.dc.html": {
+      "x": 4560,
+      "y": 9920,
+      "w": 1440,
+      "h": 900,
+      "title": "N4 · Historial",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Sincronizar.dc.html": {
+      "x": 0,
+      "y": 11140,
+      "w": 1440,
+      "h": 900,
+      "title": "N5 · Sincronizar con el móvil, sin cuenta",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "EdicionOffline.dc.html": {
+      "x": 1520,
+      "y": 11140,
+      "w": 1440,
+      "h": 1000,
+      "title": "N6 · Edición del día sin conexión",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Actualizaciones.dc.html": {
+      "x": 3040,
+      "y": 11140,
+      "w": 1440,
+      "h": 900,
+      "title": "N7 · Idioma y actualizaciones",
+      "expand": "fill",
+      "is_interactive": true
+    },
+    "Movil-Emparejar.dc.html": {
+      "x": 0,
+      "y": 12480,
+      "w": 390,
+      "h": 844,
+      "title": "M11 · Emparejar con el PC",
+      "is_interactive": true,
+      "radius": 40
+    },
+    "Movil-Edicion.dc.html": {
+      "x": 470,
+      "y": 12480,
+      "w": 390,
+      "h": 844,
+      "title": "M12 · Edición sin conexión",
+      "is_interactive": true,
+      "radius": 40
+    },
+    "Movil-Historial.dc.html": {
+      "x": 940,
+      "y": 12480,
+      "w": 390,
+      "h": 844,
+      "title": "M13 · Historial",
+      "is_interactive": true,
+      "radius": 40
+    },
+    "Movil-AgenteVisual.dc.html": {
+      "x": 1410,
+      "y": 12480,
+      "w": 390,
+      "h": 844,
+      "title": "M14 · Agente con hemiciclo",
+      "is_interactive": true,
+      "radius": 40
+    },
+    "Movil-Proveedor.dc.html": {
+      "x": 1880,
+      "y": 12480,
+      "w": 390,
+      "h": 844,
+      "title": "M15 · Conectar un proveedor",
+      "is_interactive": true,
+      "radius": 40
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-10-05T10:00:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "t1": {
+      "kind": "title1",
+      "maxW": 6000,
+      "text": "newpaper — navegador de noticias con contraste por IA",
+      "w": 240,
+      "x": 0,
+      "y": -300
+    },
+    "t2": {
+      "kind": "title1",
+      "maxW": 2740,
+      "text": "Móvil — toda la app en el bolsillo",
+      "w": 240,
+      "x": 0,
+      "y": 7200
+    },
+    "t3": {
+      "kind": "title1",
+      "maxW": 6000,
+      "text": "Páginas del sistema — errores, cuelgues y modo sin conexión",
+      "w": 240,
+      "x": 0,
+      "y": 4560
+    },
+    "t4": {
+      "kind": "title1",
+      "maxW": 2620,
+      "text": "Primer arranque — instalador y recorrido guiado",
+      "w": 240,
+      "x": 0,
+      "y": 5880
+    },
+    "t5": {
+      "kind": "title1",
+      "maxW": 6000,
+      "text": "Novedades — proveedores, agente visual, posición, historial, sincronización y sin conexión",
+      "w": 240,
+      "x": 0,
+      "y": 9640
+    },
+    "t6": {
+      "kind": "title1",
+      "maxW": 2270,
+      "text": "Novedades en el móvil",
+      "w": 240,
+      "x": 0,
+      "y": 12200
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Sintesis.dc.html",
+    "SinCobertura.dc.html",
+    "Hemeroteca.dc.html",
+    "Inicio.dc.html",
+    "Ajustes.dc.html",
+    "Error404.dc.html",
+    "Errores.dc.html",
+    "Crash.dc.html",
+    "TresEnRaya.dc.html",
+    "Instalador.dc.html",
+    "Tour.dc.html",
+    "Movil-Bienvenida.dc.html",
+    "Movil-Inicio.dc.html",
+    "Movil-Analisis.dc.html",
+    "Movil-Sintesis.dc.html",
+    "Movil-Agente.dc.html",
+    "Movil-Tor.dc.html",
+    "Movil-Hemeroteca.dc.html",
+    "Movil-SinCobertura.dc.html",
+    "Movil-Ajustes.dc.html",
+    "Movil-Sistema.dc.html",
+    "Movil-TresEnRaya.dc.html",
+    "Proveedores.dc.html",
+    "AgenteVisual.dc.html",
+    "Posicion.dc.html",
+    "Historial.dc.html",
+    "Sincronizar.dc.html",
+    "EdicionOffline.dc.html",
+    "Actualizaciones.dc.html",
+    "Movil-Emparejar.dc.html",
+    "Movil-Edicion.dc.html",
+    "Movil-Historial.dc.html",
+    "Movil-AgenteVisual.dc.html",
+    "Movil-Proveedor.dc.html"
+  ],
+  "pages": [],
+  "title": "newpaper — mockups UI"
+}

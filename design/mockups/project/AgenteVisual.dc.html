@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Agente con visuales</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8;transition:color .45s cubic-bezier(.22,1,.36,1),background-color .45s cubic-bezier(.22,1,.36,1)}a:hover{color:#182E86}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1),box-shadow .45s cubic-bezier(.22,1,.36,1)}
+button:active{transform:scale(.97)}
+input{transition:border-color .5s cubic-bezier(.22,1,.36,1),box-shadow .5s cubic-bezier(.22,1,.36,1)}
+input:focus{outline:none;border-color:#2340B8!important;box-shadow:0 0 0 4px rgba(35,64,184,.1)}
+.hov:hover{background:#EFECE5}
+.dim{opacity:.38;filter:saturate(.6);transition:opacity .8s cubic-bezier(.22,1,.36,1),filter .8s cubic-bezier(.22,1,.36,1)}
+.dim:hover{opacity:.92;filter:none}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.slide{animation:slide .9s cubic-bezier(.22,1,.36,1) both}
+.grow{transform-origin:left center;animation:grow 1.2s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes slide{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:none}}
+@keyframes grow{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes pop0{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes pop1{0%{transform:scale(.7);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="--paper: #F6F4EF; --panel: #FBFAF7; --card: #FFFFFF; --ink: #17171A; --ink2: #3D3B37; --muted: #5E5B55; --faint: #8D8981; --line: #E2DED5; --line2: #EFECE6; --line3: #D9D5CC; --soft: #EFECE5; --accent: #2340B8; --accentSoft: #E8ECFA; --ok: #0B6B50; --okBg: #E3F2EC; --warn: #8A5300; --warnBg: #FBF0DC; min-height: 1000px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #D9D5CC; background: #E7E3DA; flex-wrap: wrap">
+<a href="Main.dc.html" class="hov" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 10px; color: #17171A; text-decoration: none; background: #F6F4EF; border: 1px solid #D9D5CC">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Panel estrecho</a>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0">eldiariorojo.es/economia/salario-minimo-record</span>
+<span style="margin-left: auto; display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5E5B55"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: #2340B8; background: #E8ECFA; padding: 2px 6px; border-radius: 5px">AGENTE AMPLIO</span>El lector se atenúa mientras conversas</span>
+</div>
+<div style="flex: 1; display: flex; flex-wrap: wrap; align-items: stretch">
+
+<div style="flex: 999 1 420px; min-width: 0; padding: 44px 40px 64px; display: flex; justify-content: center">
+<article class="dim" style="max-width: 600px; width: 100%">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55; letter-spacing: 0.02em; margin-bottom: 22px">EL DIARIO ROJO · ECONOMÍA · HACE 2 H</div>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 36px; line-height: 1.12; letter-spacing: -0.01em; margin: 0 0 14px">El salario mínimo bate récords mientras la patronal sigue en pie de guerra</h1>
+<p style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.5; color: #3D3B37; margin: 0 0 28px">El Gobierno aprueba una nueva subida que, según el ministerio, beneficiará a 2,5 millones de trabajadores.</p>
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.75">
+<p style="margin: 0 0 20px">El Consejo de Ministros ha aprobado este martes una subida del salario mínimo interprofesional que lo sitúa en el nivel más alto de toda Europa, una medida que según el ministerio beneficiará a 2,5 millones de trabajadores.</p>
+<p style="margin: 0 0 20px">Mientras tanto, la patronal, fiel a su costumbre, vuelve a anteponer sus beneficios a la dignidad de quienes sostienen el país, y amenaza con un apocalipsis de empleo que nunca llega.</p>
+<p style="margin: 0 0 20px">Desde 2018 el SMI ha crecido un 61 % sin que se haya destruido empleo, según fuentes sindicales consultadas por este diario.</p>
+<p style="margin: 0">La medida entrará en vigor con efectos retroactivos desde el 1 de enero, y el ministerio prevé revisarla de nuevo el año próximo en función de la evolución de los precios.</p>
+</div>
+<div style="margin-top: 32px; padding-top: 14px; border-top: 1px solid #E2DED5; font-size: 12px; color: #8D8981">Pasa el ratón por encima para leer con normalidad.</div>
+</article>
+</div>
+
+<aside class="slide" style="flex: 1 1 760px; max-width: 100%; border-left: 1px solid #D9D5CC; background: #FBFAF7; box-sizing: border-box; display: flex; flex-direction: column">
+<div style="display: flex; align-items: center; gap: 12px; padding: 16px 24px; border-bottom: 1px solid #E2DED5; flex-wrap: wrap">
+<div style="flex: 1; min-width: 0"><div style="font-weight: 600">Agente</div><div style="font-size: 12px; color: #5E5B55">Artículo, 6 coberturas y 9 fuentes primarias en contexto</div></div>
+<span style="display: flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55; border: 1px solid #D9D5CC; border-radius: 8px; padding: 4px 8px"><img src="/_blob/ba377cf2a06c3e158b0b2aeacce903b7" alt="" width="14" height="14" style="display: block">Claude</span>
+</div>
+
+<div style="flex: 1; padding: 24px 28px; display: flex; flex-direction: column; gap: 22px">
+
+<div class="rise" style="align-self: flex-end; max-width: 80%; background: #17171A; color: #F6F4EF; padding: 10px 14px; border-radius: 14px 14px 4px 14px; line-height: 1.5">¿Cómo quedaría la votación del SMI en el Congreso?</div>
+
+<div class="rise" style="display: flex; flex-direction: column; gap: 14px; animation-delay: 120ms">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5E5B55"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8">renderVisualization · hemiciclo</span><span>3 pasos</span></div>
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.6">El salario mínimo se fija por real decreto, así que no necesita pasar por el Congreso <button onClick="{{c.a1.pick}}" style="{{c.a1.style}}">1</button>. Si se votara una ley que lo blindara, haría falta mayoría absoluta: 176 de 350 escaños <button onClick="{{c.a2.pick}}" style="{{c.a2.style}}">2</button>. Prueba qué partidos tendrían que sumar.</div>
+
+<figure style="margin: 0; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 22px 22px 18px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap">
+<div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #8D8981">HEMICICLO · CONGRESO DE LOS DIPUTADOS</div>
+<div style="font-family: 'Newsreader', serif; font-size: 22px; margin-top: 2px">¿Quién votaría «sí»?</div>
+</div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #8A5300; background: #FBF0DC; padding: 3px 8px; border-radius: 6px">DATOS DE EJEMPLO</span>
+</div>
+
+<div style="position: relative; width: 100%; max-width: 600px; margin: 56px auto 14px">
+<div style="position: relative; width: 100%; padding-bottom: 50%">
+<sc-for list="{{seats}}" as="st" hint-placeholder-count="0"><span style="{{st.s}}"></span></sc-for>
+<svg viewBox="0 0 200 100" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none"><line x1="{{maj.x1}}" y1="{{maj.y1}}" x2="{{maj.x2}}" y2="{{maj.y2}}" stroke="#17171A" stroke-width="1.4" stroke-dasharray="3 3" vector-effect="non-scaling-stroke"></line></svg>
+<span style="{{maj.lab}}">176 · mayoría</span>
+<div style="position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); text-align: center; line-height: 1">
+<div style="{{countStyle}}">{{shown}}</div>
+<div style="font-size: 11px; color: #5E5B55; margin-top: 4px">escaños a favor</div>
+</div>
+</div>
+</div>
+
+<div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 12px">
+<div style="flex: 1 1 260px; position: relative; height: 12px; background: #EFECE5; border-radius: 6px">
+<div style="position: absolute; inset: 0; display: flex; border-radius: 6px; overflow: hidden"><sc-for list="{{yesBar}}" as="yb" hint-placeholder-count="2"><span style="{{yb}}"></span></sc-for></div>
+<span style="position: absolute; left: 50.29%; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: #17171A; border-radius: 1px"></span>
+</div>
+<span style="{{badge}}">{{badgeLabel}}</span>
+</div>
+
+<div style="font-size: 12px; color: #5E5B55; margin-bottom: 8px">Pulsa un partido para sumarlo o quitarlo del «sí»</div>
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{chips}}" as="p" hint-placeholder-count="9">
+<button onClick="{{p.toggle}}" aria-pressed="{{p.aria}}" style="{{p.style}}"><span style="{{p.dot}}"></span>{{p.name}}<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55">{{p.seats}}</span></button>
+</sc-for>
+</div>
+
+<sc-if value="{{hemiTable}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="margin-top: 16px; overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 13px">
+<thead><tr><th style="text-align: left; font-weight: 500; font-size: 12px; color: #5E5B55; padding: 8px 0; border-bottom: 1px solid #D9D5CC">Partido</th><th style="text-align: right; font-weight: 500; font-size: 12px; color: #5E5B55; padding: 8px 0; border-bottom: 1px solid #D9D5CC">Escaños</th><th style="text-align: right; font-weight: 500; font-size: 12px; color: #5E5B55; padding: 8px 0; border-bottom: 1px solid #D9D5CC">Voto supuesto</th></tr></thead>
+<tbody>
+<sc-for list="{{chips}}" as="p" hint-placeholder-count="9">
+<tr><td style="padding: 8px 0; border-bottom: 1px solid #EFECE6"><span style="{{p.dot}}"></span> {{p.name}}</td><td style="padding: 8px 0; border-bottom: 1px solid #EFECE6; text-align: right; font-family: 'IBM Plex Mono', monospace">{{p.seats}}</td><td style="{{p.voteStyle}}">{{p.vote}}</td></tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</sc-if>
+
+<figcaption style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px solid #EFECE6">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981">Composición ilustrativa · config/parties-es.json · datos de ejemplo</span>
+<span style="display: flex; gap: 6px">
+<button onClick="{{toggleHemiTable}}" class="hov" style="height: 36px; padding: 0 12px; border: 1px solid #D9D5CC; border-radius: 10px; background: #FFFFFF; font-size: 12px; color: #17171A">{{hemiTableLabel}}</button>
+<button onClick="{{addHemi}}" style="{{addHemiStyle}}"><sc-if value="{{hemiAdded}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="{{addPop}}"><path d="M5 12l5 5L20 7"></path></svg></sc-if>{{hemiAddLabel}}</button>
+</span>
+</figcaption>
+</figure>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{src1}}" as="sr" hint-placeholder-count="2"><div style="{{sr.style}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8; min-width: 18px">{{sr.n}}</span><span style="flex: 1">{{sr.name}}</span></div></sc-for>
+</div>
+</div>
+
+<div class="rise" style="align-self: flex-end; max-width: 80%; background: #17171A; color: #F6F4EF; padding: 10px 14px; border-radius: 14px 14px 4px 14px; line-height: 1.5; animation-delay: 220ms">Enséñame la evolución del SMI</div>
+
+<div class="rise" style="display: flex; flex-direction: column; gap: 14px; animation-delay: 300ms">
+<div style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: #5E5B55"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8">renderVisualization · línea</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8">showMedia</span></div>
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.6">Entre 2018 y 2025 el salario mínimo pasó de 735,90 € a 1.184 € al mes en 14 pagas, un 61 % más <button onClick="{{c.b1.pick}}" style="{{c.b1.style}}">1</button>. El mayor salto fue el de 2019, un 22,3 % <button onClick="{{c.b2.pick}}" style="{{c.b2.style}}">2</button>.</div>
+
+<figure style="margin: 0; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 22px 22px 18px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #8D8981">EVOLUCIÓN</div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap">
+<div style="font-family: 'Newsreader', serif; font-size: 22px; margin-top: 2px">El salario mínimo desde 2018</div>
+<span style="font-family: 'Newsreader', serif; font-size: 30px; line-height: 1; color: var(--accent); letter-spacing: -0.02em">+61 %</span>
+</div>
+<div style="font-size: 12px; color: var(--muted); margin-top: 2px">Euros al mes, en 14 pagas</div>
+<div style="position: relative; height: 200px; margin: 22px 0 0 40px">
+<sc-for list="{{grid}}" as="g" hint-placeholder-count="4"><div style="{{g.row}}"><span style="width: 34px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: var(--faint)">{{g.label}}</span><span style="flex: 1; height: 0; border-top: 1px dashed var(--line)"></span></div></sc-for>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line3)"></div>
+<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible"><polygon points="{{area}}" style="fill: var(--accent); fill-opacity: .08"></polygon><polyline points="{{line}}" fill="none" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round" pathLength="1" stroke-dasharray="1" style="stroke: var(--accent); animation: draw 1.8s cubic-bezier(.22,1,.36,1) .3s both"></polyline></svg>
+<sc-for list="{{pts}}" as="b" hint-placeholder-count="9">
+<div onMouseEnter="{{b.enter}}" onMouseLeave="{{leave}}" style="{{b.hit}}"><span style="{{b.dot}}"></span><sc-if value="{{b.hov}}" hint-placeholder-val="{{ false }}"><span style="position: absolute; bottom: 26px; left: 50%; transform: translateX(-50%); white-space: nowrap; background: var(--ink); color: var(--paper); font-size: 12px; padding: 5px 9px; border-radius: 7px; animation: rise .3s cubic-bezier(.22,1,.36,1) both">{{b.year}} · {{b.value}}</span></sc-if></div>
+</sc-for>
+</div>
+<div style="display: flex; margin: 10px 0 0 40px"><sc-for list="{{pts}}" as="b" hint-placeholder-count="9"><span style="{{b.yearStyle}}">{{b.yearShort}}</span></sc-for></div>
+
+<sc-if value="{{lineTable}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="margin-top: 16px; overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 13px">
+<thead><tr><th style="text-align: left; font-weight: 500; font-size: 12px; color: var(--muted); padding: 8px 0; border-bottom: 1px solid var(--line3)">Año</th><th style="text-align: right; font-weight: 500; font-size: 12px; color: var(--muted); padding: 8px 0; border-bottom: 1px solid var(--line3)">€ / mes</th><th style="text-align: right; font-weight: 500; font-size: 12px; color: var(--muted); padding: 8px 0; border-bottom: 1px solid var(--line3)">Variación</th></tr></thead>
+<tbody>
+<sc-for list="{{pts}}" as="b" hint-placeholder-count="9"><tr><td style="padding: 8px 0; border-bottom: 1px solid var(--line2); font-family: 'IBM Plex Mono', monospace">{{b.year}}</td><td style="padding: 8px 0; border-bottom: 1px solid var(--line2); text-align: right; font-family: 'Newsreader', serif; font-size: 15px">{{b.value}}</td><td style="padding: 8px 0; border-bottom: 1px solid var(--line2); text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ok)">{{b.delta}}</td></tr></sc-for>
+</tbody>
+</table>
+</div>
+</sc-if>
+
+<figcaption style="display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line2)">
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--accent)">BOE · Reales Decretos del SMI · INE</span>
+<span style="display: flex; gap: 6px">
+<button onClick="{{toggleLineTable}}" class="hov" style="height: 36px; padding: 0 12px; border: 1px solid #D9D5CC; border-radius: 10px; background: #FFFFFF; font-size: 12px; color: #17171A">{{lineTableLabel}}</button>
+<button onClick="{{addLine}}" style="{{addLineStyle}}"><sc-if value="{{lineAdded}}" hint-placeholder-val="{{ false }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="{{addPop}}"><path d="M5 12l5 5L20 7"></path></svg></sc-if>{{lineAddLabel}}</button>
+</span>
+</figcaption>
+</figure>
+
+<figure style="margin: 0; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; overflow: hidden; display: flex; flex-wrap: wrap">
+<div style="flex: 1 1 300px; min-height: 190px; background: #E7E3DA; position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: #8D8981">
+<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><circle cx="9" cy="10" r="1.6"></circle><path d="M21 16l-5-5-8 8"></path></svg>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px">FOTO DE LA FUENTE [3]</span>
+<span style="position: absolute; left: 10px; top: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: #5E5B55; background: rgba(255,255,255,.85); padding: 2px 6px; border-radius: 5px">showMedia</span>
+</div>
+<figcaption style="flex: 1 1 260px; padding: 18px 20px; display: flex; flex-direction: column; gap: 8px">
+<div style="font-family: 'Newsreader', serif; font-size: 18px; line-height: 1.35">La ministra de Trabajo, tras el Consejo de Ministros que aprobó la subida</div>
+<div style="font-size: 12px; color: #5E5B55">EFE · Madrid · martes, 13:42</div>
+<div style="margin-top: auto; display: flex; align-items: center; gap: 8px; font-size: 12px; color: #17171A; background: #F6F4EF; border-radius: 10px; padding: 8px 10px"><button onClick="{{c.b3.pick}}" style="{{c.b3.style}}">3</button><span>Fuente: [3] · imagen original del medio, no generada</span></div>
+</figcaption>
+</figure>
+
+<div style="display: flex; flex-direction: column; gap: 4px">
+<sc-for list="{{src2}}" as="sr" hint-placeholder-count="3"><div style="{{sr.style}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8; min-width: 18px">{{sr.n}}</span><span style="flex: 1">{{sr.name}}</span></div></sc-for>
+</div>
+</div>
+
+<sc-for list="{{extra}}" as="m" hint-placeholder-count="0">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<div class="rise" style="align-self: flex-end; max-width: 80%; background: #17171A; color: #F6F4EF; padding: 10px 14px; border-radius: 14px 14px 4px 14px; line-height: 1.5">{{m.q}}</div>
+<sc-if value="{{m.answered}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 12px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8">{{m.tool}}</div>
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.6">{{m.text}}</div>
+<sc-if value="{{m.hasBars}}" hint-placeholder-val="{{ false }}">
+<figure style="margin: 0; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 20px 22px 16px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #8D8981">COMPARATIVA · EUROSTAT</div>
+<div style="font-family: 'Newsreader', serif; font-size: 20px; margin: 2px 0 14px">Salario mínimo mensual, enero de 2026</div>
+<sc-for list="{{m.bars}}" as="br" hint-placeholder-count="6">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px"><span style="{{br.nameStyle}}">{{br.name}}</span><span style="flex: 1; height: 16px; background: #EFECE5; border-radius: 4px; overflow: hidden"><span class="grow" style="{{br.bar}}"></span></span><span style="width: 64px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12px">{{br.v}}</span></div>
+</sc-for>
+<figcaption style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #EFECE6; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8">Eurostat · earn_mw_cur · en 12 pagas</figcaption>
+</figure>
+</sc-if>
+<div style="font-size: 12px; color: #2340B8; font-family: 'IBM Plex Mono', monospace">{{m.src}}</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+
+<sc-if value="{{thinking}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{liveSteps}}" as="l" hint-placeholder-count="3"><div style="{{l.row}}"><span style="{{l.dot}}"></span>{{l.t}}</div></sc-for>
+</div>
+</sc-if>
+</div>
+
+<div style="padding: 14px 24px 20px; border-top: 1px solid #E2DED5; display: flex; flex-direction: column; gap: 10px; background: #FBFAF7">
+<sc-if value="{{hasSugg}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{sugg}}" as="sg" hint-placeholder-count="3"><button onClick="{{sg.ask}}" class="hov" style="height: 36px; padding: 0 14px; border: 1px solid #D9D5CC; border-radius: 999px; background: #FFFFFF; font-size: 13px; color: #17171A">{{sg.q}}</button></sc-for>
+</div>
+</sc-if>
+<form onSubmit="{{send}}" style="display: flex; gap: 8px">
+<label for="vask" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Tu pregunta</label>
+<input id="vask" value="{{draft}}" onChange="{{onDraft}}" placeholder="Pide un gráfico, un mapa o un hemiciclo…" style="flex: 1; min-width: 0; height: 46px; padding: 0 14px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A">
+<button type="submit" aria-label="Enviar" style="width: 46px; height: 46px; border: 0; border-radius: 12px; background: #17171A; color: #F6F4EF; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></button>
+</form>
+</div>
+</aside>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1000}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.P = [
+      ['A', 'Partido A', 31, '#9C5B52'], ['B', 'Partido B', 121, '#C4877A'], ['C', 'Partido C', 7, '#B49A5E'], ['D', 'Partido D', 7, '#8E9A6B'],
+      ['E', 'Partido E', 6, '#6E8F8A'], ['F', 'Partido F', 5, '#7A86A8'], ['O', 'Otros', 3, '#A9A59C'], ['G', 'Partido G', 137, '#5E7299'], ['H', 'Partido H', 33, '#46536B']
+    ];
+    this.seats = this.buildSeats();
+    this.state = { yes: { A: true, B: true }, shown: 0, grown: false, intro: true, bk: 0, hemiTable: false, lineTable: false, hemiAdded: false, lineAdded: false, ak: 0, cite: null, hover: null, extra: [], thinking: false, live: 0, used: {}, draft: '' };
+  }
+  buildSeats() {
+    const R = 10, raw = [];
+    for (let i = 0; i < R; i++) {
+      const r = 0.4 + 0.6 * i / (R - 1), n = Math.round(50 * r);
+      for (let j = 0; j < n; j++) raw.push({ r, a: Math.PI - Math.PI * j / (n - 1) });
+    }
+    raw.sort((p, q) => (q.a - p.a) || (p.r - q.r));
+    this.majA = (raw[174].a + raw[175].a) / 2;
+    const out = [];
+    let k = 0;
+    this.P.forEach((p, pi) => {
+      for (let m = 0; m < p[2] && k < raw.length; m++) {
+        const st = raw[k];
+        out.push({ pi, m, k, x: 50 + 50 * st.r * Math.cos(st.a), y: 100 - 100 * st.r * Math.sin(st.a) });
+        k++;
+      }
+    });
+    return out;
+  }
+  yesCount(yes) { return this.P.reduce((acc, p) => acc + (yes[p[0]] ? p[2] : 0), 0); }
+  componentDidMount() {
+    this.t0 = setTimeout(() => { this.setState({ grown: true }); this.animateTo(this.yesCount(this.state.yes)); }, 200);
+    this.t1 = setTimeout(() => this.setState({ intro: false }), 1600);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); clearTimeout(this.t0); clearTimeout(this.t1); clearInterval(this.iv); }
+  animateTo(target) {
+    cancelAnimationFrame(this.raf);
+    const from = this.state.shown, t0 = performance.now(), dur = 900;
+    const tick = (t) => { const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 4); this.setState({ shown: Math.round(from + (target - from) * e) }); if (k < 1) this.raf = requestAnimationFrame(tick); };
+    this.raf = requestAnimationFrame(tick);
+  }
+  toggleParty(id) {
+    const yes = Object.assign({}, this.state.yes);
+    yes[id] = !yes[id];
+    this.setState({ yes, bk: this.state.bk + 1 });
+    this.animateTo(this.yesCount(yes));
+  }
+  answer(q) {
+    const t = q.toLowerCase();
+    if (t.indexOf('europa') >= 0 || t.indexOf(' ue') >= 0 || t.indexOf('países') >= 0) return {
+      tool: 'renderVisualization · barras', text: 'España es sexta de la UE en salario mínimo nominal. Ajustado por poder adquisitivo baja al séptimo puesto.', src: '[1] Eurostat · earn_mw_cur · enero de 2026',
+      bars: [['Luxemburgo', 2638], ['Irlanda', 2282], ['Países Bajos', 2193], ['Alemania', 2161], ['Bélgica', 2070], ['España', 1381]]
+    };
+    if (t.indexOf('paga') >= 0 || t.indexOf('quién') >= 0) return { tool: 'searchCoverage · fetchSource', text: 'La subida la pagan las empresas que tienen trabajadores en el salario mínimo, sobre todo en el campo, la hostelería y el comercio. El ministerio no prevé compensaciones fiscales; la CEOE pide bonificaciones para pymes.', src: '[1] Memoria de impacto del RD · [2] Comunicado de la CEOE' };
+    if (t.indexOf('abst') >= 0 || t.indexOf('partido') >= 0) return { tool: 'renderVisualization · hemiciclo', text: 'Con la composición de ejemplo, si el Partido C se abstiene, A, B, D, E y F suman 170 escaños: faltarían 6 para la mayoría absoluta. Ni sumando a Otros (3) llegaría. Prueba la combinación en el hemiciclo de arriba.', src: '[1] config/parties-es.json · datos de ejemplo' };
+    return { tool: 'searchCoverage', text: 'En la app real, el agente responde aquí con texto citado y, si ayuda, con una visualización dibujada en el propio chat.', src: '[1] Ejemplo del mockup' };
+  }
+  ask(q) {
+    if (this.state.thinking) return;
+    const id = Date.now(), used = Object.assign({}, this.state.used);
+    used[q] = true;
+    this.setState({ extra: this.state.extra.concat([{ id, q, answered: false }]), thinking: true, live: 0, draft: '', used });
+    clearInterval(this.iv);
+    this.iv = setInterval(() => {
+      const n = this.state.live + 1;
+      if (n >= 3) {
+        clearInterval(this.iv);
+        const a = this.answer(q);
+        this.setState({ thinking: false, extra: this.state.extra.map((m) => (m.id === id ? Object.assign({}, m, a, { answered: true }) : m)) });
+      } else this.setState({ live: n });
+    }, 650);
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', BO = 'cubic-bezier(.34,1.56,.64,1)';
+    const yesN = this.yesCount(s.yes), need = 176 - yesN, has = need <= 0;
+    const seats = this.seats.map((st) => {
+      const p = this.P[st.pi], on = !!s.yes[p[0]];
+      const d = s.intro ? st.k * 2 : Math.min(st.m * 5, 450);
+      return { s: 'position:absolute;left:' + st.x.toFixed(3) + '%;top:' + st.y.toFixed(3) + '%;width:2.3%;aspect-ratio:1;border-radius:50%;background:' + p[3] + ';transform:translate(-50%,-50%) scale(' + (s.grown ? (on ? 1 : 0.78) : 0) + ');opacity:' + (on ? 1 : 0.24) + ';transition:transform .6s ' + BO + ' ' + d + 'ms,opacity .5s ' + E + ' ' + d + 'ms' };
+    });
+    const a = this.majA, cx = Math.cos(a), sy = Math.sin(a);
+    const maj = {
+      x1: (100 + 100 * 0.33 * cx).toFixed(2), y1: (100 - 100 * 0.33 * sy).toFixed(2), x2: (100 + 100 * 1.08 * cx).toFixed(2), y2: (100 - 100 * 1.08 * sy).toFixed(2),
+      lab: "position:absolute;left:" + ((100 + 112 * cx) / 2).toFixed(2) + "%;top:" + (100 - 112 * sy).toFixed(2) + "%;transform:translate(-50%,-100%);white-space:nowrap;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;color:#17171A;background:#FFFFFF;padding:2px 6px;border-radius:5px"
+    };
+    const chips = this.P.map((p) => {
+      const on = !!s.yes[p[0]];
+      return {
+        name: p[1], seats: p[2], aria: on ? 'true' : 'false', vote: on ? 'Sí' : 'No o abstención',
+        toggle: () => this.toggleParty(p[0]),
+        dot: 'display:inline-block;flex:none;width:10px;height:10px;border-radius:50%;transition:all .5s ' + BO + ';' + (on ? 'background:' + p[3] + ';box-shadow:0 0 0 0 transparent' : 'background:transparent;box-shadow:inset 0 0 0 1.5px ' + p[3]),
+        style: 'display:flex;align-items:center;gap:8px;height:40px;padding:0 12px;border-radius:999px;font-size:13px;color:#17171A;border:1px solid ' + (on ? '#17171A' : '#D9D5CC') + ';background:' + (on ? '#F6F4EF' : '#FFFFFF'),
+        voteStyle: 'padding:8px 0;border-bottom:1px solid #EFECE6;text-align:right;font-size:12px;color:' + (on ? '#0B6B50' : '#8D8981')
+      };
+    });
+    const yesBar = this.P.map((p) => 'display:block;height:100%;transition:width .9s ' + E + ';background:' + p[3] + ';width:' + (s.yes[p[0]] && s.grown ? (p[2] / 350 * 100).toFixed(3) : 0) + '%');
+    const cite = (id) => ({ pick: () => this.setState({ cite: s.cite === id ? null : id }), style: "all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-width:18px;height:18px;padding:0 3px;border-radius:5px;font-family:'IBM Plex Mono',monospace;font-size:11px;vertical-align:2px;transition:all .4s " + E + ';' + (s.cite === id ? 'background:#2340B8;color:#FFFFFF' : 'background:#E8ECFA;color:#2340B8') });
+    const srcRow = (id, n, name) => ({ n, name, style: 'display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:8px;font-size:13px;transition:background-color .5s ' + E + ';background:' + (s.cite === id ? '#E8ECFA' : 'transparent') });
+    const SMI = [[2018, 735.9], [2019, 900], [2020, 950], [2021, 965], [2022, 1000], [2023, 1080], [2024, 1134], [2025, 1184], [2026, 1221]];
+    const n = SMI.length, MAX = 1300;
+    const fmt = (v) => v.toLocaleString('es-ES', { maximumFractionDigits: 1 }) + ' €';
+    const pts = SMI.map((d, i) => {
+      const hov = s.hover === i, pct = d[1] / MAX * 100;
+      return {
+        year: d[0], yearShort: "'" + String(d[0]).slice(2), value: fmt(d[1]), hov,
+        delta: i === 0 ? '—' : '+' + ((d[1] / SMI[i - 1][1] - 1) * 100).toFixed(1).replace('.', ',') + ' %',
+        enter: () => this.setState({ hover: i }),
+        hit: 'position:absolute;left:' + ((i + 0.5) / n * 100) + '%;top:' + (100 - pct) + '%;width:30px;height:30px;margin:-15px 0 0 -15px;display:flex;align-items:center;justify-content:center',
+        dot: 'border-radius:50%;background:var(--accent);box-shadow:0 0 0 3px var(--card);transition:all .35s ' + BO + ';width:' + (hov ? 13 : 8) + 'px;height:' + (hov ? 13 : 8) + 'px',
+        yearStyle: "flex:1;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;transition:color .3s;color:" + (hov ? 'var(--ink)' : 'var(--faint)')
+      };
+    });
+    const pl = SMI.map((d, i) => ((i + 0.5) / n * 100).toFixed(2) + ',' + (100 - d[1] / MAX * 100).toFixed(2));
+    const grid = [[1300, 0], [975, 25], [650, 50], [325, 75]].map((g) => ({ label: g[0].toLocaleString('es-ES'), row: 'position:absolute;left:-40px;right:0;top:' + g[1] + '%;display:flex;align-items:center;gap:6px;transform:translateY(-50%)' }));
+    const addBtn = (on) => 'display:flex;align-items:center;gap:6px;height:36px;padding:0 12px;border-radius:10px;font-size:12px;border:1px solid ' + (on ? '#0B6B50' : '#17171A') + ';background:' + (on ? '#E3F2EC' : '#17171A') + ';color:' + (on ? '#0B6B50' : '#F6F4EF');
+    const SUG = ['Compara el SMI con otros países de la UE', '¿Y si se abstiene el Partido C?', '¿Quién paga la subida?'];
+    const sugg = SUG.filter((q) => !s.used[q]).map((q) => ({ q, ask: () => this.ask(q) }));
+    const extra = s.extra.map((m) => {
+      const max = m.bars ? m.bars[0][1] : 1;
+      return Object.assign({}, m, {
+        hasBars: !!m.bars,
+        bars: (m.bars || []).map((b, i) => ({ name: b[0], v: b[1].toLocaleString('es-ES') + ' €', nameStyle: 'width:96px;flex:none;font-size:13px;' + (b[0] === 'España' ? 'font-weight:600' : 'color:#3D3B37'), bar: 'display:block;height:100%;border-radius:4px;animation-delay:' + (i * 90) + 'ms;width:' + (b[1] / max * 100).toFixed(1) + '%;background:' + (b[0] === 'España' ? 'var(--accent)' : '#C9CFE6') }))
+      });
+    });
+    const stepNames = ['Leyendo el contexto de la conversación', 'Buscando en coberturas y fuentes', 'Eligiendo cómo mostrarlo'];
+    return {
+      seats, maj, chips, yesBar, shown: s.shown,
+      countStyle: "font-family:'Newsreader',serif;font-size:44px;font-weight:500;letter-spacing:-0.02em;transition:color .6s " + E + ';color:' + (has ? '#0B6B50' : '#17171A'),
+      badgeLabel: has ? 'Mayoría absoluta' : 'Faltan ' + need,
+      badge: 'flex:none;display:inline-flex;align-items:center;height:30px;padding:0 12px;border-radius:999px;font-size:13px;font-weight:600;animation:pop' + (s.bk % 2) + ' .55s ' + BO + ' both;' + (has ? 'background:#E3F2EC;color:#0B6B50' : 'background:#FBF0DC;color:#8A5300'),
+      hemiTable: s.hemiTable, hemiTableLabel: s.hemiTable ? 'Ocultar datos' : 'Ver datos',
+      toggleHemiTable: () => this.setState({ hemiTable: !s.hemiTable }),
+      hemiAdded: s.hemiAdded, hemiAddLabel: s.hemiAdded ? 'Añadido a la síntesis' : 'Añadir a la síntesis', addHemiStyle: addBtn(s.hemiAdded),
+      addHemi: () => this.setState({ hemiAdded: !s.hemiAdded, ak: s.ak + 1 }),
+      lineTable: s.lineTable, lineTableLabel: s.lineTable ? 'Ocultar datos' : 'Ver datos',
+      toggleLineTable: () => this.setState({ lineTable: !s.lineTable }),
+      lineAdded: s.lineAdded, lineAddLabel: s.lineAdded ? 'Añadido a la síntesis' : 'Añadir a la síntesis', addLineStyle: addBtn(s.lineAdded),
+      addLine: () => this.setState({ lineAdded: !s.lineAdded, ak: s.ak + 1 }),
+      addPop: 'animation:pop' + (s.ak % 2) + ' .5s ' + BO + ' both',
+      c: { a1: cite('a1'), a2: cite('a2'), b1: cite('b1'), b2: cite('b2'), b3: cite('b3') },
+      src1: [srcRow('a1', '1', 'Estatuto de los Trabajadores, art. 27 · BOE'), srcRow('a2', '2', 'Constitución, art. 81 · Reglamento del Congreso')],
+      src2: [srcRow('b1', '1', 'BOE · Reales Decretos del SMI 2018–2026'), srcRow('b2', '2', 'INE · serie histórica del SMI'), srcRow('b3', '3', 'EFE · fotografía de la rueda de prensa')],
+      pts, grid, line: pl.join(' '), area: (0.5 / n * 100).toFixed(2) + ',100 ' + pl.join(' ') + ' ' + ((n - 0.5) / n * 100).toFixed(2) + ',100',
+      leave: () => this.setState({ hover: null }),
+      extra, sugg, hasSugg: sugg.length > 0, thinking: s.thinking,
+      liveSteps: stepNames.map((t, i) => { const done = i < s.live, now = i === s.live; return { t, row: 'display:flex;align-items:center;gap:10px;font-size:13px;transition:color .5s ' + E + ';color:' + (done || now ? '#17171A' : '#A9A59C'), dot: 'flex:none;width:8px;height:8px;border-radius:50%;transition:all .5s ' + E + ';' + (done ? 'background:#0B6B50' : now ? 'background:#2340B8;animation:pulse 1.2s ease-in-out infinite' : 'background:#E2DED5') }; }),
+      draft: s.draft, onDraft: (e) => this.setState({ draft: e.target.value }),
+      send: (e) => { e.preventDefault(); const q = s.draft.trim(); if (q) this.ask(q); }
+    };
+  }
+}
+</script>
+</body>
+</html>

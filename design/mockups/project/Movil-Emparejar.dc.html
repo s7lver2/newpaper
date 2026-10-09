@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · emparejar con el PC</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.96)}
+.scr{scrollbar-width:none}.scr::-webkit-scrollbar{display:none}
+.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes st0{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes st1{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@keyframes scan{from{top:10px}to{top:208px}}
+@keyframes brk{0%,100%{transform:scale(1)}50%{transform:scale(.95)}}
+@keyframes snap{0%{transform:scale(1.08)}60%{transform:scale(.9)}100%{transform:scale(.94)}}
+@keyframes flow{to{stroke-dashoffset:-24}}
+@keyframes pop{0%{opacity:0;transform:scale(.4)}70%{opacity:1;transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+<div style="padding: 50px 12px 0; border-bottom: 1px solid #E2DED5">
+<div style="display: flex; align-items: center; gap: 8px">
+<sc-if value="{{isFirst}}" hint-placeholder-val="{{ true }}"><a href="Movil-Ajustes.dc.html" aria-label="Volver a Ajustes" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a></sc-if>
+<sc-if value="{{notFirst}}" hint-placeholder-val="{{ false }}"><button onClick="{{back}}" aria-label="Paso anterior" style="width: 44px; height: 44px; border: 0; padding: 0; background: transparent; color: #17171A; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button></sc-if>
+<div style="flex: 1; min-width: 0"><div style="font-weight: 600">Emparejar con el PC</div><div style="font-size: 11px; color: #5E5B55">{{headSub}}</div></div>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #5E5B55; border: 1px solid #D9D5CC; border-radius: 6px; padding: 3px 6px; margin-right: 8px">{{stepTag}}</span>
+</div>
+<div style="display: flex; gap: 4px; padding: 10px 8px 12px"><sc-for list="{{bars}}" as="b" hint-placeholder-count="4"><span style="flex: 1; height: 3px; border-radius: 2px; background: #E2DED5; overflow: hidden"><span style="{{b.fill}}"></span></span></sc-for></div>
+</div>
+
+<div class="scr" style="flex: 1; overflow-y: auto; padding: 20px 20px 16px">
+
+<sc-if value="{{is.s1}}" hint-placeholder-val="{{ true }}">
+<div style="{{anim}}">
+<svg width="350" height="150" viewBox="0 0 350 150" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: block">
+<rect x="34" y="18" width="150" height="96" rx="10" stroke="#17171A" stroke-width="1.8" fill="#FFFFFF"></rect>
+<path d="M92 114v14M70 130h44" stroke="#17171A" stroke-width="1.8"></path>
+<rect x="84" y="38" width="50" height="50" rx="4" fill="#F6F4EF" stroke="#D9D5CC" stroke-width="1.2"></rect>
+<path d="M90 44h12v12H90zM116 44h12v12h-12zM90 70h12v12H90z" fill="#17171A" stroke="none"></path>
+<path d="M110 62h6v6h-6zM120 72h8v4h-8zM112 76h4v6h-4z" fill="#17171A" stroke="none"></path>
+<path d="M190 66C220 66 230 76 252 76" stroke="#2340B8" stroke-width="1.8" stroke-dasharray="4 8" style="animation: flow 1.4s linear infinite"></path>
+<rect x="256" y="28" width="62" height="112" rx="14" stroke="#17171A" stroke-width="1.8" fill="#FFFFFF"></rect>
+<path d="M278 36h18" stroke="#17171A" stroke-width="1.8"></path>
+<rect x="266" y="58" width="42" height="42" rx="6" stroke="#2340B8" stroke-width="1.6" fill="#E8ECFA"></rect>
+<path d="M276 79h22" stroke="#2340B8" stroke-width="1.6"></path>
+</svg>
+<h1 style="margin: 18px 0 0; font-family: 'Newsreader', serif; font-weight: 400; font-size: 31px; line-height: 1.1; letter-spacing: -0.02em">Sin cuenta: escanea el QR de newpaper en tu PC</h1>
+<p style="margin: 10px 0 0; font-size: 14px; line-height: 1.55; color: #5E5B55">En el PC, abre Ajustes → Dispositivos → Emparejar un móvil. Verás un código QR de un solo uso.</p>
+<div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 0 14px">
+<div class="rise" style="display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; animation-delay: 120ms">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #E3F2EC; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0B6B50" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 018 0v3"></path></svg></span>
+<div><div style="font-weight: 500">Cifrado de extremo a extremo</div><div style="font-size: 12px; color: #5E5B55; line-height: 1.45; margin-top: 2px">Cada par crea su propia clave. Nadie más puede leer lo que viaja.</div></div>
+</div>
+<div class="rise" style="display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; border-top: 1px solid #EFECE6; animation-delay: 200ms">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #E8ECFA; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2340B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9a13 13 0 0118 0M6 12.5a8.5 8.5 0 0112 0M9 16a4 4 0 016 0"></path><path d="M12 19.5v.01"></path></svg></span>
+<div><div style="font-weight: 500">Por tu red local</div><div style="font-size: 12px; color: #5E5B55; line-height: 1.45; margin-top: 2px">Fuera de casa, por Tailscale si lo tienes.</div></div>
+</div>
+<div class="rise" style="display: flex; gap: 12px; align-items: flex-start; padding: 13px 0; border-top: 1px solid #EFECE6; animation-delay: 280ms">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #F1EEE7; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5E5B55" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 01-.5-8 6 6 0 0111.3-1.5A4.5 4.5 0 0117.5 18H7z"></path><path d="M4 4l16 16"></path></svg></span>
+<div><div style="font-weight: 500">Sin servidores ni cuentas</div><div style="font-size: 12px; color: #5E5B55; line-height: 1.45; margin-top: 2px">Los datos van directos del PC al móvil, nunca por Tor ni por terceros.</div></div>
+</div>
+</div>
+<div style="font-size: 12px; color: #8D8981; line-height: 1.5; margin-top: 12px">¿Sin red? También puedes importar un archivo .npsync cifrado con una frase de paso.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{is.s2}}" hint-placeholder-val="{{ false }}">
+<div style="{{anim}}">
+<div style="position: relative; height: 470px; border-radius: 24px; background: #17171A; overflow: hidden">
+<div style="position: absolute; left: 24px; right: 24px; top: 64px; height: 300px; border-radius: 14px; background: #232327; transform: rotate(-3deg)"></div>
+<span style="position: absolute; left: 16px; top: 16px; display: flex; align-items: center; gap: 6px; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #B9B4A9; background: #2B2B2F; padding: 5px 8px; border-radius: 6px"><span style="width: 6px; height: 6px; border-radius: 50%; background: #C2412F; animation: pulse 1.4s infinite"></span>CÁMARA</span>
+<div style="position: absolute; left: 65px; top: 104px; width: 220px; height: 220px">
+<div style="{{qrTile}}"><svg width="150" height="150" viewBox="0 0 200 200" aria-hidden="true" style="display: block"><path d="{{qr}}" fill="#17171A"></path></svg></div>
+<sc-if value="{{scanning}}" hint-placeholder-val="{{ true }}"><span style="position: absolute; left: 14px; right: 14px; height: 2px; border-radius: 1px; background: #F6F4EF; box-shadow: 0 0 14px 3px rgba(246,244,239,.4); animation: scan 2.2s cubic-bezier(.45,0,.55,1) infinite alternate"></span></sc-if>
+<div style="{{frame}}"><sc-for list="{{corners}}" as="c" hint-placeholder-count="4"><span style="{{c.style}}"></span></sc-for></div>
+</div>
+<div style="{{camMsgStyle}}">{{camMsg}}</div>
+</div>
+<div style="font-size: 13px; color: #5E5B55; line-height: 1.5; margin-top: 14px; text-align: center">El QR caduca a los 2 minutos y solo sirve una vez.</div>
+</div>
+</sc-if>
+
+<sc-if value="{{is.s3}}" hint-placeholder-val="{{ false }}">
+<div style="{{anim}}">
+<h1 style="margin: 4px 0 0; font-family: 'Newsreader', serif; font-weight: 400; font-size: 30px; line-height: 1.1; letter-spacing: -0.02em">Comprueba que el código coincide</h1>
+<p style="margin: 10px 0 0; font-size: 14px; line-height: 1.55; color: #5E5B55">Tu PC muestra ahora un código. Si es el mismo, nadie se ha colado entre los dos.</p>
+<div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 20px 16px 16px">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">HUELLA DEL EMPAREJAMIENTO</div>
+<div style="display: flex; align-items: baseline; justify-content: center; gap: 10px; margin-top: 16px; font-family: 'IBM Plex Mono', monospace; font-size: 30px; font-weight: 500; letter-spacing: 0.04em">
+<span class="rise" style="animation-delay: 80ms">7F3A</span><span style="color: #B9B4A9">·</span><span class="rise" style="animation-delay: 200ms">91C2</span><span style="color: #B9B4A9">·</span><span class="rise" style="animation-delay: 320ms">E04B</span>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; margin-top: 18px; padding-top: 14px; border-top: 1px solid #EFECE6">
+<div style="flex: 1; min-width: 0"><div style="font-size: 11px; color: #5E5B55">Este móvil</div><div style="font-weight: 500; margin-top: 1px">Pixel 8</div></div>
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2340B8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9h15l-4-4M20 15H5l4 4"></path></svg>
+<div style="flex: 1; min-width: 0; text-align: right"><div style="font-size: 11px; color: #5E5B55">Tu PC</div><div style="font-weight: 500; margin-top: 1px">PC-ESCRITORIO</div></div>
+</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #8D8981; margin-top: 10px; text-align: center">X25519 · clave de sesión con HKDF · XChaCha20-Poly1305</div>
+</div>
+<sc-if value="{{fpBad}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="margin-top: 12px; background: #FBF0DC; border-radius: 16px; padding: 14px; display: flex; gap: 12px; align-items: flex-start">
+<span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #F6E2BD; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8A5300" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4l9 16H3z"></path><path d="M12 10v4M12 17v.5"></path></svg></span>
+<div style="flex: 1"><div style="font-weight: 500; color: #8A5300">Emparejamiento cancelado</div><div style="font-size: 12px; color: #6B4A12; line-height: 1.5; margin-top: 3px">No se ha guardado nada. Vuelve a escanear el QR; si vuelve a fallar, puede que otro equipo de tu red intente hacerse pasar por el PC.</div></div>
+</div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{is.s4}}" hint-placeholder-val="{{ false }}">
+<div style="{{anim}}">
+<sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 18px 16px; display: flex; gap: 14px; align-items: center; margin-bottom: 16px">
+<span style="flex: none; width: 48px; height: 48px; border-radius: 50%; background: #0B6B50; display: flex; align-items: center; justify-content: center; animation: pop .7s cubic-bezier(.34,1.56,.64,1) both"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
+<div style="flex: 1; min-width: 0"><div style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.25">Emparejado con PC-ESCRITORIO · red local</div><div style="font-size: 12px; color: #5E5B55; margin-top: 3px">192.168.1.34 · próxima sincronización en 5 min</div></div>
+</div>
+</sc-if>
+<h1 style="margin: 4px 0 0; font-family: 'Newsreader', serif; font-weight: 400; font-size: 30px; line-height: 1.1; letter-spacing: -0.02em">{{s4Title}}</h1>
+<p style="margin: 8px 0 0; font-size: 14px; line-height: 1.55; color: #5E5B55">{{s4Sub}}</p>
+<div style="margin-top: 16px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 0 14px">
+<sc-for list="{{scopes}}" as="g" hint-placeholder-count="7">
+<div style="{{g.row}}">
+<div style="display: flex; align-items: center; gap: 12px">
+<div style="flex: 1; min-width: 0"><div style="font-weight: 500">{{g.name}}</div><div style="{{g.descStyle}}">{{g.desc}}</div></div>
+<sc-if value="{{g.picking}}" hint-placeholder-val="{{ true }}"><button onClick="{{g.toggle}}" role="switch" aria-checked="{{g.aria}}" aria-label="{{g.name}}" style="{{g.track}}"><span style="{{g.knob}}"></span></button></sc-if>
+<sc-if value="{{g.syncing}}" hint-placeholder-val="{{ false }}"><span style="{{g.pctStyle}}">{{g.pct}}</span></sc-if>
+</div>
+<sc-if value="{{g.syncing}}" hint-placeholder-val="{{ false }}"><div style="height: 4px; border-radius: 2px; background: #EFECE6; margin-top: 8px; overflow: hidden"><div style="{{g.bar}}"></div></div></sc-if>
+</div>
+</sc-for>
+</div>
+<sc-if value="{{keysOn}}" hint-placeholder-val="{{ false }}"><div class="rise" style="margin-top: 10px; font-size: 12px; color: #8A5300; line-height: 1.5">Las claves viajarán cifradas con la clave de este par y se guardarán en el llavero del móvil.</div></sc-if>
+</div>
+</sc-if>
+</div>
+
+<div style="padding: 12px 20px 28px; border-top: 1px solid #E2DED5; background: #F6F4EF; display: flex; gap: 8px">
+<sc-if value="{{is.s1}}" hint-placeholder-val="{{ true }}"><button onClick="{{toScan}}" style="flex: 1; height: 52px; border: 0; border-radius: 14px; background: #17171A; color: #F6F4EF; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 10px"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 011-1h3M16 4h3a1 1 0 011 1v3M20 16v3a1 1 0 01-1 1h-3M8 20H5a1 1 0 01-1-1v-3M8 12h8"></path></svg>Escanear</button></sc-if>
+<sc-if value="{{is.s2}}" hint-placeholder-val="{{ false }}"><button onClick="{{simulate}}" style="{{simBtn}}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; padding: 2px 5px; border-radius: 4px; border: 1px solid currentColor; opacity: .7">DEMO</span>{{simLabel}}</button></sc-if>
+<sc-if value="{{is.s3}}" hint-placeholder-val="{{ false }}">
+<button onClick="{{fpNo}}" style="flex: 1; height: 52px; border: 1px solid #D9D5CC; border-radius: 14px; background: #FFFFFF; color: #17171A">{{noLabel}}</button>
+<button onClick="{{fpYes}}" style="flex: 1; height: 52px; border: 0; border-radius: 14px; background: #17171A; color: #F6F4EF; font-weight: 500">Coinciden</button>
+</sc-if>
+<sc-if value="{{is.s4}}" hint-placeholder-val="{{ false }}">
+<sc-if value="{{isPick}}" hint-placeholder-val="{{ true }}"><button onClick="{{startSync}}" style="flex: 1; height: 52px; border: 0; border-radius: 14px; background: #17171A; color: #F6F4EF; font-weight: 500">{{syncBtn}}</button></sc-if>
+<sc-if value="{{isSync}}" hint-placeholder-val="{{ false }}"><div style="flex: 1; height: 52px; border-radius: 14px; background: #E7E3DA; color: #3D3B37; display: flex; align-items: center; justify-content: center; gap: 10px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #2340B8; animation: pulse 1.2s infinite"></span>Sincronizando… {{totalPct}}</div></sc-if>
+<sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+<button onClick="{{startSync}}" style="flex: 1; height: 52px; border: 1px solid #D9D5CC; border-radius: 14px; background: #FFFFFF; color: #17171A">Sincronizar ahora</button>
+<a href="Movil-Ajustes.dc.html" style="flex: 1; height: 52px; border-radius: 14px; background: #17171A; color: #F6F4EF; font-weight: 500; display: flex; align-items: center; justify-content: center">Listo</a>
+</sc-if>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    this.state = { step: 1, k: 0, found: false, bad: false, phase: 'pick', t: 0,
+      sc: { ajustes: true, historial: true, guardados: true, analisis: true, temas: true, fuentes: true, claves: false } };
+  }
+  componentWillUnmount() { clearTimeout(this.to); cancelAnimationFrame(this.raf); }
+  go(step) { clearTimeout(this.to); cancelAnimationFrame(this.raf); this.setState({ step, k: this.state.k + 1, found: false, bad: false, phase: 'pick', t: 0 }); }
+  simulate() {
+    if (this.state.found) return;
+    this.setState({ found: true });
+    clearTimeout(this.to);
+    this.to = setTimeout(() => this.go(3), 1200);
+  }
+  startSync() {
+    cancelAnimationFrame(this.raf);
+    const t0 = performance.now(), dur = 3600;
+    this.setState({ phase: 'sync', t: 0 });
+    const tick = (t) => {
+      const k = Math.min(1, (t - t0) / dur);
+      if (k < 1) { this.setState({ t: k }); this.raf = requestAnimationFrame(tick); }
+      else this.setState({ t: 1, phase: 'done' });
+    };
+    this.raf = requestAnimationFrame(tick);
+  }
+  qrPath() {
+    if (this.qr) return this.qr;
+    const N = 25, M = 8, cells = [];
+    let seed = 7;
+    const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+    const inFinder = (x, y) => (x < 8 && y < 8) || (x > N - 9 && y < 8) || (x < 8 && y > N - 9);
+    for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { if (!inFinder(x, y) && rnd() > 0.52) cells.push([x, y]); }
+    [[0, 0], [N - 7, 0], [0, N - 7]].forEach((f) => {
+      for (let y = 0; y < 7; y++) for (let x = 0; x < 7; x++) {
+        const ring = x === 0 || y === 0 || x === 6 || y === 6, core = x >= 2 && x <= 4 && y >= 2 && y <= 4;
+        if (ring || core) cells.push([f[0] + x, f[1] + y]);
+      }
+    });
+    this.qr = cells.map((c) => 'M' + c[0] * M + ' ' + c[1] * M + 'h' + M + 'v' + M + 'h-' + M + 'z').join('');
+    return this.qr;
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', BN = 'cubic-bezier(.34,1.56,.64,1)';
+    const sw = (on, col) => ({
+      aria: on ? 'true' : 'false',
+      track: 'flex:none;position:relative;width:46px;height:28px;border-radius:14px;border:0;padding:0;margin:8px 0;transition:background-color .5s ' + E + ';background:' + (on ? (col || '#0B6B50') : '#CFCAC0'),
+      knob: 'position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(23,23,26,.2);transition:transform .65s ' + BN + ';transform:translateX(' + (on ? '18px' : '0') + ')'
+    });
+    const SUBS = ['Sin cuenta ni servidor', 'Escanea el QR del PC', 'Comprueba la huella', s.phase === 'pick' ? 'Elige qué sincronizar' : s.phase === 'sync' ? 'Sincronizando por la red local' : 'Emparejado'];
+    const SC = [
+      ['ajustes', 'Ajustes', 'Pipeline, red, bloqueo y apariencia', '48 cambios'],
+      ['historial', 'Historial', 'Visitas y búsquedas de 90 días', '1.284 entradas'],
+      ['guardados', 'Guardados', 'Artículos para leer más tarde', '37 artículos'],
+      ['analisis', 'Análisis y síntesis', 'Lo ya analizado, sin volver a pagarlo', '212 análisis'],
+      ['temas', 'Temas seguidos', 'Economía, Vivienda y Europa', '3 temas'],
+      ['fuentes', 'Fuentes personalizadas', 'Medios y RSS añadidos a mano', '9 fuentes'],
+      ['claves', 'Claves de API', 'Apagado por defecto', '2 claves']
+    ];
+    const picking = s.phase === 'pick';
+    const act = SC.filter((c) => s.sc[c[0]]);
+    const shown = picking ? SC : act;
+    const n = act.length, span = 0.55;
+    let sum = 0;
+    const scopes = shown.map((c, i) => {
+      const on = !!s.sc[c[0]], isKey = c[0] === 'claves';
+      const ai = act.indexOf(c), start = n > 1 ? ai * (span / (n - 1)) : 0;
+      const p = picking ? 0 : Math.max(0, Math.min(1, (s.t - start) / 0.45));
+      sum += p;
+      const o = sw(on, isKey ? '#8A5300' : null);
+      return {
+        name: c[1], desc: picking ? c[2] : (p >= 1 ? c[3] + ' · al día' : p > 0 ? c[3] : 'En espera'),
+        descStyle: 'font-size:12px;line-height:1.45;margin-top:2px;color:' + (!picking && p >= 1 ? '#0B6B50' : '#5E5B55'),
+        picking, syncing: !picking, aria: o.aria, track: o.track, knob: o.knob,
+        toggle: () => this.setState({ sc: { ...s.sc, [c[0]]: !on } }),
+        pct: p >= 1 ? 'listo' : Math.round(p * 100) + ' %',
+        pctStyle: "flex:none;font-family:'IBM Plex Mono',monospace;font-size:12px;padding:12px 0;color:" + (p >= 1 ? '#0B6B50' : '#5E5B55'),
+        bar: 'height:100%;border-radius:2px;width:' + (p * 100).toFixed(1) + '%;background:' + (p >= 1 ? '#0B6B50' : '#2340B8') + ';transition:background-color .5s ' + E,
+        row: (picking ? 'padding:4px 0;' : 'padding:2px 0 12px;') + (i ? 'border-top:1px solid #EFECE6;' : '') + 'animation:rise .6s ' + E + ' both;animation-delay:' + (i * 50) + 'ms'
+      };
+    });
+    const corners = [['left:0;top:0', 'top', 'left'], ['right:0;top:0', 'top', 'right'], ['left:0;bottom:0', 'bottom', 'left'], ['right:0;bottom:0', 'bottom', 'right']].map((c) => {
+      const col = s.found ? '#7FD1AE' : '#F6F4EF';
+      return { style: 'position:absolute;' + c[0] + ';width:36px;height:36px;border-' + c[1] + ':3px solid ' + col + ';border-' + c[2] + ':3px solid ' + col + ';border-' + c[1] + '-' + c[2] + '-radius:12px;transition:border-color .4s ' + E };
+    });
+    return {
+      is: { s1: s.step === 1, s2: s.step === 2, s3: s.step === 3, s4: s.step === 4 },
+      isFirst: s.step === 1, notFirst: s.step > 1,
+      back: () => this.go(Math.max(1, s.step - 1)),
+      headSub: SUBS[s.step - 1], stepTag: s.step + ' / 4',
+      bars: [1, 2, 3, 4].map((i) => ({ fill: 'display:block;height:100%;border-radius:2px;background:#17171A;transition:width .7s ' + E + ';width:' + (i <= s.step ? '100%' : '0%') })),
+      anim: 'animation:st' + (s.k % 2) + ' .55s ' + E + ' both',
+      toScan: () => this.go(2),
+      qr: this.qrPath(), scanning: !s.found,
+      qrTile: 'position:absolute;left:24px;top:24px;width:172px;height:172px;border-radius:10px;background:#E9E5DC;display:flex;align-items:center;justify-content:center;transform:rotate(-3deg);transition:opacity .6s ' + E + ',filter .6s ' + E + ';' + (s.found ? 'opacity:1;filter:none' : 'opacity:.62;filter:blur(1px)'),
+      frame: 'position:absolute;left:0;top:0;width:220px;height:220px;' + (s.found ? 'animation:snap .6s ' + BN + ' both' : 'animation:brk 2.2s ease-in-out infinite'),
+      corners,
+      camMsg: s.found ? 'QR detectado · PC-ESCRITORIO' : 'Apunta al QR que muestra el PC',
+      camMsgStyle: 'position:absolute;left:0;right:0;bottom:28px;text-align:center;font-size:13px;transition:color .4s ' + E + ';color:' + (s.found ? '#7FD1AE' : '#D9D5CC'),
+      simulate: () => this.simulate(), simLabel: s.found ? 'Leyendo la clave…' : 'Simular QR',
+      simBtn: 'flex:1;height:52px;border-radius:14px;font-weight:500;display:flex;align-items:center;justify-content:center;gap:10px;' + (s.found ? 'background:#E3F2EC;color:#0B6B50;border:1px solid #0B6B50' : 'background:#17171A;color:#F6F4EF;border:1px solid #17171A'),
+      fpBad: s.bad, noLabel: s.bad ? 'Volver a escanear' : 'No coinciden',
+      fpNo: () => { if (s.bad) this.go(2); else this.setState({ bad: true }); },
+      fpYes: () => this.go(4),
+      isPick: picking, isSync: s.phase === 'sync', isDone: s.phase === 'done',
+      s4Title: picking ? 'Qué quieres sincronizar' : s.phase === 'sync' ? 'Sincronizando…' : 'Todo al día',
+      s4Sub: picking ? 'Puedes cambiarlo cuando quieras en Ajustes → Dispositivos.' : 'Solo viajan los cambios desde la última vez. Por la red local, nunca por Tor.',
+      scopes, keysOn: picking && s.sc.claves,
+      syncBtn: 'Sincronizar ' + n + (n === 1 ? ' ámbito' : ' ámbitos'),
+      startSync: () => this.startSync(),
+      totalPct: (n ? Math.round(sum / n * 100) : 100) + ' %'
+    };
+  }
+}
+</script>
+</body>
+</html>

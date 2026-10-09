@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · bienvenida</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s,transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.96)}
+.word{display:inline-block;animation:word .9s cubic-bezier(.22,1,.36,1) both}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+@keyframes word{from{opacity:0;transform:translateY(40%) rotate(3deg)}to{opacity:1;transform:none}}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes p0{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes p1{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@keyframes fall{0%{transform:translateY(-40px) rotate(0);opacity:0}10%{opacity:1}100%{transform:translateY(860px) rotate(540deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+
+<sc-if value="{{isWelcome}}" hint-placeholder-val="{{ true }}">
+<div style="flex: 1; display: flex; flex-direction: column; padding: 120px 28px 40px">
+<div class="rise" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #5E5B55">BIENVENIDO A NEWPAPER</div>
+<div style="font-family: 'Newsreader', serif; font-size: 56px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 500; margin-top: 18px"><span class="word" style="animation-delay: .15s">Lee.</span><br><span class="word" style="animation-delay: .4s">Contrasta.</span><br><span class="word" style="animation-delay: .65s; font-style: italic; color: #2340B8">Decide tú.</span></div>
+<div class="rise" style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.5; color: #3D3B37; margin-top: 22px; animation-delay: 1s">Tres preguntas rápidas y te enseñamos cómo funciona.</div>
+<div class="rise" style="margin-top: auto; display: flex; flex-direction: column; gap: 8px; animation-delay: 1.2s">
+<button onClick="{{start}}" style="height: 54px; border: 0; border-radius: 16px; background: #17171A; color: #F6F4EF; font-weight: 500; font-size: 16px">Empezar</button>
+<a href="Movil-Inicio.dc.html" style="height: 48px; display: flex; align-items: center; justify-content: center; color: #5E5B55">Saltar</a>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isFlow}}" hint-placeholder-val="{{ false }}">
+<div style="flex: 1; display: flex; flex-direction: column; padding: 56px 22px 30px">
+<div style="display: flex; gap: 4px"><sc-for list="{{bars}}" as="b" hint-placeholder-count="6"><span style="{{b}}"></span></sc-for></div>
+<div style="{{pane}}">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981; margin-top: 26px">{{kicker}}</div>
+<div style="font-family: 'Newsreader', serif; font-size: 30px; line-height: 1.12; margin: 6px 0 8px">{{title}}</div>
+<div style="color: #5E5B55; line-height: 1.5; margin-bottom: 22px">{{desc}}</div>
+<sc-if value="{{s0}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{topics}}" as="t" hint-placeholder-count="10"><button onClick="{{t.toggle}}" aria-pressed="{{t.aria}}" style="{{t.style}}">{{t.name}}</button></sc-for></div></sc-if>
+<sc-if value="{{s1}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 10px"><sc-for list="{{aiOpts}}" as="o" hint-placeholder-count="3"><button onClick="{{o.pick}}" style="{{o.style}}"><span style="{{o.radio}}"><span style="{{o.dot}}"></span></span><span style="flex: 1"><span style="display: block; font-weight: 600">{{o.name}}</span><span style="display: block; font-size: 13px; color: #5E5B55; margin-top: 2px; line-height: 1.4">{{o.desc}}</span></span></button></sc-for></div></sc-if>
+<sc-if value="{{s2}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 10px"><sc-for list="{{netOpts}}" as="o" hint-placeholder-count="2"><button onClick="{{o.pick}}" style="{{o.style}}"><span style="font-weight: 600; font-size: 16px">{{o.name}}</span><span style="font-size: 13px; opacity: .8">{{o.desc}}</span></button></sc-for></div></sc-if>
+<sc-if value="{{isFeat}}" hint-placeholder-val="{{ false }}">
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 20px; padding: 22px; min-height: 230px">
+<sc-if value="{{f0}}" hint-placeholder-val="{{ true }}"><div style="font-family: 'Newsreader', serif; font-size: 18px; line-height: 1.75; color: #ABA79E">La subida lo sitúa en <span style="color: #17171A; background: #F7DFB0; border-radius: 3px; padding: 0 2px">el nivel más alto de Europa</span><span style="font-size: 10px; font-weight: 600; color: #8A5300; margin-left: 4px">ENGAÑOSO</span>, y <span style="color: #17171A; background: #F6CFC9; border-radius: 3px; padding: 0 2px">la patronal, fiel a su costumbre…</span></div></sc-if>
+<sc-if value="{{f1}}" hint-placeholder-val="{{ false }}"><div style="display: flex; align-items: center; gap: 16px"><div style="width: 86px; height: 86px; border-radius: 50%; box-shadow: inset 0 0 0 7px #B26A00; display: flex; align-items: center; justify-content: center; font-family: 'Newsreader', serif; font-size: 34px; color: #8A5300">38</div><div style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.3">Militante, con un dato inflado</div></div><div style="display: flex; height: 6px; border-radius: 3px; overflow: hidden; gap: 2px; margin-top: 18px"><span style="flex: 2; background: #C2412F"></span><span style="flex: 2; background: #B9B4A9"></span><span style="flex: 2; background: #2F5BD3"></span></div><div style="font-size: 12px; color: #5E5B55; margin-top: 6px">Contrastado con 6 medios de todo el espectro</div></sc-if>
+<sc-if value="{{f2}}" hint-placeholder-val="{{ false }}"><div style="font-family: 'Newsreader', serif; font-style: italic; font-size: 15px; border-left: 2px solid #2340B8; padding-left: 10px; color: #3D3B37; border-radius: 0">«sin que se haya destruido empleo»</div><div style="align-self: flex-end; background: #17171A; color: #F6F4EF; padding: 10px 14px; border-radius: 14px 14px 4px 14px; margin: 10px 0 10px 40px">¿Es cierto?</div><div style="font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.5">Está en disputa: la AIReF estimó un efecto negativo moderado <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8; background: #E8ECFA; padding: 0 4px; border-radius: 4px">1</span></div></sc-if>
+</div>
+</sc-if>
+</div>
+<div style="margin-top: auto; display: flex; gap: 8px">
+<button onClick="{{back}}" style="height: 54px; padding: 0 18px; border: 1px solid #D9D5CC; border-radius: 16px; background: transparent; color: #5E5B55">Atrás</button>
+<button onClick="{{next}}" style="flex: 1; height: 54px; border: 0; border-radius: 16px; background: #17171A; color: #F6F4EF; font-weight: 500; font-size: 15px">{{nextLabel}}</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{confetti}}" as="c" hint-placeholder-count="0"><span style="{{c}}"></span></sc-for>
+<div class="rise" style="flex: 1; display: flex; flex-direction: column; padding: 160px 28px 40px">
+<div style="font-family: 'Newsreader', serif; font-size: 64px; letter-spacing: -0.03em">Listo.</div>
+<div style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.5; color: #3D3B37; margin-top: 10px">Tu edición está montada. Comparte cualquier noticia con newpaper para analizarla.</div>
+<a href="Movil-Inicio.dc.html" style="margin-top: auto; height: 54px; border-radius: 16px; background: #17171A; color: #F6F4EF; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px">Leer el briefing de hoy</a>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { phase: 'welcome', i: 0, k: 0, topics: { Economía: true, Política: true, Europa: true }, ai: 'local', net: 'tor' }; }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const STEPS = [['1 DE 3', 'Qué te interesa', 'Para tu briefing diario. No sale del móvil.'], ['2 DE 3', 'Cómo usar la IA', 'Puedes cambiarlo en Ajustes cuando quieras.'], ['3 DE 3', 'Cómo sales a internet', 'El bloqueador de anuncios va siempre activado.'], ['ASÍ FUNCIONA', 'Las frases que hay que mirar, encendidas', 'La lente apaga el texto neutro y marca cada afirmación con su veredicto.'], ['ASÍ FUNCIONA', 'Una nota, seis medios', 'Cada noticia se contrasta con coberturas de todo el espectro.'], ['ASÍ FUNCIONA', 'Pregunta por cualquier frase', 'Mantén pulsado un trozo del texto y pregúntale al agente. Responde con fuentes.']];
+    const T = ['Economía', 'Política', 'Europa', 'Internacional', 'Vivienda', 'Clima', 'Tecnología', 'Ciencia', 'Sanidad', 'Educación'];
+    const go = (d) => { const n = s.i + d; if (n < 0) { this.setState({ phase: 'welcome' }); return; } if (n >= STEPS.length) { this.setState({ phase: 'done' }); return; } this.setState({ i: n, k: s.k + 1 }); };
+    const COLS = ['#2340B8', '#A3271B', '#B26A00', '#0B6B50', '#17171A', '#4A2FB8'];
+    return {
+      isWelcome: s.phase === 'welcome', isFlow: s.phase === 'flow', isDone: s.phase === 'done',
+      start: () => this.setState({ phase: 'flow', i: 0, k: s.k + 1 }),
+      bars: STEPS.map((x, i) => 'flex:1;height:4px;border-radius:2px;transition:background-color .6s ' + E + ';background:' + (i <= s.i ? '#17171A' : '#E2DED5')),
+      pane: 'animation:p' + (s.k % 2) + ' .55s ' + E + ' both',
+      kicker: STEPS[s.i][0], title: STEPS[s.i][1], desc: STEPS[s.i][2],
+      s0: s.i === 0, s1: s.i === 1, s2: s.i === 2, isFeat: s.i >= 3, f0: s.i === 3, f1: s.i === 4, f2: s.i === 5,
+      topics: T.map((t) => { const on = !!s.topics[t]; return { name: t, aria: on ? 'true' : 'false', toggle: () => this.setState({ topics: { ...s.topics, [t]: !on } }), style: 'height:44px;padding:0 16px;border-radius:999px;font-size:15px;' + (on ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:#FFFFFF;color:#17171A;border:1px solid #D9D5CC') }; }),
+      aiOpts: [['local', 'En mi móvil o mi PC', 'Modelos locales: gratis y privado. Puede usar el Ollama de tu ordenador.'], ['equil', 'Equilibrado', 'Nube para verificar bien. Necesitas una clave de API.'], ['later', 'Lo decido luego', 'Empiezas con el análisis rápido.']].map((o) => { const on = s.ai === o[0]; return { name: o[1], desc: o[2], pick: () => this.setState({ ai: o[0] }), radio: 'flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 ' + (on ? '2px #17171A' : '1.5px #B9B4A9'), dot: 'width:11px;height:11px;border-radius:50%;background:#17171A;transition:transform .5s cubic-bezier(.34,1.56,.64,1);transform:scale(' + (on ? 1 : 0) + ')', style: 'display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border-radius:18px;background:#FFFFFF;color:#17171A;' + (on ? 'border:1.5px solid #17171A' : 'border:1px solid #E2DED5') }; }),
+      netOpts: [['direct', 'Conexión directa', 'Lo más rápido. Los medios ven tu IP.'], ['tor', 'A través de Tor', 'Anónimo y eliges país de salida.']].map((o) => { const on = s.net === o[0]; return { name: o[1], desc: o[2], pick: () => this.setState({ net: o[0] }), style: 'display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:20px;border-radius:18px;' + (on ? (o[0] === 'tor' ? 'background:#4A2FB8;color:#FFFFFF;border:1px solid #4A2FB8' : 'background:#17171A;color:#F6F4EF;border:1px solid #17171A') : 'background:#FFFFFF;color:#17171A;border:1px solid #E2DED5') }; }),
+      back: () => go(-1), next: () => go(1), nextLabel: s.i === STEPS.length - 1 ? 'Empezar a leer' : 'Siguiente',
+      confetti: Array.from({ length: 18 }, (_, i) => 'position:absolute;top:0;left:' + ((i * 37) % 100) + '%;width:' + (6 + (i % 3) * 3) + 'px;height:' + (10 + (i % 4) * 3) + 'px;border-radius:2px;background:' + COLS[i % COLS.length] + ';animation:fall ' + (2.4 + (i % 5) * 0.4) + 's cubic-bezier(.3,.6,.5,1) ' + ((i % 7) * 0.12) + 's both')
+    };
+  }
+}
+</script>
+</body>
+</html>

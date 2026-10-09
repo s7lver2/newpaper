@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Síntesis neutral</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:var(--accent);transition:color .45s cubic-bezier(.22,1,.36,1),background-color .45s cubic-bezier(.22,1,.36,1)}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),box-shadow .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;transition:background-color .6s cubic-bezier(.22,1,.36,1),border-color .6s cubic-bezier(.22,1,.36,1)}
+.kick{font-size:11px;font-weight:600;letter-spacing:.1em;color:var(--muted);margin:0}
+.mono{font-family:'IBM Plex Mono',monospace}
+.serif{font-family:'Newsreader',serif}
+.hov:hover{background:var(--soft)}
+.rise{animation:rise .9s cubic-bezier(.22,1,.36,1) both}
+.slide{animation:slide .9s cubic-bezier(.22,1,.36,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes rise0{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes rise1{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes slide{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="{{root}}">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid var(--line3); background: var(--chrome); flex-wrap: wrap; transition: background-color .6s">
+<a href="Main.dc.html" class="hov" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 10px; color: var(--ink); text-decoration: none; background: var(--paper); border: 1px solid var(--line3)">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Artículo original</a>
+<span class="mono" style="font-size: 12px; color: var(--muted)">newpaper://sintesis/smi-2026</span>
+<div style="margin-left: auto; display: flex; gap: 10px; flex-wrap: wrap">
+<div style="display: flex; background: var(--soft); border-radius: 10px; padding: 3px; gap: 3px">
+<sc-for list="{{themes}}" as="t" hint-placeholder-count="2"><button onClick="{{t.pick}}" style="{{t.style}}">{{t.label}}</button></sc-for>
+</div>
+<div style="display: flex; background: var(--soft); border-radius: 10px; padding: 3px; gap: 3px">
+<sc-for list="{{modes}}" as="m" hint-placeholder-count="3"><button onClick="{{m.pick}}" style="{{m.style}}">{{m.label}}</button></sc-for>
+</div>
+</div>
+</div>
+<div style="flex: 1; display: flex; flex-wrap: wrap">
+<div style="flex: 999 1 640px; min-width: 0; padding: 52px 40px 80px; display: flex; justify-content: center">
+<article style="max-width: 720px; width: 100%">
+<div class="rise" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 18px">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: var(--ok)">VERSIÓN NEUTRAL · CONTRASTADA</span>
+<span style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted)"><span style="display: flex; gap: 2px"><span style="width: 10px; height: 4px; border-radius: 2px; background: var(--ok)"></span><span style="width: 10px; height: 4px; border-radius: 2px; background: var(--ok)"></span><span style="width: 10px; height: 4px; border-radius: 2px; background: var(--ok)"></span><span style="width: 10px; height: 4px; border-radius: 2px; background: var(--ok)"></span><span style="width: 10px; height: 4px; border-radius: 2px; background: var(--line3)"></span></span>4 de 5 hechos con confianza alta</span>
+</div>
+<h1 class="rise serif" style="font-weight: 500; font-size: 46px; line-height: 1.1; letter-spacing: -0.015em; margin: 0 0 16px; animation-delay: 60ms">El Gobierno aprueba una subida del salario mínimo; la patronal la rechaza</h1>
+<p class="rise serif" style="font-size: 21px; line-height: 1.5; color: var(--ink2); margin: 0 0 36px; animation-delay: 120ms">Lo que se sabe, lo que dice cada parte, lo que está en disputa y lo que aún no se puede saber.</p>
+
+<sc-if value="{{showSummary}}" hint-placeholder-val="{{ true }}">
+<div class="rise card" style="padding: 22px 24px; margin-bottom: 40px; animation-delay: 180ms">
+<p class="kick" style="margin-bottom: 12px">EN TRES LÍNEAS</p>
+<ol class="serif" style="margin: 0; padding-left: 22px; font-size: 18px; line-height: 1.55; display: flex; flex-direction: column; gap: 8px">
+<li>El Gobierno aprobó el martes una nueva subida del salario mínimo, con efectos desde enero.</li>
+<li>Afectará a unos 2,5 millones de trabajadores; España queda sexta de la UE en SMI nominal.</li>
+<li>La CEOE la rechaza. Su efecto en el empleo sigue en debate entre estudios.</li>
+</ol>
+</div>
+<div class="rise" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 44px; animation-delay: 240ms">
+<sc-for list="{{keyData}}" as="k" hint-placeholder-count="3">
+<div style="border-top: 2px solid var(--ink); padding-top: 12px; border-radius: 0">
+<div class="serif" style="font-size: 42px; line-height: 1; letter-spacing: -0.02em">{{k.v}}</div>
+<div style="font-size: 13px; color: var(--ink2); margin: 8px 0 6px; line-height: 1.4">{{k.l}}</div>
+<div class="mono" style="font-size: 11px; color: var(--accent)">{{k.s}}</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{full}}" hint-placeholder-val="{{ true }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 48px; animation-delay: 300ms">
+<section>
+<h2 class="kick" style="margin-bottom: 14px">QUÉ HA PASADO</h2>
+<div class="serif" style="font-size: 19px; line-height: 1.8">
+<sc-for list="{{facts}}" as="x" hint-placeholder-count="4"><button onClick="{{x.pick}}" style="{{x.style}}">{{x.text}}</button> </sc-for>
+</div>
+<div style="font-size: 12px; color: var(--faint); margin-top: 10px">Pulsa una frase para ver sus fuentes.</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+<h2 class="kick">EN DATOS</h2>
+<span style="display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted)"><span class="mono" style="font-size: 10px; font-weight: 600; color: var(--accent); background: var(--accentSoft); padding: 2px 6px; border-radius: 5px">AUTO</span>Gráficos elegidos por el agente · cada dato enlaza a su fuente</span>
+</div>
+
+<figure class="card" style="margin: 0; padding: 24px 24px 18px">
+<div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap">
+<div>
+<div class="mono" style="font-size: 10px; letter-spacing: 0.08em; color: var(--faint)">EVOLUCIÓN</div>
+<div class="serif" style="font-size: 24px; margin-top: 2px">El salario mínimo desde 2018</div>
+<div style="font-size: 12px; color: var(--muted); margin-top: 2px">Euros al mes, en 14 pagas</div>
+</div>
+<div style="display: flex; gap: 6px; align-items: center">
+<div style="display: flex; background: var(--soft); border-radius: 9px; padding: 3px; gap: 2px">
+<sc-for list="{{chartModes}}" as="cm" hint-placeholder-count="3"><button onClick="{{cm.pick}}" style="{{cm.style}}">{{cm.label}}</button></sc-for>
+</div>
+</div>
+</div>
+<sc-if value="{{showChart}}" hint-placeholder-val="{{ true }}">
+<div class="rise">
+<div style="display: flex; align-items: baseline; gap: 10px; margin: 18px 0 4px"><span class="serif" style="font-size: 40px; line-height: 1; color: var(--accent); letter-spacing: -0.02em">+61 %</span><span style="font-size: 13px; color: var(--muted)">entre 2018 y 2025</span></div>
+<div style="position: relative; height: 240px; margin: 16px 0 0 40px">
+<sc-for list="{{grid}}" as="g" hint-placeholder-count="3"><div style="{{g.row}}"><span class="mono" style="width: 34px; text-align: right; font-size: 10px; color: var(--faint)">{{g.label}}</span><span style="{{g.line}}"></span></div></sc-for>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--line3)"></div>
+<sc-if value="{{isBar}}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; inset: 0; display: flex">
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="9">
+<div onMouseEnter="{{b.enter}}" onMouseLeave="{{leave}}" style="{{b.col}}">
+<sc-if value="{{b.showVal}}" hint-placeholder-val="{{ false }}"><span style="{{b.valStyle}}">{{b.short}}</span></sc-if>
+<sc-if value="{{b.hov}}" hint-placeholder-val="{{ false }}"><span style="{{b.tip}}"><span style="display: block; font-size: 11px; color: var(--muted)">{{b.year}}</span><span class="serif" style="font-size: 17px">{{b.value}}</span><span class="mono" style="display: block; font-size: 11px; color: var(--ok)">{{b.delta}}</span></span></sc-if>
+<div style="{{b.bar}}"></div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{isLine}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0">
+<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible"><polygon points="{{area}}" style="fill: var(--accent); fill-opacity: .1"></polygon><polyline points="{{line}}" fill="none" stroke-width="2.5" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round" pathLength="1" stroke-dasharray="1" style="stroke: var(--accent); animation: draw 1.6s cubic-bezier(.22,1,.36,1) both"></polyline></svg>
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="9">
+<div onMouseEnter="{{b.enter}}" onMouseLeave="{{leave}}" style="{{b.pt}}"><span style="{{b.ptDot}}"></span><sc-if value="{{b.hov}}" hint-placeholder-val="{{ false }}"><span style="{{b.ptTip}}">{{b.year}} · {{b.value}}</span></sc-if></div>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<div style="display: flex; margin: 10px 0 0 40px">
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="9"><span style="{{b.yearStyle}}">{{b.yearShort}}</span></sc-for>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{tableOn}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="margin-top: 18px; overflow-x: auto">
+<table style="width: 100%; border-collapse: collapse; font-size: 14px; table-layout: fixed">
+<thead><tr><th style="text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--line3)">Año</th><th style="text-align: right; font-weight: 500; color: var(--muted); font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--line3)">€ / mes</th><th style="text-align: right; font-weight: 500; color: var(--muted); font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--line3)">Variación</th><th style="text-align: right; font-weight: 500; color: var(--muted); font-size: 12px; padding: 8px 0; border-bottom: 1px solid var(--line3)">Fuente</th></tr></thead>
+<tbody>
+<sc-for list="{{bars}}" as="b" hint-placeholder-count="9">
+<tr><td class="mono" style="padding: 10px 0; border-bottom: 1px solid var(--line2)">{{b.year}}</td><td class="serif" style="padding: 10px 0; border-bottom: 1px solid var(--line2); text-align: right; font-size: 16px">{{b.value}}</td><td class="mono" style="padding: 10px 0; border-bottom: 1px solid var(--line2); text-align: right; font-size: 12px; color: var(--ok)">{{b.delta}}</td><td class="mono" style="padding: 10px 0; border-bottom: 1px solid var(--line2); text-align: right; font-size: 11px; color: var(--accent)">{{b.src}}</td></tr>
+</sc-for>
+</tbody>
+</table>
+</div>
+</sc-if>
+<figcaption style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--line2); font-size: 12px"><span class="mono" style="color: var(--accent)">BOE · Reales Decretos del SMI · INE</span><span style="display: flex; align-items: center; gap: 6px; color: var(--muted)"><span style="{{hatchKey}}"></span>2026: cuantía del nuevo decreto</span></figcaption>
+</figure>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px">
+<figure class="card" style="margin: 0; padding: 22px 22px 18px">
+<div class="mono" style="font-size: 10px; letter-spacing: 0.08em; color: var(--faint)">ESTIMACIONES</div>
+<div class="serif" style="font-size: 21px; margin: 2px 0 2px">¿A cuántos trabajadores afecta?</div>
+<div style="font-size: 12px; color: var(--muted); margin-bottom: 18px">Millones de personas</div>
+<div style="position: relative; margin-left: 112px; margin-right: 8px">
+<div style="{{band}}"><span style="position: absolute; top: -18px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 10px; color: var(--accent)" class="mono">RANGO COMPATIBLE</span></div>
+<sc-for list="{{ranges}}" as="r" hint-placeholder-count="3">
+<div style="position: relative; height: 40px">
+<span style="position: absolute; left: -112px; top: 12px; width: 104px; font-size: 13px">{{r.who}}</span>
+<div style="position: absolute; left: 0; right: 0; top: 19px; height: 1px; background: var(--line2)"></div>
+<div style="{{r.seg}}"></div>
+<span class="mono" style="{{r.lab}}">{{r.label}}</span>
+</div>
+</sc-for>
+<div style="position: relative; height: 18px; border-top: 1px solid var(--line3); margin-top: 6px">
+<sc-for list="{{ticks}}" as="t" hint-placeholder-count="4"><span class="mono" style="{{t.s}}">{{t.l}}</span></sc-for>
+</div>
+</div>
+</figure>
+<figure class="card" style="margin: 0; padding: 22px 22px 18px">
+<div class="mono" style="font-size: 10px; letter-spacing: 0.08em; color: var(--faint)">VOCES CITADAS</div>
+<div class="serif" style="font-size: 21px; margin: 2px 0 2px">¿A quién da voz cada medio?</div>
+<div style="font-size: 12px; color: var(--muted); margin-bottom: 16px">Reparto de las citas en cada cobertura</div>
+<sc-for list="{{voices}}" as="v" hint-placeholder-count="6">
+<div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px"><span style="{{v.nameStyle}}">{{v.name}}</span><div style="flex: 1; display: flex; height: 18px; border-radius: 5px; overflow: hidden; gap: 2px"><sc-for list="{{v.parts}}" as="p" hint-placeholder-count="4"><span style="{{p.s}}">{{p.l}}</span></sc-for></div></div>
+</sc-for>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px; font-size: 11px; color: var(--muted)">
+<sc-for list="{{legend}}" as="lg" hint-placeholder-count="4"><span style="display: flex; align-items: center; gap: 6px"><span style="{{lg.s}}"></span>{{lg.l}}</span></sc-for>
+</div>
+</figure>
+</div>
+
+<figure class="card" style="margin: 0; padding: 22px 22px 18px; overflow-x: auto">
+<div class="mono" style="font-size: 10px; letter-spacing: 0.08em; color: var(--faint)">COMPARATIVA</div>
+<div class="serif" style="font-size: 21px; margin: 2px 0 2px">Qué cuenta cada medio</div>
+<div style="font-size: 12px; color: var(--muted); margin-bottom: 14px">Los datos clave del hecho, cobertura por cobertura</div>
+<table style="width: 100%; min-width: 560px; border-collapse: collapse; font-size: 13px; table-layout: fixed">
+<thead><tr><th style="width: 28%; text-align: left; font-weight: 500; font-size: 12px; color: var(--muted); padding: 8px 0; border-bottom: 1px solid var(--line3)">Medio</th><sc-for list="{{matrixCols}}" as="mc" hint-placeholder-count="4"><th style="text-align: center; font-weight: 500; font-size: 12px; color: var(--muted); padding: 8px 4px; border-bottom: 1px solid var(--line3)">{{mc}}</th></sc-for></tr></thead>
+<tbody>
+<sc-for list="{{matrix}}" as="row" hint-placeholder-count="6">
+<tr><td style="padding: 9px 0; border-bottom: 1px solid var(--line2)"><span style="{{row.dot}}"></span>{{row.name}}</td><sc-for list="{{row.cells}}" as="c" hint-placeholder-count="4"><td style="padding: 9px 4px; border-bottom: 1px solid var(--line2); text-align: center"><span style="{{c.style}}">{{c.t}}</span></td></sc-for></tr>
+</sc-for>
+</tbody>
+</table>
+<div style="display: flex; gap: 14px; flex-wrap: wrap; margin-top: 12px; font-size: 11px; color: var(--muted)">
+<sc-for list="{{cellLegend}}" as="cl" hint-placeholder-count="4"><span style="display: flex; align-items: center; gap: 6px"><span style="{{cl.s}}">{{cl.t}}</span>{{cl.l}}</span></sc-for>
+</div>
+</figure>
+</section>
+
+<section>
+<h2 class="kick" style="margin-bottom: 14px">QUÉ DICE CADA PARTE</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{parties}}" as="p" hint-placeholder-count="3">
+<div class="card" style="padding: 16px; display: flex; flex-direction: column; gap: 10px; border-radius: 14px">
+<span style="{{p.whoStyle}}">{{p.who}}</span>
+<span class="serif" style="font-size: 16px; line-height: 1.5; color: var(--ink2)">{{p.says}}</span>
+<span class="mono" style="margin-top: auto; font-size: 11px; color: var(--accent)">{{p.src}}</span>
+</div>
+</sc-for>
+</div>
+</section>
+<section>
+<h2 class="kick" style="margin-bottom: 6px; color: var(--warn)">LO QUE ESTÁ EN DISPUTA</h2>
+<div class="serif" style="font-size: 22px; margin-bottom: 16px">¿Ha destruido empleo el SMI desde 2018?</div>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{positions}}" as="p" hint-placeholder-count="3">
+<div style="{{p.wrap}}">
+<button onClick="{{p.pick}}" style="width: 100%; border: 0; background: transparent; padding: 14px 16px; display: flex; align-items: center; gap: 14px; text-align: left; color: var(--ink)">
+<span style="flex: 1; min-width: 0"><span class="serif" style="display: block; font-size: 17px">{{p.claim}}</span><span style="font-size: 12px; color: var(--muted)">{{p.who}}</span></span>
+<span style="flex: none; width: 130px; display: flex; flex-direction: column; gap: 5px; align-items: flex-end"><span style="font-size: 11px; color: var(--muted)">peso de la evidencia</span><span style="width: 130px; height: 6px; background: var(--soft); border-radius: 3px; overflow: hidden"><span style="{{p.bar}}"></span></span></span>
+</button>
+<sc-if value="{{p.open}}" hint-placeholder-val="{{ false }}"><div class="rise" style="padding: 0 16px 14px; font-size: 13px; line-height: 1.55; color: var(--ink2)">{{p.detail}}</div></sc-if>
+</div>
+</sc-for>
+</div>
+<div style="font-size: 13px; color: var(--warn); margin-top: 12px">Las pruebas apoyan sobre todo la tercera postura. Todavía no hay datos de 2026.</div>
+</section>
+<section>
+<h2 class="kick" style="margin-bottom: 12px">LO QUE AÚN NO SE SABE</h2>
+<ul class="serif" style="margin: 0; padding-left: 20px; font-size: 18px; line-height: 1.7; color: var(--ink2)">
+<li>El efecto de esta subida concreta en el empleo de 2026.</li>
+<li>Si habrá compensaciones fiscales para pymes del campo.</li>
+</ul>
+</section>
+</div>
+</sc-if>
+
+<sc-if value="{{diff}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="display: flex; flex-direction: column; gap: 10px">
+<p class="kick" style="margin-bottom: 4px">QUÉ SE HA CAMBIADO DEL ORIGINAL Y POR QUÉ</p>
+<sc-for list="{{rewrites}}" as="w" hint-placeholder-count="4">
+<div style="{{w.wrap}}">
+<div class="serif" style="font-size: 18px; line-height: 1.5; color: var(--bad); text-decoration: line-through">{{w.from}}</div>
+<div class="serif" style="font-size: 18px; line-height: 1.5; color: var(--ok)">{{w.to}}</div>
+<div style="font-size: 12px; color: var(--muted)">{{w.why}}</div>
+</div>
+</sc-for>
+</div>
+</sc-if>
+
+<div style="margin-top: 56px; padding-top: 18px; border-top: 1px solid var(--line3); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: center">
+<span class="mono" style="font-size: 11px; color: var(--faint)">6 COBERTURAS · 9 FUENTES PRIMARIAS · CLAUDE · HACE 1 MIN</span>
+<a href="Main.dc.html" style="display: flex; align-items: center; height: 40px; padding: 0 14px; border: 1px solid var(--ink); border-radius: 10px; color: var(--ink); text-decoration: none">Preguntar al agente</a>
+</div>
+</article>
+</div>
+<aside class="slide" style="flex: 1 1 360px; max-width: 100%; border-left: 1px solid var(--line3); background: var(--panel); padding: 28px 24px; box-sizing: border-box; display: flex; flex-direction: column; gap: 32px; transition: background-color .6s">
+<div>
+<p class="kick" style="margin-bottom: 12px">FUENTES DE LA FRASE</p>
+<div style="{{selWrap}}">
+<div class="serif" style="font-size: 17px; line-height: 1.5; margin-bottom: 12px">{{sel.text}}</div>
+<span style="{{sel.badge}}">{{sel.kind}}</span>
+<div style="margin-top: 10px">
+<sc-for list="{{sel.sources}}" as="src" hint-placeholder-count="2">
+<div style="display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--line)"><span style="{{src.dot}}"></span><div style="flex: 1; min-width: 0"><div style="font-size: 14px">{{src.name}}</div><div style="font-size: 12px; color: var(--muted)">{{src.note}}</div></div></div>
+</sc-for>
+</div>
+</div>
+</div>
+<div>
+<p class="kick" style="margin-bottom: 12px">COBERTURAS CONTRASTADAS</p>
+<sc-for list="{{outlets}}" as="o" hint-placeholder-count="6">
+<div style="display: flex; align-items: center; gap: 10px; padding: 9px 0; border-top: 1px solid var(--line2); font-size: 13px"><span style="{{o.dot}}"></span><span style="flex: 1">{{o.name}}</span><span style="width: 64px; height: 4px; background: var(--soft); border-radius: 2px; overflow: hidden"><span style="{{o.bar}}"></span></span><span class="mono" style="font-size: 12px; color: var(--muted); width: 22px; text-align: right">{{o.score}}</span></div>
+</sc-for>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<div class="card" style="padding: 12px; border-radius: 12px"><div class="serif" style="font-size: 24px">4</div><div style="font-size: 11px; color: var(--muted)">frases reescritas</div></div>
+<div class="card" style="padding: 12px; border-radius: 12px"><div class="serif" style="font-size: 24px">1</div><div style="font-size: 11px; color: var(--muted)">dato corregido</div></div>
+<div class="card" style="padding: 12px; border-radius: 12px"><div class="serif" style="font-size: 24px">2</div><div style="font-size: 11px; color: var(--muted)">voces añadidas</div></div>
+</div>
+</aside>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2100}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { theme: 'paper', mode: 'full', sel: 's3', n: 0, pos: null, chart: 'bar', hover: null, grown: false }; }
+  componentDidMount() { this.tg = setTimeout(() => this.setState({ grown: true }), 250); }
+  componentWillUnmount() { clearTimeout(this.tg); }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const P = {
+      paper: { paper: '#F6F4EF', chrome: '#E7E3DA', panel: '#FBFAF7', card: '#FFFFFF', ink: '#17171A', ink2: '#3D3B37', muted: '#5E5B55', faint: '#8D8981', line: '#E2DED5', line2: '#EFECE6', line3: '#D9D5CC', soft: '#EFECE5', accent: '#2340B8', accentSoft: '#E8ECFA', ok: '#0B6B50', okBg: '#E3F2EC', warn: '#8A5300', warnMid: '#B26A00', warnBg: '#FBF0DC', bad: '#A3271B', badBg: '#FBE7E4', left: '#C2412F', center: '#8D8981', right: '#2F5BD3', onInk: '#F6F4EF' },
+      ink: { paper: '#131315', chrome: '#0C0C0E', panel: '#18181B', card: '#1C1C1F', ink: '#ECE9E2', ink2: '#CBC7BE', muted: '#A29E95', faint: '#77736C', line: '#2B2B2F', line2: '#232327', line3: '#36363B', soft: '#242428', accent: '#8EA3F2', accentSoft: '#1F2643', ok: '#5DCAA5', okBg: '#12302A', warn: '#E8A951', warnMid: '#E8A951', warnBg: '#33260F', bad: '#F09595', badBg: '#3A1A17', left: '#E57F6E', center: '#8D8981', right: '#7E9BEF', onInk: '#131315' }
+    }[s.theme];
+    const vars = Object.keys(P).map((k) => '--' + k + ':' + P[k]).join(';');
+    const seg = (on) => 'height:32px;padding:0 12px;border:0;border-radius:8px;font-size:13px;' + (on ? 'background:var(--card);color:var(--ink);font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.12)' : 'background:transparent;color:var(--muted)');
+    const dot = (c) => 'flex:none;width:8px;height:8px;border-radius:50%;margin-top:6px;background:' + c;
+    const K = { h: ['Hecho verificado', 'var(--okBg)', 'var(--ok)'], a: ['Afirmación atribuida', 'var(--accentSoft)', 'var(--accent)'], d: ['En disputa', 'var(--warnBg)', 'var(--warn)'] };
+    const F = [
+      ['s1', 'h', 'El Consejo de Ministros aprobó el martes una subida del salario mínimo interprofesional, con efectos desde el 1 de enero.', [['BOE · Real Decreto', 'Fuente primaria', 'var(--ok)'], ['EFE, Europa Press, El País', '3 de 6 coberturas coinciden', 'var(--faint)']]],
+      ['s2', 'a', 'Según la memoria del ministerio, afectará a unos 2,5 millones de trabajadores; el Banco de España estima entre 2,1 y 2,5 millones.', [['Memoria del ministerio', 'Cifra oficial', 'var(--accent)'], ['Banco de España', 'Estimación independiente', 'var(--ok)']]],
+      ['s3', 'h', 'Con la subida, España queda sexta en la UE en salario mínimo nominal y séptima ajustado por poder adquisitivo.', [['Eurostat · earn_mw_cur', 'Dato de enero de 2026', 'var(--ok)'], ['El Diario Rojo', 'Afirmaba «el más alto de Europa»: corregido', 'var(--bad)']]],
+      ['s4', 'a', 'La CEOE votó en contra en la mesa de diálogo social.', [['Comunicado de la CEOE', 'Postura de parte', 'var(--accent)'], ['Expansión, ABC', 'Recogen la misma información', 'var(--faint)']]]
+    ];
+    const cur = F.find((x) => x[0] === s.sel) || F[2];
+
+    const SMI = [[2018, 735.9], [2019, 900], [2020, 950], [2021, 965], [2022, 1000], [2023, 1080], [2024, 1134], [2025, 1184], [2026, 1221, true]];
+    const fmt = (v) => v.toLocaleString('es-ES', { maximumFractionDigits: 1 }) + ' €';
+    const n = SMI.length, MAX = 1300;
+    const bars = SMI.map((d, i) => {
+      const pct = d[1] / MAX * 100, hov = s.hover === i, isNew = !!d[2], dim = s.hover !== null && !hov;
+      const key = i === 0 || i === n - 2;
+      return {
+        year: d[0], yearShort: "'" + String(d[0]).slice(2), hov, value: isNew ? '[CIFRA]' : fmt(d[1]),
+        short: isNew ? 'nuevo' : Math.round(d[1]).toLocaleString('es-ES'),
+        showVal: (key || isNew) && s.hover === null && s.grown,
+        delta: i === 0 || isNew ? '—' : '+' + ((d[1] / SMI[i - 1][1] - 1) * 100).toFixed(1).replace('.', ',') + ' %', src: isNew ? 'RD 2026' : 'BOE',
+        enter: () => this.setState({ hover: i }),
+        col: 'flex:1;height:100%;position:relative;display:flex;align-items:flex-end;justify-content:center;border-radius:8px 8px 0 0;transition:background-color .35s ' + E + ';background:' + (hov ? 'var(--soft)' : 'transparent'),
+        bar: 'width:52%;border-radius:5px 5px 1px 1px;transition:height 1.3s ' + E + ' ' + (i * 70) + 'ms,opacity .35s ' + E + ',background-color .35s ' + E + ';height:' + (s.grown ? pct : 0) + '%;opacity:' + (dim ? 0.35 : 1) + ';' + (isNew ? 'background:repeating-linear-gradient(135deg,var(--accent) 0 2px,transparent 2px 6px);box-shadow:inset 0 0 0 1.5px var(--accent)' : 'background:' + (key || hov ? 'var(--accent)' : 'color-mix(in srgb,var(--accent) 55%,var(--card))')),
+        valStyle: "position:absolute;bottom:calc(" + pct + "% + 8px);left:50%;transform:translateX(-50%);font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;white-space:nowrap;color:var(--accent);animation:rise .6s " + E + ' both;animation-delay:1.2s',
+        tip: 'position:absolute;bottom:calc(' + pct + '% + 10px);left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--card);color:var(--ink);border:1px solid var(--line);box-shadow:0 10px 24px rgba(0,0,0,.12);padding:8px 10px;border-radius:10px;z-index:3;text-align:left;animation:rise .35s ' + E + ' both',
+        yearStyle: "flex:1;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;transition:color .3s;color:" + (hov ? 'var(--ink)' : 'var(--faint)'),
+        pt: 'position:absolute;left:' + ((i + 0.5) / n * 100) + '%;top:' + (100 - pct) + '%;width:30px;height:30px;margin:-15px 0 0 -15px;display:flex;align-items:center;justify-content:center',
+        ptDot: 'border-radius:50%;transition:all .35s ' + E + ';width:' + (hov ? 13 : 9) + 'px;height:' + (hov ? 13 : 9) + 'px;' + (isNew ? 'background:var(--card);box-shadow:0 0 0 2px var(--accent)' : 'background:var(--accent);box-shadow:0 0 0 3px var(--card)'),
+        ptTip: 'position:absolute;bottom:24px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--ink);color:var(--onInk);font-size:12px;padding:5px 9px;border-radius:7px;animation:rise .3s ' + E + ' both'
+      };
+    });
+    const pts = SMI.map((d, i) => ((i + 0.5) / n * 100).toFixed(2) + ',' + (100 - d[1] / MAX * 100).toFixed(2));
+    const grid = [[1300, 0], [975, 25], [650, 50], [325, 75]].map((g) => ({ label: g[0].toLocaleString('es-ES'), row: 'position:absolute;left:-40px;right:0;top:' + g[1] + '%;display:flex;align-items:center;gap:6px;transform:translateY(-50%)', line: 'flex:1;height:0;border-top:1px dashed var(--line)' }));
+
+    const axis = (v) => (v - 1.5) / 1.5 * 100;
+    const ranges = [['Ministerio', 2.5, 2.5, 'var(--accent)', '2,5'], ['Banco de España', 2.1, 2.5, 'var(--ok)', '2,1–2,5'], ['El Diario Rojo', 2.5, 2.5, 'var(--left)', '2,5']].map((r, i) => {
+      const a = axis(r[1]), b = axis(r[2]), point = r[1] === r[2];
+      return {
+        who: r[0], label: r[4],
+        seg: 'position:absolute;top:' + (point ? 12 : 14) + 'px;height:' + (point ? 14 : 10) + 'px;border-radius:7px;background:' + r[3] + ';box-shadow:0 0 0 3px var(--card);transition:all 1.2s ' + E + ' ' + (i * 140) + 'ms;left:' + (s.grown ? a : 0) + '%;width:' + (point ? '14px' : (s.grown ? b - a : 0) + '%') + ';margin-left:' + (point ? '-7px' : '0') + ';' + (point ? 'transform:rotate(45deg);border-radius:3px' : ''),
+        lab: 'position:absolute;top:-2px;font-size:11px;color:' + r[3] + ';transition:left 1.2s ' + E + ' ' + (i * 140) + 'ms;transform:translateX(-50%);left:' + (s.grown ? (a + b) / 2 : 0) + '%'
+      };
+    });
+    const ticks = [1.5, 2, 2.5, 3].map((v) => ({ l: String(v).replace('.', ','), s: 'position:absolute;top:4px;font-size:10px;color:var(--faint);transform:translateX(-50%);left:' + axis(v) + '%' }));
+
+    const VC = ['var(--accent)', 'var(--warnMid)', 'var(--ok)', 'var(--faint)'];
+    const voices = [['El Diario Rojo', [30, 0, 70, 0], true], ['elDiario.es', [45, 10, 35, 10]], ['EFE', [35, 30, 25, 10]], ['El País', [30, 25, 20, 25]], ['Expansión', [15, 60, 5, 20]], ['ABC', [20, 55, 10, 15]]].map((v, vi) => ({
+      name: v[0],
+      nameStyle: 'width:100px;font-size:12px;flex:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;' + (v[2] ? 'font-weight:600' : 'color:var(--ink2)'),
+      parts: v[1].map((x, j) => ({ x, j })).filter((o) => o.x > 0).map((o) => ({ l: o.x >= 20 ? o.x + '%' : '', s: "display:flex;align-items:center;justify-content:center;height:100%;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;color:var(--card);overflow:hidden;transition:flex-grow 1.3s " + E + ' ' + (vi * 60 + o.j * 80) + 'ms;flex-grow:' + (s.grown ? o.x : 1) + ';flex-basis:0;background:' + VC[o.j] }))
+    }));
+    const legend = ['Gobierno', 'Patronal', 'Sindicatos', 'Expertos'].map((l, i) => ({ l, s: 'width:10px;height:10px;border-radius:3px;background:' + VC[i] }));
+    const CD = { si: ['✓', 'var(--okBg)', 'var(--ok)', 'lo cuenta bien'], par: ['◐', 'var(--warnBg)', 'var(--warn)', 'solo una parte'], mal: ['✗', 'var(--badBg)', 'var(--bad)', 'lo cuenta mal'], no: ['—', 'var(--soft)', 'var(--faint)', 'no lo menciona'] };
+    const chipCell = (c) => 'display:inline-flex;align-items:center;justify-content:center;width:30px;height:24px;border-radius:7px;font-size:13px;font-weight:600;background:' + CD[c][1] + ';color:' + CD[c][2];
+    const M = [['El Diario Rojo', 'var(--left)', ['si', 'mal', 'no', 'par']], ['elDiario.es', 'var(--left)', ['si', 'no', 'si', 'no']], ['EFE', 'var(--center)', ['si', 'si', 'si', 'no']], ['El País', 'var(--center)', ['si', 'si', 'si', 'si']], ['Expansión', 'var(--right)', ['no', 'no', 'si', 'par']], ['ABC', 'var(--right)', ['si', 'no', 'si', 'no']]];
+    const PO = [
+      ['p1', '«No ha destruido empleo»', 'CCOO · citado por El Diario Rojo', 25, 'var(--faint)', 'Se basa en que la afiliación total a la Seguridad Social siguió creciendo. No separa el efecto del SMI del de otras causas.'],
+      ['p2', '«Ha frenado la contratación en el campo»', 'CEOE · citado por Expansión', 35, 'var(--faint)', 'Aporta datos sectoriales de contratación agraria, pero sin grupo de control.'],
+      ['p3', 'Efecto negativo moderado y concentrado', 'AIReF · Banco de España', 80, 'var(--ok)', 'Dos evaluaciones con metodología comparativa encuentran menos empleo del esperado en jóvenes y en el campo, sin efecto apreciable en el total.']
+    ];
+    const rw = [
+      ['«el nivel más alto de toda Europa»', 'sexta en la UE en salario mínimo nominal', 'Dato corregido con Eurostat'],
+      ['«la patronal, fiel a su costumbre, vuelve a anteponer sus beneficios»', 'La CEOE votó en contra en la mesa de diálogo social', 'Opinión sustituida por un hecho atribuido'],
+      ['«un apocalipsis de empleo que nunca llega»', '(eliminado)', 'Lenguaje cargado sin contenido verificable'],
+      ['«sin que se haya destruido empleo»', 'su efecto sobre el empleo sigue en debate', 'Se añaden las fuentes que el original omitía']
+    ];
+    const cm = s.chart;
+    return {
+      root: vars + ";min-height:2100px;width:100%;display:flex;flex-direction:column;background:var(--paper);color:var(--ink);font-family:'IBM Plex Sans',sans-serif;font-size:14px;transition:background-color .6s " + E + ',color .6s ' + E,
+      themes: [['paper', 'Papel'], ['ink', 'Tinta']].map((t) => ({ label: t[1], pick: () => this.setState({ theme: t[0] }), style: seg(s.theme === t[0]) })),
+      modes: [['brief', 'Breve'], ['full', 'Completa'], ['diff', 'Cambios']].map((m) => ({ label: m[1], pick: () => this.setState({ mode: m[0] }), style: seg(s.mode === m[0]) })),
+      showSummary: s.mode !== 'diff', full: s.mode === 'full', diff: s.mode === 'diff',
+      keyData: [{ v: '+61 %', l: 'subida del SMI entre 2018 y 2025', s: 'BOE · INE' }, { v: '2,5 M', l: 'trabajadores afectados, según el ministerio', s: 'BOE · Banco de España' }, { v: '6.º', l: 'puesto en la UE en SMI nominal', s: 'Eurostat' }],
+      facts: F.map((x) => ({ text: x[2], pick: () => this.setState({ sel: x[0], n: s.n + 1 }), style: 'all:unset;cursor:pointer;display:inline;border-radius:3px;padding:1px 0;transition:background-color .7s ' + E + ',box-shadow .6s ' + E + ';' + (s.sel === x[0] ? 'background:' + K[x[1]][1] + ';box-shadow:0 2px 0 var(--ink)' : 'background:transparent;box-shadow:0 1px 0 var(--line3)') })),
+      chartModes: [['bar', 'Barras'], ['line', 'Línea'], ['table', 'Tabla']].map((c) => ({ label: c[1], pick: () => this.setState({ chart: c[0], hover: null }), style: 'height:30px;padding:0 12px;border:0;border-radius:7px;font-size:12px;' + (cm === c[0] ? 'background:var(--card);color:var(--ink);font-weight:500;box-shadow:0 1px 2px rgba(0,0,0,.12)' : 'background:transparent;color:var(--muted)') })),
+      showChart: cm !== 'table', tableOn: cm === 'table', isBar: cm === 'bar', isLine: cm === 'line',
+      bars, grid, leave: () => this.setState({ hover: null }),
+      line: pts.join(' '), area: (0.5 / n * 100).toFixed(2) + ',100 ' + pts.join(' ') + ' ' + ((n - 0.5) / n * 100).toFixed(2) + ',100',
+      hatchKey: 'width:14px;height:10px;border-radius:2px;background:repeating-linear-gradient(135deg,var(--accent) 0 2px,transparent 2px 5px);box-shadow:inset 0 0 0 1px var(--accent)',
+      band: 'position:absolute;top:-4px;bottom:18px;border-radius:8px;background:var(--accentSoft);transition:all 1.2s ' + E + ';left:' + axis(2.1) + '%;width:' + (s.grown ? axis(2.5) - axis(2.1) : 0) + '%',
+      ranges, ticks, voices, legend,
+      matrixCols: ['2,5 M afectados', 'Ranking UE', 'Postura CEOE', 'Estudios de empleo'],
+      matrix: M.map((r) => ({ name: r[0], dot: 'display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:8px;background:' + r[1], cells: r[2].map((c) => ({ t: CD[c][0], style: chipCell(c) })) })),
+      cellLegend: ['si', 'par', 'mal', 'no'].map((c) => ({ t: CD[c][0], l: CD[c][3], s: chipCell(c) + ';width:22px;height:18px;font-size:11px' })),
+      parties: [
+        { who: 'Gobierno', says: 'La subida protege el poder adquisitivo de los salarios más bajos.', src: 'Rueda de prensa · Moncloa', whoStyle: 'font-weight:600;color:var(--accent)' },
+        { who: 'CEOE', says: 'Encarece la contratación en pymes del campo y la hostelería.', src: 'Comunicado de la CEOE', whoStyle: 'font-weight:600;color:var(--warnMid)' },
+        { who: 'Sindicatos', says: 'Es insuficiente frente a la subida del coste de la vivienda.', src: 'CCOO y UGT · nota conjunta', whoStyle: 'font-weight:600;color:var(--ok)' }
+      ],
+      positions: PO.map((p) => { const open = s.pos === p[0]; return { claim: p[1], who: p[2], detail: p[5], open, pick: () => this.setState({ pos: open ? null : p[0] }), bar: 'display:block;height:6px;border-radius:3px;transition:width 1.3s ' + E + ';width:' + (s.grown ? p[3] : 0) + '%;background:' + p[4], wrap: 'background:var(--card);border-radius:14px;transition:border-color .5s ' + E + ',background-color .6s;border:1px solid ' + (open ? 'var(--ink)' : 'var(--line)') }; }),
+      rewrites: rw.map((w, i) => ({ from: w[0], to: w[1], why: w[2], wrap: 'display:flex;flex-direction:column;gap:4px;padding:16px 18px;background:var(--card);border:1px solid var(--line);border-radius:14px;animation:rise .8s ' + E + ' both;animation-delay:' + (i * 90) + 'ms' })),
+      selWrap: 'background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;animation:rise' + (s.n % 2) + ' .7s ' + E + ' both',
+      sel: { text: cur[2], kind: K[cur[1]][0], badge: 'display:inline-flex;font-size:12px;font-weight:500;padding:3px 10px;border-radius:999px;background:' + K[cur[1]][1] + ';color:' + K[cur[1]][2], sources: cur[3].map((x) => ({ name: x[0], note: x[1], dot: dot(x[2]) })) },
+      outlets: [['El Diario Rojo · original', 38, 'var(--left)'], ['elDiario.es', 61, 'var(--left)'], ['EFE', 88, 'var(--center)'], ['El País', 72, 'var(--center)'], ['Expansión', 64, 'var(--right)'], ['ABC', 52, 'var(--right)']].map((o) => ({ name: o[0], score: o[1], dot: 'flex:none;width:8px;height:8px;border-radius:50%;background:' + o[2], bar: 'display:block;height:4px;border-radius:2px;transition:width 1.2s ' + E + ';width:' + (s.grown ? o[1] : 0) + '%;background:' + (o[1] < 50 ? 'var(--warnMid)' : 'var(--ok)') }))
+    };
+  }
+}
+</script>
+</body>
+</html>

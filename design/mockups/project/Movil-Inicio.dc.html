@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · hoy</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.96)}
+input:focus{outline:none;border-color:#17171A!important}
+.rise{animation:rise .9s cubic-bezier(.22,1,.36,1) both}
+.up{animation:up .9s cubic-bezier(.34,1.3,.64,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes up{from{opacity:0;transform:translateY(120%)}to{opacity:1;transform:none}}
+@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 54px 20px 0">
+<span style="font-family: 'Newsreader', serif; font-size: 20px; font-weight: 500; letter-spacing: -0.01em">newpaper</span>
+<a href="Movil-Tor.dc.html" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4A2FB8; background: #ECE8FB; padding: 7px 11px; border-radius: 999px; font-weight: 500"><span style="width: 6px; height: 6px; border-radius: 50%; background: #4A2FB8"></span>Tor · ES</a>
+</div>
+<div style="flex: 1; overflow: hidden; padding: 22px 20px 0">
+<div class="rise">
+<div style="font-family: 'Newsreader', serif; font-size: 40px; line-height: 1.05; letter-spacing: -0.025em">Buenos días.</div>
+<div style="font-family: 'Newsreader', serif; font-style: italic; font-size: 16px; color: #5E5B55; margin-top: 4px">4 hechos importantes · 2 con discrepancias</div>
+</div>
+<div class="rise" style="position: relative; margin-top: 18px; animation-delay: 100ms">
+<label for="mq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar o pegar URL</label>
+<input id="mq" value="{{q}}" onChange="{{onQ}}" autocomplete="off" placeholder="Busca un tema o pega una URL" style="{{inputStyle}}">
+<sc-if value="{{hasQ}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; left: 0; right: 0; top: 52px; z-index: 5; background: #FFFFFF; border: 1px solid #17171A; border-top: 0; border-radius: 0 0 16px 16px; padding: 4px; box-shadow: 0 16px 30px rgba(23,23,26,.12)">
+<sc-for list="{{results}}" as="r" hint-placeholder-count="2"><a href="{{r.href}}" style="{{r.style}}"><span style="{{r.ico}}">{{r.icon}}</span><span style="flex: 1; min-width: 0"><span style="display: block; font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.3">{{r.title}}</span><span style="font-size: 12px; color: #5E5B55">{{r.meta}}</span></span></a></sc-for>
+</div>
+</sc-if>
+</div>
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55; margin: 24px 0 4px">TU BRIEFING</div>
+<sc-for list="{{brief}}" as="b" hint-placeholder-count="4">
+<a href="{{b.href}}" style="{{b.style}}">
+<span style="display: block; font-family: 'Newsreader', serif; font-size: 18px; line-height: 1.3">{{b.title}}</span>
+<span style="display: flex; align-items: center; gap: 8px; margin-top: 7px; font-size: 12px; color: #5E5B55"><span style="display: flex; height: 4px; width: 46px; border-radius: 2px; overflow: hidden; gap: 1px"><span style="{{b.l}}"></span><span style="{{b.c}}"></span><span style="{{b.r}}"></span></span>{{b.count}} · <span style="{{b.flagStyle}}">{{b.flag}}</span></span>
+</a>
+</sc-for>
+<div style="display: flex; gap: 8px; overflow: hidden; margin-top: 14px"><sc-for list="{{topics}}" as="t" hint-placeholder-count="4"><button onClick="{{t.toggle}}" style="{{t.style}}">{{t.name}}</button></sc-for></div>
+</div>
+<sc-if value="{{toast}}" hint-placeholder-val="{{ false }}">
+<div class="up" style="position: absolute; left: 12px; right: 12px; bottom: 100px; z-index: 6; background: #17171A; color: #F6F4EF; border-radius: 20px; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 12px 32px rgba(23,23,26,.28)">
+<div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #2B2B2F; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F6F4EF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13"></path></svg></span><div style="flex: 1; min-width: 0"><div style="font-size: 12px; color: #B9B4A9">Compartido desde Telegram</div><div style="font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.3; margin-top: 2px">El salario mínimo bate récords mientras la patronal…</div></div></div>
+<div style="display: flex; gap: 8px"><button onClick="{{dismiss}}" style="flex: 1; height: 44px; border: 0; border-radius: 12px; background: #2B2B2F; color: #F6F4EF">Ahora no</button><a href="Movil-Analisis.dc.html" style="flex: 2; height: 44px; border-radius: 12px; background: #F6F4EF; color: #17171A; display: flex; align-items: center; justify-content: center; font-weight: 500">Analizar</a></div>
+</div>
+</sc-if>
+<nav style="display: flex; justify-content: space-around; padding: 8px 8px 28px; border-top: 1px solid #E2DED5; background: #F6F4EF">
+<sc-for list="{{nav}}" as="n" hint-placeholder-count="4"><a href="{{n.href}}" style="{{n.style}}"><span style="{{n.pill}}">{{n.icon}}</span>{{n.label}}</a></sc-for>
+</nav>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { toast: false, q: '', follow: { Economía: true, Vivienda: true, Europa: true } }; }
+  componentDidMount() { this.t = setTimeout(() => this.setState({ toast: true }), 1600); }
+  componentWillUnmount() { clearTimeout(this.t); }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
+    const seg = (n, c) => 'flex:' + n + ';background:' + c;
+    const ev = [['El Gobierno aprueba una subida del salario mínimo; la patronal la rechaza', [5, 4, 5], '14 medios', '2 discrepancias', true, 'salario smi patronal'], ['La UE acuerda el marco del nuevo presupuesto de defensa', [2, 5, 2], '9 medios', 'consenso', false, 'ue europa defensa'], ['El Congreso tramita la reforma de la ley de vivienda', [6, 2, 3], '11 medios', 'cobertura desigual', true, 'vivienda alquiler ley'], ['Un estudio vincula la ola de calor de agosto con 1.200 muertes', [3, 3, 1], '7 medios', '1 dato discutido', true, 'calor clima']];
+    const q = s.q.trim().toLowerCase();
+    let results = [];
+    if (q) {
+      if (q.indexOf('http') === 0 || q.indexOf('.es') > 0 || q.indexOf('.com') > 0) results.push({ title: 'Analizar esta URL', meta: s.q, icon: '↗', href: 'Movil-Analisis.dc.html', tone: 'background:#E8ECFA;color:#2340B8' });
+      ev.forEach((e) => { if (q.split(/\s+/).some((w) => w.length > 2 && (e[0].toLowerCase().indexOf(w) >= 0 || e[5].indexOf(w) >= 0))) results.push({ title: e[0], meta: e[2] + ' · ' + e[3], icon: '◆', href: 'Movil-Sintesis.dc.html', tone: 'background:#EFECE5;color:#17171A' }); });
+      if (!results.length) results.push({ title: 'Nadie ha cubierto «' + s.q + '»', meta: 'Avisarme o investigar con IA', icon: '!', href: 'Movil-SinCobertura.dc.html', tone: 'background:#FBF0DC;color:#8A5300' });
+    }
+    const NAV = [['Hoy', '◉', 'Movil-Inicio.dc.html', true], ['Leyendo', '¶', 'Movil-Analisis.dc.html'], ['Agente', '✳', 'Movil-Agente.dc.html'], ['Ajustes', '⚙', 'Movil-Ajustes.dc.html']];
+    return {
+      toast: s.toast, dismiss: () => this.setState({ toast: false }),
+      q: s.q, onQ: (e) => this.setState({ q: e.target.value }), hasQ: !!q,
+      inputStyle: 'width:100%;box-sizing:border-box;height:52px;padding:0 18px;background:#FFFFFF;font-size:16px;color:#17171A;transition:border-radius .3s;' + (q ? 'border:1px solid #17171A;border-radius:16px 16px 0 0' : 'border:1px solid #D9D5CC;border-radius:16px'),
+      results: results.map((r, i) => ({ ...r, ico: 'flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;' + r.tone, style: 'display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;animation:dropIn .4s ' + E + ' both;animation-delay:' + (i * 50) + 'ms' })),
+      brief: ev.map((e, i) => ({ title: e[0], href: 'Movil-Sintesis.dc.html', count: e[2], flag: e[3], flagStyle: 'color:' + (e[4] ? '#8A5300' : '#0B6B50'), l: seg(e[1][0], '#C2412F'), c: seg(e[1][1], '#B9B4A9'), r: seg(e[1][2], '#2F5BD3'), style: 'display:block;padding:14px 0;border-top:1px solid #E2DED5;animation:rise .9s ' + E + ' both;animation-delay:' + (250 + i * 80) + 'ms' })),
+      topics: [['Economía', 3], ['Vivienda', 1], ['Europa', 2], ['Clima', 0]].map((t) => { const on = !!s.follow[t[0]]; return { name: t[0] + (on && t[1] ? ' · ' + t[1] : ''), toggle: () => this.setState({ follow: { ...s.follow, [t[0]]: !on } }), style: 'flex:none;height:36px;padding:0 14px;border-radius:999px;font-size:13px;' + (on ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:transparent;color:#5E5B55;border:1px dashed #CFCAC0') }; }),
+      nav: NAV.map((n) => ({ label: n[0], icon: n[1], href: n[2], style: 'display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;min-width:70px;padding-top:4px;color:' + (n[3] ? '#17171A' : '#8D8981'), pill: 'display:flex;align-items:center;justify-content:center;width:52px;height:30px;border-radius:15px;font-size:16px;' + (n[3] ? 'background:#E7E3DA' : '') }))
+    };
+  }
+}
+</script>
+</body>
+</html>

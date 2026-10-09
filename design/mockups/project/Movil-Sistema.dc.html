@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · errores</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0}
+a{color:#17171A;text-decoration:none}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
+button:active{transform:scale(.96)}
+.scr{scrollbar-width:none}.scr::-webkit-scrollbar{display:none}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.drawn path,.drawn line,.drawn circle,.drawn rect{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s cubic-bezier(.22,1,.36,1) forwards}
+.spin{animation:spin 1.1s linear infinite;transform-origin:50% 50%;transform-box:fill-box}
+.roll{transform-box:fill-box;transform-origin:center}
+.jam{animation:jam .18s linear infinite}
+.turn{animation:turn 1s linear infinite}
+.flow{stroke-dasharray:14 10;animation:flow .6s linear infinite}
+.pop{animation:pop .7s cubic-bezier(.34,1.56,.64,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes jam{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+@keyframes turn{to{transform:rotate(360deg)}}
+@keyframes flow{to{stroke-dashoffset:-24}}
+@keyframes pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes drop{0%{opacity:0;transform:translateY(-120px) rotate(-18deg)}60%{opacity:1;transform:translateY(8px) rotate(4deg)}100%{opacity:1}}
+@keyframes flip0{from{transform:scaleX(-1) rotateY(0)}to{transform:scaleX(-1) rotateY(360deg)}}
+@keyframes flip1{from{transform:scaleX(-1) rotateY(0)}to{transform:scaleX(-1) rotateY(360deg)}}
+@keyframes col0{from{opacity:0;transform:perspective(600px) rotateX(-55deg) translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes col1{from{opacity:0;transform:perspective(600px) rotateX(-55deg) translateY(-6px)}to{opacity:1;transform:none}}
+@keyframes prog0{from{width:0}to{width:100%}}
+@keyframes prog1{from{width:0}to{width:100%}}
+@keyframes pane0{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes pane1{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.drawn *{stroke-dashoffset:0!important}}
+</style>
+</helmet>
+<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+<div style="padding: 50px 12px 12px; border-bottom: 1px solid #E2DED5">
+<div style="display: flex; align-items: center; gap: 6px">
+<a href="Movil-Inicio.dc.html" aria-label="Volver" style="flex: none; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a>
+<span style="flex: 1; min-width: 0; font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{url}}</span>
+</div>
+<div role="tablist" aria-label="Tipo de error" style="display: flex; gap: 3px; margin: 8px 8px 0; background: #E7E3DA; border-radius: 14px; padding: 3px">
+<sc-for list="{{kinds}}" as="k" hint-placeholder-count="4"><button onClick="{{k.pick}}" role="tab" aria-selected="{{k.aria}}" style="{{k.style}}">{{k.label}}</button></sc-for>
+</div>
+</div>
+
+<div class="scr" style="flex: 1; overflow-y: auto; padding: 22px 20px 34px">
+
+<sc-if value="{{is.nf}}" hint-placeholder-val="{{ true }}">
+<div style="{{pane}}">
+<div style="display: flex; justify-content: center; gap: 12px; perspective: 600px; padding-top: 6px">
+<sc-for list="{{sorts}}" as="t" hint-placeholder-count="3">
+<button onClick="{{t.flip}}" aria-label="Girar el tipo móvil {{t.ch}}" style="{{t.style}}"><span style="{{t.inner}}">{{t.ch}}</span><span style="position: absolute; left: 50%; bottom: 9px; width: 10px; height: 4px; margin-left: -5px; border-radius: 2px; background: #5E5B55"></span></button>
+</sc-for>
+</div>
+<div class="rise" style="margin-top: 22px; animation-delay: 600ms">
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: #A3271B; margin-bottom: 6px">Error 404 · página no encontrada</div>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 28px; line-height: 1.12; letter-spacing: -0.01em; margin: 0">Esta página no ha salido en ninguna edición</h1>
+<p style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5; color: #3D3B37; margin: 8px 0 0">El enlace está mal escrito o el medio ha retirado la noticia. Los tipos se pueden girar, por si te consuela.</p>
+</div>
+<div class="rise" style="margin-top: 18px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 14px 16px 14px; animation-delay: 750ms">
+<div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #17171A; padding-bottom: 6px; margin-bottom: 12px">
+<span style="{{colTitleStyle}}">{{colTitle}}</span>
+<span style="display: flex; align-items: center">
+<button onClick="{{prevCol}}" aria-label="Columna anterior" style="width: 44px; height: 44px; border: 0; border-radius: 10px; background: transparent; color: #5E5B55; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button>
+<button onClick="{{nextCol}}" aria-label="Columna siguiente" style="width: 44px; height: 44px; border: 0; border-radius: 10px; background: transparent; color: #5E5B55; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg></button>
+</span>
+</div>
+<div style="{{colBody}}">
+<sc-if value="{{c.erratas}}" hint-placeholder-val="{{ true }}">
+<p style="font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.55; margin: 0; color: #3D3B37">Donde decía <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #A3271B; background: #FBE7E4; padding: 1px 5px; border-radius: 4px">recrod</span> debía decir <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #0B6B50; background: #E3F2EC; padding: 1px 5px; border-radius: 4px">record</span>. Pedimos disculpas a los lectores y, sobre todo, a la letra «o».</p>
+</sc-if>
+<sc-if value="{{c.chiste}}" hint-placeholder-val="{{ false }}">
+<p style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5; margin: 0 0 6px">—¿Qué le dice una web a una página que no existe?</p>
+<p style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5; margin: 0 0 8px">—Nada. No la encuentra.</p>
+<p style="font-size: 12px; color: #5E5B55; margin: 0">El departamento de humor ha sido informado.</p>
+</sc-if>
+<sc-if value="{{c.necro}}" hint-placeholder-val="{{ false }}">
+<div style="text-align: center; border: 1px solid #17171A; padding: 12px; border-radius: 4px">
+<div style="font-family: 'Newsreader', serif; font-size: 20px; line-height: 1">†</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; margin: 4px 0 6px">/salario-minimo-recrod</div>
+<div style="font-family: 'Newsreader', serif; font-style: italic; font-size: 15px; line-height: 1.45; color: #3D3B37">Vivió lo que tardaste en escribir mal la dirección. Sus enlaces rotos no la olvidarán.</div>
+</div>
+</sc-if>
+<sc-if value="{{c.anuncio}}" hint-placeholder-val="{{ false }}">
+<p style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; line-height: 1.65; margin: 0; color: #3D3B37"><b style="font-weight: 600; color: #17171A">SE BUSCA.</b> Página extraviada. Responde al nombre de /salario-minimo-recrod. Vista por última vez: nunca. Muy tímida, no sale en los buscadores. Se gratificará con un clic. Tel. 404 404 404.</p>
+</sc-if>
+<sc-if value="{{c.horoscopo}}" hint-placeholder-val="{{ false }}">
+<p style="font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.55; margin: 0; color: #3D3B37"><b style="font-weight: 600; color: #17171A">Lector</b> (todo el año): hoy no encontrarás lo que buscas, pero alguien en la portada sí. Evita las URL escritas a mano. <span style="color: #5E5B55">Número de la suerte: 404.</span></p>
+</sc-if>
+<sc-if value="{{c.consenso}}" hint-placeholder-val="{{ false }}">
+<p style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5; margin: 0 0 6px">Hemos contrastado esta página con tres fuentes independientes.</p>
+<p style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5; margin: 0; color: #0B6B50">Las tres fuentes coinciden: no existe. Por fin, consenso.</p>
+</sc-if>
+</div>
+<div style="display: flex; align-items: center; gap: 10px; margin-top: 12px">
+<div style="flex: 1; height: 2px; background: #EFECE6; overflow: hidden; border-radius: 1px"><div onAnimationEnd="{{nextCol}}" style="{{progress}}"></div></div>
+<span style="display: flex; gap: 4px"><sc-for list="{{dots}}" as="d" hint-placeholder-count="6"><span style="{{d}}"></span></sc-for></span>
+</div>
+</div>
+<div class="rise" style="display: flex; gap: 8px; margin-top: 14px; animation-delay: 900ms">
+<a href="Movil-Inicio.dc.html" style="flex: 1; height: 50px; border-radius: 14px; background: #17171A; color: #F6F4EF; display: flex; align-items: center; justify-content: center; font-weight: 500">Volver a Hoy</a>
+<a href="Movil-Hemeroteca.dc.html" style="flex: 1; height: 50px; border-radius: 14px; border: 1px solid #D9D5CC; display: flex; align-items: center; justify-content: center">Hemeroteca · 14</a>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{is.off}}" hint-placeholder-val="{{ false }}">
+<div style="{{pane}}">
+<svg class="drawn" width="350" height="180" viewBox="0 0 260 150" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block">
+<rect x="40" y="10" width="110" height="128" rx="6" pathLength="1"></rect>
+<line x1="56" y1="34" x2="134" y2="34" pathLength="1" style="animation-delay: .3s"></line>
+<line x1="56" y1="54" x2="116" y2="54" pathLength="1" style="animation-delay: .4s"></line>
+<line x1="56" y1="70" x2="130" y2="70" pathLength="1" style="animation-delay: .5s"></line>
+<line x1="56" y1="86" x2="108" y2="86" pathLength="1" style="animation-delay: .6s"></line>
+<path d="M150 80 C 180 80, 180 108, 196 108" pathLength="1" style="animation-delay: .7s"></path>
+<path d="M214 108 C 222 108, 228 98, 236 98" pathLength="1" style="animation-delay: .9s"></path>
+<path d="M198 100 l6 -8 M206 118 l6 -8" stroke="#A3271B" pathLength="1" style="animation-delay: 1.1s"></path>
+</svg>
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: #5E5B55; margin: 14px 0 6px">Sin conexión</div>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 30px; line-height: 1.1; margin: 0">Hoy no llega el periódico</h1>
+<p style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5; color: #3D3B37; margin: 10px 0 20px">No hay conexión a internet. Las noticias y análisis que ya abriste siguen disponibles.</p>
+<button onClick="{{retry}}" style="{{retryBtn}}">{{retryLabel}}</button>
+<a href="Movil-Inicio.dc.html" style="margin-top: 8px; height: 50px; border: 1px solid #D9D5CC; border-radius: 14px; display: flex; align-items: center; justify-content: center">Leer lo guardado · 12</a>
+<a href="Movil-TresEnRaya.dc.html" class="rise" style="display: flex; align-items: center; gap: 12px; margin-top: 18px; padding: 12px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; animation-delay: 900ms">
+<span style="flex: none; width: 44px; height: 44px; border-radius: 11px; background: #17171A; color: #F6F4EF; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); font-size: 10px; line-height: 14px; text-align: center; padding: 1px; box-sizing: border-box; font-family: 'IBM Plex Mono', monospace"><span>×</span><span style="color: #E58A7E">○</span><span></span><span></span><span>×</span><span style="color: #E58A7E">○</span><span></span><span></span><span>×</span></span>
+<span style="flex: 1"><span style="display: block; font-weight: 500">¿Una partida mientras vuelve?</span><span style="font-size: 12px; color: #5E5B55">Tres en raya contra El Diario</span></span>
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8D8981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"></path></svg>
+</a>
+</div>
+</sc-if>
+
+<sc-if value="{{is.tor}}" hint-placeholder-val="{{ false }}">
+<div style="{{pane}}">
+<svg class="drawn" width="350" height="180" viewBox="0 0 260 150" fill="none" stroke="#4A2FB8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block">
+<circle cx="90" cy="82" r="56" pathLength="1"></circle>
+<circle cx="90" cy="82" r="38" pathLength="1" style="animation-delay: .2s"></circle>
+<circle cx="90" cy="82" r="20" pathLength="1" style="animation-delay: .4s"></circle>
+<path d="M90 26 C 90 14, 100 8, 108 4" pathLength="1" style="animation-delay: .6s"></path>
+<rect x="176" y="12" width="56" height="128" rx="4" stroke="#17171A" pathLength="1" style="animation-delay: .7s"></rect>
+<line x1="176" y1="44" x2="232" y2="44" stroke="#17171A" pathLength="1" style="animation-delay: .9s"></line>
+<line x1="176" y1="76" x2="232" y2="76" stroke="#17171A" pathLength="1" style="animation-delay: 1s"></line>
+<line x1="176" y1="108" x2="232" y2="108" stroke="#17171A" pathLength="1" style="animation-delay: 1.1s"></line>
+<line x1="204" y1="12" x2="204" y2="44" stroke="#17171A" pathLength="1" style="animation-delay: 1.2s"></line>
+<line x1="190" y1="76" x2="190" y2="108" stroke="#17171A" pathLength="1" style="animation-delay: 1.3s"></line>
+</svg>
+<div style="font-size: 12px; font-weight: 600; letter-spacing: 0.04em; color: #4A2FB8; margin: 14px 0 6px">Acceso bloqueado a Tor</div>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 30px; line-height: 1.1; margin: 0">Este medio no deja entrar desde Tor</h1>
+<p style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5; color: #3D3B37; margin: 10px 0 20px">abc.es rechaza las conexiones que salen por <b style="font-weight: 600">{{exit}}</b>. Es habitual: la lista de nodos de salida es pública.</p>
+<button onClick="{{newCircuit}}" style="{{circuitBtn}}"><svg class="{{spinCls}}" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 12a8 8 0 11-3-6.3M20 4v5h-5"></path></svg>{{circuitLabel}}</button>
+<div style="display: flex; gap: 8px; margin-top: 8px">
+<a href="Movil-Tor.dc.html" style="flex: 1; height: 50px; border: 1px solid #D9D5CC; border-radius: 14px; display: flex; align-items: center; justify-content: center">Cambiar de país</a>
+<button onClick="{{toggleDirect}}" aria-expanded="{{directAria}}" style="flex: 1; height: 50px; border: 1px solid #D9D5CC; border-radius: 14px; background: transparent; color: #17171A">Abrir sin Tor…</button>
+</div>
+<sc-if value="{{direct}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="margin-top: 12px; padding: 14px; background: #FBF0DC; border-radius: 14px; color: #6B4100; font-size: 13px; line-height: 1.5">Solo esta pestaña saldrá por conexión directa. El medio verá tu IP real.<a href="Movil-Analisis.dc.html" style="margin-top: 10px; height: 44px; border-radius: 12px; background: #8A5300; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 500">Abrir igualmente</a></div>
+</sc-if>
+</div>
+</sc-if>
+
+<sc-if value="{{is.crash}}" hint-placeholder-val="{{ false }}">
+<div style="{{pane}}">
+<svg width="350" height="190" viewBox="0 0 300 165" fill="none" stroke="#17171A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: block">
+<rect x="20" y="4" width="260" height="110" rx="14" fill="#FFFFFF" stroke="#D9D5CC"></rect>
+<g class="{{rollCls}}"><circle cx="105" cy="59" r="36" fill="#F6F4EF"></circle><circle cx="105" cy="59" r="6" fill="#17171A"></circle><line x1="105" y1="23" x2="105" y2="95"></line><line x1="69" y1="59" x2="141" y2="59"></line></g>
+<g class="{{rollCls}}"><circle cx="195" cy="59" r="36" fill="#F6F4EF"></circle><circle cx="195" cy="59" r="6" fill="#17171A"></circle><line x1="170" y1="34" x2="220" y2="84"></line><line x1="220" y1="34" x2="170" y2="84"></line></g>
+<sc-if value="{{jammed}}" hint-placeholder-val="{{ true }}">
+<path d="M150 95 l-14 14 l22 8 l-26 12 l24 10 l-20 12" stroke="#A3271B"></path>
+</sc-if>
+<sc-if value="{{flowing}}" hint-placeholder-val="{{ false }}">
+<path class="flow" d="M150 95 L150 160" stroke="#17171A" stroke-width="10" stroke-linecap="butt" style="opacity: .85"></path>
+</sc-if>
+<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
+<g class="pop"><rect x="112" y="108" width="76" height="54" rx="4" fill="#FFFFFF"></rect><line x1="124" y1="122" x2="176" y2="122"></line><line x1="124" y1="134" x2="164" y2="134"></line><line x1="124" y1="146" x2="170" y2="146"></line></g>
+</sc-if>
+</svg>
+<div style="height: 4px; background: #E7E3DA; border-radius: 2px; overflow: hidden; margin-top: 6px"><div style="{{bar}}"></div></div>
+<div style="{{kickStyle}}">{{kick}}</div>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 30px; line-height: 1.1; margin: 0">{{title}}</h1>
+<p style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5; color: #3D3B37; margin: 10px 0 20px">{{body}}</p>
+<sc-if value="{{notDone}}" hint-placeholder-val="{{ true }}"><button onClick="{{reload}}" style="{{reloadBtn}}">{{reloadLabel}}</button></sc-if>
+<sc-if value="{{done}}" hint-placeholder-val="{{ false }}"><a href="Movil-Analisis.dc.html" class="pop" style="height: 52px; border-radius: 14px; background: #0B6B50; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 500">Volver a la noticia</a></sc-if>
+<div style="display: flex; align-items: center; gap: 12px; margin-top: 14px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 14px; padding: 8px 14px">
+<div style="flex: 1"><div style="font-weight: 500">Enviar informe del error</div><div style="font-size: 12px; color: #5E5B55">Solo datos técnicos, sin URL ni contenido.</div></div>
+<button onClick="{{toggleReport}}" role="switch" aria-checked="{{reportAria}}" aria-label="Enviar informe del error" style="{{track}}"><span style="{{knob}}"></span></button>
+</div>
+<div style="margin-top: 12px; font-size: 12px; color: #5E5B55">Tus otras pestañas y los análisis guardados están a salvo.</div>
+</div>
+</sc-if>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { kind: 'nf', pk: 0, flips: [0, 0, 0], col: 0, ck: 0, retrying: false, spinning: false, exit: 'Alemania', direct: false, phase: 'jam', prog: 0, report: false }; }
+  componentWillUnmount() { clearTimeout(this.t1); clearTimeout(this.t2); clearInterval(this.iv); }
+  reload() {
+    if (this.state.phase !== 'jam') return;
+    this.setState({ phase: 'fix', prog: 0 });
+    clearInterval(this.iv);
+    this.iv = setInterval(() => { const p = this.state.prog + 4; if (p >= 100) { clearInterval(this.iv); this.setState({ prog: 100, phase: 'ok' }); } else this.setState({ prog: p }); }, 70);
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', BN = 'cubic-bezier(.34,1.56,.64,1)';
+    const K = [['nf', '404', 'eldiariorojo.es/economia/salario-minimo-recrod'], ['off', 'Sin red', 'newpaper://sin-conexion'], ['tor', 'Tor bloqueado', 'abc.es/espana/'], ['crash', 'Cuelgue', 'El salario mínimo bate récords… · pestaña 3']];
+    const COLS = [['erratas', 'Fe de erratas'], ['chiste', 'El chiste malo'], ['necro', 'Necrológicas'], ['anuncio', 'Anuncios por palabras'], ['horoscopo', 'Horóscopo'], ['consenso', 'Última hora']];
+    const go = (d) => this.setState({ col: (s.col + d + COLS.length) % COLS.length, ck: s.ck + 1 });
+    const c = {}; COLS.forEach((x, i) => { c[x[0]] = i === s.col; });
+    const tilt = [-6, 3, -2];
+    const exits = ['Alemania', 'Países Bajos', 'Suecia', 'Suiza'];
+    const T = {
+      jam: ['La pestaña se ha colgado', '#A3271B', 'Se ha atascado la rotativa', 'Esta página ha usado demasiada memoria y ha dejado de responder. Puede ser la web, un anuncio que se coló o un fallo nuestro.'],
+      fix: ['Recargando', '#2340B8', 'Desatascando…', 'Liberando memoria y volviendo a imprimir la página.'],
+      ok: ['Recuperada', '#0B6B50', 'Todo en orden', 'La pestaña vuelve a funcionar. Hemos restaurado tu posición de lectura y tu análisis.']
+    }[s.phase];
+    const on = s.report;
+    return {
+      url: K.find((k) => k[0] === s.kind)[2],
+      kinds: K.map((k) => ({ label: k[1], aria: s.kind === k[0] ? 'true' : 'false', pick: () => { if (s.kind !== k[0]) this.setState({ kind: k[0], pk: s.pk + 1 }); }, style: 'flex:' + (k[0] === 'tor' ? '1.5' : '1') + ';height:44px;padding:0 6px;border:0;border-radius:11px;font-size:13px;white-space:nowrap;' + (s.kind === k[0] ? 'background:#FFFFFF;color:#17171A;font-weight:500;box-shadow:0 1px 3px rgba(23,23,26,.12)' : 'background:transparent;color:#3D3B37') })),
+      is: { nf: s.kind === 'nf', off: s.kind === 'off', tor: s.kind === 'tor', crash: s.kind === 'crash' },
+      pane: 'display:flex;flex-direction:column;animation:pane' + (s.pk % 2) + ' .55s ' + E + ' both',
+      sorts: ['4', '0', '4'].map((ch, i) => {
+        const f = s.flips[i];
+        return {
+          ch,
+          flip: () => { const nf = this.state.flips.slice(); nf[i]++; this.setState({ flips: nf }); },
+          style: 'position:relative;width:92px;height:118px;border:0;border-radius:12px;background:#17171A;color:#F6F4EF;display:flex;align-items:center;justify-content:center;transform:rotate(' + tilt[i] + 'deg);box-shadow:0 8px 18px rgba(23,23,26,.14);animation:drop 1s cubic-bezier(.34,1.3,.64,1) both;animation-delay:' + (i * 140) + 'ms',
+          inner: "display:block;font-family:'Newsreader',serif;font-size:88px;line-height:1;font-weight:500;transform:scaleX(-1);" + (f ? 'animation:flip' + (f % 2) + ' .8s cubic-bezier(.34,1.3,.64,1)' : '')
+        };
+      }),
+      c, colTitle: COLS[s.col][1],
+      colTitleStyle: "font-family:'Newsreader',serif;font-size:20px;font-weight:500;animation:col" + (s.ck % 2) + ' .6s ' + E + ' both',
+      colBody: 'min-height:128px;transform-origin:top center;animation:col' + (s.ck % 2) + ' .7s ' + E + ' both',
+      dots: COLS.map((x, i) => 'display:block;height:5px;border-radius:3px;transition:all .5s ' + E + ';' + (i === s.col ? 'width:14px;background:#17171A' : 'width:5px;background:#D9D5CC')),
+      prevCol: () => go(-1), nextCol: () => go(1),
+      progress: 'height:100%;background:#17171A;animation:prog' + (s.ck % 2) + ' 7s linear both',
+      retry: () => { this.setState({ retrying: true }); clearTimeout(this.t1); this.t1 = setTimeout(() => this.setState({ retrying: false }), 1800); },
+      retryLabel: s.retrying ? 'Buscando señal…' : 'Reintentar',
+      retryBtn: 'height:52px;border:0;border-radius:14px;font-weight:500;' + (s.retrying ? 'background:#E7E3DA;color:#5E5B55' : 'background:#17171A;color:#F6F4EF'),
+      exit: s.exit,
+      newCircuit: () => { if (s.spinning) return; this.setState({ spinning: true }); clearTimeout(this.t2); this.t2 = setTimeout(() => this.setState({ spinning: false, exit: exits[(exits.indexOf(this.state.exit) + 1) % exits.length] }), 1400); },
+      spinCls: s.spinning ? 'spin' : '',
+      circuitLabel: s.spinning ? 'Probando otro circuito…' : 'Probar otro circuito',
+      circuitBtn: 'display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border:0;border-radius:14px;font-weight:500;' + (s.spinning ? 'background:#ECE8FB;color:#4A2FB8' : 'background:#4A2FB8;color:#FFFFFF'),
+      direct: s.direct, directAria: s.direct ? 'true' : 'false', toggleDirect: () => this.setState({ direct: !s.direct }),
+      kick: T[0], kickStyle: 'font-size:12px;font-weight:600;letter-spacing:.04em;margin:16px 0 6px;transition:color .5s ' + E + ';color:' + T[1],
+      title: T[2], body: T[3],
+      jammed: s.phase === 'jam', flowing: s.phase === 'fix', done: s.phase === 'ok', notDone: s.phase !== 'ok',
+      rollCls: 'roll ' + (s.phase === 'jam' ? 'jam' : s.phase === 'fix' ? 'turn' : ''),
+      bar: 'height:100%;border-radius:2px;transition:width .2s linear,background-color .5s;width:' + (s.phase === 'jam' ? 100 : s.prog) + '%;background:' + (s.phase === 'jam' ? '#A3271B' : s.phase === 'fix' ? '#2340B8' : '#0B6B50'),
+      reload: () => this.reload(),
+      reloadLabel: s.phase === 'fix' ? 'Recargando… ' + s.prog + ' %' : 'Recargar',
+      reloadBtn: 'width:100%;height:52px;border:0;border-radius:14px;font-weight:500;' + (s.phase === 'fix' ? 'background:#E8ECFA;color:#2340B8' : 'background:#17171A;color:#F6F4EF'),
+      report: on, reportAria: on ? 'true' : 'false', toggleReport: () => this.setState({ report: !on }),
+      track: 'flex:none;position:relative;width:46px;height:28px;border-radius:14px;border:0;padding:0;margin:8px 0;transition:background-color .5s ' + E + ';background:' + (on ? '#0B6B50' : '#CFCAC0'),
+      knob: 'position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(23,23,26,.2);transition:transform .65s ' + BN + ';transform:translateX(' + (on ? '18px' : '0') + ')'
+    };
+  }
+}
+</script>
+</body>
+</html>

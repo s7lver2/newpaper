@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Por qué esta posición</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;display=swap">
+<style>
+body{margin:0;background:#F6F4EF}
+a{color:#2340B8;transition:color .45s cubic-bezier(.22,1,.36,1)}a:hover{color:#182E86}
+button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1),box-shadow .45s cubic-bezier(.22,1,.36,1)}
+button:active{transform:scale(.98)}
+.hov:hover{background:#EFECE5}
+.rowb:hover{background:#FBFAF7}
+.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.stg>*{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
+.stg>*:nth-child(2){animation-delay:.06s}.stg>*:nth-child(3){animation-delay:.12s}.stg>*:nth-child(4){animation-delay:.18s}.stg>*:nth-child(5){animation-delay:.24s}.stg>*:nth-child(6){animation-delay:.3s}.stg>*:nth-child(7){animation-delay:.36s}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes sw0{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes sw1{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</helmet>
+<div style="min-height: 1100px; width: 100%; display: flex; flex-direction: column; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-bottom: 1px solid #D9D5CC; background: #E7E3DA; flex-wrap: wrap">
+<a href="Main.dc.html" class="hov" style="display: flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 10px; color: #17171A; text-decoration: none; background: #F6F4EF; border: 1px solid #D9D5CC">
+<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg>Panel de análisis</a>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55">newpaper://analisis/posicion</span>
+<div style="margin-left: auto; display: flex; align-items: center; gap: 10px; font-size: 13px; color: #5E5B55">
+<span>Ver caso no determinable</span>
+<button onClick="{{toggleNd}}" role="switch" aria-checked="{{ndSw.aria}}" aria-label="Ver caso no determinable" style="{{ndSw.track}}"><span style="{{ndSw.knob}}"></span></button>
+<span style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 600; color: #8A5300; background: #FBF0DC; padding: 2px 6px; border-radius: 5px">DEMO</span>
+</div>
+</div>
+
+<main style="flex: 1; padding: 36px 40px 72px; display: flex; justify-content: center">
+<div class="stg" style="max-width: 1120px; width: 100%; display: flex; flex-direction: column; gap: 22px">
+
+<div style="display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap">
+<div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #5E5B55; margin-bottom: 6px">{{docLabel}}</div>
+<h1 style="font-family: 'Newsreader', serif; font-weight: 500; font-size: 42px; line-height: 1.08; letter-spacing: -0.015em; margin: 0">¿Por qué esta posición?</h1>
+<div style="color: #5E5B55; margin-top: 8px; max-width: 640px; line-height: 1.5">Se mide desde el texto, nunca desde la fama del medio. El modelo lee el artículo anonimizado y lo compara con las otras coberturas del mismo hecho.</div>
+</div>
+<div style="display: flex; align-items: center; gap: 12px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 14px; padding: 10px 14px">
+<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#17171A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 6.1A9.8 9.8 0 0112 6c5 0 8.5 4 9.5 6-.4.8-1.2 2-2.4 3.2M6.5 7.6C4.6 8.9 3.2 10.6 2.5 12c1 2 4.5 6 9.5 6 1.6 0 3-.4 4.3-1"></path></svg>
+<div><div style="font-weight: 500">Lectura ciega: medio oculto</div><div style="font-size: 12px; color: #5E5B55">{{blindSub}}</div></div>
+<button onClick="{{toggleBlind}}" role="switch" aria-checked="{{blindSw.aria}}" aria-label="Lectura ciega: medio oculto" style="{{blindSw.track}}"><span style="{{blindSw.knob}}"></span></button>
+</div>
+</div>
+
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 24px 28px 22px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap">
+<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55">POSICIÓN RELATIVA A LA COBERTURA DEL MISMO HECHO</div>
+<div style="{{verdictStyle}}">{{verdict}}</div>
+</div>
+<div style="position: relative; height: 150px; margin: 22px 8px 0">
+<div style="position: absolute; left: 0; right: 0; top: 74px; height: 4px; display: flex; gap: 4px"><span style="flex: 2; background: #EBC7C0; border-radius: 2px"></span><span style="flex: 1; background: #DAD6CD; border-radius: 2px"></span><span style="flex: 2; background: #C3CFF2; border-radius: 2px"></span></div>
+<div style="{{band}}"></div>
+<div style="{{center}}"><span style="position: absolute; top: 40px; left: 0; transform: translateX(-50%); font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #5E5B55; white-space: nowrap">centro del grupo</span></div>
+<sc-for list="{{others}}" as="o" hint-placeholder-count="5">
+<div style="{{o.wrap}}"><span style="{{o.lab}}">{{o.label}}</span><span style="width: 12px; height: 12px; border-radius: 50%; background: #8D8981; box-shadow: 0 0 0 3px #FFFFFF"></span></div>
+</sc-for>
+<sc-if value="{{det}}" hint-placeholder-val="{{ true }}">
+<div style="{{me}}"><span style="font-size: 12px; font-weight: 600; white-space: nowrap; margin-bottom: 6px">{{meLabel}}</span><span style="width: 20px; height: 20px; border-radius: 50%; background: #17171A; box-shadow: 0 0 0 5px #FFFFFF"></span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55; margin-top: 6px; white-space: nowrap">{{meValue}}</span></div>
+</sc-if>
+<sc-if value="{{nd}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="position: absolute; left: 50%; top: 0; transform: translateX(-50%); background: #17171A; color: #F6F4EF; border-radius: 10px; padding: 8px 14px; font-weight: 500; white-space: nowrap">No determinable</div>
+</sc-if>
+</div>
+<div style="display: flex; justify-content: space-between; font-size: 12px; color: #5E5B55; margin: 0 8px"><span>izquierda</span><span>centro</span><span>derecha</span></div>
+<div style="display: flex; gap: 18px; flex-wrap: wrap; margin-top: 16px; padding-top: 14px; border-top: 1px solid #EFECE6; font-size: 12px; color: #5E5B55">
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 10px; height: 10px; border-radius: 50%; background: #17171A"></span>este artículo</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 18px; height: 8px; border-radius: 4px; background: rgba(35,64,184,.16)"></span>banda de incertidumbre</span>
+<span style="display: flex; align-items: center; gap: 6px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #8D8981"></span>otras 5 coberturas, también anonimizadas</span>
+<span style="margin-left: auto; font-family: 'IBM Plex Mono', monospace; font-size: 11px">Neutral = cerca del centro del grupo, no a mitad de la escala</span>
+</div>
+</section>
+
+<div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: flex-start">
+<section style="flex: 999 1 560px; min-width: 0; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; overflow: hidden">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 20px 24px 12px; flex-wrap: wrap">
+<div><div style="font-family: 'Newsreader', serif; font-size: 24px">Señales</div><div style="font-size: 13px; color: #5E5B55">Cada una con su evidencia citada del texto. Sin cita, la señal no cuenta.</div></div>
+<div style="display: flex; align-items: center; gap: 10px; font-size: 11px; color: #8D8981; font-family: 'IBM Plex Mono', monospace"><span>← izquierda</span><span style="width: 1px; height: 12px; background: #D9D5CC"></span><span>derecha →</span></div>
+</div>
+<sc-for list="{{signals}}" as="g" hint-placeholder-count="7">
+<div style="border-top: 1px solid #EFECE6">
+<button onClick="{{g.toggle}}" aria-expanded="{{g.aria}}" class="rowb" style="width: 100%; border: 0; background: transparent; padding: 14px 24px; display: flex; align-items: center; gap: 16px; text-align: left; color: #17171A; flex-wrap: wrap">
+<span style="flex: 1 1 200px; min-width: 0"><span style="display: block; font-weight: 500">{{g.name}}</span><span style="display: block; font-size: 12px; color: #5E5B55">{{g.desc}}</span></span>
+<span style="flex: none; position: relative; width: 200px; height: 14px; background: #F6F4EF; border-radius: 4px"><span style="position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #8D8981"></span><span style="{{g.bar}}"></span></span>
+<span style="{{g.valStyle}}">{{g.val}}</span>
+<span style="{{g.chev}}">›</span>
+</button>
+<sc-if value="{{g.open}}" hint-placeholder-val="{{ false }}">
+<div class="rise" style="padding: 0 24px 18px; display: flex; flex-direction: column; gap: 10px">
+<sc-for list="{{g.ev}}" as="e" hint-placeholder-count="1">
+<div style="background: #F6F4EF; border-radius: 12px; padding: 12px 14px">
+<div style="font-family: 'Newsreader', serif; font-size: 17px; line-height: 1.5">«{{e.pre}}<span style="{{e.hlStyle}}">{{e.hl}}</span>{{e.post}}»</div>
+<div style="display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 6px; font-size: 12px; color: #5E5B55"><span>{{e.note}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8">{{e.where}}</span></div>
+</div>
+</sc-for>
+<sc-if value="{{g.hasCounts}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 6px; flex-wrap: wrap">
+<sc-for list="{{g.counts}}" as="ct" hint-placeholder-count="4"><span style="{{ct.s}}">{{ct.l}}<span style="font-family: 'IBM Plex Mono', monospace; font-weight: 600">{{ct.v}}</span></span></sc-for>
+</div>
+</sc-if>
+<sc-if value="{{g.hasOmits}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{g.omits}}" as="om" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid #EFECE6; font-size: 13px"><span style="flex: none; width: 18px; height: 18px; border-radius: 5px; background: #FBE7E4; color: #A3271B; display: flex; align-items: center; justify-content: center; font-size: 12px">—</span><span style="flex: 1">{{om.t}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55">lo dan {{om.n}} coberturas</span></div>
+</sc-for>
+</div>
+</sc-if>
+<div style="font-size: 12px; color: #8D8981">{{g.foot}}</div>
+</div>
+</sc-if>
+</div>
+</sc-for>
+</section>
+
+<div style="flex: 1 1 340px; min-width: 0; display: flex; flex-direction: column; gap: 22px">
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 22px">
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 0.08em; color: #8D8981">SEÑAL INDEPENDIENTE DEL MODELO</div>
+<div style="font-family: 'Newsreader', serif; font-size: 22px; margin: 2px 0 8px">Léxico calibrado</div>
+<div style="font-size: 13px; line-height: 1.55; color: #3D3B37">Un diccionario de frases partidistas sacado del Diario de Sesiones del Congreso: para cada expresión se mide cuánto más la usa un bloque que otro. Se recalcula en cada legislatura.</div>
+<div style="display: flex; flex-direction: column; margin-top: 14px">
+<sc-for list="{{lexicon}}" as="lx" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 12px; padding: 10px 0; border-top: 1px solid #EFECE6">
+<span style="flex: 1; min-width: 0"><span style="display: block; font-family: 'Newsreader', serif; font-size: 16px">«{{lx.t}}»</span><span style="display: block; font-size: 11px; color: #5E5B55">{{lx.note}}</span></span>
+<span style="flex: none; position: relative; width: 84px; height: 8px; background: #F6F4EF; border-radius: 4px"><span style="position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #8D8981"></span><span style="{{lx.bar}}"></span></span>
+<span style="{{lx.vs}}">{{lx.v}}</span>
+</div>
+</sc-for>
+</div>
+<div style="margin-top: 10px; font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981; line-height: 1.6"><div>XV legislatura · 41.208 intervenciones</div><div>config/lexicon-es.json · método Gentzkow–Shapiro</div></div>
+</section>
+
+<section style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px; padding: 22px">
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px">
+<div style="font-family: 'Newsreader', serif; font-size: 22px">Confianza total</div>
+<span style="{{confValStyle}}">{{confVal}}</span>
+</div>
+<div style="position: relative; height: 10px; background: #EFECE5; border-radius: 5px; margin: 18px 0 8px">
+<span style="{{confBar}}"></span>
+<span style="position: absolute; left: 45%; top: -5px; bottom: -5px; width: 2px; margin-left: -1px; background: #17171A; border-radius: 1px"></span>
+</div>
+<div style="display: flex; justify-content: space-between; font-family: 'IBM Plex Mono', monospace; font-size: 10px; color: #8D8981"><span>0</span><span style="margin-left: 30%">umbral 0,45</span><span>1</span></div>
+<div style="{{confNoteStyle}}">{{confNote}}</div>
+<div style="font-size: 12px; line-height: 1.5; color: #5E5B55; margin-top: 10px">Si la confianza es baja, se muestra «No determinable» en lugar de un número. Pasa, por ejemplo, con notas de agencia muy breves.</div>
+</section>
+</div>
+</div>
+
+<section>
+<div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 12px">
+<div><div style="font-family: 'Newsreader', serif; font-size: 24px">Controles</div><div style="font-size: 13px; color: #5E5B55">Pruebas para que el propio sistema no se incline hacia un lado</div></div>
+<button onClick="{{rerun}}" class="hov" style="height: 40px; padding: 0 14px; border: 1px solid #17171A; border-radius: 10px; background: #FFFFFF; color: #17171A; font-size: 13px">Repetir controles</button>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px">
+
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-weight: 600">Prueba espejo</span><span style="{{okChip}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg>Invertido</span></div>
+<div style="font-size: 12px; color: #5E5B55; line-height: 1.5">Se intercambian actores y términos de un bando por los del otro. La puntuación debe invertirse.</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 60px; font-size: 12px">Original</span><span style="flex: 1; position: relative; height: 18px"><span style="position: absolute; left: 0; right: 0; top: 8px; height: 2px; background: #EFECE5"></span><span style="position: absolute; left: 50%; top: 3px; height: 12px; width: 1px; background: #8D8981"></span><span style="{{mirA}}"></span></span><span style="width: 44px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12px">−0,41</span></div>
+<div style="display: flex; align-items: center; gap: 10px"><span style="width: 60px; font-size: 12px">Espejo</span><span style="flex: 1; position: relative; height: 18px"><span style="position: absolute; left: 0; right: 0; top: 8px; height: 2px; background: #EFECE5"></span><span style="position: absolute; left: 50%; top: 3px; height: 12px; width: 1px; background: #8D8981"></span><span style="{{mirB}}"></span></span><span style="width: 44px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12px">+0,39</span></div>
+</div>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55; margin-top: auto">asimetría 0,02 · tolerancia 0,08</div>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-weight: 600">Concordancia entre 2 modelos</span><span style="{{okChip}}"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5L20 7"></path></svg>Concuerdan</span></div>
+<div style="font-size: 12px; color: #5E5B55; line-height: 1.5">El mismo juez, con la misma rúbrica, ejecutado con dos proveedores distintos.</div>
+<sc-for list="{{judges}}" as="j" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; gap: 10px"><span style="flex: none; width: 28px; height: 28px; border-radius: 8px; background: #F6F4EF; display: flex; align-items: center; justify-content: center"><img src="{{j.logo}}" alt="" width="16" height="16" style="display: block"></span><span style="width: 64px; font-size: 13px">{{j.name}}</span><span style="flex: 1; position: relative; height: 8px; background: #F6F4EF; border-radius: 4px"><span style="position: absolute; left: 50%; top: -3px; bottom: -3px; width: 1px; background: #8D8981"></span><span style="{{j.bar}}"></span></span><span style="width: 44px; text-align: right; font-family: 'IBM Plex Mono', monospace; font-size: 12px">{{j.v}}</span></div>
+</sc-for>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55; margin-top: auto">diferencia 0,05 · se marca si supera 0,15</div>
+</div>
+
+<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 18px; display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px"><span style="font-weight: 600">Validación ciega</span><span style="font-family: 'Newsreader', serif; font-size: 28px; line-height: 1">{{acc}} %</span></div>
+<div style="font-size: 12px; color: #5E5B55; line-height: 1.5">1.200 artículos etiquetados por 9 personas de distinta orientación. Precisión del sistema y error por bloque.</div>
+<sc-for list="{{blocks}}" as="bl" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 10px; font-size: 12px"><span style="width: 70px">{{bl.n}}</span><span style="flex: 1; height: 6px; background: #EFECE5; border-radius: 3px; overflow: hidden"><span style="{{bl.bar}}"></span></span><span style="width: 36px; text-align: right; font-family: 'IBM Plex Mono', monospace">{{bl.v}}</span></div>
+</sc-for>
+<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55; margin-top: auto">sin sesgo sistemático por bloque · revisado el 1 oct</div>
+</div>
+</div>
+</section>
+
+</div>
+</main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1100}}'>
+class Component extends DCLogic {
+  constructor(p) { super(p); this.state = { blind: true, nd: false, open: 'lex', placed: false, run: 0, k: 0 }; }
+  componentDidMount() { this.t0 = setTimeout(() => this.setState({ placed: true }), 150); }
+  componentWillUnmount() { clearTimeout(this.t0); clearTimeout(this.t1); }
+  replay(patch) {
+    this.setState(Object.assign({ placed: false, k: this.state.k + 1 }, patch || {}));
+    clearTimeout(this.t1);
+    this.t1 = setTimeout(() => this.setState({ placed: true }), 120);
+  }
+  renderVals() {
+    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', BO = 'cubic-bezier(.34,1.56,.64,1)', nd = s.nd, P = s.placed;
+    const sw = (on) => ({
+      aria: on ? 'true' : 'false',
+      track: 'flex:none;position:relative;width:46px;height:28px;border-radius:14px;border:0;padding:0;transition:background-color .5s ' + E + ';background:' + (on ? '#17171A' : '#CFCAC0'),
+      knob: 'position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#FFFFFF;box-shadow:0 1px 3px rgba(23,23,26,.2);transition:transform .65s ' + BO + ';transform:translateX(' + (on ? '18px' : '0') + ')'
+    });
+    const me = nd ? 50 : 22, unc = nd ? 30 : 7;
+    const OT = nd
+      ? [['B', 'elDiario.es', 41], ['C', 'EFE', 50], ['D', 'El País', 46], ['E', 'Expansión', 57], ['F', 'ABC', 62]]
+      : [['B', 'elDiario.es', 30], ['C', 'EFE', 49], ['D', 'El País', 42], ['E', 'Expansión', 68], ['F', 'ABC', 76]];
+    const all = OT.map((o) => o[2]).concat([me]);
+    const avg = all.reduce((a, b) => a + b, 0) / all.length;
+    const pos = (v) => (P ? v : 50);
+    const others = OT.map((o, i) => ({
+      label: s.blind ? 'Doc. ' + o[0] : o[1],
+      wrap: 'position:absolute;top:' + (i % 2 ? 50 : 30) + 'px;left:' + pos(o[2]) + '%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;transition:left 1.3s ' + E + ' ' + (i * 80) + 'ms',
+      lab: "font-size:11px;color:#5E5B55;white-space:nowrap;margin-bottom:" + (i % 2 ? 4 : 24) + "px;animation:sw" + (s.k % 2) + " .5s " + E + ' both'
+    }));
+    const sig = [
+      ['lex', 'Elección léxica', 'Términos que un bloque usa de forma desproporcionada', -0.46, 0.04,
+        [['El salario mínimo ', 'bate récords', ' mientras la patronal…', 'En el léxico equivale a «subida histórica» (−0,62). El Documento E dice «nuevo coste laboral» (+0,55).', 'titular'],
+         ['Mientras tanto, ', 'la patronal', ', fiel a su costumbre…', 'Los documentos C y D dicen «la CEOE» o «los empresarios».', 'párrafo 2']], null, null, 'Pesa un 30 % en la combinación. Fuente: léxico calibrado del Congreso.'],
+      ['frame', 'Encuadre del tema', 'Económico, moral, de conflicto, de derechos…', -0.38, -0.06,
+        [['…vuelve a anteponer sus beneficios ', 'a la dignidad de quienes sostienen el país', '…', 'Encuadre de justicia social. El grupo usa sobre todo el encuadre económico.', 'párrafo 2']],
+        [['Justicia social ', '64 %', '#A3271B'], ['Económico ', '21 %', '#5E5B55'], ['Conflicto ', '15 %', '#5E5B55']], null, 'Juez LLM con rúbrica cerrada y ejemplos ancla de ambos lados.'],
+      ['voices', 'Voces citadas', 'Quién habla y quién tiene la última palabra', -0.52, 0,
+        [['…sin que se haya destruido empleo, ', 'según fuentes sindicales consultadas por este diario', '.', 'La última palabra es de los sindicatos. El grupo cita de media 3,4 voces de 3 bandos.', 'párrafo 3']],
+        [['Sindicatos ', '2', '#0B6B50'], ['Gobierno ', '1', '#2340B8'], ['Patronal ', '0', '#8A5300'], ['Expertos ', '0', '#5E5B55']], null, 'Recuento automático de citas directas e indirectas.'],
+      ['attr', 'Asimetría de atribución', 'Verbos que valoran a quien habla', -0.21, 0,
+        [['…la patronal… ', 'amenaza con', ' un apocalipsis de empleo…', 'Verbo valorativo para una parte. Para el Gobierno usa «aprueba» y «según el ministerio».', 'párrafo 2']], null, null, '«denuncia», «alerta», «amenaza» frente a «dice», «afirma».'],
+      ['adj', 'Adjetivación y carga emocional', 'Adjetivos valorativos e hipérboles', -0.33, 0.02,
+        [['la patronal, ', 'fiel a su costumbre', ', vuelve a anteponer…', '4 adjetivos valorativos en 182 palabras.', 'párrafo 2'],
+         ['y amenaza con ', 'un apocalipsis de empleo que nunca llega', '.', 'Hipérbole sin dato que la sostenga.', 'párrafo 2']], null, null, 'Densidad comparada con la media del grupo (1,1 cada 100 palabras).'],
+      ['omit', 'Selección y omisión', 'Datos que dan otras coberturas y esta no', -0.29, -0.08,
+        [], null, [['Estimación del Banco de España: 2,1–2,5 millones de afectados', 4], ['Evaluación de la AIReF sobre el empleo', 3], ['La postura de la CEOE con sus propias palabras', 5]], 'Solo cuenta lo que da la mayoría del grupo y está verificado.'],
+      ['head', 'Orden y titular', 'Qué se destaca y qué queda al final', -0.18, 0.03,
+        [['El salario mínimo bate récords ', 'mientras la patronal sigue en pie de guerra', '', 'El titular destaca la reacción de una parte. 4 de 5 coberturas titulan con el hecho.', 'titular']], null, null, 'Posición de cada actor en titular, entradilla y cierre.']
+    ];
+    const fmtV = (v) => (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v).toFixed(2).replace('.', ',');
+    const divBar = (v, h, delay) => {
+      const w = Math.abs(v) * 50 * (P ? 1 : 0);
+      return 'position:absolute;top:0;height:' + h + ';border-radius:3px;transition:all 1.1s ' + E + ' ' + delay + 'ms;' + (v < 0 ? 'right:50%;background:#C2412F' : 'left:50%;background:#2F5BD3') + ';width:' + w + '%;opacity:' + (nd ? 0.45 : 1);
+    };
+    const signals = sig.map((g, i) => {
+      const open = s.open === g[0], v = nd ? g[4] : g[3];
+      return {
+        name: g[1], desc: g[2], open, aria: open ? 'true' : 'false', val: fmtV(v),
+        toggle: () => this.setState({ open: open ? null : g[0] }),
+        bar: divBar(v, '100%', i * 70),
+        valStyle: "flex:none;width:48px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px;color:" + (nd ? '#8D8981' : '#17171A'),
+        chev: 'flex:none;color:#8D8981;font-size:18px;line-height:1;transition:transform .5s ' + E + ';transform:rotate(' + (open ? '90' : '0') + 'deg)',
+        ev: nd ? [{ pre: 'El Consejo de Ministros aprobó el martes ', hl: 'una subida del salario mínimo', post: ' con efectos desde enero.', note: 'Texto de 140 palabras: no hay evidencia suficiente para esta señal.', where: 'nota de agencia', hlStyle: 'background:#EFECE5;border-radius:3px;padding:0 2px' }]
+          : g[5].map((e) => ({ pre: e[0], hl: e[1], post: e[2], note: e[3], where: e[4], hlStyle: 'background:#F6CFC9;border-radius:3px;padding:0 2px;box-shadow:0 2px 0 #C2412F' })),
+        hasCounts: !nd && !!g[6], counts: (g[6] || []).map((c) => ({ l: c[0], v: c[1], s: 'display:inline-flex;align-items:center;gap:4px;height:30px;padding:0 12px;border-radius:999px;font-size:12px;background:#F6F4EF;color:' + c[2] })),
+        hasOmits: !nd && !!g[7], omits: (g[7] || []).map((o) => ({ t: o[0], n: o[1] + ' de 5' })),
+        foot: g[8]
+      };
+    });
+    const lexicon = [['subida histórica', '3,4× más en bancadas de izquierda', -0.62], ['coste laboral', '2,9× más en bancadas de derecha', 0.55], ['diálogo social', 'uso parejo en ambos bloques', -0.04]].map((l, i) => ({
+      t: l[0], note: l[1], v: fmtV(l[2]),
+      bar: 'position:absolute;top:0;height:100%;border-radius:3px;transition:width 1.1s ' + E + ' ' + (300 + i * 90) + 'ms;' + (l[2] < 0 ? 'right:50%;background:#C2412F' : 'left:50%;background:#2F5BD3') + ';width:' + (P ? Math.abs(l[2]) * 50 : 0) + '%',
+      vs: "flex:none;width:42px;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:12px"
+    }));
+    const conf = nd ? 0.31 : 0.82;
+    const mirDot = (v, c, d) => 'position:absolute;top:3px;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:' + c + ';box-shadow:0 0 0 3px #FFFFFF;transition:left 1.2s ' + BO + ' ' + d + 'ms;left:' + (P ? 50 + v * 50 : 50) + '%';
+    return {
+      docLabel: s.blind ? 'DOCUMENTO A · ANONIMIZADO · 6 COBERTURAS DEL MISMO HECHO' : 'EL DIARIO ROJO · NOMBRES VISIBLES SOLO PARA TI',
+      blindSub: s.blind ? 'Medios como Doc. A–F, igual que los vio el modelo' : 'El modelo nunca vio estos nombres',
+      blindSw: sw(s.blind), ndSw: sw(nd),
+      toggleBlind: () => this.setState({ blind: !s.blind, k: s.k + 1 }),
+      toggleNd: () => this.replay({ nd: !nd, open: 'lex' }),
+      rerun: () => this.replay(),
+      nd, det: !nd,
+      verdict: nd ? 'No determinable' : 'Más a la izquierda que el grupo',
+      verdictStyle: "font-family:'Newsreader',serif;font-size:22px;animation:sw" + (s.k % 2) + ' .6s ' + E + ' both;color:' + (nd ? '#5E5B55' : '#17171A'),
+      band: 'position:absolute;top:60px;height:32px;border-radius:16px;transition:all 1.3s ' + E + ';left:' + pos(me - unc) + '%;width:' + (P ? unc * 2 : 0) + '%;background:' + (nd ? 'rgba(141,137,129,.18)' : 'rgba(35,64,184,.16)'),
+      center: 'position:absolute;top:58px;height:36px;width:0;border-left:1.5px dashed #17171A;display:flex;justify-content:center;transition:left 1.3s ' + E + ';left:' + pos(avg) + '%',
+      others,
+      me: 'position:absolute;top:44px;left:' + pos(me) + '%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;transition:left 1.4s ' + E,
+      meLabel: s.blind ? 'Doc. A · este' : 'El Diario Rojo · este',
+      meValue: me + ' ± ' + unc,
+      signals, lexicon,
+      confVal: nd ? 'No determinable' : 'Alta · ' + conf.toFixed(2).replace('.', ','),
+      confValStyle: "font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;padding:3px 9px;border-radius:7px;" + (nd ? 'background:#EFECE5;color:#5E5B55' : 'background:#E3F2EC;color:#0B6B50'),
+      confBar: 'position:absolute;left:0;top:0;bottom:0;border-radius:5px;transition:width 1.3s ' + E + ',background-color .6s ' + E + ';width:' + (P ? conf * 100 : 0) + '%;background:' + (nd ? '#8D8981' : '#0B6B50'),
+      confNote: nd ? 'Confianza 0,31: señales débiles y contradictorias. No se fuerza una etiqueta.' : '7 señales, 6 coherentes entre sí. El léxico y el juez LLM coinciden.',
+      confNoteStyle: 'font-size:13px;line-height:1.5;margin-top:14px;animation:sw' + (s.k % 2) + ' .6s ' + E + ' both;color:' + (nd ? '#8A5300' : '#17171A'),
+      okChip: 'display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:600;color:#0B6B50;background:#E3F2EC;padding:3px 9px;border-radius:999px',
+      mirA: mirDot(-0.41, '#C2412F', 0), mirB: mirDot(0.39, '#2F5BD3', 250),
+      judges: [['/_blob/ba377cf2a06c3e158b0b2aeacce903b7', 'Claude', -0.41], ['/_blob/a3e89b95754fab0b6e6d5b234cc85530', 'ChatGPT', -0.36]].map((j, i) => ({
+        logo: j[0], name: j[1], v: fmtV(j[2]),
+        bar: 'position:absolute;top:0;height:100%;right:50%;border-radius:3px;background:#C2412F;transition:width 1.1s ' + E + ' ' + (i * 120) + 'ms;width:' + (P ? Math.abs(j[2]) * 50 : 0) + '%'
+      })),
+      acc: 87,
+      blocks: [['Izquierda', 0.06], ['Centro', 0.05], ['Derecha', 0.07]].map((b, i) => ({ n: b[0], v: b[1].toFixed(2).replace('.', ','), bar: 'display:block;height:100%;border-radius:3px;background:#5E5B55;transition:width 1.1s ' + E + ' ' + (i * 90) + 'ms;width:' + (P ? b[1] / 0.15 * 100 : 0) + '%' }))
+    };
+  }
+}
+</script>
+</body>
+</html>
