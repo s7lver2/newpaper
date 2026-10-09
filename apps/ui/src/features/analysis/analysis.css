@@ -48,3 +48,13 @@
 .np-coverage-title { display: block; font: 14px/1.35 var(--np-font-read); color: var(--np-ink2); }
 .np-hint { font: 12px var(--np-font-ui); color: var(--np-muted); background: var(--np-soft); padding: 8px; border-radius: 8px; }
 .np-coverage-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.np-position { padding: 12px; display: grid; gap: 10px; font: 13px/1.5 var(--np-font-ui); }
+.np-position h2 { font: 600 18px var(--np-font-ui); margin: 0; }
+.np-position h3 { font: 600 13px var(--np-font-ui); margin: 8px 0 0; }
+.np-signals { list-style: none; padding: 0; display: grid; gap: 10px; }
+.np-signal-head { display: flex; justify-content: space-between; }
+.np-signal-bar { position: relative; height: 6px; border-radius: 3px; background: var(--np-soft); margin: 4px 0; }
+.np-signal-bar::after { content: ''; position: absolute; left: 50%; top: -2px; bottom: -2px; width: 1px; background: var(--np-ink2); }
+.np-signal-bar span { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: var(--np-accent); }
+.np-signal-evidence { list-style: none; padding: 0; margin: 0; font: italic 13px var(--np-font-read); color: var(--np-ink2); }
+.np-control { padding: 10px; border: 1px solid var(--np-line); border-radius: var(--np-radius); background: var(--np-card); }
