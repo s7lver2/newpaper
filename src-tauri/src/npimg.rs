@@ -152,6 +152,8 @@ async fn serve(app: AppHandle, path: String, query: Option<String>) -> Response<
         .status(200)
         .header(CONTENT_TYPE, content_type)
         .header("Cache-Control", "max-age=3600")
+        // El constructor de la edición sin conexión dibuja la imagen en un canvas para recomprimirla; sin CORS lo mancharía.
+        .header("Access-Control-Allow-Origin", "*")
         .body(bytes.to_vec())
         .expect("response")
 }

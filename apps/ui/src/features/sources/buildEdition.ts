@@ -31,7 +31,8 @@ export function realEditionDeps(): EditionDeps {
 
 const localUrl = (path: string) => convertFileSrc(path, 'npoffline');
 
-async function localizeImages(article: Article, editionId: string, deps: EditionDeps): Promise<Article> {
+/** `index` distingue los ficheros de los artículos de una misma edición (comparten carpeta). */
+export async function localizeImages(article: Article, editionId: string, index: number, deps: EditionDeps): Promise<Article> {
   const tpl = document.createElement('template');
   tpl.innerHTML = article.html;
   let n = 0;
@@ -42,7 +43,7 @@ async function localizeImages(article: Article, editionId: string, deps: Edition
       img.remove();
       continue;
     }
-    const path = await deps.saveImage(editionId, `${n++}.webp`, c.data);
+    const path = await deps.saveImage(editionId, `${index}-${n++}.webp`, c.data);
     img.setAttribute('src', localUrl(path));
     img.removeAttribute('srcset');
   }
@@ -56,7 +57,7 @@ export async function buildEdition(date: string, deps: EditionDeps, onProgress?:
     try {
       const extracted = deps.extract(await deps.fetchHtml(c.url), c.url);
       if (extracted) {
-        const article = await localizeImages(extracted, editionId, deps);
+        const article = await localizeImages(extracted, editionId, i, deps);
         const analysis = deps.analyze ? await deps.analyze(article).catch(() => null) : null;
         await deps.addArticle({
           editionId, url: c.url, title: article.title || c.title, outlet: c.outlet,
