@@ -1,0 +1,8 @@
+.np-areader { position: relative; overflow: auto; transition: opacity 220ms var(--np-ease); }
+.np-areader--dim { opacity: .45; }
+.np-areader--dim:hover { opacity: 1; }
+.np-seltool { position: absolute; z-index: 5; display: flex; gap: 2px; padding: 4px; border-radius: 10px; background: var(--np-ink); box-shadow: 0 6px 24px rgb(0 0 0 / .18); }
+.np-seltool-btn { min-height: 36px; padding: 0 12px; border: 0; border-radius: 7px; background: none; color: var(--np-paper); font: 600 13px var(--np-font-ui); cursor: pointer; }
+.np-seltool-btn:hover, .np-seltool-btn:focus-visible { background: color-mix(in srgb, var(--np-paper) 16%, transparent); }
+.np-reader-meta { display: flex; gap: 12px; font: 12px var(--np-font-mono); color: var(--np-muted); }
+@media (prefers-reduced-motion: reduce) { .np-areader { transition: none; } }
