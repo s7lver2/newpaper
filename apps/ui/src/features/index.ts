@@ -4,3 +4,4 @@ import './core/register';
 import './sources/register';
 import './privacy/register';
 import './resources/register';
+import './ai/register';

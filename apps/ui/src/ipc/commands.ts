@@ -6,6 +6,7 @@ import type {
 import type {
   BeginResult, CaptureInput, CaptureText, CdxRow, CoverageResult, CustomOutlet, Edition, EventCard, EventDetail, IngestReport,
   LexiconScore, OfflineArticle, OfflineHit, OfflineSettings, OutletLean, SavedArticle, TextDiff, TopicState, Watch, WaybackHistory,
+  CachedStage, CustomEndpoint, LocalProbe, MonthUsage,
 } from './types';
 
 /** Único punto de la UI que conoce los nombres de los comandos Rust. Los subproyectos añaden entradas. */
@@ -98,4 +99,14 @@ export const commands = {
   offlineEdition: (id: string) => invoke<OfflineArticle[]>('offline_edition', { id }),
   offlineSearch: (query: string) => invoke<OfflineHit[]>('offline_search', { query }),
   offlineCleanup: () => invoke<string[]>('offline_cleanup'),
+  aiCancel: (requestId: string) => invoke<boolean>('ai_cancel', { requestId }),
+  aiSetEndpoints: (endpoints: CustomEndpoint[]) => invoke<void>('ai_set_endpoints', { endpoints }),
+  sourceFetch: (url: string, allowExtra: string[]) => invoke<string>('source_fetch', { url, allowExtra }),
+  analysisCacheGet: (url: string, textHash: string, stage: string) => invoke<CachedStage | null>('analysis_cache_get', { url, textHash, stage }),
+  analysisCachePut: (url: string, textHash: string, stage: string, json: string, model: string | null, cost: number) =>
+    invoke<void>('analysis_cache_put', { url, textHash, stage, json, model, cost }),
+  usageRecord: (provider: string, model: string, inputTokens: number, outputTokens: number, cost: number) =>
+    invoke<void>('usage_record', { provider, model, inputTokens, outputTokens, cost }),
+  usageMonth: (month?: string) => invoke<MonthUsage>('usage_month', { month }),
+  aiLocalProbe: () => invoke<LocalProbe>('ai_local_probe'),
 };

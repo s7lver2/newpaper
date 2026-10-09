@@ -206,6 +206,9 @@ importers:
       '@newpaper/i18n':
         specifier: workspace:*
         version: link:../../packages/i18n
+      '@newpaper/pipeline':
+        specifier: workspace:*
+        version: link:../../packages/pipeline
       '@newpaper/ui-kit':
         specifier: workspace:*
         version: link:../../packages/ui-kit

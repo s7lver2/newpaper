@@ -12,6 +12,7 @@
   "dependencies": {
     "@newpaper/extract": "workspace:*",
     "@newpaper/i18n": "workspace:*",
+    "@newpaper/pipeline": "workspace:*",
     "@newpaper/ui-kit": "workspace:*",
     "@tauri-apps/api": "2.12.1",
     "react": "19.3.0",

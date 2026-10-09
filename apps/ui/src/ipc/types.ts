@@ -130,3 +130,9 @@ export interface OfflineArticle { url: string; title: string; outlet: string | n
 export interface OfflineHit { kind: 'saved' | 'edition'; reference: string; title: string }
 export interface BeginResult { editionId: string; candidates: { url: string; title: string; outlet: string | null; topic: string | null }[]; summaryJson: string }
 export interface OfflineSettings { enabled: boolean; time: string; wifiOnly: boolean; acOnly: boolean; articles: number; maxMb: number; expiryDays: number }
+export interface CachedStage { json: string; model: string | null; cost: number; createdAt: number }
+export interface ModelUsage { provider: string; model: string; cost: number; inputTokens: number; outputTokens: number }
+export interface MonthUsage { month: string; cost: number; inputTokens: number; outputTokens: number; byModel: ModelUsage[] }
+export interface LocalProbe { ollama: string[] | null; lmstudio: string[] | null }
+/** Igual que `np_ai_proxy::CustomEndpoint` (camelCase). La clave de cada endpoint vive en el llavero (`ai.<id>`). */
+export interface CustomEndpoint { id: string; baseUrl: string; auth: 'bearer' | 'x_api_key' | 'x_goog_api_key' | 'none'; local: boolean }
