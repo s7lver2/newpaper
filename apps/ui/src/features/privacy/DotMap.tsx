@@ -35,7 +35,7 @@ export interface RouteMapView {
  * a dotted arc between them, a filled pin on the current exit, a ringed pin on the candidate and, during
  * a flight, a plane following the arc. Same projection and framing maths as the mockup.
  */
-export function RouteMap({ from, to, flightId }: RouteMapView & { flightId: number | null }) {
+export function RouteMap({ from, to, flightId, landed = false }: RouteMapView & { flightId: number | null; landed?: boolean }) {
   const pa = countryCoords(from);
   const pb = countryCoords(to);
   const a = pa ?? pb;
@@ -81,6 +81,7 @@ export function RouteMap({ from, to, flightId }: RouteMapView & { flightId: numb
           <div
             key={flightId}
             className="np-map-plane"
+            data-landed={landed}
             style={{ offsetPath: `path('${arc}')`, transform: `scale(${inv.toFixed(3)})` }}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="var(--np-ink)" stroke="var(--np-card)" strokeWidth="1" strokeLinejoin="round">

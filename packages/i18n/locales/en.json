@@ -168,7 +168,8 @@
       "flyHere": "You already exit here",
       "building": "Building a new circuit…",
       "statusExit": "Exiting via {country}",
-      "statusExitAuto": "Exiting via any country"
+      "statusExitAuto": "Exiting via any country",
+      "newCircuitBusy": "Trying another circuit…"
     },
     "withoutTor": {
       "title": "Open this tab without Tor?",

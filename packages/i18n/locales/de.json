@@ -168,7 +168,8 @@
       "flyHere": "Du gehst hier bereits hinaus",
       "building": "Neuer Kanal wird aufgebaut…",
       "statusExit": "Ausgang über {country}",
-      "statusExitAuto": "Ausgang über ein beliebiges Land"
+      "statusExitAuto": "Ausgang über ein beliebiges Land",
+      "newCircuitBusy": "Anderer Kreislauf wird getestet…"
     },
     "withoutTor": {
       "title": "Diesen Tab ohne Tor öffnen?",

@@ -24,6 +24,10 @@ export function torStateLabel(t: Translator['t'], s: PrivacyStatus): string {
 const OPTIONS = ['auto', ...EXIT_COUNTRIES.map((c) => c.code)];
 /** The plane takes 1.8 s to fly the arc; the controls stay locked a little longer, like the mockup. */
 const FLIGHT_MS = 1900;
+/** The plane fades out after landing. */
+const LAND_MS = 450;
+/** The refresh icon spins at least this long, like the mockup's retry state. */
+const CIRCUIT_MS = 1400;
 
 const Arrow = ({ dir }: { dir: 'l' | 'r' }) => (
   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -39,7 +43,8 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
   const [index, setIndex] = useState(() => Math.max(0, OPTIONS.indexOf(current)));
   const [dir, setDir] = useState<'l' | 'r'>('r');
   const [swipe, setSwipe] = useState(0);
-  const [flight, setFlight] = useState<{ id: number; from: string; to: string } | null>(null);
+  const [flight, setFlight] = useState<{ id: number; from: string; to: string; landed: boolean } | null>(null);
+  const [circuitBusy, setCircuitBusy] = useState(false);
   const flightCount = useRef(0);
 
   useEffect(() => {
@@ -62,15 +67,31 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
     if (e.key === 'ArrowRight') { e.preventDefault(); move(1); }
     if (e.key === 'ArrowLeft') { e.preventDefault(); move(-1); }
   };
+  // The animation is CSS and owns its own clock: the plane always flies for FLIGHT_MS and then lands,
+  // however long the backend takes to rebuild the circuit (or webviews). Only the label waits for it.
   const fly = async () => {
     const id = ++flightCount.current;
-    setFlight({ id, from: current, to: candidate });
-    const minimum = new Promise((r) => setTimeout(r, reduced ? 0 : FLIGHT_MS));
+    setFlight({ id, from: current, to: candidate, landed: false });
+    const request = commands.torSetExitCountry(candidate === 'auto' ? null : candidate);
+    request.catch(() => {});
+    await new Promise((r) => setTimeout(r, reduced ? 0 : FLIGHT_MS));
+    setFlight((f) => (f && f.id === id ? { ...f, landed: true } : f));
     try {
-      const [next] = await Promise.all([commands.torSetExitCountry(candidate === 'auto' ? null : candidate), minimum]);
+      applyStatus(await request);
+    } finally {
+      // The plane fades out where it landed instead of vanishing.
+      await new Promise((r) => setTimeout(r, reduced ? 0 : LAND_MS));
+      setFlight((f) => (f && f.id === id ? null : f));
+    }
+  };
+  const newCircuit = async () => {
+    setCircuitBusy(true);
+    const minimum = new Promise((r) => setTimeout(r, reduced ? 0 : CIRCUIT_MS));
+    try {
+      const [next] = await Promise.all([commands.torNewCircuit(tabId ?? undefined), minimum]);
       applyStatus(next);
     } finally {
-      setFlight(null);
+      setCircuitBusy(false);
     }
   };
 
@@ -81,13 +102,14 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
   const mapLabel = fromCode === toCode ? t('privacy.tor.routeExit', { country: short(fromCode) }) : `${short(fromCode)} → ${short(toCode)}`;
 
   const ready = status.mode === 'tor' && status.tor.state === 'ready';
+  const building = flying && flight.landed;
   const statusText = flying
     ? t('privacy.tor.building')
     : ready
       ? current === 'auto' ? t('privacy.tor.statusExitAuto') : t('privacy.tor.statusExit', { country: name(current) })
       : torStateLabel(t, status);
   const flyLabel = flight
-    ? t('privacy.tor.flying', { country: name(flight.to) })
+    ? building ? t('privacy.tor.building') : t('privacy.tor.flying', { country: name(flight.to) })
     : candidate === current
       ? t('privacy.tor.flyHere')
       : candidate === 'auto' ? t('privacy.tor.flyAuto') : t('privacy.tor.fly', { country: name(candidate) });
@@ -102,7 +124,7 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
       ) : (
         <>
           <div className="np-tor-map">
-            <RouteMap from={asCode(fromCode)} to={asCode(toCode)} flightId={flight && !reduced ? flight.id : null} />
+            <RouteMap from={asCode(fromCode)} to={asCode(toCode)} flightId={flight && !reduced ? flight.id : null} landed={flight?.landed ?? false} />
             <span className="np-tor-maplabel">{mapLabel}</span>
           </div>
           <div className="np-tor-picker" onKeyDown={onKey}>
@@ -135,7 +157,12 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
             <TorRoute country={short(current)} className="np-route--compact" />
             <div className="np-tor-actions">
               <span className="np-tor-circuit">{t('privacy.tor.circuit', { n: status.circuit })}</span>
-              <Button variant="quiet" onClick={async () => applyStatus(await commands.torNewCircuit(tabId ?? undefined))}>{t('privacy.tor.newCircuit')}</Button>
+              <Button variant="quiet" className="np-tor-newcircuit" disabled={circuitBusy || flying} aria-busy={circuitBusy} onClick={newCircuit}>
+                <svg className="np-tor-circuit-icon" data-spin={circuitBusy && !reduced} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7" />
+                </svg>
+                {circuitBusy ? t('privacy.tor.newCircuitBusy') : t('privacy.tor.newCircuit')}
+              </Button>
               {tabId !== null && !status.tabsWithoutTor.includes(tabId) ? (
                 <Button variant="quiet" onClick={() => { requestOpenWithoutTor(tabId); onClose(); }}>{t('privacy.tor.withoutTorAction')}</Button>
               ) : null}
@@ -145,7 +172,7 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
       )}
       <div className="np-tor-foot">
         <span className="np-tor-status" data-state={flying ? 'building' : status.mode === 'direct' ? 'off' : status.tor.state} aria-live="polite">
-          <span className={flying || status.tor.state === 'bootstrapping' || ready ? 'np-tor-dot np-pulse' : 'np-tor-dot'} aria-hidden="true" />
+          <span className={flying || circuitBusy || status.tor.state === 'bootstrapping' || ready ? 'np-tor-dot np-pulse' : 'np-tor-dot'} aria-hidden="true" />
           {statusText}
         </span>
         <button type="button" className="np-tor-more np-hit" onClick={() => { onClose(); void openInternal('ajustes', ['red']); }}>{t('privacy.tor.more')}</button>

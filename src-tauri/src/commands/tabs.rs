@@ -24,7 +24,7 @@ pub async fn tab_close(tabs: Tabs<'_>, tab_id: TabId) -> CmdResult<()> {
 
 #[tauri::command]
 pub async fn tab_activate(tabs: Tabs<'_>, tab_id: TabId) -> CmdResult<()> {
-    Ok(tabs.activate(tab_id)?)
+    Ok(tabs.activate(tab_id).await?)
 }
 
 #[tauri::command]

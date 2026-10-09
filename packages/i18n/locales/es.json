@@ -168,7 +168,8 @@
       "flyHere": "Ya sales por aquí",
       "building": "Construyendo un circuito nuevo…",
       "statusExit": "Saliendo por {country}",
-      "statusExitAuto": "Saliendo por cualquier país"
+      "statusExitAuto": "Saliendo por cualquier país",
+      "newCircuitBusy": "Probando otro circuito…"
     },
     "withoutTor": {
       "title": "¿Abrir esta pestaña sin Tor?",

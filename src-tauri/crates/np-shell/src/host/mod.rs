@@ -344,15 +344,26 @@ impl TabManager {
         self.last_nav.lock().expect("nav lock").remove(&id);
         self.apply_visibility();
         self.emit_tabs();
-        Ok(())
+        self.ensure_active_webview().await
     }
 
-    pub fn activate(&self, id: TabId) -> Result<(), ShellError> {
+    pub async fn activate(&self, id: TabId) -> Result<(), ShellError> {
         if !self.tabs.lock().expect("tabs lock").activate(id) {
             return Err(ShellError::NoTab(id));
         }
         self.apply_visibility();
         self.emit_tabs();
+        self.ensure_active_webview().await
+    }
+
+    /// Una pestaña suspendida (su webview se cerró al cambiar de red o de salida) se vuelve a crear al
+    /// llegar a primer plano, con el perfil vigente.
+    async fn ensure_active_webview(&self) -> Result<(), ShellError> {
+        let Some(id) = self.snapshot().active_id else { return Ok(()) };
+        let Some(tab) = self.tab(id) else { return Ok(()) };
+        if tab.kind == TabKind::Web && !tab.crashed && self.webview(id).is_none() {
+            self.recreate_tab(id).await?;
+        }
         Ok(())
     }
 
@@ -471,14 +482,22 @@ impl TabManager {
         Ok(())
     }
 
-    /// "Recrear el entorno WebView2" (spec §4.2): cierra y vuelve a crear todas las webviews de contenido.
+    /// "Recrear el entorno WebView2" (spec §4.2) al cambiar de modo de red o de país de salida.
+    /// La pestaña activa se recrea al instante (la nueva se crea antes de cerrar la vieja); las demás
+    /// se suspenden: su webview se cierra ya (ni una petición más por la salida anterior) y se vuelve
+    /// a crear al activarlas. Así el cambio cuesta una sola creación de webview, no una por pestaña.
     pub async fn recreate_all_content_webviews(&self) -> Result<(), ShellError> {
-        let ids = self.tabs.lock().expect("tabs lock").ids();
-        for id in ids {
-            if self.tab(id).is_some_and(|t| t.kind == TabKind::Web) {
-                self.recreate_tab(id).await?;
+        let snap = self.snapshot();
+        for t in snap.tabs.iter().filter(|t| t.kind == TabKind::Web) {
+            if snap.active_id != Some(t.id) {
+                self.close_webview(t.id);
+                self.update(t.id, |t| t.loading = false);
             }
         }
+        if let Some(id) = snap.active_id.filter(|id| self.tab(*id).is_some_and(|t| t.kind == TabKind::Web)) {
+            self.recreate_tab(id).await?;
+        }
+        self.emit_tabs();
         Ok(())
     }
 

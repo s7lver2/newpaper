@@ -23,6 +23,10 @@
 .np-ld { position: absolute; width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--np-line3); }
 .np-map-arc { position: absolute; left: 0; top: 0; overflow: visible; pointer-events: none; transition: opacity .5s var(--np-ease); }
 .np-map-pin { position: absolute; border-radius: 50%; transition: transform 1s var(--np-ease-inout); }
+.np-map-plane[data-landed='true'] { animation: np-fly 1.8s var(--np-ease-fly) forwards, np-land .45s var(--np-ease) forwards; }
+@keyframes np-land { to { opacity: 0; scale: .6; } }
+.np-tor-newcircuit { display: inline-flex; align-items: center; gap: 6px; }
+.np-tor-circuit-icon[data-spin='true'] { animation: np-spin 1.4s linear infinite; }
 .np-map-plane { position: absolute; left: 0; top: 0; width: 24px; height: 24px; z-index: 3; offset-rotate: auto; animation: np-fly 1.8s var(--np-ease-fly) forwards; }
 .np-map-plane svg { display: block; }
 .np-tor-maplabel { position: absolute; left: 10px; top: 8px; padding: 2px 7px; border-radius: 5px; background: color-mix(in srgb, var(--np-card) 88%, transparent); color: var(--np-tor); font: 500 10px/13px var(--np-font-mono); }
