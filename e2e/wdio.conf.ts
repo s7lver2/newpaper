@@ -2,11 +2,13 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import type { Server } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { startFixtureServer } from './fixtures/server';
+import { startMockLlm } from './fixtures/mockLlm';
 
 const APP = fileURLToPath(new URL('../src-tauri/target/debug/np-app.exe', import.meta.url));
 const EDGE_DRIVER = fileURLToPath(new URL('./.tmp/msedgedriver.exe', import.meta.url));
 let driver: ChildProcess | undefined;
 let fixtures: Server | undefined;
+let llm: Server | undefined;
 
 export const config: WebdriverIO.Config = {
   runner: 'local',
@@ -20,6 +22,7 @@ export const config: WebdriverIO.Config = {
   mochaOpts: { timeout: 120_000 },
   onPrepare: async () => {
     fixtures = await startFixtureServer();
+    llm = await startMockLlm();
   },
   beforeSession: () => {
     driver = spawn('tauri-driver', ['--native-driver', EDGE_DRIVER], {
@@ -33,5 +36,8 @@ export const config: WebdriverIO.Config = {
     });
   },
   afterSession: () => driver?.kill(),
-  onComplete: () => fixtures?.close(),
+  onComplete: () => {
+    fixtures?.close();
+    llm?.close();
+  },
 };
