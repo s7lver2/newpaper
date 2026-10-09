@@ -34,15 +34,15 @@
 .np-address-input { display: block; width: 100%; min-width: 0; padding: 0; border: 0; outline: none !important; background: transparent; color: var(--np-ink); font: 400 14px/18px var(--np-font-ui); }
 .np-address-input[data-display='true'] { color: transparent; caret-color: var(--np-ink); }
 .np-address-input[data-display='true']::selection { color: transparent; }
-.np-address-list { position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 10; margin: 0; padding: 6px; list-style: none; background: var(--np-card); border: 1px solid var(--np-line); border-radius: var(--np-radius); box-shadow: var(--np-shadow-pop); }
+.np-address-list { position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 10; margin: 0; padding: 4px; list-style: none; background: var(--np-card); border: 1px solid var(--np-line); border-radius: var(--np-radius); box-shadow: var(--np-shadow-pop); }
 .np-address-list { animation: np-drop-in .45s var(--np-ease) both; }
-.np-address-option { animation: np-drop-in .45s var(--np-ease) both; transition: background-color .45s var(--np-ease); display: flex; align-items: baseline; gap: 10px; min-height: 40px; padding: 8px 10px; border-radius: 8px; cursor: pointer; }
+.np-address-option { animation: np-drop-in .45s var(--np-ease) both; transition: background-color .45s var(--np-ease); box-sizing: border-box; display: flex; align-items: center; gap: 10px; min-height: 34px; padding: 5px 10px; border-radius: 8px; cursor: pointer; font: 400 13.5px/18px var(--np-font-ui); }
 .np-address-option[aria-selected='true'], .np-address-option:hover { background: var(--np-accent-soft); }
 .np-address-option:nth-child(2) { animation-delay: 50ms; }
 .np-address-option:nth-child(3) { animation-delay: 100ms; }
 .np-address-option:nth-child(4) { animation-delay: 150ms; }
 .np-address-option:nth-child(n + 5) { animation-delay: 200ms; }
-.np-address-kind { font: 500 11px/1 var(--np-font-mono); color: var(--np-faint); min-width: 92px; }
+.np-address-kind { flex: none; font: 500 10.5px/1 var(--np-font-mono); letter-spacing: .02em; color: var(--np-faint); min-width: 58px; }
 .np-address-detail { margin-left: auto; color: var(--np-faint); font-size: 11.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 40%; }
 .np-main { position: relative; min-height: 0; }
 .np-content-slot { position: absolute; inset: 0; pointer-events: none; }
