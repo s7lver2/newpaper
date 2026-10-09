@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "medios": [
+    { "id": "tagesschau", "nombre": "tagesschau", "dominio": "tagesschau.de", "feeds": ["https://www.tagesschau.de/index~rss2.xml"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "spiegel", "nombre": "DER SPIEGEL", "dominio": "spiegel.de", "feeds": ["https://www.spiegel.de/schlagzeilen/index.rss"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "zeit", "nombre": "ZEIT ONLINE", "dominio": "zeit.de", "feeds": ["https://newsfeed.zeit.de/index"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "faz", "nombre": "Frankfurter Allgemeine", "dominio": "faz.net", "feeds": ["https://www.faz.net/rss/aktuell/"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "sueddeutsche", "nombre": "Süddeutsche Zeitung", "dominio": "sueddeutsche.de", "feeds": ["https://rss.sueddeutsche.de/rss/Topthemen"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "welt", "nombre": "WELT", "dominio": "welt.de", "feeds": ["https://www.welt.de/feeds/latest.rss"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "taz", "nombre": "taz", "dominio": "taz.de", "feeds": ["https://taz.de/!p4608;rss/"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "bild", "nombre": "BILD", "dominio": "bild.de", "feeds": ["https://www.bild.de/rssfeeds/vw-alles/vw-alles-26970192,dzbildplus=true,sort=1,teaserbildmobil=false,view=rss2.bild.xml"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "handelsblatt", "nombre": "Handelsblatt", "dominio": "handelsblatt.com", "feeds": ["https://www.handelsblatt.com/contentexport/feed/schlagzeilen"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "deutschlandfunk", "nombre": "Deutschlandfunk", "dominio": "deutschlandfunk.de", "feeds": ["https://www.deutschlandfunk.de/nachrichten-100.rss"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "ntv", "nombre": "n-tv", "dominio": "n-tv.de", "feeds": ["https://www.n-tv.de/rss"], "pais": "DE", "idioma": "de", "tipo": "medio" },
+    { "id": "correctiv", "nombre": "CORRECTIV", "dominio": "correctiv.org", "feeds": ["https://correctiv.org/feed/"], "pais": "DE", "idioma": "de", "tipo": "verificador" }
+  ]
+}

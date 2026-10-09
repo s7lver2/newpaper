@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "temas": [
+    { "id": "economy", "nombre": "Economy", "palabras": ["inflation", "wages", "budget", "tax", "unemployment", "interest", "growth"] },
+    { "id": "politics", "nombre": "Politics", "palabras": ["government", "parliament", "election", "labour", "conservative", "reform", "minister"] },
+    { "id": "housing", "nombre": "Housing", "palabras": ["housing", "rent", "mortgage", "tenants", "landlords"] },
+    { "id": "immigration", "nombre": "Immigration", "palabras": ["migrants", "asylum", "border", "boats", "visa"] },
+    { "id": "health", "nombre": "Health", "palabras": ["nhs", "hospital", "doctors", "nurses", "waiting"] },
+    { "id": "world", "nombre": "World", "palabras": ["ukraine", "russia", "gaza", "israel", "trump", "nato", "china"] },
+    { "id": "climate", "nombre": "Climate", "palabras": ["climate", "emissions", "flooding", "heatwave", "renewables"] }
+  ]
+}

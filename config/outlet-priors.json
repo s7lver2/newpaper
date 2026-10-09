@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "medios": {
+    "elpais": { "audiencia": null, "externas": [] },
+    "elmundo": { "audiencia": null, "externas": [] },
+    "abc": { "audiencia": null, "externas": [] },
+    "lavanguardia": { "audiencia": null, "externas": [] },
+    "elconfidencial": { "audiencia": null, "externas": [] },
+    "eldiario": { "audiencia": null, "externas": [] },
+    "publico": { "audiencia": null, "externas": [] },
+    "larazon": { "audiencia": null, "externas": [] },
+    "elespanol": { "audiencia": null, "externas": [] },
+    "20minutos": { "audiencia": null, "externas": [] },
+    "rtve": { "audiencia": null, "externas": [] },
+    "cadenaser": { "audiencia": null, "externas": [] },
+    "cope": { "audiencia": null, "externas": [] },
+    "ondacero": { "audiencia": null, "externas": [] },
+    "lasexta": { "audiencia": null, "externas": [] },
+    "antena3": { "audiencia": null, "externas": [] }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "temas": [
+    { "id": "economia", "nombre": "Economía", "palabras": ["salario", "smi", "inflación", "paro", "empleo", "pib", "impuestos", "pensiones", "bce", "hacienda"] },
+    { "id": "politica", "nombre": "Política", "palabras": ["gobierno", "congreso", "senado", "elecciones", "pp", "psoe", "vox", "sumar", "ministro", "moción"] },
+    { "id": "vivienda", "nombre": "Vivienda", "palabras": ["alquiler", "vivienda", "hipoteca", "inquilinos", "desahucio", "okupas"] },
+    { "id": "inmigracion", "nombre": "Inmigración", "palabras": ["migrantes", "cayuco", "frontera", "asilo", "regularización", "refugiados"] },
+    { "id": "territorial", "nombre": "Territorial", "palabras": ["cataluña", "amnistía", "independencia", "financiación", "autonómica", "concierto"] },
+    { "id": "justicia", "nombre": "Justicia", "palabras": ["juez", "tribunal", "supremo", "fiscal", "imputado", "sentencia"] },
+    { "id": "internacional", "nombre": "Internacional", "palabras": ["ucrania", "rusia", "gaza", "israel", "trump", "otan", "bruselas", "ue"] },
+    { "id": "clima", "nombre": "Clima", "palabras": ["clima", "emisiones", "sequía", "incendio", "dana", "renovables"] },
+    { "id": "sanidad", "nombre": "Sanidad", "palabras": ["sanidad", "hospital", "médicos", "listas", "vacuna", "salud"] },
+    { "id": "educacion", "nombre": "Educación", "palabras": ["educación", "universidad", "colegios", "profesores", "selectividad"] }
+  ]
+}

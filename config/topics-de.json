@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "temas": [
+    { "id": "wirtschaft", "nombre": "Wirtschaft", "palabras": ["inflation", "mindestlohn", "haushalt", "steuern", "arbeitslosigkeit", "konjunktur"] },
+    { "id": "politik", "nombre": "Politik", "palabras": ["bundestag", "regierung", "koalition", "wahl", "kanzler", "minister"] },
+    { "id": "wohnen", "nombre": "Wohnen", "palabras": ["miete", "wohnung", "mietpreisbremse", "immobilien"] },
+    { "id": "migration", "nombre": "Migration", "palabras": ["migration", "asyl", "flüchtlinge", "grenze", "abschiebung"] },
+    { "id": "welt", "nombre": "Welt", "palabras": ["ukraine", "russland", "gaza", "israel", "trump", "nato", "china"] },
+    { "id": "klima", "nombre": "Klima", "palabras": ["klima", "emissionen", "heizungsgesetz", "hochwasser", "erneuerbare"] }
+  ]
+}

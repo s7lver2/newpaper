@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "medios": [
+    { "id": "bbc", "nombre": "BBC News", "dominio": "bbc.co.uk", "feeds": ["https://feeds.bbci.co.uk/news/rss.xml"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "guardian", "nombre": "The Guardian", "dominio": "theguardian.com", "feeds": ["https://www.theguardian.com/uk/rss"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "telegraph", "nombre": "The Telegraph", "dominio": "telegraph.co.uk", "feeds": ["https://www.telegraph.co.uk/rss.xml"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "independent", "nombre": "The Independent", "dominio": "independent.co.uk", "feeds": ["https://www.independent.co.uk/news/uk/rss"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "skynews", "nombre": "Sky News", "dominio": "news.sky.com", "feeds": ["https://feeds.skynews.com/feeds/rss/home.xml"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "dailymail", "nombre": "Daily Mail", "dominio": "dailymail.co.uk", "feeds": ["https://www.dailymail.co.uk/news/index.rss"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "inews", "nombre": "i", "dominio": "inews.co.uk", "feeds": ["https://inews.co.uk/feed"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "spectator", "nombre": "The Spectator", "dominio": "spectator.co.uk", "feeds": ["https://www.spectator.co.uk/feed"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "newstatesman", "nombre": "New Statesman", "dominio": "newstatesman.com", "feeds": ["https://www.newstatesman.com/feed"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "mirror", "nombre": "Daily Mirror", "dominio": "mirror.co.uk", "feeds": ["https://www.mirror.co.uk/news/?service=rss"], "pais": "GB", "idioma": "en", "tipo": "medio" },
+    { "id": "reuters", "nombre": "Reuters", "dominio": "reuters.com", "feeds": [], "pais": "GB", "idioma": "en", "tipo": "agencia" },
+    { "id": "fullfact", "nombre": "Full Fact", "dominio": "fullfact.org", "feeds": ["https://fullfact.org/feed/"], "pais": "GB", "idioma": "en", "tipo": "verificador" }
+  ]
+}
