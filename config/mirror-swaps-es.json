@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "pairs": [
+    ["patronal", "sindicatos"],
+    ["empresarios", "trabajadores"],
+    ["izquierda", "derecha"],
+    ["progresista", "conservador"],
+    ["Gobierno", "oposición"],
+    ["PSOE", "PP"],
+    ["Sumar", "Vox"],
+    ["justicia social", "libertad económica"],
+    ["okupas", "personas que ocupan"]
+  ]
+}
