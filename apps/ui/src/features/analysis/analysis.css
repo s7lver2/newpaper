@@ -25,3 +25,15 @@
 .np-agent-fragment span { flex: 1; }
 .np-agent-fragment button { min-width: 32px; border: 0; background: none; cursor: pointer; }
 .np-panel-empty { color: var(--np-muted); font: 13px var(--np-font-ui); padding: 12px; }
+.np-consent-backdrop { position: fixed; inset: 0; z-index: 50; display: grid; place-items: center; background: rgb(23 23 26 / .35); }
+.np-consent { width: min(440px, 92vw); padding: 20px; border-radius: 14px; background: var(--np-card); box-shadow: 0 20px 60px rgb(0 0 0 / .25); font: 14px/1.5 var(--np-font-ui); }
+.np-consent h2 { font: 600 18px var(--np-font-ui); margin: 0 0 8px; }
+.np-consent-check { display: flex; gap: 10px; align-items: flex-start; min-height: var(--np-hit); margin: 12px 0; }
+.np-consent-check input { width: 20px; height: 20px; margin-top: 2px; }
+.np-consent-actions, .np-nocov-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+.np-nocov { margin: 12px 0; padding: 12px; border: 1px dashed var(--np-warn); border-radius: var(--np-radius); background: var(--np-warn-bg); }
+.np-unverified { margin-top: 12px; padding: 12px; border-radius: var(--np-radius); background: var(--np-card); }
+.np-unverified header { display: flex; justify-content: space-between; align-items: center; }
+.np-unverified-claims { list-style: none; padding: 0; display: grid; gap: 8px; }
+.np-muted { color: var(--np-muted); }
+.np-link { border: 0; background: none; padding: 0; color: var(--np-accent); font: inherit; cursor: pointer; text-align: left; }
