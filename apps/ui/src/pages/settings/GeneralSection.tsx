@@ -15,6 +15,7 @@ export function GeneralSection() {
   const [contentLocale, setContentLocale] = useSetting<Locale>('content.locale', locale);
   const [theme, setTheme] = useSetting<ThemeChoice>('appearance.theme', 'system');
   const [readerAuto, setReaderAuto] = useSetting<boolean>('reader.autoOpen', true);
+  const [transition, setTransition] = useSetting<boolean>('appearance.pageTransition', true);
   const languages = LOCALES.map((l) => ({ value: l, label: t(`settings.language.${l}`) }));
   return (
     <section className="np-settings-section np-stagger" aria-labelledby="np-set-general">
@@ -62,6 +63,7 @@ export function GeneralSection() {
           </div>
           <SegmentedControl label={t('settings.general.contentLanguage')} value={contentLocale} options={languages} onChange={(l) => void setContentLocale(l)} />
         </div>
+        <Switch label={t('settings.general.pageTransition')} description={t('settings.general.pageTransitionHint')} checked={transition} onChange={(v) => void setTransition(v)} />
         <Switch label={t('settings.general.readerAuto')} description={t('settings.general.readerAutoHint')} checked={readerAuto} onChange={(v) => void setReaderAuto(v)} />
       </div>
     </section>

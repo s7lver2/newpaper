@@ -16,6 +16,7 @@ export const commands = {
   tabSetView: (tabId: TabId, view: TabView) => invoke<void>('tab_set_view', { tabId, view }),
   tabSetBounds: (rect: Rect) => invoke<void>('tab_set_bounds', { rect }),
   tabsSnapshot: () => invoke<TabsSnapshot>('tabs_snapshot'),
+  chromeSetMotion: (reduced: boolean) => invoke<void>('chrome_set_motion', { reduced }),
   chromeSetTheme: (theme: 'paper' | 'ink') => invoke<void>('chrome_set_theme', { theme }),
 
   settingsGet: <T = unknown>(key: string) => invoke<T | null>('settings_get', { key }),

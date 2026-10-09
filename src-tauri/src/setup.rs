@@ -23,12 +23,19 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     let ext = Arc::new(ShellExtensions::new());
     ext.set_known_domains(outlets.domains());
     ext.set_reader_auto_open(store.get_setting::<bool>("reader.autoOpen")?.unwrap_or(true));
+    ext.set_page_transition(store.get_setting::<bool>("appearance.pageTransition")?.unwrap_or(true));
 
     let handle = app.handle().clone();
     let ext_for_obs = ext.clone();
     store.on_setting_change("", move |key, value| {
         if key == "reader.autoOpen" {
             ext_for_obs.set_reader_auto_open(value.as_bool().unwrap_or(true));
+        }
+        if key == "appearance.pageTransition" {
+            ext_for_obs.set_page_transition(value.as_bool().unwrap_or(true));
+            if let Some(tabs) = handle.try_state::<Arc<TabManager>>() {
+                tabs.sync_transition_flag();
+            }
         }
         let _ = handle.emit_to("ui", "settings://changed", serde_json::json!({ "key": key, "value": value }));
     });

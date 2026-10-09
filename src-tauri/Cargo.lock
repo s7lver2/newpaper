@@ -3436,11 +3436,13 @@ dependencies = [
 name = "np-shell"
 version = "0.1.0"
 dependencies = [
+ "base64 0.22.1",
  "reqwest",
  "serde",
  "serde_json",
  "tauri",
  "thiserror 2.0.21",
+ "tokio",
  "tracing",
  "url",
  "webview2-com",

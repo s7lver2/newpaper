@@ -19,5 +19,19 @@ export function watchNativeBackground(root: HTMLElement = document.documentEleme
   const obs = new MutationObserver(push);
   obs.observe(root, { attributes: true, attributeFilter: ['data-theme'] });
   push();
-  return () => obs.disconnect();
+  // El fundido entre páginas respeta `prefers-reduced-motion`: Rust no lo hace si el usuario lo pide.
+  const mql = typeof window.matchMedia === 'function' ? window.matchMedia('(prefers-reduced-motion: reduce)') : null;
+  const pushMotion = () => {
+    try {
+      commands.chromeSetMotion(!!mql?.matches).catch(() => {});
+    } catch {
+      /* sin backend */
+    }
+  };
+  pushMotion();
+  mql?.addEventListener?.('change', pushMotion);
+  return () => {
+    obs.disconnect();
+    mql?.removeEventListener?.('change', pushMotion);
+  };
 }

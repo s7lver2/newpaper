@@ -97,7 +97,9 @@
       "themeSystem": "System",
       "readerAuto": "Nachrichten im Lesemodus öffnen",
       "readerAutoHint": "Als Nachricht erkannte Seiten werden aufgeräumt angezeigt, ohne die Originalseite. Auf jeder anderen Seite mit Artikel lässt sich der Lesemodus von Hand öffnen.",
-      "lead": "Sprache, Darstellung und Lesen."
+      "lead": "Sprache, Darstellung und Lesen.",
+      "pageTransition": "Sanfte Seitenübergänge",
+      "pageTransitionHint": "Lädt die neue Seite vor und blendet sie über die alte. Schaltet sich bei reduzierter Bewegung selbst aus."
     },
     "language": {
       "es": "Español",

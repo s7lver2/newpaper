@@ -4,14 +4,16 @@
 use std::sync::Arc;
 
 use tauri::{AppHandle, Manager, Webview};
+use windows::Win32::System::Com::{StructuredStorage::CreateStreamOnHGlobal, IStream, STREAM_SEEK_SET};
+use windows::Win32::Foundation::HGLOBAL;
 use webview2_com::{
     take_pwstr,
     Microsoft::Web::WebView2::Win32::{
         ICoreWebView2, ICoreWebView2NavigationCompletedEventArgs2, ICoreWebView2Settings2, ICoreWebView2Settings3,
         ICoreWebView2Settings4, ICoreWebView2Settings6, ICoreWebView2Settings8, ICoreWebView2_13, ICoreWebView2_4, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_DARK, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_LIGHT,
-        COREWEBVIEW2_PERMISSION_STATE_DENY, COREWEBVIEW2_PROCESS_FAILED_KIND, COREWEBVIEW2_WEB_ERROR_STATUS,
+        COREWEBVIEW2_CAPTURE_PREVIEW_IMAGE_FORMAT_PNG, COREWEBVIEW2_PERMISSION_STATE_DENY, COREWEBVIEW2_PROCESS_FAILED_KIND, COREWEBVIEW2_WEB_ERROR_STATUS,
     },
-    DownloadStartingEventHandler, NavigationCompletedEventHandler,
+    CapturePreviewCompletedHandler, DownloadStartingEventHandler, NavigationCompletedEventHandler,
     NewWindowRequestedEventHandler, PermissionRequestedEventHandler, ProcessFailedEventHandler,
     WebMessageReceivedEventHandler,
 };
@@ -90,6 +92,53 @@ pub(super) fn set_color_scheme(webview: &Webview, dark: bool) {
             }
         }
     });
+}
+
+unsafe fn read_stream(stream: &IStream) -> Option<Vec<u8>> {
+    stream.Seek(0, STREAM_SEEK_SET, None).ok()?;
+    let mut out = Vec::new();
+    let mut buf = vec![0u8; 64 * 1024];
+    loop {
+        let mut read = 0u32;
+        stream.Read(buf.as_mut_ptr().cast(), buf.len() as u32, Some(&mut read)).ok().ok()?;
+        if read == 0 {
+            break;
+        }
+        out.extend_from_slice(&buf[..read as usize]);
+    }
+    (!out.is_empty()).then_some(out)
+}
+
+/// PNG de lo que la webview tiene pintado (`CapturePreview`); `None` si falla.
+pub(super) fn capture_png(webview: &Webview) -> tokio::sync::oneshot::Receiver<Option<Vec<u8>>> {
+    let (tx, rx) = tokio::sync::oneshot::channel();
+    let slot = Arc::new(std::sync::Mutex::new(Some(tx)));
+    let finish = {
+        let slot = slot.clone();
+        move |v: Option<Vec<u8>>| {
+            if let Some(t) = slot.lock().expect("capture slot").take() {
+                let _ = t.send(v);
+            }
+        }
+    };
+    let f = finish.clone();
+    let queued = webview.with_webview(move |pw| unsafe {
+        let Ok(core) = pw.controller().CoreWebView2() else { return f(None) };
+        let Ok(stream) = CreateStreamOnHGlobal(HGLOBAL::default(), true) else { return f(None) };
+        let s2 = stream.clone();
+        let f2 = f.clone();
+        let handler = CapturePreviewCompletedHandler::create(Box::new(move |res| {
+            f2(if res.is_ok() { read_stream(&s2) } else { None });
+            Ok(())
+        }));
+        if core.CapturePreview(COREWEBVIEW2_CAPTURE_PREVIEW_IMAGE_FORMAT_PNG, &stream, &handler).is_err() {
+            f(None);
+        }
+    });
+    if queued.is_err() {
+        finish(None);
+    }
+    rx
 }
 
 /// Ajustes de la webview de interfaz (`ui`).

@@ -7,10 +7,15 @@ import { commands } from './ipc/commands';
 import { onSettingsChanged } from './ipc/events';
 import { BrowserShell } from './shell/BrowserShell';
 import { installShortcuts } from './shell/shortcuts';
+import { useSetting } from './state/settings';
 import { startBrowserSync } from './state/browser';
 
 function Running() {
   useHistoryRecorder();
+  const [pageTransition] = useSetting<boolean>('appearance.pageTransition', true);
+  useEffect(() => {
+    document.documentElement.dataset.npTransition = pageTransition ? 'on' : 'off';
+  }, [pageTransition]);
   useEffect(() => {
     const stops: Promise<() => void>[] = [startBrowserSync(), installShortcuts()];
     return () => stops.forEach((s) => s.then((f) => f()));

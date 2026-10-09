@@ -28,6 +28,7 @@ use crate::{
     message::{parse_content_message, ContentMessage, PageKind, PagePayload},
     model::{NavFailure, TabInfo, TabKind, TabList, TabView, TabsSnapshot},
     news::{is_news, reader_policy},
+    transition::{self, Context as TransitionContext},
     TabId, NEW_TAB_URL,
 };
 use events::*;
@@ -58,6 +59,18 @@ pub const READY_SCRIPT: &str = r#"(() => {
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
   else start();
   window.addEventListener('load', send, { once: true });
+  // Con la transición activada, un clic en un enlace normal navega desde Rust (con fundido).
+  window.addEventListener('click', (e) => {
+    if (!window.__npPT || e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+    const a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+    if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
+    let u;
+    try { u = new URL(a.href); } catch { return; }
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') return;
+    if (u.href.split('#')[0] === location.href.split('#')[0]) return;
+    e.preventDefault();
+    wv.postMessage(JSON.stringify({ type: 'np-go', url: u.href }));
+  }, false);
 })();"#;
 
 pub const CONTENT_SCRIPT: &str = include_str!("../../../../../packages/extract/dist/content.js");
@@ -118,6 +131,10 @@ pub struct TabManager {
     creating: AtomicUsize,
     /// Color de fondo del tema (RGB); lo fija la UI al resolver el tema.
     bg: Mutex<(u8, u8, u8)>,
+    /// Pestañas con una transición entre páginas en curso (su webview está fuera de la vista).
+    transitioning: Mutex<HashSet<TabId>>,
+    /// Quien espera el primer pintado (o el fallo) de la navegación en curso de cada pestaña.
+    paint_waiters: Mutex<HashMap<TabId, tokio::sync::oneshot::Sender<bool>>>,
 }
 
 /// Fondo por defecto del tema papel (`--np-paper`).
@@ -142,6 +159,8 @@ impl TabManager {
             revealed: Mutex::default(),
             retired: Mutex::default(),
             creating: AtomicUsize::new(0),
+            transitioning: Mutex::default(),
+            paint_waiters: Mutex::default(),
             bg: Mutex::new(PAPER_BG),
         }
     }
@@ -149,6 +168,25 @@ impl TabManager {
     fn webview(&self, id: TabId) -> Option<Webview> {
         let label = self.labels.lock().expect("labels lock").get(&id).cloned()?;
         self.app.get_webview(&label)
+    }
+
+    fn transitions_on(&self) -> bool {
+        self.ext.page_transition() && !self.ext.reduced_motion()
+    }
+
+    /// Avisa a las páginas abiertas de si deben pedir la navegación con fundido.
+    pub fn sync_transition_flag(&self) {
+        let js = format!("window.__npPT = {};", self.transitions_on());
+        for id in self.tabs.lock().expect("tabs lock").ids() {
+            if let Some(wv) = self.webview(id) {
+                let _ = wv.eval(&js);
+            }
+        }
+    }
+
+    pub fn set_reduced_motion(&self, on: bool) {
+        self.ext.set_reduced_motion(on);
+        self.sync_transition_flag();
     }
 
     pub fn background(&self) -> Color {
@@ -234,6 +272,7 @@ impl TabManager {
         let label = format!("tab-{id}-{}", self.label_seq.fetch_add(1, Ordering::Relaxed));
         let mut builder = WebviewBuilder::new(label.clone(), WebviewUrl::External(url))
             .background_color(self.background())
+            .initialization_script(&format!("window.__npPT = {};", self.transitions_on()))
             .initialization_script(READY_SCRIPT)
             .initialization_script(CONTENT_SCRIPT)
             .data_directory(self.webview_root.join(&profile.data_dir_name))
@@ -372,6 +411,9 @@ impl TabManager {
         match parse_input(input) {
             None => Ok(()),
             Some(Target::Web(u)) => {
+                if self.transition_allowed(&tab) {
+                    return self.transition_navigate(id, u).await;
+                }
                 self.tabs.lock().expect("tabs lock").set_url(id, u.as_str());
                 match self.webview(id) {
                     Some(wv) => wv.navigate(u)?,
@@ -383,6 +425,96 @@ impl TabManager {
             }
             Some(Target::Internal(s)) => self.go_internal(id, &s),
             Some(Target::Search(q)) => self.go_internal(id, &search_url(&q)),
+        }
+    }
+
+    fn transition_allowed(&self, tab: &TabInfo) -> bool {
+        let id = tab.id;
+        should_transition_ctx(self, tab, id)
+    }
+
+    /// Navega con fundido: ver `transition.rs`. Cualquier fallo vuelve a la navegación directa.
+    async fn transition_navigate(&self, id: TabId, url: url::Url) -> Result<(), ShellError> {
+        let Some(wv) = self.webview(id) else { return Err(ShellError::NoTab(id)) };
+        self.transitioning.lock().expect("transition lock").insert(id);
+        let done = self.run_transition(id, &wv, url.clone()).await;
+        self.transitioning.lock().expect("transition lock").remove(&id);
+        self.paint_waiters.lock().expect("waiters lock").remove(&id);
+        self.place(id);
+        self.emit_transition(id, "end", None);
+        if !done {
+            // No se pudo capturar la página actual: navegación normal.
+            self.tabs.lock().expect("tabs lock").set_url(id, url.as_str());
+            if let Some(wv) = self.webview(id) {
+                wv.navigate(url)?;
+            }
+        }
+        self.apply_visibility();
+        self.emit_tabs();
+        Ok(())
+    }
+
+    fn emit_transition(&self, id: TabId, phase: &'static str, image: Option<String>) {
+        let _ = self.app.emit_to(UI_WEBVIEW, TAB_TRANSITION, TabTransitionEvent { tab_id: id, phase, image });
+    }
+
+    async fn capture(&self, wv: &Webview) -> Option<String> {
+        #[cfg(windows)]
+        {
+            use base64::Engine;
+            let rx = win::capture_png(wv);
+            let png = tokio::time::timeout(transition::CAPTURE_TIMEOUT, rx).await.ok()?.ok()??;
+            Some(format!("data:image/png;base64,{}", base64::engine::general_purpose::STANDARD.encode(png)))
+        }
+        #[cfg(not(windows))]
+        {
+            let _ = wv;
+            None
+        }
+    }
+
+    /// `true` si la transición llegó hasta el final; `false` si se canceló antes de tocar la página
+    /// (el llamador navega directo). Si se canceló con la navegación ya lanzada devuelve `true`.
+    async fn run_transition(&self, id: TabId, wv: &Webview, url: url::Url) -> bool {
+        use transition::{next, Event, State};
+        let mut state = State::Idle;
+        let step = |s: &mut State, e: Event| *s = next(*s, e).unwrap_or(State::Idle);
+        step(&mut state, Event::Start);
+        let Some(old) = self.capture(wv).await else { return false };
+        step(&mut state, Event::OldCaptured);
+        self.emit_transition(id, "start", Some(old));
+        // La UI pinta la imagen antes de que la webview real salga de la vista.
+        tokio::time::sleep(Duration::from_millis(90)).await;
+        self.place(id);
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        self.paint_waiters.lock().expect("waiters lock").insert(id, tx);
+        self.tabs.lock().expect("tabs lock").set_url(id, url.as_str());
+        self.update(id, |t| t.loading = true);
+        self.emit_tabs();
+        if wv.navigate(url).is_err() {
+            return true;
+        }
+        match tokio::time::timeout(transition::PAINT_TIMEOUT, rx).await {
+            Ok(Ok(true)) => step(&mut state, Event::Painted),
+            _ => {
+                step(&mut state, Event::Abort);
+                return true;
+            }
+        }
+        tokio::time::sleep(transition::SETTLE).await;
+        let Some(new) = self.capture(wv).await else { return true };
+        step(&mut state, Event::NewCaptured);
+        self.emit_transition(id, "ready", Some(new));
+        tokio::time::sleep(transition::FADE + Duration::from_millis(40)).await;
+        step(&mut state, Event::FadeDone);
+        debug_assert_eq!(state, State::Idle);
+        true
+    }
+
+    /// El primer pintado (o el fallo) de la navegación en curso: despierta a quien espera.
+    fn signal_paint(&self, id: TabId, ok: bool) {
+        if let Some(tx) = self.paint_waiters.lock().expect("waiters lock").remove(&id) {
+            let _ = tx.send(ok);
         }
     }
 
@@ -434,6 +566,23 @@ impl TabManager {
         Ok(())
     }
 
+    /// Fuera de la vista pero visible para WebView2 (sigue pintando y se puede capturar).
+    fn offscreen(rect: tauri::Rect) -> tauri::Rect {
+        tauri::Rect { position: LogicalPosition::new(-30000.0, -30000.0).into(), size: rect.size }
+    }
+
+    fn place(&self, id: TabId) {
+        let r = *self.bounds.lock().expect("bounds lock");
+        let rect = tauri::Rect {
+            position: LogicalPosition::new(r.x, r.y).into(),
+            size: LogicalSize::new(r.width.max(1.0), r.height.max(1.0)).into(),
+        };
+        let rect = if self.transitioning.lock().expect("transition lock").contains(&id) { Self::offscreen(rect) } else { rect };
+        if let Some(wv) = self.webview(id) {
+            let _ = wv.set_bounds(rect);
+        }
+    }
+
     pub fn set_bounds(&self, r: Rect) {
         *self.bounds.lock().expect("bounds lock") = r;
         let ids = self.tabs.lock().expect("tabs lock").ids();
@@ -442,6 +591,8 @@ impl TabManager {
                 position: LogicalPosition::new(r.x, r.y).into(),
                 size: LogicalSize::new(r.width.max(1.0), r.height.max(1.0)).into(),
             };
+            let away = self.transitioning.lock().expect("transition lock").contains(&id);
+            let rect = if away { Self::offscreen(rect) } else { rect };
             for wv in self.webview(id).into_iter().chain(self.retired_webviews(id)) {
                 let _ = wv.set_bounds(rect);
             }
@@ -523,6 +674,16 @@ impl TabManager {
             }
             Ok(ContentMessage::Other { kind, .. }) if kind == "np-ready" => {
                 self.reveal(id);
+                self.signal_paint(id, true);
+                None
+            }
+            Ok(ContentMessage::Other { kind, payload }) if kind == "np-go" => {
+                if let Some(url) = payload.get("url").and_then(|u| u.as_str()).map(str::to_string) {
+                    let app = self.app.clone();
+                    tauri::async_runtime::spawn(async move {
+                        let _ = app.state::<Arc<TabManager>>().navigate(id, &url).await;
+                    });
+                }
                 None
             }
             Ok(ContentMessage::Other { kind, payload }) => self.ext.handler_for(&kind).and_then(|h| h.handle(id, &payload)),
@@ -587,6 +748,7 @@ impl TabManager {
             t.failure = failed.then(|| NavFailure { url: o.url.clone(), web_error_status: o.web_error_status, http_status: o.http_status });
         });
         self.reveal(id);
+        self.signal_paint(id, !failed);
         self.apply_visibility();
         self.emit_tabs();
     }
@@ -617,4 +779,19 @@ mod win_tests {
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
         );
     }
+}
+
+fn should_transition_ctx(m: &TabManager, tab: &TabInfo, id: TabId) -> bool {
+    let painted = m.revealed.lock().expect("revealed lock").contains(&id);
+    let ctx = TransitionContext {
+        enabled: m.ext.page_transition(),
+        reduced_motion: m.ext.reduced_motion(),
+        active: m.snapshot().active_id == Some(id),
+        has_webview: m.webview(id).is_some(),
+        painted,
+        original_view: tab.view == TabView::Original,
+        failed_or_crashed: tab.failure.is_some() || tab.crashed,
+        already_running: m.transitioning.lock().expect("transition lock").contains(&id),
+    };
+    transition::should_transition(&ctx)
 }

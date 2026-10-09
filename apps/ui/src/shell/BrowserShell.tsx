@@ -1,6 +1,7 @@
 import { useT } from '@newpaper/i18n/react';
 import { useActiveTab, useArticle } from '../state/browser';
 import { ContentSlot } from './ContentSlot';
+import { PageTransition } from './PageTransition';
 import { parseInternalUrl } from './internalUrl';
 import { overlays, readerView, resolveInternalPage, tabSurface } from './registry';
 import { TabStrip } from './TabStrip';
@@ -39,6 +40,7 @@ export function BrowserShell() {
       <main className="np-main">
         <ContentSlot />
         <ActiveSurface />
+        <PageTransition />
       </main>
       {overlays().map(({ id, Component }) => (
         <Component key={id} />

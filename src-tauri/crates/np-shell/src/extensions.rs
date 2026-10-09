@@ -83,6 +83,8 @@ pub struct ShellExtensions {
     http: RwLock<Arc<dyn HttpClientProvider>>,
     domains: RwLock<HashSet<String>>,
     reader_auto_open: AtomicBool,
+    page_transition: AtomicBool,
+    reduced_motion: AtomicBool,
 }
 
 impl Default for ShellExtensions {
@@ -101,6 +103,8 @@ impl ShellExtensions {
             http: RwLock::new(Arc::new(DirectHttp::default())),
             domains: RwLock::default(),
             reader_auto_open: AtomicBool::new(true),
+            page_transition: AtomicBool::new(true),
+            reduced_motion: AtomicBool::new(false),
         }
     }
 
@@ -158,6 +162,24 @@ impl ShellExtensions {
 
     pub fn set_reader_auto_open(&self, on: bool) {
         self.reader_auto_open.store(on, Ordering::Relaxed);
+    }
+
+    /// Ajuste `appearance.pageTransition` (por defecto activado).
+    pub fn set_page_transition(&self, on: bool) {
+        self.page_transition.store(on, Ordering::Relaxed);
+    }
+
+    pub fn page_transition(&self) -> bool {
+        self.page_transition.load(Ordering::Relaxed)
+    }
+
+    /// `prefers-reduced-motion` de la UI: sin transiciones.
+    pub fn set_reduced_motion(&self, on: bool) {
+        self.reduced_motion.store(on, Ordering::Relaxed);
+    }
+
+    pub fn reduced_motion(&self) -> bool {
+        self.reduced_motion.load(Ordering::Relaxed)
     }
 
     pub fn reader_auto_open(&self) -> bool {

@@ -97,7 +97,9 @@
       "themeSystem": "System",
       "readerAuto": "Open news in reader mode",
       "readerAutoHint": "Pages recognised as news are shown clean, without the original site. On any other page with an article you can open the reader by hand.",
-      "lead": "Language, appearance and reading."
+      "lead": "Language, appearance and reading.",
+      "pageTransition": "Smooth page transitions",
+      "pageTransitionHint": "Preloads the new page and cross-fades it with the old one. Turns itself off with reduced motion."
     },
     "language": {
       "es": "Español",

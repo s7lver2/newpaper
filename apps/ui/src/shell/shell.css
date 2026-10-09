@@ -109,3 +109,11 @@
 .np-listing-empty { padding: 40px 0; text-align: center; color: var(--np-muted); font: 400 15px/1.5 var(--np-font-ui); }
 @media (max-width: 640px) { .np-listing { padding: 36px 18px 96px; } .np-listing-thumb { width: 96px; height: 64px; } }
 @media (prefers-reduced-motion: reduce) { .np-listing-item { animation: none; } }
+
+/* Fundido entre páginas (la imagen de la página anterior y la de la nueva) */
+.np-xfade { position: absolute; inset: 0; z-index: 4; overflow: hidden; background: var(--np-paper); pointer-events: none; }
+.np-xfade img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top left; }
+.np-xfade-to { opacity: 0; animation: np-fade .3s var(--np-ease) forwards; }
+/* Páginas internas y lector: fundido CSS al montarse (solo con la transición activada) */
+html[data-np-transition='on'] .np-surface { animation: np-fade .3s var(--np-ease) both; }
+@media (prefers-reduced-motion: reduce) { .np-xfade-to, html[data-np-transition='on'] .np-surface { animation: none; opacity: 1; } }

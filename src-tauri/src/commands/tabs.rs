@@ -65,6 +65,13 @@ pub async fn chrome_set_theme(tabs: Tabs<'_>, theme: String) -> CmdResult<()> {
     Ok(())
 }
 
+/// La UI informa de `prefers-reduced-motion`: sin transición entre páginas.
+#[tauri::command]
+pub async fn chrome_set_motion(tabs: Tabs<'_>, reduced: bool) -> CmdResult<()> {
+    tabs.set_reduced_motion(reduced);
+    Ok(())
+}
+
 #[tauri::command]
 pub async fn tabs_snapshot(tabs: Tabs<'_>) -> CmdResult<TabsSnapshot> {
     Ok(tabs.snapshot())
