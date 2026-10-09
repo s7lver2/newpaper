@@ -1,6 +1,6 @@
-.np-settings { display: flex; align-items: stretch; min-height: 100%; }
+.np-settings { display: flex; align-items: stretch; height: 100%; min-height: 0; }
 /* Sidebar: 260 px, own divider, 58 px entries with a 30 px glyph tile (mockup Ajustes.dc.html) */
-.np-settings-nav { flex: 0 0 260px; box-sizing: border-box; display: flex; flex-direction: column; align-content: start; gap: 4px; padding: 28px 16px; border-right: 1px solid var(--np-line); }
+.np-settings-nav { flex: 0 0 260px; overflow-y: auto; box-sizing: border-box; display: flex; flex-direction: column; align-content: start; gap: 4px; padding: 28px 16px; border-right: 1px solid var(--np-line); }
 .np-settings-h1 { margin: 0; padding: 0 12px 16px; font: 500 28px/normal var(--np-font-read); }
 .np-settings-navlist { position: relative; display: flex; flex-direction: column; gap: 4px; }
 /* One ink block under the entries that slides to the active one with a slight overshoot (navHi in the mockup) */
@@ -14,7 +14,7 @@
 .np-settings-navitem[aria-current='page'] { color: var(--np-paper); }
 .np-settings-navitem[aria-current='page'] .np-settings-navicon { background: color-mix(in srgb, var(--np-paper) 10%, var(--np-ink)); color: var(--np-paper); transform: rotate(-10deg) scale(1.12); }
 .np-settings-navitem[aria-current='page'] .np-settings-navsub { color: color-mix(in srgb, var(--np-paper) 70%, var(--np-ink)); }
-.np-settings-body { flex: 1 1 640px; min-width: 0; box-sizing: border-box; padding: 36px 40px 64px; }
+.np-settings-body { flex: 1 1 640px; min-width: 0; overflow-y: auto; box-sizing: border-box; padding: 36px 40px 64px; }
 .np-settings-body > * { max-width: 860px; }
 .np-settings-section { display: grid; gap: 20px; }
 .np-settings-h2 { font: 500 34px/normal var(--np-font-read); margin: 0; }
@@ -42,5 +42,5 @@
 .np-theme-preview i { display: block; height: 5px; width: 90%; border-radius: 3px; background: currentColor; opacity: .4; }
 .np-theme-preview i:first-child { height: 8px; width: 70%; border-radius: 4px; opacity: 1; }
 .np-theme-preview i:last-child { width: 60%; }
-.np-settings--full { display: block; }
+.np-settings--full { display: block; height: auto; min-height: 100%; }
 .np-settings--full .np-settings-body { max-width: 1040px; margin: 0 auto; padding: 24px 24px 64px; }
