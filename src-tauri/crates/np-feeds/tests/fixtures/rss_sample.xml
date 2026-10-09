@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+<channel>
+  <title>Medio de prueba</title>
+  <link>https://medio.test/</link>
+  <description>Fixture</description>
+  <item>
+    <title>El Gobierno aprueba la subida del salario mínimo</title>
+    <link>https://medio.test/economia/smi_1.html</link>
+    <description><![CDATA[<p>El Consejo de Ministros aprueba el <b>SMI</b> &amp; más.</p>]]></description>
+    <pubDate>Tue, 06 Oct 2026 08:00:00 +0200</pubDate>
+  </item>
+  <item>
+    <title>Incendio en Castellón</title>
+    <link>https://medio.test/sociedad/incendio_2.html</link>
+    <description>Desalojados tres municipios.</description>
+  </item>
+  <item>
+    <description>Sin título: debe descartarse</description>
+    <link>https://medio.test/x</link>
+  </item>
+</channel>
+</rss>

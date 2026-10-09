@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Atom de prueba</title>
+  <id>urn:uuid:feed</id>
+  <updated>2026-10-06T07:00:00Z</updated>
+  <entry>
+    <title>El BCE mantiene los tipos</title>
+    <id>urn:uuid:1</id>
+    <link rel="alternate" href="https://atom.test/bce"/>
+    <updated>2026-10-06T07:00:00Z</updated>
+    <summary type="html">&lt;p&gt;Lagarde no descarta bajadas.&lt;/p&gt;</summary>
+  </entry>
+</feed>

@@ -6,5 +6,7 @@ pub mod error;
 pub mod settings;
 pub mod text;
 pub mod tfidf;
+pub mod fetch;
+pub mod parse;
 
 pub use error::{FeedsError, Result};
