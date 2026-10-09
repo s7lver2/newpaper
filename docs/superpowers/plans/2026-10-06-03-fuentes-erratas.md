@@ -51,6 +51,6 @@ Registro de errores encontrados al ejecutar el plan y cómo se corrigieron. Las 
 ### No verificado
 
 - Léxico real y priors con fuente (siguen vacíos); la línea editorial se probó con medidas sembradas.
-- Feeds contra la red: `node scripts/check-feeds.mjs config/sources-es.json` da 12 de 34 fallidos. Servimedia se corrigió; siguen mal `publico` (404), `ondacero` (404), `vozpopuli` (404/403), `servimedia`-aparte, `lasexta` y `antena3` (no son feeds), `larazon` (503), `cadenaser`, `ctxt`, `eleconomista`, `efe` (403) y `elperiodico` (406); algunos son bloqueos a clientes sin navegador y requieren buscar la URL vigente de cada medio. No se probaron `en`/`de`.
+- Feeds contra la red: `node scripts/check-feeds.mjs config/sources-es.json` da 12 de 34 fallidos. Servimedia se corrigió; siguen mal `publico` (404), `ondacero` (404), `vozpopuli` (404/403), `lasexta` y `antena3` (no son feeds), `larazon` (503), `cadenaser`, `ctxt`, `eleconomista`, `efe` (403) y `elperiodico` (406); algunos son bloqueos a clientes sin navegador y requieren buscar la URL vigente de cada medio. No se probaron `en`/`de`.
 - Análisis rápido de la edición: no hay analizador registrado (plan 04); el aviso «Análisis en caché» y la «neutralidad» se vieron con datos sembrados.
 - Movimiento reducido y WebView2 con Tor real (se usó `NP_FAKE_TOR=1`).
