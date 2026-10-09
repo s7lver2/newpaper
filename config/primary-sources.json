@@ -1,0 +1,52 @@
+{
+  "version": 1,
+  "es": [
+    { "dominio": "ine.es", "nombre": "Instituto Nacional de Estadística" },
+    { "dominio": "boe.es", "nombre": "Boletín Oficial del Estado" },
+    { "dominio": "bde.es", "nombre": "Banco de España" },
+    { "dominio": "airef.es", "nombre": "AIReF" },
+    { "dominio": "lamoncloa.gob.es", "nombre": "La Moncloa" },
+    { "dominio": "congreso.es", "nombre": "Congreso de los Diputados" },
+    { "dominio": "senado.es", "nombre": "Senado" },
+    { "dominio": "sepe.es", "nombre": "SEPE" },
+    { "dominio": "seg-social.es", "nombre": "Seguridad Social" },
+    { "dominio": "cis.es", "nombre": "CIS" },
+    { "dominio": "poderjudicial.es", "nombre": "Consejo General del Poder Judicial" },
+    { "dominio": "aemet.es", "nombre": "AEMET" },
+    { "dominio": "maldita.es", "nombre": "Maldita.es" },
+    { "dominio": "newtral.es", "nombre": "Newtral" },
+    { "dominio": "ec.europa.eu", "nombre": "Comisión Europea / Eurostat" },
+    { "dominio": "europarl.europa.eu", "nombre": "Parlamento Europeo" },
+    { "dominio": "ecb.europa.eu", "nombre": "Banco Central Europeo" },
+    { "dominio": "oecd.org", "nombre": "OCDE" },
+    { "dominio": "imf.org", "nombre": "FMI" },
+    { "dominio": "who.int", "nombre": "OMS" }
+  ],
+  "en": [
+    { "dominio": "ons.gov.uk", "nombre": "Office for National Statistics" },
+    { "dominio": "gov.uk", "nombre": "GOV.UK" },
+    { "dominio": "parliament.uk", "nombre": "UK Parliament" },
+    { "dominio": "bankofengland.co.uk", "nombre": "Bank of England" },
+    { "dominio": "obr.uk", "nombre": "Office for Budget Responsibility" },
+    { "dominio": "fullfact.org", "nombre": "Full Fact" },
+    { "dominio": "bls.gov", "nombre": "US Bureau of Labor Statistics" },
+    { "dominio": "census.gov", "nombre": "US Census Bureau" },
+    { "dominio": "ec.europa.eu", "nombre": "European Commission / Eurostat" },
+    { "dominio": "oecd.org", "nombre": "OECD" },
+    { "dominio": "imf.org", "nombre": "IMF" },
+    { "dominio": "who.int", "nombre": "WHO" }
+  ],
+  "de": [
+    { "dominio": "destatis.de", "nombre": "Statistisches Bundesamt" },
+    { "dominio": "bundestag.de", "nombre": "Deutscher Bundestag" },
+    { "dominio": "bundesregierung.de", "nombre": "Bundesregierung" },
+    { "dominio": "bundesbank.de", "nombre": "Deutsche Bundesbank" },
+    { "dominio": "gesetze-im-internet.de", "nombre": "Gesetze im Internet" },
+    { "dominio": "arbeitsagentur.de", "nombre": "Bundesagentur für Arbeit" },
+    { "dominio": "correctiv.org", "nombre": "CORRECTIV" },
+    { "dominio": "ec.europa.eu", "nombre": "Europäische Kommission / Eurostat" },
+    { "dominio": "ecb.europa.eu", "nombre": "Europäische Zentralbank" },
+    { "dominio": "oecd.org", "nombre": "OECD" },
+    { "dominio": "who.int", "nombre": "WHO" }
+  ]
+}
