@@ -1,3 +1,4 @@
+import { parseInternalUrl } from './internalUrl';
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent } from 'react';
 import { useT } from '@newpaper/i18n/react';
 import { IconButton } from '@newpaper/ui-kit';
@@ -11,11 +12,19 @@ import { filterTabs, glyphOf, hostOf, segments } from './tabModel';
 /** Evento que el menú contextual de la tira envía para renombrar un grupo en su rótulo. */
 export const RENAME_GROUP_EVENT = 'np-rename-group';
 
+/** Las páginas internas no tienen `<title>`: se nombran por la página («Ajustes», «La edición del día»). */
+const INTERNAL_TITLES: Record<string, string> = { ajustes: 'shell.settings', edicion: 'sources.offline.editionTitle', inicio: 'shell.tabs.new' };
+const tabTitle = (tab: TabInfo, t: (key: string) => string): string => {
+  if (tab.title) return tab.title;
+  const key = tab.kind === 'internal' ? INTERNAL_TITLES[parseInternalUrl(tab.url)?.page ?? ''] : undefined;
+  return key ? t(key) : t('shell.tabs.untitled');
+};
+
 const groupColor = (g: TabGroup): CSSProperties => ({ '--g': `var(--np-group-${g.color})` }) as CSSProperties;
 
 function TabItem({ tab, active, group }: { tab: TabInfo; active: boolean; group?: TabGroup }) {
   const t = useT();
-  const title = tab.title || t('shell.tabs.untitled');
+  const title = tabTitle(tab, t);
   return (
     <div
       className="np-tabstrip-item"
@@ -150,10 +159,10 @@ function TabList({ onClose }: { onClose: () => void }) {
             {s.tabs.map((tab) => (
               <div key={tab.id} className="np-tablist-line" data-active={tab.id === activeId}>
                 <button type="button" className="np-tablist-row" onClick={() => pick(tab.id)} aria-current={tab.id === activeId ? 'true' : undefined}>
-                  <span className="np-tablist-title">{tab.title || t('shell.tabs.untitled')}</span>
+                  <span className="np-tablist-title">{tabTitle(tab, t)}</span>
                   <span className="np-tablist-host">{hostOf(tab.url)}</span>
                 </button>
-                <IconButton label={t('shell.tabs.close', { title: tab.title || t('shell.tabs.untitled') })} icon={<IconClose />} className="np-tablist-close" onClick={() => commands.tabClose(tab.id)} />
+                <IconButton label={t('shell.tabs.close', { title: tabTitle(tab, t) })} icon={<IconClose />} className="np-tablist-close" onClick={() => commands.tabClose(tab.id)} />
               </div>
             ))}
           </div>

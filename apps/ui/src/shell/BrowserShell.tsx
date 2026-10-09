@@ -17,7 +17,8 @@ function ActiveSurface() {
   if (tab.kind === 'internal') {
     const url = parseInternalUrl(tab.url);
     const Page = url ? resolveInternalPage(url.page) : undefined;
-    return <div className="np-surface">{Page && url ? <Page url={url} tab={tab} /> : <p className="np-fallback">{t('shell.notFound')}</p>}</div>;
+    // `key`: cada pestaña interna tiene su propia instancia (si no, dos pestañas de la misma página compartirían estado y scroll).
+    return <div key={tab.id} className="np-surface">{Page && url ? <Page url={url} tab={tab} /> : <p className="np-fallback">{t('shell.notFound')}</p>}</div>;
   }
   if (tab.crashed) {
     const Crash = tabSurface('crash');
