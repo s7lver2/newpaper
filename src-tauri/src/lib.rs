@@ -81,6 +81,10 @@ pub fn run() {
             sources::commands::watch_add,
             sources::commands::watches_list,
             sources::commands::lexicon_score,
+            sources::wayback::wayback_captures,
+            sources::wayback::wayback_capture_html,
+            sources::wayback::wayback_analyze,
+            sources::wayback::wayback_diff,
         ])
         .run(tauri::generate_context!())
         .expect("error while running newpaper");

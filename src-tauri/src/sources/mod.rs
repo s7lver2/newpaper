@@ -1,5 +1,6 @@
 //! Subproyecto 3: fuentes, hechos, línea editorial, hemeroteca y lectura sin conexión.
 pub mod commands;
+pub mod wayback;
 
 use std::{collections::HashMap, sync::{Arc, RwLock}, time::Duration};
 

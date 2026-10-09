@@ -14,6 +14,7 @@ const APP_COMMANDS: &[&str] = &[
     "feeds_refresh_now", "coverage_for", "events_briefing", "events_search", "event_detail", "outlets_list",
     "outlet_override_set", "outlet_stats_recompute", "custom_outlets_list", "custom_outlet_add", "custom_outlet_remove",
     "topics_list", "topic_set_following", "watch_add", "watches_list", "lexicon_score",
+    "wayback_captures", "wayback_capture_html", "wayback_analyze", "wayback_diff",
 ];
 
 fn main() {
