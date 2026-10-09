@@ -73,7 +73,7 @@ impl ProviderTable {
 
     /// Solo `custom:*`, `ollama` y `lmstudio` admiten otra URL (los de la nube no se pueden redirigir).
     pub fn upsert_custom(&mut self, ep: &CustomEndpoint) -> Result<(), ProxyError> {
-        let overridable = ep.id.starts_with("custom:") || ep.id == "ollama" || ep.id == "lmstudio";
+        let overridable = ep.id == "custom" || ep.id.starts_with("custom:") || ep.id == "ollama" || ep.id == "lmstudio";
         let deny = || ProxyError::UrlNotAllowed { provider: ep.id.clone(), url: ep.base_url.clone() };
         if !overridable {
             return Err(ProxyError::UnknownProvider(ep.id.clone()));
@@ -182,6 +182,8 @@ mod tests {
         }
         let lan = CustomEndpoint { id: "ollama".into(), base_url: "http://192.168.1.20:11434/v1".into(), auth: AuthScheme::None, local: true };
         t.upsert_custom(&lan).unwrap();
+        // The fixed id the UI uses for its single custom endpoint (the provider registry entry is `custom`).
+        t.upsert_custom(&CustomEndpoint { id: "custom".into(), ..ok.clone() }).unwrap();
         assert!(t.authorize("ollama", "http://192.168.1.20:11434/v1/chat/completions").is_ok());
     }
 }

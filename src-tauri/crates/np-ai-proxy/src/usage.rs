@@ -44,7 +44,7 @@ pub fn month_total(store: &Store, month: &str) -> Result<MonthUsage, StoreError>
     })?;
     Ok(MonthUsage {
         month: month.to_string(),
-        cost: by_model.iter().map(|m| m.cost).sum(),
+        cost: by_model.iter().map(|m| m.cost).sum::<f64>() + 0.0, // `+ 0.0`: an empty f64 sum is -0.0
         input_tokens: by_model.iter().map(|m| m.input_tokens).sum(),
         output_tokens: by_model.iter().map(|m| m.output_tokens).sum(),
         by_model,
