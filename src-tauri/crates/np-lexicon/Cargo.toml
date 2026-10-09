@@ -1,0 +1,20 @@
+[package]
+name = "np-lexicon"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[[bin]]
+name = "np-lexicon"
+path = "src/bin/np-lexicon.rs"
+
+[dependencies]
+np-feeds = { path = "../np-feeds" }
+chrono = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+unicode-normalization = "0.1.25"
+
+[dev-dependencies]
+tempfile = { workspace = true }
