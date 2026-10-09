@@ -14,6 +14,12 @@ pub enum ProxyError {
     Keyring(String),
     #[error("network: {0}")]
     Network(String),
+    #[error("duplicate request id: {0}")]
+    DuplicateRequest(String),
+    #[error("source not allowed: {0}")]
+    SourceNotAllowed(String),
+    #[error("unsupported content type: {0}")]
+    UnsupportedContent(String),
     #[error("cancelled")]
     Cancelled,
     #[error("config: {0}")]
@@ -30,6 +36,9 @@ impl ProxyError {
             ProxyError::MissingKey(_) => "missing_key",
             ProxyError::Keyring(_) => "keyring",
             ProxyError::Network(_) => "network",
+            ProxyError::DuplicateRequest(_) => "duplicate_request",
+            ProxyError::SourceNotAllowed(_) => "source_not_allowed",
+            ProxyError::UnsupportedContent(_) => "unsupported_content",
             ProxyError::Cancelled => "cancelled",
             ProxyError::Config(_) => "config",
         }

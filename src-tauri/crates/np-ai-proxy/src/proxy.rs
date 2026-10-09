@@ -18,6 +18,10 @@ use crate::{
 };
 
 pub const MAX_REQUEST_BODY: usize = 8 * 1024 * 1024;
+/// Tope de respuesta por petición (los modelos devuelven KB; esto frena un endpoint hostil).
+pub const MAX_RESPONSE_BODY: usize = 64 * 1024 * 1024;
+/// Tiempo total máximo de una petición (modelos lentos con razonamiento incluidos).
+pub const REQUEST_DEADLINE: std::time::Duration = std::time::Duration::from_secs(600);
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -78,11 +82,36 @@ impl AiProxy {
     where
         F: Fn(ProxyEvent) + Send + Sync,
     {
+        self.execute_live(provider, req, client, move |e| {
+            sink(e);
+            true
+        })
+        .await
+    }
+
+    /// Como `execute`, pero si `sink` devuelve `false` (el canal ya no tiene receptor) la descarga se corta.
+    /// El `client` debe venir con las redirecciones desactivadas: las cabeceras de clave propias de cada
+    /// proveedor (`x-api-key`) no las elimina reqwest al saltar a otro host.
+    pub async fn execute_live<F>(&self, provider: &str, req: ProxyRequest, client: reqwest::Client, sink: F) -> Result<(), ProxyError>
+    where
+        F: Fn(ProxyEvent) -> bool + Send + Sync,
+    {
         let (handle, reg) = AbortHandle::new_pair();
         let id = req.request_id.clone();
-        self.inflight.lock().expect("lock").insert(id.clone(), handle);
-        let result = match Abortable::new(self.inner(provider, req, client, &sink), reg).await {
-            Ok(r) => r,
+        {
+            let mut inflight = self.inflight.lock().expect("lock");
+            if inflight.contains_key(&id) {
+                drop(inflight);
+                let e = ProxyError::DuplicateRequest(id);
+                sink(ProxyEvent::Error { code: e.code().to_string(), message: e.to_string() });
+                return Err(e);
+            }
+            inflight.insert(id.clone(), handle);
+        }
+        let work = tokio::time::timeout(REQUEST_DEADLINE, self.inner(provider, req, client, &sink));
+        let result = match Abortable::new(work, reg).await {
+            Ok(Ok(r)) => r,
+            Ok(Err(_)) => Err(ProxyError::Network("request timed out".into())),
             Err(_) => Err(ProxyError::Cancelled),
         };
         self.inflight.lock().expect("lock").remove(&id);
@@ -94,7 +123,7 @@ impl AiProxy {
 
     async fn inner<F>(&self, provider: &str, req: ProxyRequest, client: reqwest::Client, sink: &F) -> Result<(), ProxyError>
     where
-        F: Fn(ProxyEvent) + Send + Sync,
+        F: Fn(ProxyEvent) -> bool + Send + Sync,
     {
         let (spec, url) = self.table.read().expect("lock").authorize(provider, &req.url)?;
         let method = match req.method.to_ascii_uppercase().as_str() {
@@ -105,7 +134,8 @@ impl AiProxy {
         if req.body.as_ref().is_some_and(|b| b.len() > MAX_REQUEST_BODY) {
             return Err(ProxyError::BodyTooLarge(req.body.as_ref().map_or(0, |b| b.len())));
         }
-        let mut headers = sanitize_request_headers(&req.headers);
+        let headers = sanitize_request_headers(&req.headers);
+        let mut headers_auth = None;
         if spec.auth != AuthScheme::None {
             let key = self
                 .secrets
@@ -113,11 +143,17 @@ impl AiProxy {
                 .map_err(|e| ProxyError::Keyring(e.to_string()))?
                 .filter(|k| !k.trim().is_empty())
                 .ok_or_else(|| ProxyError::MissingKey(spec.id.clone()))?;
-            headers.extend(auth_header(spec.auth, key.trim()));
+            headers_auth = auth_header(spec.auth, key.trim());
         }
         let mut b = client.request(method, url);
         for (k, v) in &headers {
             b = b.header(k.as_str(), v.as_str());
+        }
+        if let Some((k, v)) = headers_auth {
+            // Marcada como sensible: no aparece en `Debug` ni la reenvía un cliente con redirecciones.
+            let mut hv = reqwest::header::HeaderValue::from_str(&v).map_err(|_| ProxyError::Keyring("stored key is not a valid header value".into()))?;
+            hv.set_sensitive(true);
+            b = b.header(k.as_str(), hv);
         }
         if let Some(body) = req.body {
             b = b.body(body);
@@ -125,12 +161,19 @@ impl AiProxy {
         let resp = b.send().await.map_err(|e| ProxyError::Network(e.to_string()))?;
         let status = resp.status().as_u16();
         let resp_headers: Vec<(String, String)> = resp.headers().iter().filter_map(|(k, v)| v.to_str().ok().map(|v| (k.as_str().to_string(), v.to_string()))).collect();
-        sink(ProxyEvent::Head { status, headers: sanitize_response_headers(&resp_headers) });
+        if !sink(ProxyEvent::Head { status, headers: sanitize_response_headers(&resp_headers) }) {
+            return Err(ProxyError::Cancelled);
+        }
         let mut stream = resp.bytes_stream();
+        let mut total = 0usize;
         while let Some(chunk) = stream.next().await {
             let bytes = chunk.map_err(|e| ProxyError::Network(e.to_string()))?;
-            if !bytes.is_empty() {
-                sink(ProxyEvent::Chunk { b64: B64.encode(&bytes) });
+            total += bytes.len();
+            if total > MAX_RESPONSE_BODY {
+                return Err(ProxyError::BodyTooLarge(total));
+            }
+            if !bytes.is_empty() && !sink(ProxyEvent::Chunk { b64: B64.encode(&bytes) }) {
+                return Err(ProxyError::Cancelled);
             }
         }
         sink(ProxyEvent::End);

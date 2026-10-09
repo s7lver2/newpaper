@@ -80,7 +80,8 @@ impl ProviderTable {
         }
         let base = with_trailing_slash(Url::parse(&ep.base_url).map_err(|_| deny())?);
         let scheme_ok = base.scheme() == "https" || (base.scheme() == "http" && ep.local);
-        if !scheme_ok || !base.username().is_empty() || base.password().is_some() {
+        // Un endpoint remoto (no local) no puede apuntar a localhost/redes privadas: eso es un endpoint local explícito.
+        if !scheme_ok || !base.username().is_empty() || base.password().is_some() || (!ep.local && crate::guard::is_private_host(&base)) {
             return Err(deny());
         }
         self.specs.insert(ep.id.clone(), ProviderSpec { id: ep.id.clone(), base_url: base, auth: ep.auth, local: ep.local });
@@ -154,6 +155,14 @@ mod tests {
             "https://user:pw@api.anthropic.com/v1/messages",
             "https://api.anthropic.com/v2/messages",
             "https://api.anthropic.com/v1/../admin",
+            "https://api.anthropic.com/v1/%2e%2e/admin",
+            "https://api.anthropic.com@evil.example/v1/messages",
+            "https://api.anthropic.com\\@evil.example/v1/messages",
+            "https://api.anthropic.com.evil.example/v1/messages",
+            "https://api.anthropic.com./v1/messages",
+            "https://api.anthropic.com/v1evil",
+            "/v1/messages",
+            "//evil.example/v1/messages",
         ] {
             assert_eq!(t().authorize("anthropic", bad).unwrap_err().code(), "url_not_allowed", "{bad}");
         }
@@ -168,6 +177,9 @@ mod tests {
         assert!(t.authorize("custom:mi-servidor", "https://llm.example.org/v1/chat/completions").is_ok());
         assert!(t.upsert_custom(&CustomEndpoint { id: "anthropic".into(), ..ok.clone() }).is_err());
         assert!(t.upsert_custom(&CustomEndpoint { base_url: "http://llm.example.org/v1".into(), ..ok.clone() }).is_err());
+        for private in ["https://169.254.169.254/v1", "https://127.0.0.1/v1", "https://intranet/v1"] {
+            assert!(t.upsert_custom(&CustomEndpoint { base_url: private.into(), ..ok.clone() }).is_err(), "{private}");
+        }
         let lan = CustomEndpoint { id: "ollama".into(), base_url: "http://192.168.1.20:11434/v1".into(), auth: AuthScheme::None, local: true };
         t.upsert_custom(&lan).unwrap();
         assert!(t.authorize("ollama", "http://192.168.1.20:11434/v1/chat/completions").is_ok());

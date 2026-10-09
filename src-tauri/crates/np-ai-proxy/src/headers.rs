@@ -7,12 +7,17 @@ const BLOCKED_REQUEST: &[&str] = &[
 ];
 const BLOCKED_RESPONSE: &[&str] = &["set-cookie", "set-cookie2", "content-length", "transfer-encoding", "connection"];
 
+/// Cabeceras con aspecto de credencial: nunca las fija JS, sea cual sea el proveedor.
+fn looks_like_credential(name: &str) -> bool {
+    ["auth", "api-key", "apikey", "token", "secret", "cookie", "credential", "password", "signature"].iter().any(|p| name.contains(p))
+}
+
 fn filter(pairs: &[(String, String)], blocked: &[&str]) -> Vec<(String, String)> {
     pairs.iter().filter(|(k, _)| !blocked.contains(&k.to_ascii_lowercase().as_str())).map(|(k, v)| (k.to_ascii_lowercase(), v.clone())).collect()
 }
 
 pub fn sanitize_request_headers(pairs: &[(String, String)]) -> Vec<(String, String)> {
-    filter(pairs, BLOCKED_REQUEST)
+    filter(pairs, BLOCKED_REQUEST).into_iter().filter(|(k, _)| !looks_like_credential(k)).collect()
 }
 
 pub fn sanitize_response_headers(pairs: &[(String, String)]) -> Vec<(String, String)> {
@@ -48,6 +53,12 @@ mod tests {
             ("anthropic-version", "2023-06-01"),
         ]));
         assert_eq!(out, h(&[("content-type", "application/json"), ("anthropic-version", "2023-06-01")]));
+    }
+
+    #[test]
+    fn strips_equivalent_credential_headers() {
+        let out = sanitize_request_headers(&h(&[("X-Auth-Token", "a"), ("Ocp-Apim-Subscription-Key-Secret", "b"), ("x-amz-security-token", "c"), ("accept", "*/*")]));
+        assert_eq!(out, h(&[("accept", "*/*")]));
     }
 
     #[test]

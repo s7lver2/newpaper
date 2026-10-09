@@ -66,7 +66,9 @@ export async function runAgent(o: {
 }): Promise<{ text: string; citations: AgentCitation[]; usage: Usage }> {
   const c = o.context;
   const sources = c.sources;
-  const sourceList = () => sources.map((s, i) => `[${i + 1}] ${s.title} — ${s.url}`).join('\n');
+  // Los títulos vienen de páginas ajenas y esta lista va en el prompt de sistema: una línea, acotada, sin marcadores.
+  const safeTitle = (t: string) => t.replace(/<<<[^>]*>>>/g, '').replace(/\s+/g, ' ').trim().slice(0, 140);
+  const sourceList = () => sources.map((s, i) => `[${i + 1}] ${safeTitle(s.title)} — ${s.url}`).join('\n');
   const coverageUrls = () => new Set(c.coverages.map((x) => x.url));
 
   const tools = {
@@ -88,11 +90,11 @@ export async function runAgent(o: {
         const isCoverage = coverageUrls().has(url);
         if (!isCoverage && !inDomains(url, c.primaryDomains)) return { error: 'not allowed: only primary-source domains or coverage articles' };
         const existing = sources.findIndex((s) => s.url === url);
-        if (existing >= 0) return { n: existing + 1, text: sources[existing]!.text.slice(0, 4000) };
+        if (existing >= 0) return { n: existing + 1, text: delimit(`SOURCE ${existing + 1}`, sources[existing]!.text.slice(0, 4000)) };
         const a = o.extract(await o.fetcher.fetch(url, isCoverage ? [url] : []), url);
         if (!a) return { error: 'could not extract text' };
         sources.push({ id: `S${sources.length + 1}`, url, title: a.title || url, kind: isCoverage ? 'coverage' : 'primary', text: a.text.slice(0, 6000), media: [] });
-        return { n: sources.length, title: a.title, text: a.text.slice(0, 4000) };
+        return { n: sources.length, title: safeTitle(a.title), text: delimit(`SOURCE ${sources.length}`, a.text.slice(0, 4000)) };
       },
     }),
     getVerdicts: tool({

@@ -3,6 +3,7 @@
 //! contra el proveedor, añade la cabecera y devuelve la respuesta en streaming.
 pub mod cache;
 pub mod error;
+pub mod guard;
 pub mod headers;
 pub mod proxy;
 pub mod sources;

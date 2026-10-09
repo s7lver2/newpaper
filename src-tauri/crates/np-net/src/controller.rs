@@ -21,11 +21,14 @@ pub fn tor_browser_args(port: u16) -> String {
     )
 }
 
-fn build_client(socks_port: Option<u16>) -> Result<reqwest::Client, NetError> {
+fn build_client(socks_port: Option<u16>, follow_redirects: bool) -> Result<reqwest::Client, NetError> {
     let mut b = reqwest::Client::builder()
         .user_agent(concat!("newpaper/", env!("CARGO_PKG_VERSION")))
         .connect_timeout(Duration::from_secs(45))
         .read_timeout(Duration::from_secs(90));
+    if !follow_redirects {
+        b = b.redirect(reqwest::redirect::Policy::none());
+    }
     match socks_port {
         Some(p) => {
             let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{p}"))?
@@ -44,6 +47,9 @@ pub struct NetController {
     status: watch::Sender<NetStatus>,
     direct: reqwest::Client,
     proxied: reqwest::Client,
+    /// Sin seguir redirecciones: para tráfico con credenciales (IA) o validado salto a salto (fuentes).
+    direct_strict: reqwest::Client,
+    proxied_strict: reqwest::Client,
 }
 
 impl NetController {
@@ -56,8 +62,10 @@ impl NetController {
         let initial = compose_status(&settings, &tor.subscribe().borrow(), port, tor.circuit());
         let (status, _) = watch::channel(initial);
         let me = Arc::new(Self {
-            direct: build_client(None)?,
-            proxied: build_client(Some(port))?,
+            direct: build_client(None, true)?,
+            proxied: build_client(Some(port), true)?,
+            direct_strict: build_client(None, false)?,
+            proxied_strict: build_client(Some(port), false)?,
             tor: tor.clone(),
             server,
             settings: RwLock::new(settings.clone()),
@@ -151,6 +159,13 @@ impl NetController {
             self.refresh();
         }
         changed
+    }
+
+    pub fn http_client_strict(&self, traffic: Traffic) -> reqwest::Client {
+        match route(&self.settings.read().expect("settings lock"), traffic) {
+            Route::Tor => self.proxied_strict.clone(),
+            Route::Direct => self.direct_strict.clone(),
+        }
     }
 
     pub fn http_client(&self, traffic: Traffic) -> reqwest::Client {

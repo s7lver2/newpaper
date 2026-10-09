@@ -53,7 +53,8 @@ export function makeProxyFetch(provider: string, invoker: AiInvoker): typeof fet
         switch (e.event) {
           case 'head':
             started = true;
-            resolve(new Response(stream, { status: e.data.status, headers: e.data.headers }));
+            // 204/205/304 no admiten cuerpo en el constructor de Response.
+            resolve(new Response([204, 205, 304].includes(e.data.status) ? null : stream, { status: e.data.status, headers: e.data.headers }));
             break;
           case 'chunk':
             controller.enqueue(decode(e.data.b64));

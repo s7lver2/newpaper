@@ -22,8 +22,9 @@ fn pe(e: np_ai_proxy::ProxyError) -> CmdError {
     CmdError::new(e.code(), e.to_string())
 }
 
+/// Sin redirecciones: el proxy de IA añade claves y las fuentes se revalidan en cada salto.
 fn client(ext: &ShellExtensions, p: HttpPurpose) -> CmdResult<reqwest::Client> {
-    ext.http_client(p).map_err(|e| CmdError::new("network", e))
+    ext.http_client_strict(p).map_err(|e| CmdError::new("network", e))
 }
 
 #[tauri::command]
@@ -36,9 +37,8 @@ pub async fn ai_fetch(
 ) -> CmdResult<()> {
     let c = client(&ext, HttpPurpose::Ai)?;
     // Los errores ya viajan como `ProxyEvent::Error` por el canal; el comando termina bien.
-    let _ = proxy.execute(&provider, request, c, move |e| {
-        let _ = on_event.send(e);
-    }).await;
+    // Si la webview cierra el canal, la descarga se corta (no se sigue consumiendo red y memoria).
+    let _ = proxy.execute_live(&provider, request, c, move |e| on_event.send(e).is_ok()).await;
     Ok(())
 }
 
@@ -67,7 +67,7 @@ pub async fn source_fetch(
     if !is_allowed(&url, &wl, &allow_extra) {
         return Err(CmdError::new("source_not_allowed", url));
     }
-    fetch_source(&client(&ext, HttpPurpose::Content)?, &url).await.map_err(pe)
+    fetch_source(&client(&ext, HttpPurpose::Content)?, &url, |u| is_allowed(u, &wl, &allow_extra)).await.map_err(pe)
 }
 
 #[tauri::command]

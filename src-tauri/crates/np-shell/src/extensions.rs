@@ -50,6 +50,10 @@ pub enum HttpPurpose {
 
 pub trait HttpClientProvider: Send + Sync {
     fn client(&self, purpose: HttpPurpose) -> Result<reqwest::Client, String>;
+    /// Igual que `client`, pero sin seguir redirecciones (tráfico con credenciales o validado salto a salto).
+    fn client_strict(&self, purpose: HttpPurpose) -> Result<reqwest::Client, String> {
+        self.client(purpose)
+    }
 }
 
 /// Proveedor por defecto: conexión directa. El subproyecto 2 lo sustituye (Tor + kill switch).
@@ -150,6 +154,11 @@ impl ShellExtensions {
     pub fn http_client(&self, purpose: HttpPurpose) -> Result<reqwest::Client, String> {
         let provider = self.http.read().expect("ext lock").clone();
         provider.client(purpose)
+    }
+
+    pub fn http_client_strict(&self, purpose: HttpPurpose) -> Result<reqwest::Client, String> {
+        let provider = self.http.read().expect("ext lock").clone();
+        provider.client_strict(purpose)
     }
 
     pub fn set_known_domains(&self, domains: impl IntoIterator<Item = String>) {

@@ -75,6 +75,9 @@ impl HttpClientProvider for NetHttp {
     fn client(&self, purpose: HttpPurpose) -> Result<reqwest::Client, String> {
         Ok(self.0.http_client(traffic_for(purpose)))
     }
+    fn client_strict(&self, purpose: HttpPurpose) -> Result<reqwest::Client, String> {
+        Ok(self.0.http_client_strict(traffic_for(purpose)))
+    }
 }
 
 /// Los marcados "sin Tor" no se olvidan al cerrar la webview: `recreate_tab` la cierra y la vuelve a crear.
