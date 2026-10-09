@@ -1,3 +1,5 @@
+const STATUS_TEXT: Record<number, string> = { 400: "Bad Request", 401: "Unauthorized", 402: "Payment Required", 403: "Forbidden", 404: "Not Found", 408: "Request Timeout", 422: "Unprocessable Entity", 429: "Too Many Requests", 500: "Internal Server Error", 502: "Bad Gateway", 503: "Service Unavailable", 504: "Gateway Timeout" };
+
 export interface ProxyRequest { requestId: string; url: string; method: string; headers: [string, string][]; body: string | null }
 export type ProxyEvent =
   | { event: 'head'; data: { status: number; headers: [string, string][] } }
@@ -54,7 +56,7 @@ export function makeProxyFetch(provider: string, invoker: AiInvoker): typeof fet
           case 'head':
             started = true;
             // 204/205/304 no admiten cuerpo en el constructor de Response.
-            resolve(new Response([204, 205, 304].includes(e.data.status) ? null : stream, { status: e.data.status, headers: e.data.headers }));
+            resolve(new Response([204, 205, 304].includes(e.data.status) ? null : stream, { status: e.data.status, statusText: STATUS_TEXT[e.data.status] ?? "", headers: e.data.headers }));
             break;
           case 'chunk':
             controller.enqueue(decode(e.data.b64));

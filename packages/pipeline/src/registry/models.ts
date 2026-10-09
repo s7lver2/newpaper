@@ -33,6 +33,19 @@ export async function testConnection(model: LanguageModel) {
     await generateText({ model, prompt: 'Reply with: ok', maxOutputTokens: 8, maxRetries: 0 });
     return { ok: true as const, latencyMs: Math.round(performance.now() - t0) };
   } catch (e) {
-    return { ok: false as const, latencyMs: Math.round(performance.now() - t0), error: e instanceof Error ? e.message : String(e) };
+    return { ok: false as const, latencyMs: Math.round(performance.now() - t0), error: describeError(e) };
   }
+}
+
+/** Mensaje legible con el código HTTP y el cuerpo que devolvió el proveedor (sin cabeceras ni clave). */
+export function describeError(e: unknown): string {
+  const o = (e ?? {}) as { message?: unknown; statusCode?: unknown; responseBody?: unknown; name?: unknown; cause?: unknown };
+  const parts: string[] = [];
+  if (typeof o.statusCode === "number") parts.push(`HTTP ${o.statusCode}`);
+  const msg = typeof o.message === "string" ? o.message.trim() : "";
+  if (msg) parts.push(msg);
+  else if (typeof o.responseBody === "string" && o.responseBody.trim()) parts.push(o.responseBody.trim().slice(0, 300));
+  else if (o.cause instanceof Error && o.cause.message) parts.push(o.cause.message);
+  if (!parts.length) parts.push(typeof o.name === "string" ? o.name : "error desconocido");
+  return parts.join(": ").slice(0, 400);
 }
