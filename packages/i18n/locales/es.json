@@ -63,7 +63,10 @@
       "emptyTitle": "No hay texto que mostrar",
       "emptyHint": "La página no entregó contenido legible en el lector. Puedes verla tal cual.",
       "limitedTitle": "Este artículo está limitado por suscripción",
-      "limitedBody": "Aquí solo se muestra lo que la página entrega. El resto está detrás del muro de suscripción."
+      "limitedBody": "Aquí solo se muestra lo que la página entrega. El resto está detrás del muro de suscripción.",
+      "loadingArticle": "Preparando el lector…",
+      "loadingListing": "Preparando la portada…",
+      "loadingHint": "Un momento: se abre en el lector."
     },
     "surface": {
       "kicker": "Error",

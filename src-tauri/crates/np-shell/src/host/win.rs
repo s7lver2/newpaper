@@ -16,7 +16,7 @@ use webview2_com::{
         COREWEBVIEW2_CAPTURE_PREVIEW_IMAGE_FORMAT_PNG, COREWEBVIEW2_PERMISSION_STATE_DENY, COREWEBVIEW2_PROCESS_FAILED_KIND, COREWEBVIEW2_WEB_ERROR_STATUS,
     },
     CapturePreviewCompletedHandler, ContextMenuRequestedEventHandler, DownloadStartingEventHandler, NavigationCompletedEventHandler,
-    NewWindowRequestedEventHandler, PermissionRequestedEventHandler, ProcessFailedEventHandler,
+    NavigationStartingEventHandler, NewWindowRequestedEventHandler, PermissionRequestedEventHandler, ProcessFailedEventHandler,
     WebMessageReceivedEventHandler,
 };
 use windows::core::{Interface, BOOL, HSTRING, PWSTR};
@@ -302,10 +302,25 @@ unsafe fn register(core: &ICoreWebView2, app: AppHandle, tab: TabId, label: Stri
     }));
     core.add_WebMessageReceived(&on_message, &mut token)?;
 
+    // Cada navegación lleva un id creciente: así se sabe qué eventos de fin son de una navegación ya superada
+    // por otra (atrás, atrás, atrás...).
+    let a = app.clone();
+    let l = label.clone();
+    let on_starting = NavigationStartingEventHandler::create(Box::new(move |_, args| {
+        let Some(args) = args else { return Ok(()) };
+        let mut nav_id = 0u64;
+        args.NavigationId(&mut nav_id)?;
+        a.state::<Arc<TabManager>>().on_navigation_starting(tab, &l, nav_id);
+        Ok(())
+    }));
+    core.add_NavigationStarting(&on_starting, &mut token)?;
+
     let a = app.clone();
     let l = label.clone();
     let on_completed = NavigationCompletedEventHandler::create(Box::new(move |sender, args| {
         let (Some(sender), Some(args)) = (sender, args) else { return Ok(()) };
+        let mut nav_id = 0u64;
+        args.NavigationId(&mut nav_id)?;
         let mut ok = BOOL::default();
         args.IsSuccess(&mut ok)?;
         let mut status = COREWEBVIEW2_WEB_ERROR_STATUS::default();
@@ -325,6 +340,7 @@ unsafe fn register(core: &ICoreWebView2, app: AppHandle, tab: TabId, label: Stri
             &l,
             NavOutcome {
                 url: take_pwstr(uri),
+                navigation_id: nav_id,
                 success: ok.as_bool(),
                 web_error_status: status.0,
                 http_status: http.filter(|c| *c > 0).map(|c| c as u16),

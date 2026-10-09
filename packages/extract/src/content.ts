@@ -1,6 +1,6 @@
 import { buildPageMessage, shortcutFor, type NavMessage, type PageMessage, type ShortcutMessage } from './message';
 
-type WebviewBridge = { postMessage(m: unknown): void };
+type WebviewBridge = { postMessage(m: unknown): void; addEventListener?(type: 'message', fn: (e: MessageEvent) => void): void };
 const bridge: WebviewBridge | undefined = (window as unknown as { chrome?: { webview?: WebviewBridge } }).chrome?.webview;
 
 function post(m: PageMessage | NavMessage | ShortcutMessage): void {
@@ -19,6 +19,19 @@ if (bridge && window.top === window) {
     sent = url;
     post(buildPageMessage(document, url));
   };
+  // El anfitrión mantiene la webview oculta mientras espera la clasificación (noticia que abrirá el lector):
+  // en cuanto pide ("np-early") se extrae sin esperar al evento `load`, que en un medio con anuncios tarda
+  // segundos. Si la extracción no es concluyente se avisa igualmente y se reintenta al cargar.
+  const sendEarly = () => {
+    const url = location.href;
+    if (sent === url) return;
+    const m = buildPageMessage(document, url);
+    if (m.article || (m.kind === 'listing' && m.items.length > 0)) sent = url;
+    post(m);
+  };
+  bridge.addEventListener?.('message', (e: MessageEvent) => {
+    if ((e.data as { type?: string } | null)?.type === 'np-early') setTimeout(sendEarly, 60);
+  });
   const sendNav = () => post({ type: 'nav', url: location.href, title: document.title.slice(0, 1000) });
 
   if (document.readyState === 'complete') setTimeout(sendPage, 0);

@@ -177,3 +177,7 @@ Detalle en `2026-10-09-pendientes-resultado.md`. Errores del plan o del código 
 | UI | Popovers y diálogos quedaban detrás de la webview nativa en páginas web (no se vio en las revisiones con páginas internas) | Captura y ocultación de la página mientras estén abiertos | 9b4c24f |
 | ui-kit | `reader.test.tsx` y fixtures de `PageArticle` no incluían `limited`, `kind`, `items` | Actualizados (firmas nuevas) | 1ea371e |
 | Tooling | En Windows `ContextMenu.tsx` y `contextMenu.ts` colisionan por mayúsculas | El modelo puro pasa a `menuModel.ts` | 8f910a9 |
+| Lista de pestañas | Popover anclado por el borde derecho de un botón de 32 px: con pocas pestañas se salía por la izquierda de la ventana | Anclaje izquierdo y `useViewportClamp` en lista, Tor y escudo | ver git log |
+| Fundido A1 | `PAINT_TIMEOUT` de 1,8 s menor que el primer pintado de una web real (2-3 s): el fundido casi nunca ocurría | 6 s; sin fundido hacia el lector | ver git log |
+| Lector | La original se veía hasta el evento `load` (el mensaje `page` se enviaba entonces) | Estado `readerPending`, piel `ReaderLoading` y extracción anticipada (`np-doc`/`np-early`) | ver git log |
+| Navegación | `IsSuccess=false` de una navegación superada se mostraba como error con el HTTP 200 previo | `navigation::judge` e id de navegación | ver git log |

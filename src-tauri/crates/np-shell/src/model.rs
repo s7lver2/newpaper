@@ -72,6 +72,8 @@ pub struct TabInfo {
     pub is_news: bool,
     /// Readability extrajo un artículo: el lector se puede abrir a mano aunque no sea noticia.
     pub readable: bool,
+    /// Se espera a saber si la página abre el lector: la webview sigue oculta y la UI muestra su carga.
+    pub reader_pending: bool,
     pub failure: Option<NavFailure>,
     pub crashed: bool,
     /// Anclada: va al principio, sin grupo.
@@ -121,6 +123,7 @@ impl TabList {
             view: TabView::Original,
             is_news: false,
             readable: false,
+            reader_pending: false,
             failure: None,
             crashed: false,
             pinned: false,

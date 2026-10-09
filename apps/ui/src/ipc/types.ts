@@ -23,6 +23,8 @@ export interface TabInfo {
   isNews: boolean;
   /** Readability extrajo un artículo: el lector se puede abrir a mano aunque no sea noticia. */
   readable: boolean;
+  /** Se espera a saber si la página abre el lector (la original sigue oculta; la UI muestra su carga). */
+  readerPending?: boolean;
   failure: NavFailure | null;
   crashed: boolean;
   /** Anclada: va al principio, solo con icono y sin grupo. */

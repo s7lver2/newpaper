@@ -177,3 +177,24 @@ html[data-np-transition='on'] .np-surface { animation: np-fade .3s var(--np-ease
 .np-resource { width: min(480px, calc(100vw - 32px)); }
 .np-resource-art { width: min(300px, 80%); margin: 4px auto 0; }
 .np-resource-actions { flex-wrap: wrap; }
+
+/* Reader loading skin: shown instead of the original page while an outlet page is being classified */
+.np-reader-loading { overflow: hidden; }
+.np-rl-column { box-sizing: border-box; width: min(720px, 100%); margin: 0 auto; padding: 36px 24px 48px; display: grid; gap: 14px; align-content: start; }
+.np-reader-loading[data-kind='listing'] .np-rl-column { width: min(1040px, 100%); }
+.np-rl-kicker { display: flex; align-items: center; gap: 8px; margin: 0 0 6px; color: var(--np-muted); font: 500 12px/1 var(--np-font-mono); letter-spacing: .04em; }
+.np-rl-mark { display: grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; background: var(--np-accent-soft); color: var(--np-accent); font: 600 12px/1 var(--np-font-ui); }
+.np-rl-bar { height: 14px; border-radius: 7px; background: linear-gradient(90deg, var(--np-soft) 0%, color-mix(in srgb, var(--np-soft) 55%, var(--np-line)) 50%, var(--np-soft) 100%); background-size: 220% 100%; animation: np-rise .8s var(--np-ease) both, np-rl-sheen 1.8s ease-in-out .8s infinite; }
+.np-rl-title { height: 34px; border-radius: 10px; }
+.np-rl-meta { width: 38%; height: 12px; }
+.np-rl-line { height: 13px; }
+.np-rl-w70 { width: 70%; }
+.np-rl-w85 { width: 85%; }
+.np-rl-rule { height: 1px; margin: 8px 0 6px; background: var(--np-line); }
+.np-rl-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 22px 20px; }
+.np-rl-card { display: grid; gap: 10px; align-content: start; }
+.np-rl-thumb { height: 130px; border-radius: 12px; }
+.np-rl-text { display: grid; gap: 2px; margin: 18px 0 0; color: var(--np-muted); font: 400 14px/1.4 var(--np-font-ui); }
+.np-rl-hint { color: var(--np-faint); font-size: 12.5px; }
+@keyframes np-rl-sheen { 0% { background-position: 120% 0; } 100% { background-position: -100% 0; } }
+@media (prefers-reduced-motion: reduce) { .np-rl-bar, .np-rl-text, .np-rl-kicker, .np-rl-card { animation: none; } }

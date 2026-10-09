@@ -63,7 +63,10 @@
       "emptyTitle": "Nothing to show",
       "emptyHint": "The page didn't provide readable content for the reader. You can view it as is.",
       "limitedTitle": "This article is limited by subscription",
-      "limitedBody": "Only what the page delivers is shown here. The rest is behind the subscription wall."
+      "limitedBody": "Only what the page delivers is shown here. The rest is behind the subscription wall.",
+      "loadingArticle": "Preparing the reader…",
+      "loadingListing": "Preparing the front page…",
+      "loadingHint": "One moment: it opens in the reader."
     },
     "surface": {
       "kicker": "Error",

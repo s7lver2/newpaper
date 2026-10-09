@@ -26,6 +26,7 @@ use crate::{
     extensions::ShellExtensions,
     input::{parse_input, search_url, Target},
     message::{parse_content_message, ContentMessage, PageKind, PagePayload},
+    navigation,
     model::{GroupId, NavFailure, TabInfo, TabKind, TabList, TabView, TabsSnapshot},
     news::{is_news, reader_policy},
     transition::{self, Context as TransitionContext},
@@ -55,7 +56,22 @@ pub const READY_SCRIPT: &str = r#"(() => {
     if (stylesReady() || performance.now() - t0 > 1800) send();
     else setTimeout(() => poll(t0), 40);
   };
-  const start = () => poll(performance.now());
+  // Pistas de que la página es una noticia (antes de que cargue del todo): permiten mantener la webview
+  // oculta mientras la app prepara el lector, sin enseñar la original.
+  const hint = () => {
+    try {
+      const og = document.querySelector('meta[property="og:type"]');
+      if (og && /^article$/i.test((og.getAttribute('content') || '').trim())) return true;
+      for (const s of document.querySelectorAll('script[type="application/ld+json"]')) {
+        if (/NewsArticle/.test(s.textContent || '')) return true;
+      }
+    } catch (e) {}
+    return false;
+  };
+  const start = () => {
+    wv.postMessage(JSON.stringify({ type: 'np-doc', hint: hint() }));
+    poll(performance.now());
+  };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start, { once: true });
   else start();
   window.addEventListener('load', send, { once: true });
@@ -105,6 +121,7 @@ impl From<tauri::Error> for ShellError {
 #[derive(Debug, Clone)]
 pub struct NavOutcome {
     pub url: String,
+    pub navigation_id: u64,
     pub success: bool,
     pub web_error_status: i32,
     pub http_status: Option<u16>,
@@ -137,6 +154,12 @@ pub struct TabManager {
     context_open: Mutex<HashSet<TabId>>,
     /// Quien espera el primer pintado (o el fallo) de la navegación en curso de cada pestaña.
     paint_waiters: Mutex<HashMap<TabId, tokio::sync::oneshot::Sender<bool>>>,
+    /// Número de la espera de lector en curso de cada pestaña (invalida los temporizadores viejos).
+    pending_seq: Mutex<HashMap<TabId, u64>>,
+    /// Última navegación iniciada en cada pestaña: los eventos de navegaciones anteriores se descartan.
+    latest_nav: Mutex<HashMap<TabId, u64>>,
+    /// Pestañas cuyo documento nuevo ya existe (np-doc): el tope de la espera del lector solo cuenta desde ahí.
+    doc_seen: Mutex<HashSet<TabId>>,
 }
 
 /// Fondo por defecto del tema papel (`--np-paper`).
@@ -146,6 +169,8 @@ pub const INK_BG: (u8, u8, u8) = (0x13, 0x13, 0x15);
 
 /// Si no llega el primer pintado (p. ej. sitio lentísimo), la webview se revela igualmente.
 const REVEAL_FALLBACK: Duration = Duration::from_millis(2500);
+/// Tope de la espera del lector: si la página no se clasifica en este tiempo se enseña la original.
+const READER_WAIT: Duration = Duration::from_millis(4000);
 
 impl TabManager {
     pub fn new(app: AppHandle, ext: Arc<ShellExtensions>, webview_root: PathBuf) -> Self {
@@ -164,6 +189,9 @@ impl TabManager {
             transitioning: Mutex::default(),
             context_open: Mutex::default(),
             paint_waiters: Mutex::default(),
+            pending_seq: Mutex::default(),
+            latest_nav: Mutex::default(),
+            doc_seen: Mutex::default(),
             bg: Mutex::new(PAPER_BG),
         }
     }
@@ -312,6 +340,74 @@ impl TabManager {
         });
     }
 
+    fn is_known_site(&self, url: &str) -> bool {
+        is_news(url, &crate::message::NewsSignals { og_type: None, json_ld_types: vec![] }, &self.ext.known_domains())
+    }
+
+    /// ¿Esta navegación va a abrir el lector? Con el ajuste de apertura automática activo: dominio de medio
+    /// conocido, o navegación iniciada desde el lector (un enlace de una noticia). Un cambio solo de
+    /// fragmento (`#...`) no cuenta: el documento es el mismo.
+    fn should_hold_reader(&self, id: TabId, url: &str) -> bool {
+        if !self.ext.reader_auto_open() {
+            return false;
+        }
+        let Some(tab) = self.tab(id) else { return false };
+        let same_doc = tab.url.split('#').next() == url.split('#').next();
+        if tab.kind != TabKind::Web || same_doc {
+            return false;
+        }
+        self.is_known_site(url) || tab.view == TabView::Reader
+    }
+
+    /// La webview de `id` se mantiene oculta hasta que la página se clasifica (o pasa `READER_WAIT`).
+    fn hold_reader(&self, id: TabId) {
+        let seq = {
+            let mut m = self.pending_seq.lock().expect("pending lock");
+            let n = m.entry(id).or_insert(0);
+            *n += 1;
+            *n
+        };
+        // Hasta el primer pintado de la página nueva tampoco se enseña (sin documento a medio pintar).
+        self.revealed.lock().expect("revealed lock").remove(&id);
+        self.doc_seen.lock().expect("doc lock").remove(&id);
+        self.update(id, |t| t.reader_pending = true);
+        let app = self.app.clone();
+        std::thread::spawn(move || {
+            std::thread::sleep(REVEAL_FALLBACK);
+            app.state::<Arc<TabManager>>().reveal(id);
+        });
+        let app = self.app.clone();
+        std::thread::spawn(move || {
+            let mgr = app.state::<Arc<TabManager>>();
+            std::thread::sleep(READER_WAIT);
+            // Un servidor lento (aún sin documento) no agota la espera: enseñar la webview sería enseñar un hueco.
+            let mut extra = 0;
+            while extra < 26 && !mgr.doc_seen.lock().expect("doc lock").contains(&id) && mgr.pending_seq.lock().expect("pending lock").get(&id) == Some(&seq) {
+                std::thread::sleep(Duration::from_secs(1));
+                extra += 1;
+            }
+            mgr.expire_reader_wait(id, seq);
+        });
+    }
+
+    fn expire_reader_wait(&self, id: TabId, seq: u64) {
+        if self.pending_seq.lock().expect("pending lock").get(&id) != Some(&seq) {
+            return;
+        }
+        if self.tab(id).is_some_and(|t| t.reader_pending) {
+            tracing::debug!(tab = id, "reader wait expired: showing the original");
+            self.release_reader_wait(id);
+        }
+    }
+
+    /// Termina la espera del lector: si la página no abrió el lector, la original se enseña (ya pintada).
+    fn release_reader_wait(&self, id: TabId) {
+        self.pending_seq.lock().expect("pending lock").remove(&id);
+        self.update(id, |t| t.reader_pending = false);
+        self.apply_visibility();
+        self.emit_tabs();
+    }
+
     pub fn snapshot(&self) -> TabsSnapshot {
         self.tabs.lock().expect("tabs lock").snapshot()
     }
@@ -355,6 +451,9 @@ impl TabManager {
             }
             let started = matches!(payload.event(), PageLoadEvent::Started);
             let url = payload.url().to_string();
+            // Un medio conocido (o venir del lector) va a abrir el lector: la webview no se enseña hasta saber
+            // si lo hace, y la UI muestra su propia superficie de carga.
+            let hold = started && (mgr.should_hold_reader(id, &url) || mgr.tab(id).is_some_and(|t| t.reader_pending));
             mgr.update(id, |t| {
                 t.loading = started;
                 if started {
@@ -364,8 +463,12 @@ impl TabManager {
                     t.is_news = false;
                     t.readable = false;
                     t.view = TabView::Original;
+                    t.reader_pending = false;
                 }
             });
+            if hold {
+                mgr.hold_reader(id);
+            }
             mgr.apply_visibility();
             mgr.emit_tabs();
         });
@@ -482,8 +585,13 @@ impl TabManager {
         match parse_input(input) {
             None => Ok(()),
             Some(Target::Web(u)) => {
-                if self.transition_allowed(&tab) {
+                // Hacia el lector no hay fundido: la original no debe verse, y la UI enseña su propia carga.
+                if self.transition_allowed(&tab) && !self.should_hold_reader(id, u.as_str()) {
                     return self.transition_navigate(id, u).await;
+                }
+                // Hacia el lector: la superficie de carga sale ya, sin esperar a que el servidor responda.
+                if self.should_hold_reader(id, u.as_str()) && self.webview(id).is_some() {
+                    self.hold_reader(id);
                 }
                 self.tabs.lock().expect("tabs lock").set_url(id, u.as_str());
                 match self.webview(id) {
@@ -551,7 +659,12 @@ impl TabManager {
         let mut state = State::Idle;
         let step = |s: &mut State, e: Event| *s = next(*s, e).unwrap_or(State::Idle);
         step(&mut state, Event::Start);
-        let Some(old) = self.capture(wv).await else { return false };
+        let t0 = std::time::Instant::now();
+        let Some(old) = self.capture(wv).await else {
+            tracing::debug!(tab = id, ms = t0.elapsed().as_millis() as u64, "transition: old capture failed");
+            return false;
+        };
+        tracing::debug!(tab = id, ms = t0.elapsed().as_millis() as u64, bytes = old.len(), "transition: old captured");
         step(&mut state, Event::OldCaptured);
         self.emit_transition(id, "start", Some(old));
         // La UI pinta la imagen antes de que la webview real salga de la vista.
@@ -567,19 +680,34 @@ impl TabManager {
         }
         match tokio::time::timeout(transition::PAINT_TIMEOUT, rx).await {
             Ok(Ok(true)) => step(&mut state, Event::Painted),
-            _ => {
+            other => {
+                tracing::debug!(tab = id, result = ?other, "transition: no first paint, showing the page directly");
                 step(&mut state, Event::Abort);
                 return true;
             }
         }
+        // La página nueva resultó ser una noticia que abre el lector: no se funde con su original.
+        if self.opens_reader(id) {
+            return true;
+        }
         tokio::time::sleep(transition::SETTLE).await;
-        let Some(new) = self.capture(wv).await else { return true };
+        if self.opens_reader(id) {
+            return true;
+        }
+        let Some(new) = self.capture(wv).await else {
+            tracing::debug!(tab = id, "transition: new capture failed");
+            return true;
+        };
         step(&mut state, Event::NewCaptured);
         self.emit_transition(id, "ready", Some(new));
         tokio::time::sleep(transition::FADE + Duration::from_millis(40)).await;
         step(&mut state, Event::FadeDone);
         debug_assert_eq!(state, State::Idle);
         true
+    }
+
+    fn opens_reader(&self, id: TabId) -> bool {
+        self.tab(id).is_some_and(|t| t.reader_pending || t.view == TabView::Reader)
     }
 
     /// El primer pintado (o el fallo) de la navegación en curso: despierta a quien espera.
@@ -673,7 +801,11 @@ impl TabManager {
     }
 
     pub fn set_view(&self, id: TabId, view: TabView) -> Result<(), ShellError> {
-        self.update(id, |t| t.view = view);
+        self.pending_seq.lock().expect("pending lock").remove(&id);
+        self.update(id, |t| {
+            t.view = view;
+            t.reader_pending = false;
+        });
         self.apply_visibility();
         self.emit_tabs();
         Ok(())
@@ -716,7 +848,7 @@ impl TabManager {
     fn apply_visibility(&self) {
         let snap = self.snapshot();
         for t in &snap.tabs {
-            let wanted = snap.active_id == Some(t.id) && t.view == TabView::Original && t.failure.is_none() && !t.crashed;
+            let wanted = snap.active_id == Some(t.id) && t.view == TabView::Original && t.failure.is_none() && !t.crashed && !t.reader_pending;
             let painted = self.revealed.lock().expect("revealed lock").contains(&t.id);
             let menu = self.context_open.lock().expect("context lock").contains(&t.id);
             if let Some(wv) = self.webview(t.id) {
@@ -791,6 +923,22 @@ impl TabManager {
                 self.signal_paint(id, true);
                 None
             }
+            Ok(ContentMessage::Other { kind, payload }) if kind == "np-doc" => {
+                // El documento está listo: ¿abrirá el lector? Medio conocido o pista de noticia (og:type, JSON-LD).
+                self.doc_seen.lock().expect("doc lock").insert(id);
+                let hint = payload.get("hint").and_then(|h| h.as_bool()).unwrap_or(false);
+                let web = self.tab(id).is_some_and(|t| t.kind == TabKind::Web);
+                let waiting = self.tab(id).is_some_and(|t| t.reader_pending);
+                if hint && !waiting && web && self.ext.reader_auto_open() {
+                    self.hold_reader(id);
+                    self.apply_visibility();
+                    self.emit_tabs();
+                } else if !hint && waiting && !self.is_known_site(source) {
+                    // Se esperaba por venir del lector, pero esta página no parece una noticia.
+                    self.release_reader_wait(id);
+                }
+                self.tab(id).is_some_and(|t| t.reader_pending).then(|| serde_json::json!({ "type": "np-early" }))
+            }
             Ok(ContentMessage::Other { kind, payload }) if kind == "np-go" => {
                 if let Some(url) = payload.get("url").and_then(|u| u.as_str()).map(str::to_string) {
                     let app = self.app.clone();
@@ -819,7 +967,9 @@ impl TabManager {
             has && is_news(&page.url, &page.signals, &self.ext.known_domains()),
             self.ext.reader_auto_open(),
         );
+        self.pending_seq.lock().expect("pending lock").remove(&id);
         self.update(id, |t| {
+            t.reader_pending = false;
             t.is_news = news;
             t.readable = readable;
             if !page.title.is_empty() {
@@ -849,11 +999,29 @@ impl TabManager {
         self.emit_tabs();
     }
 
+    pub(crate) fn on_navigation_starting(&self, id: TabId, label: &str, nav_id: u64) {
+        if self.is_current(id, label) {
+            self.latest_nav.lock().expect("latest nav lock").insert(id, nav_id);
+        }
+    }
+
     pub(crate) fn on_navigation_completed(&self, id: TabId, label: &str, o: NavOutcome) {
         if !self.is_current(id, label) {
             return;
         }
-        let failed = !o.success || o.http_status.is_some_and(|s| s >= 400);
+        let latest = self.latest_nav.lock().expect("latest nav lock").get(&id).copied().unwrap_or(0);
+        let verdict = navigation::judge(o.success, o.web_error_status, o.http_status, o.navigation_id, latest);
+        tracing::debug!(tab = id, nav = o.navigation_id, latest, success = o.success, web_error = o.web_error_status, http = ?o.http_status, ?verdict, "navigation completed");
+        if verdict == navigation::Verdict::Superseded {
+            // Otra navegación ocupa su lugar (o se canceló): ni error ni "terminó de cargar"; la vigente avisará.
+            self.update(id, |t| {
+                t.can_go_back = o.can_go_back;
+                t.can_go_forward = o.can_go_forward;
+            });
+            self.emit_tabs();
+            return;
+        }
+        let failed = verdict == navigation::Verdict::Failed;
         self.update(id, |t| {
             t.loading = false;
             t.can_go_back = o.can_go_back;
@@ -861,6 +1029,10 @@ impl TabManager {
             t.url = o.url.clone();
             t.failure = failed.then(|| NavFailure { url: o.url.clone(), web_error_status: o.web_error_status, http_status: o.http_status });
         });
+        if failed {
+            self.pending_seq.lock().expect("pending lock").remove(&id);
+            self.update(id, |t| t.reader_pending = false);
+        }
         self.reveal(id);
         self.signal_paint(id, !failed);
         self.apply_visibility();
@@ -904,7 +1076,7 @@ fn should_transition_ctx(m: &TabManager, tab: &TabInfo, id: TabId) -> bool {
         has_webview: m.webview(id).is_some(),
         painted,
         original_view: tab.view == TabView::Original,
-        failed_or_crashed: tab.failure.is_some() || tab.crashed,
+        failed_or_crashed: tab.failure.is_some() || tab.crashed || tab.reader_pending,
         already_running: m.transitioning.lock().expect("transition lock").contains(&id),
     };
     transition::should_transition(&ctx)

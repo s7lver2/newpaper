@@ -3,6 +3,7 @@ import { useActiveTab, useArticle } from '../state/browser';
 import { ContentSlot } from './ContentSlot';
 import { ContextMenuHost } from './ContextMenu';
 import { PageTransition } from './PageTransition';
+import { ReaderLoading } from './ReaderLoading';
 import { NativeUnderlay } from './underlay';
 import { parseInternalUrl } from './internalUrl';
 import { overlays, readerView, resolveInternalPage, tabSurface } from './registry';
@@ -32,6 +33,8 @@ function ActiveSurface() {
     const Reader = readerView();
     return Reader ? <Reader tab={tab} page={page.article} /> : null;
   }
+  // La original no se enseña mientras se espera a saber si abre el lector (ni en el instante entre la vista y el artículo).
+  if (tab.readerPending || tab.view === 'reader') return <ReaderLoading tab={tab} />;
   return null;
 }
 

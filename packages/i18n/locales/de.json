@@ -63,7 +63,10 @@
       "emptyTitle": "Kein Text vorhanden",
       "emptyHint": "Die Seite hat keinen lesbaren Inhalt für den Lesemodus geliefert. Du kannst sie im Original ansehen.",
       "limitedTitle": "Dieser Artikel ist durch ein Abo eingeschränkt",
-      "limitedBody": "Hier wird nur angezeigt, was die Seite liefert. Der Rest liegt hinter der Abo-Schranke."
+      "limitedBody": "Hier wird nur angezeigt, was die Seite liefert. Der Rest liegt hinter der Abo-Schranke.",
+      "loadingArticle": "Leseansicht wird vorbereitet…",
+      "loadingListing": "Startseite wird vorbereitet…",
+      "loadingHint": "Einen Moment: Es öffnet sich in der Leseansicht."
     },
     "surface": {
       "kicker": "Fehler",

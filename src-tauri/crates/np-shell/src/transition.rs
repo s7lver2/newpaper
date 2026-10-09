@@ -5,8 +5,9 @@
 //! máquina de estados; la captura y la colocación de la webview están en `host`.
 use std::time::Duration;
 
-/// Tope de espera al primer pintado de la página nueva; pasado esto se navega "a pelo".
-pub const PAINT_TIMEOUT: Duration = Duration::from_millis(1800);
+/// Tope de espera al primer pintado de la página nueva; pasado esto se navega "a pelo". Las páginas reales
+/// tardan: 1,8 s hacía que casi nunca hubiera fundido (el primer pintado llega a los 2-3 s con una web pesada).
+pub const PAINT_TIMEOUT: Duration = Duration::from_millis(6000);
 /// Pausa tras el primer pintado antes de capturar (que el compositor tenga el fotograma).
 pub const SETTLE: Duration = Duration::from_millis(260);
 /// Duración del fundido cruzado en la UI.
