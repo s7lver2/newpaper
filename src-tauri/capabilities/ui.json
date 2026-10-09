@@ -15,6 +15,10 @@
     "allow-config-read",
     "allow-privacy-status", "allow-net-set-mode", "allow-tor-set-exit-country", "allow-tor-new-circuit",
     "allow-privacy-set-routing", "allow-tab-without-tor", "allow-adblock-status", "allow-adblock-set-enabled",
-    "allow-adblock-set-list", "allow-adblock-refresh", "allow-blocked-counts"
+    "allow-adblock-set-list", "allow-adblock-refresh", "allow-blocked-counts",
+    "allow-feeds-refresh-now", "allow-coverage-for", "allow-events-briefing", "allow-events-search", "allow-event-detail",
+    "allow-outlets-list", "allow-outlet-override-set", "allow-outlet-stats-recompute", "allow-custom-outlets-list",
+    "allow-custom-outlet-add", "allow-custom-outlet-remove", "allow-topics-list", "allow-topic-set-following",
+    "allow-watch-add", "allow-watches-list", "allow-lexicon-score"
   ]
 }

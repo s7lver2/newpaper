@@ -18,6 +18,10 @@ np-shell = { path = "crates/np-shell" }
 np-store = { path = "crates/np-store" }
 np-adblock = { path = "crates/np-adblock" }
 np-net = { path = "crates/np-net" }
+np-feeds = { path = "crates/np-feeds" }
+np-lexicon = { path = "crates/np-lexicon" }
+np-wayback = { path = "crates/np-wayback" }
+rusqlite = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
 tokio = { workspace = true }

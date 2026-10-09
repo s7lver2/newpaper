@@ -5,6 +5,7 @@ pub mod features;
 pub mod npimg;
 pub mod privacy;
 pub mod resources;
+pub mod sources;
 mod setup;
 
 pub fn run() {
@@ -64,6 +65,22 @@ pub fn run() {
             privacy::commands::adblock_set_list,
             privacy::commands::adblock_refresh,
             privacy::commands::blocked_counts,
+            sources::commands::feeds_refresh_now,
+            sources::commands::coverage_for,
+            sources::commands::events_briefing,
+            sources::commands::events_search,
+            sources::commands::event_detail,
+            sources::commands::outlets_list,
+            sources::commands::outlet_override_set,
+            sources::commands::outlet_stats_recompute,
+            sources::commands::custom_outlets_list,
+            sources::commands::custom_outlet_add,
+            sources::commands::custom_outlet_remove,
+            sources::commands::topics_list,
+            sources::commands::topic_set_following,
+            sources::commands::watch_add,
+            sources::commands::watches_list,
+            sources::commands::lexicon_score,
         ])
         .run(tauri::generate_context!())
         .expect("error while running newpaper");
