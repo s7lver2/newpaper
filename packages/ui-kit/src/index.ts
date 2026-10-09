@@ -23,3 +23,6 @@ export { NeutralityRing } from './analysis/NeutralityRing';
 export { FramingAxis, type FramingAxisLabels } from './analysis/FramingAxis';
 export { ConfidenceMeter } from './analysis/ConfidenceMeter';
 export { StageList, type StageItem } from './analysis/StageList';
+import './lens/lens.css';
+export { segmentText, paragraphRanges, type LensMark, type Segment } from './lens/segmentText';
+export { AnnotatedText } from './lens/AnnotatedText';

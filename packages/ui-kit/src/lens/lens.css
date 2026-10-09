@@ -1,0 +1,13 @@
+.np-lens { font: 19px/1.65 var(--np-font-read); color: var(--np-ink); max-width: 68ch; margin: 0 auto; }
+.np-lens p { margin: 0 0 1.1em; }
+.np-lens mark { background: none; color: inherit; border-radius: 3px; padding: 0 1px; cursor: pointer; transition: background-color 160ms var(--np-ease); }
+.np-lens mark:focus-visible { outline: 2px solid var(--np-accent); outline-offset: 2px; }
+.np-mark--ok { box-shadow: inset 0 -2px var(--np-ok); }
+.np-mark--warn { box-shadow: inset 0 -2px var(--np-warn); background: var(--np-warn-bg); }
+.np-mark--bad { box-shadow: inset 0 -2px var(--np-bad); background: var(--np-bad-bg); }
+.np-mark--accent { box-shadow: inset 0 -2px var(--np-accent); }
+.np-mark--muted { box-shadow: inset 0 -1px var(--np-faint); }
+.np-mark--ai { background: var(--np-ai-bg); }
+.np-lens-active { outline: 2px solid var(--np-accent); }
+.np-lens-ai-paragraph { border-left: 3px solid var(--np-ai); padding-left: 10px; }
+@media (prefers-reduced-motion: reduce) { .np-lens mark { transition: none; } }
