@@ -172,3 +172,8 @@ html[data-np-transition='on'] .np-surface { animation: np-fade .3s var(--np-ease
 .np-tablist-close svg { width: 12px; height: 12px; }
 .np-tablist-empty { margin: 0; padding: 18px 8px; text-align: center; color: var(--np-muted); font: 400 13.5px/1.4 var(--np-font-ui); }
 @media (prefers-reduced-motion: reduce) { .np-tablist { animation: none; } .np-tabstrip-list { scroll-behavior: auto; } }
+
+/* Aviso de recursos */
+.np-resource { width: min(480px, calc(100vw - 32px)); }
+.np-resource-art { width: min(300px, 80%); margin: 4px auto 0; }
+.np-resource-actions { flex-wrap: wrap; }

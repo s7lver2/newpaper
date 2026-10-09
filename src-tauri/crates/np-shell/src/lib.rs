@@ -5,6 +5,9 @@ pub mod model;
 pub type TabId = u64;
 pub const NEW_TAB_URL: &str = "newpaper://inicio";
 pub mod message;
+pub mod resources;
+#[cfg(windows)]
+pub mod sysmem;
 pub mod transition;
 pub mod news;
 pub mod extensions;

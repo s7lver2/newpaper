@@ -16,6 +16,8 @@ export function GeneralSection() {
   const [theme, setTheme] = useSetting<ThemeChoice>('appearance.theme', 'system');
   const [readerAuto, setReaderAuto] = useSetting<boolean>('reader.autoOpen', true);
   const [transition, setTransition] = useSetting<boolean>('appearance.pageTransition', true);
+  const [resWarn, setResWarn] = useSetting<boolean>('resources.warn', true);
+  const [resLimit, setResLimit] = useSetting<number>('resources.limitMb', 0);
   const languages = LOCALES.map((l) => ({ value: l, label: t(`settings.language.${l}`) }));
   return (
     <section className="np-settings-section np-stagger" aria-labelledby="np-set-general">
@@ -64,6 +66,26 @@ export function GeneralSection() {
           <SegmentedControl label={t('settings.general.contentLanguage')} value={contentLocale} options={languages} onChange={(l) => void setContentLocale(l)} />
         </div>
         <Switch label={t('settings.general.pageTransition')} description={t('settings.general.pageTransitionHint')} checked={transition} onChange={(v) => void setTransition(v)} />
+        <Switch label={t('settings.general.resourceWarn')} description={t('settings.general.resourceWarnHint')} checked={resWarn} onChange={(v) => void setResWarn(v)} />
+        {resWarn ? (
+          <div className="np-set-row">
+            <div className="np-set-text">
+              <span className="np-set-name">{t('settings.general.resourceLimit')}</span>
+              <span className="np-set-desc">{t('settings.general.resourceLimitHint')}</span>
+            </div>
+            <SegmentedControl
+              label={t('settings.general.resourceLimit')}
+              value={String(resLimit)}
+              options={[
+                { value: '0', label: t('settings.general.resourceAuto') },
+                { value: '2048', label: '2 GB' },
+                { value: '4096', label: '4 GB' },
+                { value: '8192', label: '8 GB' },
+              ]}
+              onChange={(v) => void setResLimit(Number(v))}
+            />
+          </div>
+        ) : null}
         <Switch label={t('settings.general.readerAuto')} description={t('settings.general.readerAutoHint')} checked={readerAuto} onChange={(v) => void setReaderAuto(v)} />
       </div>
     </section>

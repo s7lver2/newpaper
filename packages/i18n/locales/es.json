@@ -145,7 +145,12 @@
       "readerAutoHint": "Las páginas reconocidas como noticia se muestran limpias, sin la web original. En cualquier otra página con artículo puedes abrir el lector a mano.",
       "lead": "Idioma, apariencia y lectura.",
       "pageTransition": "Transición suave entre páginas",
-      "pageTransitionHint": "Precarga la página nueva y la funde con la anterior. Se desactiva sola con movimiento reducido."
+      "pageTransitionHint": "Precarga la página nueva y la funde con la anterior. Se desactiva sola con movimiento reducido.",
+      "resourceWarn": "Avisar si se usa demasiada memoria",
+      "resourceWarnHint": "Muestra un aviso cuando la app y sus pestañas consumen mucha RAM. Nunca cierra nada sin que lo pidas.",
+      "resourceLimit": "Límite del aviso",
+      "resourceLimitHint": "Automático usa la mitad de la RAM del equipo.",
+      "resourceAuto": "Automático"
     },
     "language": {
       "es": "Español",
@@ -264,5 +269,12 @@
       "categoryCookies": "Banners de cookies",
       "categoryNewsletters": "Modales de suscripción"
     }
+  },
+  "resources": {
+    "title": "newpaper está usando mucha memoria",
+    "body": "La app y sus pestañas ocupan {used} GB de RAM (el aviso salta a partir de {limit} GB). Si sigue creciendo, el equipo irá más lento o la app podría cerrarse sola.",
+    "closeBackground": "{count, plural, one {Cerrar la pestaña en segundo plano} other {Cerrar las # pestañas en segundo plano}}",
+    "quit": "Cerrar la app",
+    "later": "Ahora no"
   }
 }

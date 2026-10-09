@@ -145,7 +145,12 @@
       "readerAutoHint": "Als Nachricht erkannte Seiten werden aufgeräumt angezeigt, ohne die Originalseite. Auf jeder anderen Seite mit Artikel lässt sich der Lesemodus von Hand öffnen.",
       "lead": "Sprache, Darstellung und Lesen.",
       "pageTransition": "Sanfte Seitenübergänge",
-      "pageTransitionHint": "Lädt die neue Seite vor und blendet sie über die alte. Schaltet sich bei reduzierter Bewegung selbst aus."
+      "pageTransitionHint": "Lädt die neue Seite vor und blendet sie über die alte. Schaltet sich bei reduzierter Bewegung selbst aus.",
+      "resourceWarn": "Bei hohem Speicherverbrauch warnen",
+      "resourceWarnHint": "Zeigt eine Warnung, wenn die App und ihre Tabs viel RAM nutzen. Es wird nie etwas ohne dein Zutun geschlossen.",
+      "resourceLimit": "Warnschwelle",
+      "resourceLimitHint": "Automatisch nutzt die Hälfte des Arbeitsspeichers.",
+      "resourceAuto": "Automatisch"
     },
     "language": {
       "es": "Español",
@@ -264,5 +269,12 @@
       "categoryCookies": "Cookie-Banner",
       "categoryNewsletters": "Newsletter-Fenster"
     }
+  },
+  "resources": {
+    "title": "newpaper belegt viel Arbeitsspeicher",
+    "body": "Die App und ihre Tabs belegen {used} GB RAM (die Warnung beginnt bei {limit} GB). Wächst das weiter, wird der Rechner langsamer oder die App könnte sich von selbst beenden.",
+    "closeBackground": "{count, plural, one {Hintergrund-Tab schließen} other {# Hintergrund-Tabs schließen}}",
+    "quit": "App beenden",
+    "later": "Jetzt nicht"
   }
 }

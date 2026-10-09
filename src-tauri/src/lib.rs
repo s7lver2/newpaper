@@ -4,6 +4,7 @@ pub mod error;
 pub mod features;
 pub mod npimg;
 pub mod privacy;
+pub mod resources;
 mod setup;
 
 pub fn run() {
@@ -31,6 +32,10 @@ pub fn run() {
             commands::tabs::tabs_snapshot,
             commands::tabs::chrome_set_theme,
             commands::tabs::chrome_set_motion,
+            resources::resources_status,
+            resources::resources_snooze,
+            resources::resources_close_background,
+            resources::app_exit,
             commands::tabs::ctx_close,
             commands::tabs::overlay_open,
             commands::tabs::ctx_edit,

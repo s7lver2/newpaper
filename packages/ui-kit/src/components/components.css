@@ -24,3 +24,35 @@
 .np-tab { min-height: var(--np-hit); padding: 0 14px; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--np-muted); font: 500 13.5px/1 var(--np-font-ui); }
 .np-tab[aria-selected='true'] { color: var(--np-ink); border-bottom-color: var(--np-ink); }
 .np-tab-badge { margin-left: 6px; font: 500 11px/1 var(--np-font-mono); color: var(--np-faint); }
+
+/* RamCrack: módulo de RAM que se llena y se parte (aviso de recursos). Pensado también para móvil. */
+.np-ram { display: block; width: 100%; height: auto; overflow: visible; --np-ram-pcb: #2F7D5B; --np-ram-chip: #16231E; --np-ram-gold: #C9A646; }
+[data-theme='ink'] .np-ram { --np-ram-pcb: #2A6C50; }
+.np-ram-pcb { fill: var(--np-ram-pcb); }
+.np-ram-chip { fill: var(--np-ram-chip); }
+.np-ram-pin { fill: var(--np-ram-gold); }
+.np-ram-notch { fill: var(--np-paper); stroke: var(--np-ram-gold); stroke-width: 1.5; }
+.np-ram-cell { fill: rgba(255, 255, 255, .2); --c: #8EE0AE; }
+.np-ram-cell:nth-child(n + 9) { --c: #F2C14E; }
+.np-ram-cell:nth-child(n + 13) { --c: #F0605A; }
+.np-ram-crack { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 100; stroke-dashoffset: 0; filter: drop-shadow(0 0 2px rgba(0, 0, 0, .5)); }
+.np-ram-half { transform-box: fill-box; }
+.np-ram-half--l { transform-origin: 100% 100%; }
+.np-ram-half--r { transform-origin: 0 100%; }
+/* Sin movimiento (o movimiento reducido): ya agrietado y partido. */
+.np-ram[data-animate='false'] .np-ram-cell { fill: var(--c); }
+.np-ram[data-animate='false'] .np-ram-half--l { transform: translate(-7px, 3px) rotate(-3deg); }
+.np-ram[data-animate='false'] .np-ram-half--r { transform: translate(7px, -1px) rotate(3deg); }
+.np-ram[data-animate='true'] .np-ram-cell { animation: np-ram-fill .35s var(--np-ease) both; animation-delay: calc(.3s + var(--i) * .12s); }
+.np-ram[data-animate='true'] .np-ram-pcb { animation: np-ram-hot .5s ease-in-out 2.4s both; }
+.np-ram[data-animate='true'] .np-ram-half { animation: np-ram-shake .38s linear 2.55s both, var(--np-ram-split) .55s var(--np-bounce) 3.35s forwards; }
+.np-ram[data-animate='true'] .np-ram-half--l { --np-ram-split: np-ram-split-l; }
+.np-ram[data-animate='true'] .np-ram-half--r { --np-ram-split: np-ram-split-r; }
+.np-ram[data-animate='true'] .np-ram-crack { animation: np-ram-crack .4s var(--np-ease) 2.95s both; }
+@keyframes np-ram-fill { from { fill: rgba(255, 255, 255, .2); } to { fill: var(--c); } }
+@keyframes np-ram-hot { 50% { filter: brightness(1.35) saturate(1.4); } }
+@keyframes np-ram-shake { 0%, 100% { transform: translate(0, 0); } 20% { transform: translate(-2px, 1px); } 40% { transform: translate(2px, -1px); } 60% { transform: translate(-1.5px, -1px); } 80% { transform: translate(1.5px, 1px); } }
+@keyframes np-ram-crack { from { stroke-dashoffset: 100; opacity: 0; } 10% { opacity: 1; } to { stroke-dashoffset: 0; opacity: 1; } }
+@keyframes np-ram-split-l { to { transform: translate(-7px, 3px) rotate(-3deg); } }
+@keyframes np-ram-split-r { to { transform: translate(7px, -1px) rotate(3deg); } }
+@media (prefers-reduced-motion: reduce) { .np-ram[data-animate='true'] * { animation: none !important; } .np-ram[data-animate='true'] .np-ram-cell { fill: var(--c); } .np-ram[data-animate='true'] .np-ram-half--l { transform: translate(-7px, 3px) rotate(-3deg); } .np-ram[data-animate='true'] .np-ram-half--r { transform: translate(7px, -1px) rotate(3deg); } }

@@ -20,6 +20,14 @@ export interface ContextMenuEvent {
   image: string | null;
 }
 export const onContextMenu = (cb: (e: ContextMenuEvent) => void) => listen<ContextMenuEvent>('tab://context-menu', (e) => cb(e.payload));
+export interface ResourceEvent {
+  level: 'warn' | 'ok';
+  usedMib: number;
+  limitMib: number;
+  totalMib: number;
+  closable: { tabId: number; title: string }[];
+}
+export const onResources = (cb: (e: ResourceEvent) => void) => listen<ResourceEvent>('app://resources', (e) => cb(e.payload));
 export const onTabShortcut = (cb: (e: TabShortcutEvent) => void) => listen<TabShortcutEvent>('tab://shortcut', (e) => cb(e.payload));
 export const onSettingsChanged = (cb: (e: { key: string; value: unknown }) => void) =>
   listen<{ key: string; value: unknown }>('settings://changed', (e) => cb(e.payload));

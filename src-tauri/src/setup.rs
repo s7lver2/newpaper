@@ -48,6 +48,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     app.manage(outlets);
 
     crate::features::setup_all(app)?;
+    crate::resources::setup(app);
 
     spawn_history_retention(store);
     create_main_window(app)?;
