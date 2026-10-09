@@ -550,7 +550,8 @@
     "note": {
       "quick": "Nur die Sprache wurde gelesen. Noch nicht gegengeprüft.",
       "full": "{verified} von {total} Aussagen verifiziert.",
-      "noClaims": "Keine Aussagen zum Gegenprüfen gefunden."
+      "noClaims": "Keine Aussagen zum Gegenprüfen gefunden.",
+      "claimsFailed": "Die Aussagenerkennung ist fehlgeschlagen; erneut prüfen. Das heißt nicht, dass der Text keine enthält."
     },
     "tier": {
       "quick": "Schnell",

@@ -550,7 +550,8 @@
     "note": {
       "quick": "Only the language was read. Not cross-checked yet.",
       "full": "{verified} of {total} claims verified.",
-      "noClaims": "No claims to cross-check were found."
+      "noClaims": "No claims to cross-check were found.",
+      "claimsFailed": "Claim detection failed; verify again. It does not mean the text has none."
     },
     "tier": {
       "quick": "Quick",

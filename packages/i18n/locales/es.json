@@ -550,7 +550,8 @@
     "note": {
       "quick": "Solo se ha leído el lenguaje. Falta contrastar.",
       "full": "{verified} de {total} afirmaciones verificadas.",
-      "noClaims": "No se han encontrado afirmaciones que contrastar."
+      "noClaims": "No se han encontrado afirmaciones que contrastar.",
+      "claimsFailed": "La detección de afirmaciones ha fallado; vuelve a verificar. No significa que el texto no tenga ninguna."
     },
     "tier": {
       "quick": "Rápido",

@@ -94,7 +94,7 @@ export function AnalysisTab({ tab }: { tab: TabInfo }) {
     [full && cifras.length ? `${exact}/${cifras.length}` : '—', t('analysis.metrics.figures')],
     [full && score ? String(score.omissions.length) : '—', t('analysis.metrics.omissions')],
   ];
-  const note = full ? (claims.length ? t('analysis.note.full', { verified, total: claims.length }) : t('analysis.note.noClaims')) : t('analysis.note.quick');
+  const note = full ? (claims.length ? t('analysis.note.full', { verified, total: claims.length }) : result.failed.includes('claims') ? t('analysis.note.claimsFailed') : t('analysis.note.noClaims')) : t('analysis.note.quick');
   const toggleAi = () => panelStore.set((s) => ({ ...s, aiOpen: !s.aiOpen }));
 
   return (

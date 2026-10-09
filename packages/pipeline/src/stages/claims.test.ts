@@ -46,3 +46,23 @@ describe('detectClaims', () => {
     expect(JSON.stringify(c.model.doGenerateCalls[0]!.prompt)).toMatch(/only loaded phrases/i);
   });
 });
+
+describe('repairSpans (lenient)', () => {
+  it('relocates quotes that differ in case, quotes, dashes or whitespace, or paraphrase one sentence', () => {
+    const text = 'El ataque dejó 13 muertos y 32 heridos.\n\nSerá la primera ejecución militar desde 1961 — dijo el Pentágono.';
+    const out = repairSpans(text, [
+      { quote: 'EL ATAQUE dejó 13  muertos y 32 heridos', span: [0, 0] as [number, number] },
+      { quote: 'primera ejecución militar desde 1961 - dijo', span: [0, 0] as [number, number] },
+      { quote: 'El ataque dejó 13 muertos y 32 personas heridas', span: [0, 0] as [number, number] },
+    ]);
+    expect(out).toHaveLength(3);
+    for (const o of out) expect(text.slice(...o.span)).toBe(o.quote);
+  });
+});
+
+describe('detectClaims failure', () => {
+  it('throws when the model returned claims but none can be located', async () => {
+    const out = JSON.stringify({ claims: [{ id: 'a', quote: 'zzz qqq xxx', span: [0, 3], kind: 'hecho', checkable: true }], loadedPhrases: [] });
+    await expect(detectClaims(ctx(out), SMI_ARTICLE, { quick: false })).rejects.toThrow(/located/);
+  });
+});
