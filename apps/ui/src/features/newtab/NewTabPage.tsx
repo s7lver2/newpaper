@@ -29,22 +29,36 @@ async function openEvent(id: number) {
   if (first) void navigate(first.url);
 }
 
+/** `latestAt` llega en segundos (Unix), no en milisegundos. */
+function ago(latestAtSeconds: number, locale: string): string {
+  const mins = Math.round((latestAtSeconds * 1000 - Date.now()) / 60_000);
+  const f = new Intl.RelativeTimeFormat(locale, { numeric: 'auto', style: 'narrow' });
+  const m = Math.abs(mins);
+  if (m < 60) return f.format(Math.min(0, mins), 'minute');
+  if (m < 60 * 24) return f.format(Math.round(mins / 60), 'hour');
+  return f.format(Math.round(mins / 1440), 'day');
+}
+
 function Cards({ cards }: { cards: EventCard[] }) {
-  const { t, formatRelativeDays } = useI18n();
+  const { t, locale } = useI18n();
   return (
-    <ul className="np-cards">
-      {cards.map((c) => (
-        <li key={c.eventId}>
-          <button type="button" className="np-card" onClick={() => void openEvent(c.eventId)}>
-            <span className="np-card-title">{c.title}</span>
-            <span className="np-card-meta">
-              {t('newtab.outlets', { n: c.outletCount })} · {formatRelativeDays(Math.round((c.latestAt - Date.now()) / 86_400_000))}
+    <ol className="np-brief">
+      {cards.map((c, i) => (
+        <li key={c.eventId} className="np-rise" style={{ animationDelay: `${300 + i * 90}ms` }}>
+          <button type="button" className="np-brief-row" onClick={() => void openEvent(c.eventId)}>
+            <span className="np-brief-n">{String(i + 1).padStart(2, '0')}</span>
+            <span className="np-brief-main">
+              <span className="np-brief-title">{c.title}</span>
+              <span className="np-brief-meta">
+                <LeanMix mix={c.leanMix} label={t('newtab.leanMix', { left: c.leanMix[0], center: c.leanMix[1], right: c.leanMix[2] })} />
+                {t('newtab.outlets', { n: c.outletCount })} · {ago(c.latestAt, locale)}
+              </span>
             </span>
-            <LeanMix mix={c.leanMix} label={t('newtab.leanMix', { left: c.leanMix[0], center: c.leanMix[1], right: c.leanMix[2] })} />
+            <span className="np-brief-arrow" aria-hidden="true">→</span>
           </button>
         </li>
       ))}
-    </ul>
+    </ol>
   );
 }
 
@@ -61,6 +75,8 @@ export function NewTabPage({ url }: InternalPageProps) {
   const [asking, setAsking] = useState(false);
   const [report, setReport] = useState<UnverifiedReport | null>(null);
   const [watching, setWatching] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     void commands.eventsBriefing(6).then(setBriefing).catch(() => {});
@@ -71,6 +87,7 @@ export function NewTabPage({ url }: InternalPageProps) {
   useEffect(() => {
     setResults(null);
     setReport(null);
+    setError(null);
     setWatching(false);
     if (q) void commands.eventsSearch(q).then(setResults).catch(() => setResults([]));
   }, [q]);
@@ -84,22 +101,32 @@ export function NewTabPage({ url }: InternalPageProps) {
     e.preventDefault();
     if (input.trim()) void navigate(input.trim());
   };
+  // La consulta hace de «artículo» para la investigación: la etapa solo lee `text`; la URL es un marcador válido para el esquema.
   const investigate = async (acknowledged: true) => {
     setAsking(false);
-    const p = await getPipeline();
-    setReport(await p.investigateUncovered({ article: { url: `newpaper://inicio?q=${encodeURIComponent(q)}`, title: q, text: q }, previous: null, acknowledged }));
+    setBusy(true);
+    setError(null);
+    try {
+      const p = await getPipeline();
+      setReport(await p.investigateUncovered({ article: { url: `newpaper://inicio?q=${encodeURIComponent(q)}`, title: q, text: q }, previous: null, acknowledged }));
+    } catch (e) {
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      setBusy(false);
+    }
   };
   const now = new Date();
 
   return (
     <div className="np-newtab">
       <header>
-        <p className="np-mono np-muted">{formatDate(now, { dateStyle: 'full' })}</p>
-        <h1>{t(`newtab.greeting.${greetingKey(now.getHours())}`)}</h1>
+        <h1>{t(`newtab.greeting.${greetingKey(now.getHours())}`)}.</h1>
+        <p className="np-newtab-sub">{formatDate(now, { weekday: 'long', day: 'numeric', month: 'long' })}{briefing.length ? ` · ${t('newtab.important', { n: briefing.length })}` : ''}</p>
       </header>
       <form className="np-newtab-search" role="search" onSubmit={submit}>
         <label className="np-sr-only" htmlFor="np-newtab-q">{t('newtab.search')}</label>
         <input id="np-newtab-q" type="search" autoComplete="off" placeholder={t('newtab.search')} value={input} onChange={(e) => setInput(e.target.value)} />
+        <span className="np-newtab-kbd" aria-hidden="true">{'Ctrl L'}</span>
         {suggestions.length ? (
           <ul className="np-newtab-suggest" role="listbox" aria-label={t('shell.address.suggestions')}>
             {suggestions.map((s) => (
@@ -125,8 +152,9 @@ export function NewTabPage({ url }: InternalPageProps) {
                 <Button disabled={watching} onClick={() => void commands.watchAdd({ query: q }).then(() => setWatching(true))}>
                   {watching ? t('noCoverage.watching') : t('noCoverage.watch')}
                 </Button>
-                <Button variant="primary" onClick={() => setAsking(true)}>{t('noCoverage.investigate')}</Button>
+                <Button variant="primary" disabled={busy} onClick={() => setAsking(true)}>{busy ? t('noCoverage.investigating') : t('noCoverage.investigate')}</Button>
               </div>
+              {error ? <p role="alert" className="np-agent-error">{error}</p> : null}
               {report ? <UnverifiedCard report={report} /> : null}
               <ConsentDialog open={asking} onConfirm={(ack) => void investigate(ack)} onCancel={() => setAsking(false)} />
             </div>

@@ -1,9 +1,9 @@
-.np-chart { margin: 12px 0; padding: 12px; border: 1px solid var(--np-line); border-radius: var(--np-radius); background: var(--np-card); }
+.np-chart { margin: 12px 0; padding: 22px 24px 18px; border: 1px solid var(--np-line); border-radius: 18px; background: var(--np-card); }
 .np-chart-head { display: flex; align-items: baseline; gap: 8px; }
-.np-chart-title { font: 600 14px var(--np-font-ui); flex: 1; }
+.np-chart-title { font: 400 21px/1.25 var(--np-font-read); flex: 1; }
 .np-chart-unit { font: 11px var(--np-font-mono); color: var(--np-muted); }
 .np-chart-toggle { min-height: 32px; border: 0; background: none; color: var(--np-accent); font: 12px var(--np-font-ui); cursor: pointer; }
-.np-chart-sources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; font: 11px var(--np-font-mono); color: var(--np-muted); }
+.np-chart-sources { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--np-line2); font: 11px var(--np-font-mono); color: var(--np-muted); }
 .np-chart-source { border: 0; background: none; color: var(--np-accent); font: inherit; cursor: pointer; padding: 0; }
 .np-svg { width: 100%; height: auto; display: block; }
 .np-grid { stroke: var(--np-line2); }

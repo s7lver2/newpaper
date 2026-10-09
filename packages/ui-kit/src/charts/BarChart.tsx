@@ -1,7 +1,7 @@
 import { linear, niceTicks } from './scale';
 
-const W = 320;
-const H = 180;
+const W = 480;
+const H = 220;
 const PAD = { l: 40, r: 8, t: 8, b: 28 };
 
 export function BarChart({ points, format, label }: { points: { x: string; y: number; provisional?: boolean }[]; format(n: number): string; label: string }) {

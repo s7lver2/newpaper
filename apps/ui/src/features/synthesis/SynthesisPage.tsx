@@ -6,12 +6,13 @@ import { commands } from '../../ipc/commands';
 import type { InternalPageProps } from '../../shell/registry';
 import { navigate } from '../../shell/navigate';
 import { analysisStore } from '../analysis/controller';
+import { openPanel } from '../analysis/panelStore';
 import { useParties } from '../analysis/parties';
 import { useVizLabels } from '../analysis/vizLabels';
-import { applyRewrites } from './rewrites';
 
 type View = 'brief' | 'full' | 'changes';
-interface Loaded { synthesis: Synthesis; sources: { id: string; title: string; url: string }[]; original: string | null }
+type Src = { id: string; title: string; url: string; kind?: 'primary' | 'coverage' };
+interface Loaded { synthesis: Synthesis; sources: Src[]; original: string | null }
 
 async function load(url: string, hash: string): Promise<Loaded | null> {
   for (const a of Object.values(analysisStore.get().byTab)) {
@@ -21,7 +22,7 @@ async function load(url: string, hash: string): Promise<Loaded | null> {
   const s = await commands.analysisCacheGet(url, hash, 'synthesis');
   if (!s) return null;
   const v = await commands.analysisCacheGet(url, hash, 'verify');
-  const seen = new Map<string, { id: string; title: string; url: string }>();
+  const seen = new Map<string, Src>();
   for (const verdict of v ? (JSON.parse(v.json) as Verdict[]) : []) for (const src of verdict.sources) seen.set(src.id, src);
   return { synthesis: JSON.parse(s.json) as Synthesis, sources: [...seen.values()].sort((a, b) => Number(a.id.slice(1)) - Number(b.id.slice(1))), original: null };
 }
@@ -35,7 +36,9 @@ export function SynthesisPage({ url: page }: InternalPageProps) {
   const url = page.query.get('url') ?? '';
   const hash = page.query.get('hash') ?? '';
   const [data, setData] = useState<Loaded | null | undefined>(undefined);
-  const [view, setView] = useState<View>('brief');
+  const [view, setView] = useState<View>('full');
+  const [selected, setSelected] = useState<string | null>(null);
+  const [openPos, setOpenPos] = useState<string | null>(null);
   useEffect(() => {
     void load(url, hash).then(setData);
   }, [url, hash]);
@@ -51,114 +54,175 @@ export function SynthesisPage({ url: page }: InternalPageProps) {
       </button>
     ));
 
+  const factKinds = s.facts.filter((f) => f.sourceIds.some((id) => n(id) > 0)).length;
+  const sel = s.facts.find((f) => f.id === selected) ?? s.facts[0];
+  const selSources = sel ? sel.sourceIds.map((id) => data.sources.find((x) => x.id === id)).filter((x): x is Src => !!x) : [];
+  const analysis = Object.values(analysisStore.get().byTab).find((a) => a.url === url);
+  const coverages = (analysis?.full?.coverage?.coverages ?? []).filter((c) => c.lean !== null);
+
   return (
-    <article className="np-synth">
-      <p className="np-synth-kicker">{t('synthesis.kicker')}</p>
-      <h1>{s.headline}</h1>
-      <SegmentedControl
-        label={t('synthesis.view.label')}
-        value={view}
-        onChange={(v) => setView(v as View)}
-        options={(['brief', 'full', 'changes'] as const).map((v) => ({ value: v, label: t(`synthesis.view.${v}`) }))}
-      />
+    <div className="np-synth-page">
+      <div className="np-synth-main">
+        <div className="np-synth-bar">
+          <SegmentedControl
+            label={t('synthesis.view.label')}
+            value={view}
+            onChange={(v) => setView(v as View)}
+            options={(['brief', 'full', 'changes'] as const).map((v) => ({ value: v, label: t(`synthesis.view.${v}`) }))}
+          />
+        </div>
+        <article className="np-synth np-stagger">
+          <div className="np-synth-head">
+            <span className="np-synth-kicker">{t('synthesis.kicker')}</span>
+            {s.facts.length ? (
+              <span className="np-synth-conf">
+                <span className="np-synth-bars">{[0, 1, 2, 3, 4].map((i) => <i key={i} className={i < Math.round((factKinds / s.facts.length) * 5) ? 'on' : undefined} />)}</span>
+                {t('synthesis.confidence', { n: factKinds, total: s.facts.length })}
+              </span>
+            ) : null}
+          </div>
+          <h1>{s.headline}</h1>
+          <p className="np-synth-lead">{t('synthesis.lead')}</p>
 
-      {view === 'brief' ? (
-        <ol className="np-synth-summary">
-          {s.summary3.map((x, i) => (
-            <li key={i}>{x}</li>
-          ))}
-        </ol>
-      ) : null}
-
-      {view === 'full' ? (
-        <>
-          <section>
-            <h2>{t('synthesis.facts')}</h2>
-            <ul className="np-synth-facts">
-              {s.facts.map((f) => (
-                <li key={f.id} className={`np-fact np-fact--${f.kind}`}>
-                  <span className="np-tag np-tag--muted">{t(`synthesis.factKind.${f.kind}`)}</span> {f.text} {cite(f.sourceIds)}
-                </li>
-              ))}
-            </ul>
-          </section>
-          {s.parties.length ? (
-            <section>
-              <h2>{t('synthesis.parties')}</h2>
-              <div className="np-synth-parties">
-                {s.parties.map((p, i) => (
-                  <div key={i} className="np-synth-party">
-                    <strong>{p.who}</strong>
-                    <p>{p.says} {cite([p.sourceId])}</p>
-                  </div>
+          {view !== 'changes' ? (
+            <div className="np-synth-card">
+              <p className="np-synth-h">{t('synthesis.threeLines')}</p>
+              <ol className="np-synth-summary">
+                {s.summary3.map((x, i) => (
+                  <li key={i}>{x}</li>
                 ))}
-              </div>
-            </section>
+              </ol>
+            </div>
           ) : null}
-          {s.disputes.map((d) => (
-            <section key={d.question} className="np-dispute">
-              <h2>{d.question}</h2>
-              {d.positions.map((p) => (
-                <div key={p.id} className="np-dispute-pos">
-                  <p><strong>{p.who}</strong>: {p.claim}</p>
-                  <div className="np-dispute-bar" role="meter" aria-label={t('synthesis.evidence')} aria-valuemin={0} aria-valuemax={1} aria-valuenow={p.evidenceWeight}>
-                    <span style={{ width: `${p.evidenceWeight * 100}%` }} />
+
+          {view === 'full' ? (
+            <>
+              <section>
+                <h2 className="np-synth-h">{t('synthesis.facts')}</h2>
+                <div className="np-synth-facts">
+                  {s.facts.map((f) => (
+                    <button key={f.id} type="button" className={`np-fact np-fact--${f.kind}${sel?.id === f.id ? ' np-fact--on' : ''}`} onClick={() => setSelected(f.id)}>
+                      {f.text}
+                    </button>
+                  ))}
+                </div>
+                <p className="np-synth-hint">{t('synthesis.pickFact')}</p>
+              </section>
+              {s.visualizations.length ? (
+                <section className="np-synth-viz">
+                  <div className="np-synth-vizhead">
+                    <h2 className="np-synth-h">{t('synthesis.data')}</h2>
+                    <span><b>{t('synthesis.auto')}</b>{t('synthesis.dataHint')}</span>
                   </div>
-                  <p className="np-muted">{p.detail}</p>
+                  {s.visualizations.map((v, i) => (
+                    <VisualizationView key={i} viz={v} sources={data.sources} parties={parties} labels={viz.labels} format={viz.format} regionName={viz.regionName} onOpenSource={open} />
+                  ))}
+                </section>
+              ) : null}
+              {s.parties.length ? (
+                <section>
+                  <h2 className="np-synth-h">{t('synthesis.parties')}</h2>
+                  <div className="np-synth-parties">
+                    {s.parties.map((p, i) => (
+                      <div key={i} className="np-synth-party">
+                        <strong>{p.who}</strong>
+                        <p>{p.says}</p>
+                        <span>{cite([p.sourceId])}</span>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              ) : null}
+              {s.disputes.map((d) => (
+                <section key={d.question} className="np-dispute">
+                  <h2 className="np-synth-h np-synth-h--warn">{t('synthesis.dispute')}</h2>
+                  <div className="np-dispute-q">{d.question}</div>
+                  <div className="np-dispute-list">
+                    {d.positions.map((p) => (
+                      <div key={p.id} className={`np-dispute-pos${openPos === p.id ? ' is-open' : ''}`}>
+                        <button type="button" aria-expanded={openPos === p.id} onClick={() => setOpenPos(openPos === p.id ? null : p.id)}>
+                          <span><b>{p.claim}</b><small>{p.who}</small></span>
+                          <span className="np-dispute-w">
+                            <small>{t('synthesis.evidence')}</small>
+                            <span className="np-dispute-bar" role="meter" aria-label={t('synthesis.evidence')} aria-valuemin={0} aria-valuemax={1} aria-valuenow={p.evidenceWeight}>
+                              <span className={p.evidenceWeight >= 0.6 ? 'ok' : undefined} style={{ width: `${p.evidenceWeight * 100}%` }} />
+                            </span>
+                          </span>
+                        </button>
+                        {openPos === p.id ? <p className="np-rise">{p.detail}</p> : null}
+                      </div>
+                    ))}
+                  </div>
+                  {d.conclusion ? <p className="np-dispute-conclusion">{d.conclusion}</p> : null}
+                </section>
+              ))}
+              {s.unknowns.length ? (
+                <section>
+                  <h2 className="np-synth-h">{t('synthesis.unknowns')}</h2>
+                  <ul className="np-synth-unknowns">
+                    {s.unknowns.map((u) => (
+                      <li key={u}>{u}</li>
+                    ))}
+                  </ul>
+                </section>
+              ) : null}
+            </>
+          ) : null}
+
+          {view === 'changes' ? (
+            <section className="np-changes">
+              <h2 className="np-synth-h">{t('synthesis.changesTitle')}</h2>
+              {s.rewrites.map((r, i) => (
+                <div key={i} className="np-change-card np-rise" style={{ animationDelay: `${i * 90}ms` }}>
+                  <del>«{r.from}»</del>
+                  <ins>{r.to || t('synthesis.removed')}</ins>
+                  <small>{r.reason}</small>
                 </div>
               ))}
-              {d.conclusion ? <p className="np-dispute-conclusion">{d.conclusion}</p> : null}
-            </section>
-          ))}
-          {s.visualizations.map((v, i) => (
-            <VisualizationView key={i} viz={v} sources={data.sources} parties={parties} labels={viz.labels} format={viz.format} regionName={viz.regionName} onOpenSource={open} />
-          ))}
-          {s.unknowns.length ? (
-            <section>
-              <h2>{t('synthesis.unknowns')}</h2>
-              <ul>
-                {s.unknowns.map((u) => (
-                  <li key={u}>{u}</li>
-                ))}
-              </ul>
             </section>
           ) : null}
-        </>
-      ) : null}
 
-      {view === 'changes' ? (
-        data.original ? (
-          <div className="np-changes">
-            {applyRewrites(data.original, s.rewrites).map((p, i) =>
-              p.kind === 'eq' ? (
-                <span key={i}>{p.text}</span>
-              ) : (
-                <span key={i} className="np-change" title={p.reason}>
-                  <del>{p.from}</del>
-                  {p.to ? <ins>{p.to}</ins> : null}
-                </span>
-              ),
-            )}
+          <footer className="np-synth-foot">
+            <span>{t('synthesis.footer', { coverages: coverages.length, sources: data.sources.length })}</span>
+            <button type="button" onClick={() => openPanel('agent')}>{t('synthesis.askAgent')}</button>
+          </footer>
+        </article>
+      </div>
+      <aside className="np-synth-aside">
+        {sel ? (
+          <div>
+            <p className="np-synth-h">{t('synthesis.sourcesOf')}</p>
+            <div key={sel.id} className="np-synth-sel np-rise">
+              <div className="np-synth-seltext">{sel.text}</div>
+              <span className={`np-synth-badge np-synth-badge--${sel.kind}`}>{t(`synthesis.factKind.${sel.kind}`)}</span>
+              {selSources.map((x) => (
+                <button key={x.id} type="button" className="np-synth-src" onClick={() => open(x.url)}>
+                  <i className={x.kind === 'primary' ? 'ok' : undefined} />
+                  <span><b>{x.title}</b><small>{x.kind === 'primary' ? t('synthesis.primary') : t('synthesis.coverageSource')}</small></span>
+                </button>
+              ))}
+            </div>
           </div>
-        ) : (
-          <ul className="np-changes-list">
-            {s.rewrites.map((r, i) => (
-              <li key={i}>
-                <del>{r.from}</del> → <ins>{r.to || t('synthesis.removed')}</ins>
-                <p className="np-muted">{r.reason}</p>
-              </li>
+        ) : null}
+        {coverages.length ? (
+          <div>
+            <p className="np-synth-h">{t('synthesis.contrasted')}</p>
+            {coverages.map((c) => (
+              <div key={c.url} className="np-synth-outlet"><i className={`np-coverage-dot np-coverage-dot--${c.bucket}`} /><span>{c.outlet}</span><em>{Math.round(c.lean as number)}</em></div>
             ))}
-          </ul>
-        )
-      ) : null}
-
-      <p className="np-synth-sources">
-        {data.sources.map((x, i) => (
-          <button key={x.id} type="button" className="np-link" onClick={() => open(x.url)}>
-            [{i + 1}] {x.title}
-          </button>
-        ))}
-      </p>
-    </article>
+          </div>
+        ) : null}
+        <div className="np-synth-stats">
+          <div><b>{s.rewrites.length}</b><span>{t('synthesis.statRewritten')}</span></div>
+          <div><b>{s.facts.length}</b><span>{t('synthesis.statFacts')}</span></div>
+          <div><b>{data.sources.length}</b><span>{t('synthesis.statSources')}</span></div>
+        </div>
+        <p className="np-synth-all">
+          {data.sources.map((x, i) => (
+            <button key={x.id} type="button" className="np-link" onClick={() => open(x.url)}>[{i + 1}] {x.title}</button>
+          ))}
+        </p>
+      </aside>
+    </div>
   );
 }

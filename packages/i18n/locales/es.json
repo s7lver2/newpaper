@@ -812,7 +812,7 @@
     }
   },
   "synthesis": {
-    "kicker": "Versión neutral",
+    "kicker": "Versión neutral · contrastada",
     "loading": "Cargando la síntesis…",
     "missing": "Esta síntesis ya no está en la caché. Vuelve a analizar la noticia.",
     "view": {
@@ -821,16 +821,34 @@
       "full": "Completa",
       "changes": "Cambios"
     },
-    "facts": "Hechos",
+    "facts": "Qué ha pasado",
     "factKind": {
       "hecho": "Hecho",
       "atribuida": "Atribuido",
       "disputa": "En disputa"
     },
-    "parties": "Lo que dice cada parte",
+    "parties": "Qué dice cada parte",
     "evidence": "Peso de la evidencia",
     "unknowns": "Lo que aún no se sabe",
-    "removed": "(se elimina)"
+    "removed": "(se elimina)",
+    "confidence": "{n} de {total} hechos con fuentes",
+    "lead": "Lo que se sabe, lo que dice cada parte, lo que está en disputa y lo que aún no se puede saber.",
+    "threeLines": "En tres líneas",
+    "pickFact": "Pulsa una frase para ver sus fuentes.",
+    "data": "En datos",
+    "auto": "Auto",
+    "dataHint": "Gráficos elegidos por el agente · cada dato enlaza a su fuente",
+    "dispute": "Lo que está en disputa",
+    "changesTitle": "Qué se ha cambiado del original y por qué",
+    "footer": "{coverages, plural, =0 {sin otras coberturas} one {# cobertura} other {# coberturas}} · {sources, plural, one {# fuente} other {# fuentes}}",
+    "askAgent": "Preguntar al agente",
+    "sourcesOf": "Fuentes de la frase",
+    "primary": "Fuente primaria",
+    "coverageSource": "Cobertura de otro medio",
+    "contrasted": "Coberturas contrastadas",
+    "statRewritten": "frases reescritas",
+    "statFacts": "hechos",
+    "statSources": "fuentes"
   },
   "hemeroteca": {
     "kicker": "Hemeroteca",
@@ -986,8 +1004,9 @@
     "briefing": "Lo que está pasando",
     "outlets": "{n, plural, one {# medio} other {# medios}}",
     "leanMix": "Izquierda {left}, centro {center}, derecha {right}",
-    "topics": "Tus temas",
+    "topics": "Sigues",
     "continue": "Continuar leyendo",
-    "saved": "Guardado"
+    "saved": "Guardado",
+    "important": "{n, plural, one {# hecho importante} other {# hechos importantes}}"
   }
 }

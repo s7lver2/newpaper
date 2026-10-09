@@ -812,7 +812,7 @@
     }
   },
   "synthesis": {
-    "kicker": "Neutrale Fassung",
+    "kicker": "Neutrale Fassung · gegengeprüft",
     "loading": "Zusammenfassung wird geladen…",
     "missing": "Diese Zusammenfassung ist nicht mehr zwischengespeichert. Analysiere den Artikel erneut.",
     "view": {
@@ -821,7 +821,7 @@
       "full": "Vollständig",
       "changes": "Änderungen"
     },
-    "facts": "Fakten",
+    "facts": "Was passiert ist",
     "factKind": {
       "hecho": "Fakt",
       "atribuida": "Zugeschrieben",
@@ -829,8 +829,26 @@
     },
     "parties": "Was jede Seite sagt",
     "evidence": "Gewicht der Belege",
-    "unknowns": "Was noch unbekannt ist",
-    "removed": "(entfernt)"
+    "unknowns": "Was noch nicht bekannt ist",
+    "removed": "(entfernt)",
+    "confidence": "{n} von {total} Fakten mit Quellen",
+    "lead": "Was bekannt ist, was jede Seite sagt, was umstritten ist und was noch nicht zu wissen ist.",
+    "threeLines": "In drei Zeilen",
+    "pickFact": "Klicke einen Satz, um seine Quellen zu sehen.",
+    "data": "In Zahlen",
+    "auto": "Auto",
+    "dataHint": "Vom Agenten gewählte Diagramme · jede Zahl verweist auf ihre Quelle",
+    "dispute": "Was umstritten ist",
+    "changesTitle": "Was gegenüber dem Original geändert wurde und warum",
+    "footer": "{coverages, plural, =0 {keine weiteren Berichte} one {# Bericht} other {# Berichte}} · {sources, plural, one {# Quelle} other {# Quellen}}",
+    "askAgent": "Den Agenten fragen",
+    "sourcesOf": "Quellen des Satzes",
+    "primary": "Primärquelle",
+    "coverageSource": "Bericht eines anderen Mediums",
+    "contrasted": "Gegengeprüfte Berichte",
+    "statRewritten": "Sätze umgeschrieben",
+    "statFacts": "Fakten",
+    "statSources": "Quellen"
   },
   "hemeroteca": {
     "kicker": "Archiv",
@@ -986,8 +1004,9 @@
     "briefing": "Was gerade passiert",
     "outlets": "{n, plural, one {# Medium} other {# Medien}}",
     "leanMix": "Links {left}, Mitte {center}, rechts {right}",
-    "topics": "Deine Themen",
+    "topics": "Du folgst",
     "continue": "Weiterlesen",
-    "saved": "Gespeichert"
+    "saved": "Gespeichert",
+    "important": "{n, plural, one {# wichtige Meldung} other {# wichtige Meldungen}}"
   }
 }

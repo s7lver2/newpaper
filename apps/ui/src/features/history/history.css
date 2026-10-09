@@ -8,3 +8,13 @@
 .np-history-row { display: grid; grid-template-columns: 56px 1fr auto auto 44px; gap: 8px; align-items: center; min-height: var(--np-hit); border-bottom: 1px solid var(--np-line2); }
 .np-history-open { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .np-history-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Ajustes de fidelidad con el mockup Historial */
+.np-history { max-width: 860px; padding: 40px 24px 64px; }
+.np-history h1 { font: 400 52px/1.05 var(--np-font-read); letter-spacing: -.02em; }
+.np-history h2 { font: 400 22px/1.2 var(--np-font-read); letter-spacing: 0; text-transform: none; color: var(--np-ink); padding-bottom: 8px; border-bottom: 1px solid var(--np-line); }
+.np-history-search { border-radius: 14px; min-height: 44px; }
+.np-history-row { grid-template-columns: 56px 1fr auto auto 44px; padding: 8px 0; border-bottom: 0; }
+.np-history-row > :first-child { font: 400 12px var(--np-font-mono); color: var(--np-muted); }
+.np-history-open.np-link { color: var(--np-ink); font: 500 15px/1.35 var(--np-font-ui); }
+.np-history-open.np-link:hover { color: var(--np-accent); }

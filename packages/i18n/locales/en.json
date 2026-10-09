@@ -812,7 +812,7 @@
     }
   },
   "synthesis": {
-    "kicker": "Neutral version",
+    "kicker": "Neutral version · cross-checked",
     "loading": "Loading the synthesis…",
     "missing": "This synthesis is no longer cached. Analyse the article again.",
     "view": {
@@ -821,7 +821,7 @@
       "full": "Full",
       "changes": "Changes"
     },
-    "facts": "Facts",
+    "facts": "What happened",
     "factKind": {
       "hecho": "Fact",
       "atribuida": "Attributed",
@@ -830,7 +830,25 @@
     "parties": "What each side says",
     "evidence": "Weight of evidence",
     "unknowns": "What is not known yet",
-    "removed": "(removed)"
+    "removed": "(removed)",
+    "confidence": "{n} of {total} facts with sources",
+    "lead": "What is known, what each side says, what is disputed and what cannot be known yet.",
+    "threeLines": "In three lines",
+    "pickFact": "Click a sentence to see its sources.",
+    "data": "In numbers",
+    "auto": "Auto",
+    "dataHint": "Charts chosen by the agent · every figure links to its source",
+    "dispute": "What is disputed",
+    "changesTitle": "What was changed from the original and why",
+    "footer": "{coverages, plural, =0 {no other coverage} one {# coverage} other {# coverages}} · {sources, plural, one {# source} other {# sources}}",
+    "askAgent": "Ask the agent",
+    "sourcesOf": "Sources of the sentence",
+    "primary": "Primary source",
+    "coverageSource": "Another outlet's coverage",
+    "contrasted": "Cross-checked coverage",
+    "statRewritten": "sentences rewritten",
+    "statFacts": "facts",
+    "statSources": "sources"
   },
   "hemeroteca": {
     "kicker": "Archive",
@@ -986,8 +1004,9 @@
     "briefing": "What is happening",
     "outlets": "{n, plural, one {# outlet} other {# outlets}}",
     "leanMix": "Left {left}, centre {center}, right {right}",
-    "topics": "Your topics",
+    "topics": "Following",
     "continue": "Continue reading",
-    "saved": "Saved"
+    "saved": "Saved",
+    "important": "{n, plural, one {# important story} other {# important stories}}"
   }
 }
