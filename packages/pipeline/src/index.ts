@@ -11,3 +11,5 @@ export { autoAssign, describeAssignment, PRESETS, type Assignment, type Assignme
 export { runWithFallback } from './assign/fallback';
 export { costOf, estimateAnalysis, estimateTokens, STAGE_OUTPUT_TOKENS, type UsageSink } from './cost/estimate';
 export { applyBudget } from './cost/budget';
+export { cachedStage, textHash, type CacheStore } from './cache/key';
+export type * from './run/ports';
