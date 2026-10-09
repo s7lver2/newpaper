@@ -65,6 +65,32 @@ pub async fn chrome_set_theme(tabs: Tabs<'_>, theme: String) -> CmdResult<()> {
     Ok(())
 }
 
+/// El menú contextual de una pestaña se cerró: la webview vuelve a la vista.
+#[tauri::command]
+pub async fn ctx_close(tabs: Tabs<'_>, tab_id: TabId) -> CmdResult<()> {
+    tabs.ctx_close(tab_id);
+    Ok(())
+}
+
+/// Corta/pega/selecciona en el campo enfocado de la página (acciones del menú contextual).
+#[tauri::command]
+pub async fn ctx_edit(tabs: Tabs<'_>, tab_id: TabId, action: String, text: Option<String>) -> CmdResult<()> {
+    Ok(tabs.ctx_edit(tab_id, &action, text.as_deref())?)
+}
+
+/// Texto del portapapeles del sistema (para pegar sin el permiso de portapapeles del navegador).
+#[tauri::command]
+pub async fn clipboard_text() -> CmdResult<Option<String>> {
+    #[cfg(windows)]
+    {
+        Ok(np_shell::host::clipboard_text())
+    }
+    #[cfg(not(windows))]
+    {
+        Ok(None)
+    }
+}
+
 /// La UI informa de `prefers-reduced-motion`: sin transición entre páginas.
 #[tauri::command]
 pub async fn chrome_set_motion(tabs: Tabs<'_>, reduced: bool) -> CmdResult<()> {

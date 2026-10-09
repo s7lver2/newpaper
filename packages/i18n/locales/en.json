@@ -81,6 +81,25 @@
       "otherSection": "More headlines",
       "openHint": "Press to read it; Ctrl+click or middle click opens it in another tab.",
       "newTab": "Open in new tab"
+    },
+    "menu": {
+      "label": "Context menu",
+      "openTab": "Open in new tab",
+      "openReader": "Open in reader",
+      "copyLink": "Copy link",
+      "openImage": "Open image in new tab",
+      "copyImageUrl": "Copy image address",
+      "copy": "Copy",
+      "cut": "Cut",
+      "paste": "Paste",
+      "selectAll": "Select all",
+      "search": "Search for “{text}”",
+      "back": "Back",
+      "forward": "Forward",
+      "reload": "Reload",
+      "viewReader": "View in reader",
+      "viewOriginal": "View original",
+      "copyPageUrl": "Copy page address"
     }
   },
   "settings": {

@@ -3,7 +3,7 @@ pub mod events;
 #[cfg(windows)]
 mod win;
 #[cfg(windows)]
-pub use win::harden_ui;
+pub use win::{clipboard_text, harden_ui};
 
 use std::{
     collections::{HashMap, HashSet},
@@ -133,6 +133,8 @@ pub struct TabManager {
     bg: Mutex<(u8, u8, u8)>,
     /// Pestañas con una transición entre páginas en curso (su webview está fuera de la vista).
     transitioning: Mutex<HashSet<TabId>>,
+    /// Pestañas con el menú contextual abierto (su webview está oculta y la UI muestra una captura).
+    context_open: Mutex<HashSet<TabId>>,
     /// Quien espera el primer pintado (o el fallo) de la navegación en curso de cada pestaña.
     paint_waiters: Mutex<HashMap<TabId, tokio::sync::oneshot::Sender<bool>>>,
 }
@@ -160,6 +162,7 @@ impl TabManager {
             retired: Mutex::default(),
             creating: AtomicUsize::new(0),
             transitioning: Mutex::default(),
+            context_open: Mutex::default(),
             paint_waiters: Mutex::default(),
             bg: Mutex::new(PAPER_BG),
         }
@@ -210,6 +213,49 @@ impl TabManager {
             #[cfg(not(windows))]
             let _ = label;
         }
+    }
+
+    /// Clic derecho en una webview de contenido: se captura la página, se oculta la webview (la nativa
+    /// siempre se dibuja sobre la UI) y la UI pinta el menú sobre la captura.
+    pub(crate) fn on_context_menu(&self, id: TabId, label: &str, mut info: events::ContextInfo) {
+        if !self.is_current(id, label) {
+            return;
+        }
+        let Some(wv) = self.webview(id) else { return };
+        // Solo cuenta la webview visible; con otro menú abierto se ignora.
+        if !self.context_open.lock().expect("context lock").insert(id) {
+            return;
+        }
+        let app = self.app.clone();
+        tauri::async_runtime::spawn(async move {
+            let mgr = app.state::<Arc<TabManager>>();
+            let image = mgr.capture(&wv).await;
+            // Si la captura falla se oculta igualmente: el menú no puede quedar tras la webview.
+            let _ = wv.hide();
+            info.x = info.x.max(0.0);
+            info.y = info.y.max(0.0);
+            let _ = app.emit_to(UI_WEBVIEW, TAB_CONTEXT_MENU, events::TabContextMenuEvent { tab_id: id, info, image });
+        });
+    }
+
+    /// Cierra el menú: la webview vuelve a la vista y recupera el foco.
+    pub fn ctx_close(&self, id: TabId) {
+        self.context_open.lock().expect("context lock").remove(&id);
+        self.apply_visibility();
+        if let Some(wv) = self.webview(id) {
+            let _ = wv.set_focus();
+        }
+    }
+
+    /// Edición desde el menú propio sobre el campo enfocado de la página.
+    pub fn ctx_edit(&self, id: TabId, action: &str, text: Option<&str>) -> Result<(), ShellError> {
+        let js = match action {
+            "delete" => "document.execCommand('delete')".to_string(),
+            "selectAll" => "document.execCommand('selectAll')".to_string(),
+            "paste" => format!("document.execCommand('insertText', false, {})", serde_json::to_string(text.unwrap_or_default()).unwrap_or_else(|_| "\"\"".into())),
+            _ => return Ok(()),
+        };
+        self.eval_in_tab(id, &js)
     }
 
     /// `window.open` / `target=_blank` iniciado por el usuario en `from`: pestaña nueva (misma privacidad).
@@ -390,6 +436,7 @@ impl TabManager {
         if !self.tabs.lock().expect("tabs lock").activate(id) {
             return Err(ShellError::NoTab(id));
         }
+        self.context_open.lock().expect("context lock").clear();
         self.apply_visibility();
         self.emit_tabs();
         self.ensure_active_webview().await
@@ -605,8 +652,9 @@ impl TabManager {
         for t in &snap.tabs {
             let wanted = snap.active_id == Some(t.id) && t.view == TabView::Original && t.failure.is_none() && !t.crashed;
             let painted = self.revealed.lock().expect("revealed lock").contains(&t.id);
+            let menu = self.context_open.lock().expect("context lock").contains(&t.id);
             if let Some(wv) = self.webview(t.id) {
-                let _ = if wanted && painted { wv.show() } else { wv.hide() };
+                let _ = if wanted && painted && !menu { wv.show() } else { wv.hide() };
             }
             // Mientras la nueva no pinta, la sustituida sigue a la vista (sin hueco ni destello).
             for wv in self.retired_webviews(t.id) {

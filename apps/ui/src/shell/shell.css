@@ -117,3 +117,15 @@
 /* Páginas internas y lector: fundido CSS al montarse (solo con la transición activada) */
 html[data-np-transition='on'] .np-surface { animation: np-fade .3s var(--np-ease) both; }
 @media (prefers-reduced-motion: reduce) { .np-xfade-to, html[data-np-transition='on'] .np-surface { animation: none; opacity: 1; } }
+
+/* Menú contextual propio (UI y páginas web) */
+.np-ctx-anchor { display: none; }
+.np-ctx-shot { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; object-fit: cover; object-position: top left; pointer-events: none; }
+.np-ctx-layer { position: fixed; inset: 0; z-index: 100; }
+.np-ctx { position: fixed; min-width: 220px; max-width: 320px; padding: 6px; border: 1px solid var(--np-line); border-radius: 14px; background: var(--np-card, var(--np-paper)); box-shadow: var(--np-shadow-pop); transform-origin: top left; animation: np-pop .35s var(--np-bounce) both; font: 400 13.5px/1.2 var(--np-font-ui); }
+.np-ctx-group + .np-ctx-group { margin-top: 5px; padding-top: 5px; border-top: 1px solid var(--np-line2); }
+.np-ctx-item { display: flex; align-items: center; width: 100%; min-height: 40px; padding: 0 12px; border: 0; border-radius: 9px; background: none; color: var(--np-ink); font: inherit; text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.np-ctx-item:hover, .np-ctx-item:focus-visible { background: var(--np-accent-soft); outline: none; }
+.np-ctx-item[aria-disabled='true'] { opacity: .4; cursor: default; }
+.np-ctx-item[aria-disabled='true']:hover { background: none; }
+@media (prefers-reduced-motion: reduce) { .np-ctx { animation: none; } }

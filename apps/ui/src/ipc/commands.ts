@@ -16,6 +16,9 @@ export const commands = {
   tabSetView: (tabId: TabId, view: TabView) => invoke<void>('tab_set_view', { tabId, view }),
   tabSetBounds: (rect: Rect) => invoke<void>('tab_set_bounds', { rect }),
   tabsSnapshot: () => invoke<TabsSnapshot>('tabs_snapshot'),
+  ctxClose: (tabId: TabId) => invoke<void>('ctx_close', { tabId }),
+  ctxEdit: (tabId: TabId, action: 'delete' | 'paste' | 'selectAll', text?: string) => invoke<void>('ctx_edit', { tabId, action, text }),
+  clipboardText: () => invoke<string | null>('clipboard_text'),
   chromeSetMotion: (reduced: boolean) => invoke<void>('chrome_set_motion', { reduced }),
   chromeSetTheme: (theme: 'paper' | 'ink') => invoke<void>('chrome_set_theme', { theme }),
 

@@ -10,16 +10,18 @@ use webview2_com::{
     take_pwstr,
     Microsoft::Web::WebView2::Win32::{
         ICoreWebView2, ICoreWebView2NavigationCompletedEventArgs2, ICoreWebView2Settings2, ICoreWebView2Settings3,
-        ICoreWebView2Settings4, ICoreWebView2Settings6, ICoreWebView2Settings8, ICoreWebView2_13, ICoreWebView2_4, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_DARK, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_LIGHT,
+        ICoreWebView2Settings4, ICoreWebView2Settings6, ICoreWebView2Settings8, ICoreWebView2_11, ICoreWebView2_13, ICoreWebView2_4, COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_AUDIO,
+        COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_IMAGE, COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT,
+        COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_VIDEO, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_DARK, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_LIGHT,
         COREWEBVIEW2_CAPTURE_PREVIEW_IMAGE_FORMAT_PNG, COREWEBVIEW2_PERMISSION_STATE_DENY, COREWEBVIEW2_PROCESS_FAILED_KIND, COREWEBVIEW2_WEB_ERROR_STATUS,
     },
-    CapturePreviewCompletedHandler, DownloadStartingEventHandler, NavigationCompletedEventHandler,
+    CapturePreviewCompletedHandler, ContextMenuRequestedEventHandler, DownloadStartingEventHandler, NavigationCompletedEventHandler,
     NewWindowRequestedEventHandler, PermissionRequestedEventHandler, ProcessFailedEventHandler,
     WebMessageReceivedEventHandler,
 };
 use windows::core::{Interface, BOOL, HSTRING, PWSTR};
 
-use super::{NavOutcome, TabManager};
+use super::{events::ContextInfo, NavOutcome, TabManager};
 use crate::TabId;
 
 pub(super) fn attach(app: &AppHandle, tab: TabId, webview: &Webview) -> tauri::Result<()> {
@@ -141,6 +143,35 @@ pub(super) fn capture_png(webview: &Webview) -> tokio::sync::oneshot::Receiver<O
     rx
 }
 
+/// Texto del portapapeles de Windows (CF_UNICODETEXT), para pegar desde el menú propio sin
+/// pedir el permiso de portapapeles del navegador.
+pub fn clipboard_text() -> Option<String> {
+    use windows::Win32::System::{
+        DataExchange::{CloseClipboard, GetClipboardData, OpenClipboard},
+        Memory::{GlobalLock, GlobalUnlock},
+    };
+    unsafe {
+        OpenClipboard(None).ok()?;
+        let text = (|| {
+            let handle = GetClipboardData(13).ok()?; // CF_UNICODETEXT
+            let mem = HGLOBAL(handle.0);
+            let ptr = GlobalLock(mem) as *const u16;
+            if ptr.is_null() {
+                return None;
+            }
+            let mut len = 0usize;
+            while *ptr.add(len) != 0 {
+                len += 1;
+            }
+            let s = String::from_utf16_lossy(std::slice::from_raw_parts(ptr, len));
+            let _ = GlobalUnlock(mem);
+            Some(s)
+        })();
+        let _ = CloseClipboard();
+        text
+    }
+}
+
 /// Ajustes de la webview de interfaz (`ui`).
 pub fn harden_ui(webview: &Webview) -> tauri::Result<()> {
     webview.with_webview(|pw| unsafe {
@@ -202,6 +233,54 @@ unsafe fn register(core: &ICoreWebView2, app: AppHandle, tab: TabId, label: Stri
         })),
         &mut token,
     )?;
+
+    // Menú contextual propio: el nativo está desactivado; se pasa el contexto a la UI.
+    if let Ok(c11) = core.cast::<ICoreWebView2_11>() {
+        let a = app.clone();
+        let l = label.clone();
+        c11.add_ContextMenuRequested(
+            &ContextMenuRequestedEventHandler::create(Box::new(move |_, args| {
+                let Some(args) = args else { return Ok(()) };
+                args.SetHandled(true)?;
+                let target = args.ContextMenuTarget()?;
+                let mut kind = Default::default();
+                target.Kind(&mut kind)?;
+                let mut editable = BOOL::default();
+                target.IsEditable(&mut editable)?;
+                let text = |get: &dyn Fn(&mut PWSTR) -> windows::core::Result<()>| -> Option<String> {
+                    let mut p = PWSTR::null();
+                    get(&mut p).ok()?;
+                    let s = take_pwstr(p);
+                    (!s.is_empty()).then_some(s)
+                };
+                let mut has = BOOL::default();
+                target.HasLinkUri(&mut has)?;
+                let link = if has.as_bool() { text(&|p| unsafe { target.LinkUri(p) }) } else { None };
+                target.HasSourceUri(&mut has)?;
+                let source = if has.as_bool() { text(&|p| unsafe { target.SourceUri(p) }) } else { None };
+                target.HasSelection(&mut has)?;
+                let selection = if has.as_bool() { text(&|p| unsafe { target.SelectionText(p) }) } else { None };
+                let page_url = text(&|p| unsafe { target.PageUri(p) }).unwrap_or_default();
+                let mut pt = windows::Win32::Foundation::POINT::default();
+                args.Location(&mut pt)?;
+                let kind = if kind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_IMAGE {
+                    "image"
+                } else if kind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT {
+                    "selection"
+                } else if kind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_AUDIO {
+                    "audio"
+                } else if kind == COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_VIDEO {
+                    "video"
+                } else {
+                    "page"
+                };
+                let info = ContextInfo { kind, link, source, selection, editable: editable.as_bool(), page_url, x: pt.x as f64, y: pt.y as f64 };
+                a.state::<Arc<TabManager>>().on_context_menu(tab, &l, info);
+                Ok(())
+            })),
+            &mut token,
+        )?;
+    }
 
     let a = app.clone();
     let l = label.clone();

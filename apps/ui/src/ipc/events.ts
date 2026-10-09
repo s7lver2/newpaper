@@ -7,6 +7,19 @@ export const onTabsChanged = (cb: (s: TabsSnapshot) => void) => listen<TabsSnaps
 export const onTabPage = (cb: (e: TabPageEvent) => void) => listen<TabPageEvent>('tab://page', (e) => cb(e.payload));
 export interface TabTransitionEvent { tabId: number; phase: 'start' | 'ready' | 'end'; image: string | null }
 export const onTabTransition = (cb: (e: TabTransitionEvent) => void) => listen<TabTransitionEvent>('tab://transition', (e) => cb(e.payload));
+export interface ContextMenuEvent {
+  tabId: number;
+  kind: 'page' | 'image' | 'selection' | 'audio' | 'video';
+  link: string | null;
+  source: string | null;
+  selection: string | null;
+  editable: boolean;
+  pageUrl: string;
+  x: number;
+  y: number;
+  image: string | null;
+}
+export const onContextMenu = (cb: (e: ContextMenuEvent) => void) => listen<ContextMenuEvent>('tab://context-menu', (e) => cb(e.payload));
 export const onTabShortcut = (cb: (e: TabShortcutEvent) => void) => listen<TabShortcutEvent>('tab://shortcut', (e) => cb(e.payload));
 export const onSettingsChanged = (cb: (e: { key: string; value: unknown }) => void) =>
   listen<{ key: string; value: unknown }>('settings://changed', (e) => cb(e.payload));

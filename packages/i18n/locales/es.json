@@ -81,6 +81,25 @@
       "otherSection": "Más titulares",
       "openHint": "Pulsa para leerlo; Ctrl+clic o clic central lo abre en otra pestaña.",
       "newTab": "Abrir en pestaña nueva"
+    },
+    "menu": {
+      "label": "Menú contextual",
+      "openTab": "Abrir en pestaña nueva",
+      "openReader": "Abrir en el lector",
+      "copyLink": "Copiar enlace",
+      "openImage": "Abrir imagen en pestaña nueva",
+      "copyImageUrl": "Copiar dirección de la imagen",
+      "copy": "Copiar",
+      "cut": "Cortar",
+      "paste": "Pegar",
+      "selectAll": "Seleccionar todo",
+      "search": "Buscar «{text}»",
+      "back": "Atrás",
+      "forward": "Adelante",
+      "reload": "Recargar",
+      "viewReader": "Ver en el lector",
+      "viewOriginal": "Ver original",
+      "copyPageUrl": "Copiar dirección de la página"
     }
   },
   "settings": {
