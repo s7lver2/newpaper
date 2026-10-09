@@ -10,14 +10,14 @@ use webview2_com::{
     take_pwstr,
     Microsoft::Web::WebView2::Win32::{
         ICoreWebView2, ICoreWebView2NavigationCompletedEventArgs2, ICoreWebView2Settings3,
-        ICoreWebView2Settings4, ICoreWebView2Settings6, ICoreWebView2Settings8, ICoreWebView2_11, ICoreWebView2_13, ICoreWebView2_4, COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_AUDIO,
+        ICoreWebView2Settings4, ICoreWebView2Settings6, ICoreWebView2Settings8, ICoreWebView2_11, ICoreWebView2_13, ICoreWebView2_2, ICoreWebView2_4, ICoreWebView2HttpHeadersCollectionIterator, COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_AUDIO,
         COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_IMAGE, COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT,
         COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_VIDEO, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_DARK, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_LIGHT,
         COREWEBVIEW2_CAPTURE_PREVIEW_IMAGE_FORMAT_PNG, COREWEBVIEW2_PERMISSION_STATE_DENY, COREWEBVIEW2_PROCESS_FAILED_KIND, COREWEBVIEW2_WEB_ERROR_STATUS,
     },
     CapturePreviewCompletedHandler, ContextMenuRequestedEventHandler, DownloadStartingEventHandler, NavigationCompletedEventHandler,
     NavigationStartingEventHandler, NewWindowRequestedEventHandler, PermissionRequestedEventHandler, ProcessFailedEventHandler,
-    WebMessageReceivedEventHandler,
+    WebMessageReceivedEventHandler, WebResourceResponseReceivedEventHandler,
 };
 use windows::core::{Interface, BOOL, HSTRING, PWSTR};
 
@@ -32,6 +32,10 @@ pub(super) fn attach(app: &AppHandle, tab: TabId, webview: &Webview) -> tauri::R
             tracing::error!(tab, "CoreWebView2 unavailable");
             return;
         };
+        let mut version = PWSTR::null();
+        if pw.environment().BrowserVersionString(&mut version).is_ok() {
+            app.state::<Arc<TabManager>>().set_webview2_version(take_pwstr(version));
+        }
         if let Err(e) = register(&core, app, tab, label) {
             tracing::error!(tab, error = ?e, "failed to register WebView2 handlers");
         }
@@ -184,6 +188,26 @@ pub fn harden_ui(webview: &Webview) -> tauri::Result<()> {
     })
 }
 
+/// Todas las cabeceras de una colección de WebView2 (nombre, valor).
+unsafe fn collect_headers(it: ICoreWebView2HttpHeadersCollectionIterator) -> Vec<(String, String)> {
+    let mut out = Vec::new();
+    loop {
+        let mut has = BOOL::default();
+        if it.HasCurrentHeader(&mut has).is_err() || !has.as_bool() {
+            break;
+        }
+        let (mut name, mut value) = (PWSTR::null(), PWSTR::null());
+        if it.GetCurrentHeader(&mut name, &mut value).is_ok() {
+            out.push((take_pwstr(name), take_pwstr(value)));
+        }
+        let mut next = BOOL::default();
+        if it.MoveNext(&mut next).is_err() || !next.as_bool() {
+            break;
+        }
+    }
+    out
+}
+
 unsafe fn register(core: &ICoreWebView2, app: AppHandle, tab: TabId, label: String) -> windows::core::Result<()> {
     let mut token = 0i64;
     harden(core)?;
@@ -308,10 +332,39 @@ unsafe fn register(core: &ICoreWebView2, app: AppHandle, tab: TabId, label: Stri
         let Some(args) = args else { return Ok(()) };
         let mut nav_id = 0u64;
         args.NavigationId(&mut nav_id)?;
-        a.state::<Arc<TabManager>>().on_navigation_starting(tab, &l, nav_id);
+        let mut uri = PWSTR::null();
+        args.Uri(&mut uri)?;
+        a.state::<Arc<TabManager>>().on_navigation_starting(tab, &l, nav_id, take_pwstr(uri));
         Ok(())
     }));
     core.add_NavigationStarting(&on_starting, &mut token)?;
+
+    // Cabeceras de la respuesta del documento principal: para "Copiar detalles" de la página de error.
+    if let Ok(core2) = core.cast::<ICoreWebView2_2>() {
+        let a = app.clone();
+        let l = label.clone();
+        core2.add_WebResourceResponseReceived(
+            &WebResourceResponseReceivedEventHandler::create(Box::new(move |_, args| {
+                let Some(args) = args else { return Ok(()) };
+                let request = args.Request()?;
+                let mut uri = PWSTR::null();
+                request.Uri(&mut uri)?;
+                let uri = take_pwstr(uri);
+                let mgr = a.state::<Arc<TabManager>>();
+                if !mgr.is_main_document(tab, &l, &uri) {
+                    return Ok(());
+                }
+                let response = args.Response()?;
+                let mut status = 0i32;
+                response.StatusCode(&mut status)?;
+                let req = collect_headers(request.Headers()?.GetIterator()?);
+                let resp = collect_headers(response.Headers()?.GetIterator()?);
+                mgr.on_main_response(tab, &l, &uri, status.max(0) as u16, &req, &resp);
+                Ok(())
+            })),
+            &mut token,
+        )?;
+    }
 
     let a = app.clone();
     let l = label.clone();

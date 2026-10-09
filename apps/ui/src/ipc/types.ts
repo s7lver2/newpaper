@@ -8,7 +8,10 @@ export type TabView = 'original' | 'reader';
 export interface TabGroup { id: number; name: string; color: 'blue' | 'green' | 'amber' | 'rose' | 'violet' | 'teal'; collapsed: boolean }
 export const GROUP_COLORS = ['blue', 'green', 'amber', 'rose', 'violet', 'teal'] as const;
 
-export interface NavFailure { url: string; webErrorStatus: number; httpStatus: number | null }
+export type HeaderList = [string, string][];
+/** Datos de la navegacion fallida para "Copiar detalles" (sin cookies ni credenciales). */
+export interface NavDiagnostics { navigationId: number; atMs: number; appVersion: string; webview2Version: string; requestHeaders: HeaderList; responseHeaders: HeaderList }
+export interface NavFailure { url: string; webErrorStatus: number; httpStatus: number | null; diagnostics?: NavDiagnostics | null }
 
 export interface TabInfo {
   id: TabId;

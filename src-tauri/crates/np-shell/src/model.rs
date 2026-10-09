@@ -26,6 +26,8 @@ pub struct NavFailure {
     /// `COREWEBVIEW2_WEB_ERROR_STATUS` (0 si la navegación tuvo éxito con HTTP de error).
     pub web_error_status: i32,
     pub http_status: Option<u16>,
+    /// Datos para el botón "Copiar detalles" de la página de error.
+    pub diagnostics: Option<crate::diagnostics::NavDiagnostics>,
 }
 
 pub type GroupId = u64;

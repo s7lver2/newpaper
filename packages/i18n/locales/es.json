@@ -72,6 +72,9 @@
       "kicker": "Error",
       "errorTitle": "No se ha podido cargar la página",
       "errorDetail": "Código {code}",
+      "copyDetails": "Copiar detalles",
+      "copied": "Copiado ✓",
+      "copyFailed": "No se pudo copiar",
       "crashTitle": "La pestaña ha dejado de responder",
       "crashReload": "Recargar la pestaña"
     },

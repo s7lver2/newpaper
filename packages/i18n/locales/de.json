@@ -72,6 +72,9 @@
       "kicker": "Fehler",
       "errorTitle": "Die Seite konnte nicht geladen werden",
       "errorDetail": "Code {code}",
+      "copyDetails": "Details kopieren",
+      "copied": "Kopiert ✓",
+      "copyFailed": "Kopieren fehlgeschlagen",
       "crashTitle": "Der Tab reagiert nicht mehr",
       "crashReload": "Tab neu laden"
     },

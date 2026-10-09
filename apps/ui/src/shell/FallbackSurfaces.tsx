@@ -1,7 +1,9 @@
+import { useEffect, useRef, useState } from 'react';
 import { useT } from '@newpaper/i18n/react';
 import { Button } from '@newpaper/ui-kit';
 import { commands } from '../ipc/commands';
 import type { TabInfo } from '../ipc/types';
+import { copyToClipboard, formatErrorReport } from './errorReport';
 
 /** Line drawing from Errores.dc.html (document with a cut cable); the strokes draw themselves in. */
 const Art = () => (
@@ -17,6 +19,40 @@ const Art = () => (
   </svg>
 );
 
+type CopyState = 'idle' | 'copied' | 'failed';
+
+/** "Copy details": a plain-text diagnostic report (no cookies, no page content) for bug reports. */
+function CopyDetails({ tab }: { tab: TabInfo }) {
+  const t = useT();
+  const [state, setState] = useState<CopyState>('idle');
+  const timer = useRef<number | undefined>(undefined);
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+  const failure = tab.failure;
+  if (!failure) return null;
+  const copy = async () => {
+    const [privacy, counts] = await Promise.all([commands.privacyStatus().catch(() => null), commands.blockedCounts(tab.id).catch(() => null)]);
+    const text = formatErrorReport(failure, {
+      privacy,
+      tabWithoutTor: !!privacy?.tabsWithoutTor.includes(tab.id),
+      blockedInTab: counts?.tab ?? null,
+      windowSize: { width: window.innerWidth, height: window.innerHeight },
+      theme: document.documentElement.dataset.theme ?? 'paper',
+    });
+    setState((await copyToClipboard(text)) ? 'copied' : 'failed');
+    window.clearTimeout(timer.current);
+    timer.current = window.setTimeout(() => setState('idle'), 2200);
+  };
+  const label = state === 'copied' ? t('shell.surface.copied') : state === 'failed' ? t('shell.surface.copyFailed') : t('shell.surface.copyDetails');
+  return (
+    <>
+      <Button className="np-press-spring np-copy-details" onClick={copy}>
+        <span key={state} className={state === 'idle' ? undefined : 'np-pop'}>{label}</span>
+      </Button>
+      <span className="np-sr-only" role="status" aria-live="polite">{state === 'idle' ? '' : label}</span>
+    </>
+  );
+}
+
 export function FallbackError({ tab }: { tab: TabInfo }) {
   const t = useT();
   const code = tab.failure?.httpStatus ?? tab.failure?.webErrorStatus ?? 0;
@@ -27,9 +63,12 @@ export function FallbackError({ tab }: { tab: TabInfo }) {
         <p className="np-kicker np-fallback-kicker">{t('shell.surface.kicker')}</p>
         <h1 className="np-fallback-title">{t('shell.surface.errorTitle')}</h1>
         <p className="np-fallback-lead">{t('shell.surface.errorDetail', { code })}</p>
-        <Button variant="primary" className="np-press-spring" onClick={() => commands.tabReload(tab.id)}>
-          {t('common.retry')}
-        </Button>
+        <div className="np-fallback-actions">
+          <Button variant="primary" className="np-press-spring" onClick={() => commands.tabReload(tab.id)}>
+            {t('common.retry')}
+          </Button>
+          <CopyDetails tab={tab} />
+        </div>
       </div>
     </div>
   );

@@ -23,6 +23,7 @@ use tauri::{
 };
 
 use crate::{
+    diagnostics::{self, Headers, NavDiagnostics},
     extensions::ShellExtensions,
     input::{parse_input, search_url, Target},
     message::{parse_content_message, ContentMessage, PageKind, PagePayload},
@@ -160,6 +161,19 @@ pub struct TabManager {
     latest_nav: Mutex<HashMap<TabId, u64>>,
     /// Pestañas cuyo documento nuevo ya existe (np-doc): el tope de la espera del lector solo cuenta desde ahí.
     doc_seen: Mutex<HashSet<TabId>>,
+    /// URL del documento principal de la navegación en curso de cada pestaña (sigue las redirecciones).
+    main_uri: Mutex<HashMap<TabId, String>>,
+    /// Última respuesta del documento principal de cada pestaña: cabeceras para el informe de error.
+    main_response: Mutex<HashMap<TabId, MainResponse>>,
+    /// Versión del runtime de WebView2 (se lee al crear la primera webview).
+    webview2_version: Mutex<String>,
+}
+
+/// Lo que se sabe de la respuesta del documento principal (para "Copiar detalles").
+#[derive(Debug, Clone)]
+pub struct MainResponse {
+    pub request_headers: Headers,
+    pub response_headers: Headers,
 }
 
 /// Fondo por defecto del tema papel (`--np-paper`).
@@ -192,6 +206,9 @@ impl TabManager {
             pending_seq: Mutex::default(),
             latest_nav: Mutex::default(),
             doc_seen: Mutex::default(),
+            main_uri: Mutex::default(),
+            main_response: Mutex::default(),
+            webview2_version: Mutex::default(),
             bg: Mutex::new(PAPER_BG),
         }
     }
@@ -431,7 +448,14 @@ impl TabManager {
         let window = self.app.get_window(MAIN_WINDOW).ok_or(ShellError::NoWindow)?;
         let profile = self.ext.profile_for_tab(id);
         let label = format!("tab-{id}-{}", self.label_seq.fetch_add(1, Ordering::Relaxed));
-        let mut builder = WebviewBuilder::new(label.clone(), WebviewUrl::External(url))
+        // La primera navegación empieza antes de que se registre el manejador de `NavigationStarting`.
+        self.main_uri.lock().expect("main uri lock").insert(id, url.to_string());
+        self.main_response.lock().expect("main response lock").remove(&id);
+        // Nace en `about:blank` y navega cuando ya están registrados los manejadores (cabeceras de la respuesta,
+        // bloqueo de anuncios): si no, la primera carga puede adelantarse a ellos.
+        let first_url = url.clone();
+        let blank = url::Url::parse("about:blank").expect("about:blank");
+        let mut builder = WebviewBuilder::new(label.clone(), WebviewUrl::External(blank))
             .background_color(self.background())
             .initialization_script(&format!("window.__npPT = {};", self.transitions_on()))
             .initialization_script(READY_SCRIPT)
@@ -439,14 +463,14 @@ impl TabManager {
             .data_directory(self.webview_root.join(&profile.data_dir_name))
             .additional_browser_args(&profile.additional_browser_args)
             .incognito(private)
-            .on_navigation(|u| matches!(u.scheme(), "http" | "https"));
+            .on_navigation(|u| matches!(u.scheme(), "http" | "https") || u.as_str() == "about:blank");
         for js in self.ext.init_scripts() {
             builder = builder.initialization_script(&js);
         }
         let app = self.app.clone();
         builder = builder.on_page_load(move |wv, payload| {
             let mgr = app.state::<Arc<TabManager>>();
-            if !mgr.is_current(id, wv.label()) {
+            if !mgr.is_current(id, wv.label()) || !matches!(payload.url().scheme(), "http" | "https") {
                 return;
             }
             let started = matches!(payload.event(), PageLoadEvent::Started);
@@ -496,6 +520,7 @@ impl TabManager {
         for h in self.ext.hooks() {
             h.on_content_webview_created(id, &webview);
         }
+        webview.navigate(first_url)?;
         tracing::debug!(tab = id, "create_webview end");
         Ok(())
     }
@@ -902,7 +927,8 @@ impl TabManager {
 
     /// Devuelve la respuesta para `PostWebMessageAsJson`, si la hay.
     pub(crate) fn handle_raw_message(&self, id: TabId, label: &str, raw: &str, source: &str) -> Option<serde_json::Value> {
-        if !self.is_current(id, label) {
+        // El documento en blanco inicial de cada webview no es una página: sus avisos no cuentan.
+        if !self.is_current(id, label) || source.starts_with("about:") {
             return None;
         }
         match parse_content_message(raw, source) {
@@ -999,14 +1025,50 @@ impl TabManager {
         self.emit_tabs();
     }
 
-    pub(crate) fn on_navigation_starting(&self, id: TabId, label: &str, nav_id: u64) {
-        if self.is_current(id, label) {
+    pub(crate) fn on_navigation_starting(&self, id: TabId, label: &str, nav_id: u64, uri: String) {
+        if self.is_current(id, label) && uri.starts_with("http") {
             self.latest_nav.lock().expect("latest nav lock").insert(id, nav_id);
+            self.main_uri.lock().expect("main uri lock").insert(id, uri);
+            self.main_response.lock().expect("main response lock").remove(&id);
+        }
+    }
+
+    fn is_main_document(&self, id: TabId, label: &str, uri: &str) -> bool {
+        let strip = |u: &str| u.split('#').next().unwrap_or(u).to_string();
+        self.is_current(id, label) && self.main_uri.lock().expect("main uri lock").get(&id).map(|m| strip(m)) == Some(strip(uri))
+    }
+
+    /// Respuesta de la navegación principal (cabeceras de petición y respuesta, ya sin datos sensibles).
+    pub(crate) fn on_main_response(&self, id: TabId, label: &str, uri: &str, status: u16, request: &[(String, String)], response: &[(String, String)]) {
+        if !self.is_main_document(id, label, uri) {
+            return;
+        }
+        let r = MainResponse {
+            request_headers: diagnostics::pick_request_headers(request),
+            response_headers: diagnostics::pick_response_headers(response),
+        };
+        tracing::debug!(tab = id, status, request = ?r.request_headers, response = ?r.response_headers, "main document response");
+        self.main_response.lock().expect("main response lock").insert(id, r);
+    }
+
+    pub(crate) fn set_webview2_version(&self, v: String) {
+        *self.webview2_version.lock().expect("webview2 version lock") = v;
+    }
+
+    fn diagnostics_for(&self, id: TabId, nav_id: u64) -> NavDiagnostics {
+        let found = self.main_response.lock().expect("main response lock").get(&id).cloned();
+        NavDiagnostics {
+            navigation_id: nav_id,
+            at_ms: std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_millis() as u64).unwrap_or(0),
+            app_version: self.app.package_info().version.to_string(),
+            webview2_version: self.webview2_version.lock().expect("webview2 version lock").clone(),
+            request_headers: found.as_ref().map(|r| r.request_headers.clone()).unwrap_or_default(),
+            response_headers: found.map(|r| r.response_headers).unwrap_or_default(),
         }
     }
 
     pub(crate) fn on_navigation_completed(&self, id: TabId, label: &str, o: NavOutcome) {
-        if !self.is_current(id, label) {
+        if !self.is_current(id, label) || o.url.starts_with("about:") {
             return;
         }
         let latest = self.latest_nav.lock().expect("latest nav lock").get(&id).copied().unwrap_or(0);
@@ -1022,12 +1084,13 @@ impl TabManager {
             return;
         }
         let failed = verdict == navigation::Verdict::Failed;
+        let diagnostics = failed.then(|| self.diagnostics_for(id, o.navigation_id));
         self.update(id, |t| {
             t.loading = false;
             t.can_go_back = o.can_go_back;
             t.can_go_forward = o.can_go_forward;
             t.url = o.url.clone();
-            t.failure = failed.then(|| NavFailure { url: o.url.clone(), web_error_status: o.web_error_status, http_status: o.http_status });
+            t.failure = diagnostics.map(|d| NavFailure { url: o.url.clone(), web_error_status: o.web_error_status, http_status: o.http_status, diagnostics: Some(d) });
         });
         if failed {
             self.pending_seq.lock().expect("pending lock").remove(&id);

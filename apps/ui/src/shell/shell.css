@@ -73,6 +73,8 @@
 .np-fallback-kicker { margin-bottom: 10px; letter-spacing: .12em; }
 .np-fallback-title { font: 500 42px/1.1 var(--np-font-read); margin: 0; }
 .np-fallback-lead { margin: 14px 0 26px; font-size: 19px; line-height: 1.55; color: var(--np-ink2); }
+.np-fallback-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.np-copy-details { min-width: 150px; }
 .np-fallback .np-btn { min-height: 46px; padding: 0 18px; border-radius: 12px; font-weight: 500; }
 /* The drawing strokes itself in (class np-drawn; inline animation-delay per stroke, as in Errores.dc.html) */
 .np-drawn path, .np-drawn line, .np-drawn circle, .np-drawn rect, .np-drawn polyline { stroke-dasharray: 1; stroke-dashoffset: 1; animation: np-draw 1.4s var(--np-ease) forwards; }

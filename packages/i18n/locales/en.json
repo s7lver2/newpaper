@@ -72,6 +72,9 @@
       "kicker": "Error",
       "errorTitle": "This page couldn't be loaded",
       "errorDetail": "Code {code}",
+      "copyDetails": "Copy details",
+      "copied": "Copied ✓",
+      "copyFailed": "Could not copy",
       "crashTitle": "This tab stopped responding",
       "crashReload": "Reload tab"
     },
