@@ -12,6 +12,16 @@ export function Ajustes({ url }: InternalPageProps) {
   if (!current) return null;
   const Section = current.Component;
   const index = Math.max(0, sections.findIndex((s) => s.id === current.id));
+  // Un subpaso (p. ej. el asistente de proveedores en ajustes/ia/conectar) ocupa la página entera, como en el mockup Proveedores.
+  if (url.path.length > 1) {
+    return (
+      <div className="np-settings np-settings--full">
+        <div className="np-settings-body">
+          <Section key={current.id} />
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="np-settings">
       <nav aria-label={t('settings.nav')} className="np-settings-nav">

@@ -11,3 +11,10 @@
 .np-wizard-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .np-ai-connected { list-style: none; padding: 0; display: grid; gap: 4px; }
 .np-ai-connected li { display: flex; justify-content: space-between; align-items: center; min-height: var(--np-hit); }
+
+/* Fidelidad con el mockup Proveedores */
+.np-wizard h1, .np-wizard > h2:first-child { font: 500 42px/1.1 var(--np-font-read); letter-spacing: -.015em; margin: 0; }
+.np-wizard-card--big { border-radius: 18px; padding: 24px; min-height: 220px; }
+.np-wizard-card--big strong, .np-wizard-card--big h3 { font: 400 28px/1.2 var(--np-font-read); }
+.np-wizard-cards:has(.np-wizard-card--big) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.np-wizard-key { padding: 20px; border: 1px dashed var(--np-line3); border-radius: 18px; }

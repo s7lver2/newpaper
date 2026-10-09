@@ -42,3 +42,5 @@
 .np-theme-preview i { display: block; height: 5px; width: 90%; border-radius: 3px; background: currentColor; opacity: .4; }
 .np-theme-preview i:first-child { height: 8px; width: 70%; border-radius: 4px; opacity: 1; }
 .np-theme-preview i:last-child { width: 60%; }
+.np-settings--full { display: block; }
+.np-settings--full .np-settings-body { max-width: 1040px; margin: 0 auto; padding: 24px 24px 64px; }
