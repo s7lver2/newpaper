@@ -181,3 +181,6 @@ Detalle en `2026-10-09-pendientes-resultado.md`. Errores del plan o del código 
 | Fundido A1 | `PAINT_TIMEOUT` de 1,8 s menor que el primer pintado de una web real (2-3 s): el fundido casi nunca ocurría | 6 s; sin fundido hacia el lector | ver git log |
 | Lector | La original se veía hasta el evento `load` (el mensaje `page` se enviaba entonces) | Estado `readerPending`, piel `ReaderLoading` y extracción anticipada (`np-doc`/`np-early`) | ver git log |
 | Navegación | `IsSuccess=false` de una navegación superada se mostraba como error con el HTTP 200 previo | `navigation::judge` e id de navegación | ver git log |
+| UA / WAF | B8 quitaba `Edg/` del user agent pero WebView2 mantiene `Sec-CH-UA` de Edge: DataDome (El País) devuelve 403 a la combinación incoherente | No se sobrescribe el user agent; ver "Tercera tanda" | ver git log |
+| Webviews | La primera navegación de una webview nueva podía adelantarse a los manejadores registrados después (cabeceras, adblock) | Nace en `about:blank` y navega ya registrados; los avisos de `about:` se ignoran | ver git log |
+| Lector | Recargar un artículo enseñaba la original ≈0,5 s (`should_hold_reader` descarta el mismo documento) y las pestañas nuevas dejaban un hueco antes de la piel | `reload()` y `create_webview` levantan la piel antes | ver git log |
