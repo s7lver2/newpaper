@@ -20,12 +20,43 @@ pub fn on_ac_power() -> bool {
     unsafe { GetSystemPowerStatus(&mut st) }.is_ok() && st.ACLineStatus == 1
 }
 
-#[cfg(not(windows))]
+/// Linux: NetworkManager dice si la conexión principal es Wi-Fi. Sin D-Bus o sin NetworkManager, `true`
+/// (la edición se construye: es lo que hacía antes el portado).
+#[cfg(target_os = "linux")]
+pub fn on_wifi() -> bool {
+    dbus_property("org.freedesktop.NetworkManager", "/org/freedesktop/NetworkManager", "org.freedesktop.NetworkManager", "PrimaryConnectionType")
+        .map_or(true, |t| t == "802-11-wireless")
+}
+
+/// Linux: UPower dice si el equipo funciona con batería. Sin D-Bus o sin UPower, `true`.
+#[cfg(target_os = "linux")]
+pub fn on_ac_power() -> bool {
+    dbus_property("org.freedesktop.UPower", "/org/freedesktop/UPower", "org.freedesktop.UPower", "OnBattery")
+        .map_or(true, |on_battery| on_battery == "false")
+}
+
+/// Lee una propiedad D-Bus del bus del sistema como texto (`true`/`false` para booleanos).
+#[cfg(target_os = "linux")]
+fn dbus_property(dest: &str, path: &str, iface: &str, prop: &str) -> Option<String> {
+    use zbus::zvariant::OwnedValue;
+    let conn = zbus::blocking::Connection::system().ok()?;
+    let proxy = zbus::blocking::fdo::PropertiesProxy::builder(&conn)
+        .destination(dest).ok()?
+        .path(path).ok()?
+        .build().ok()?;
+    let value: OwnedValue = proxy.get(iface.try_into().ok()?, prop).ok()?;
+    if let Ok(s) = <&str>::try_from(&value) {
+        return Some(s.to_string());
+    }
+    bool::try_from(&value).ok().map(|b| b.to_string())
+}
+
+#[cfg(not(any(windows, target_os = "linux")))]
 pub fn on_wifi() -> bool {
     true
 }
 
-#[cfg(not(windows))]
+#[cfg(not(any(windows, target_os = "linux")))]
 pub fn on_ac_power() -> bool {
     true
 }
