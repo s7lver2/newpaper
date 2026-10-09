@@ -204,8 +204,8 @@ html[data-np-transition='on'] .np-surface { animation: np-fade .3s var(--np-ease
 .np-workspace { display: flex; flex: 1; min-height: 0; }
 .np-workspace > .np-main { flex: 1; min-width: 0; position: relative; }
 .np-side {
-  width: 380px; flex: none; border-left: 1px solid var(--np-line); background: var(--np-panel);
-  display: flex; flex-direction: column; min-height: 0; transition: width 220ms var(--np-ease);
+  width: 440px; flex: none; border-left: 1px solid var(--np-line); background: var(--np-panel);
+  display: flex; flex-direction: column; min-height: 0; transition: width .5s var(--np-ease);
 }
-.np-side--wide { width: min(640px, 55vw); }
+.np-side--wide { width: min(760px, 62vw); }
 @media (prefers-reduced-motion: reduce) { .np-side { transition: none; } }

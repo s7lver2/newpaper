@@ -21,20 +21,22 @@ describe('analysis experience', () => {
     await uiInvoke('tab_set_view', { tabId: tab.id, view: 'reader' });
     await switchToUi();
 
-    // Análisis rápido automático: aparece la insignia de neutralidad en la barra.
-    await $('.np-abtn-badge').waitForDisplayed({ timeout: 30_000 });
+    // Análisis rápido automático: aparece la nota de neutralidad en la pestaña.
+    await $('.np-tab-score').waitForDisplayed({ timeout: 30_000 });
 
-    // Análisis completo desde el lector.
-    await $('button=Analizar').click();
+    // Análisis completo desde el panel lateral («Contrastar y verificar»).
+    await $('button.np-abtn').click();
+    await $('button=Contrastar y verificar').click();
     await $('.np-claim').waitForDisplayed({ timeout: 60_000 });
     expect(await $('.np-claim-quote').getText()).toContain('ha crecido un 61 %');
     await $('mark[data-mark="c1"]').waitForExist({ timeout: 10_000 });
 
     // Sin coberturas ni fuentes primarias: flujo de hecho sin cobertura con confirmación obligatoria.
-    await $('button=Investigar de todos modos').click();
-    const confirm = await $('button=Investigar sin verificar');
-    expect(await confirm.isEnabled()).toBe(false);
-    await $('.np-consent input[type="checkbox"]').click();
+    await $('button=Investigar con IA…').click();
+    const confirm = await $('button=Generar igualmente');
+    await confirm.click();
+    await $('.np-consent-error').waitForDisplayed(); // sin la casilla no se avanza
+    await $('.np-consent [role="checkbox"]').click();
     await confirm.click();
     await $('.np-unverified').waitForDisplayed({ timeout: 30_000 });
 
@@ -51,7 +53,7 @@ describe('analysis experience', () => {
     await $('.np-seltool').waitForDisplayed({ timeout: 5_000 });
     await $('button=Preguntar').click();
     await $('#np-agent-q').setValue('¿Es una frase neutral?');
-    await $('button=Enviar').click();
+    await $('button[aria-label="Enviar"]').click();
     await browser.waitUntil(async () => (await $$('.np-agent-msg--assistant')).length > 0 && (await $('.np-agent-msg--assistant').getText()).includes('La subida es reciente'), { timeout: 30_000 });
     const reply = await $('.np-agent-msg--assistant').getText();
     expect(reply).not.toContain('[1]');

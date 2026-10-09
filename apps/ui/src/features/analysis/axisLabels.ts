@@ -11,6 +11,7 @@ export function useAxisLabels(): FramingAxisLabels {
       center: t('analysis.axis.center'),
       right: t('analysis.axis.right'),
       article: t('analysis.axis.article'),
+      me: t('analysis.axis.me'),
       band: t('analysis.axis.band'),
       groupCenter: t('analysis.axis.groupCenter'),
       notDeterminable: t('analysis.verdictText.no_determinable'),

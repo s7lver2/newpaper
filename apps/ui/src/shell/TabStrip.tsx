@@ -9,12 +9,21 @@ import { IconClose, IconList } from './icons';
 import { useViewportClamp } from './popoverClamp';
 import { useUnderlay } from './underlay';
 import { filterTabs, glyphOf, hostOf, segments } from './tabModel';
+import { tabBadge } from './registry';
 
 /** Evento que el menú contextual de la tira envía para renombrar un grupo en su rótulo. */
 export const RENAME_GROUP_EVENT = 'np-rename-group';
 
 /** Las páginas internas no tienen `<title>`: se nombran por la página («Ajustes», «La edición del día»). */
-const INTERNAL_TITLES: Record<string, string> = { ajustes: 'shell.settings', edicion: 'sources.offline.editionTitle', inicio: 'shell.tabs.new' };
+const INTERNAL_TITLES: Record<string, string> = {
+  ajustes: 'shell.settings',
+  edicion: 'sources.offline.editionTitle',
+  inicio: 'shell.tabs.new',
+  sintesis: 'synthesis.kicker',
+  hemeroteca: 'hemeroteca.kicker',
+  historial: 'history.title',
+  analisis: 'position.title',
+};
 const tabTitle = (tab: TabInfo, t: (key: string) => string): string => {
   if (tab.title) return tab.title;
   const key = tab.kind === 'internal' ? INTERNAL_TITLES[parseInternalUrl(tab.url)?.page ?? ''] : undefined;
@@ -26,6 +35,7 @@ const groupColor = (g: TabGroup): CSSProperties => ({ '--g': `var(--np-group-${g
 function TabItem({ tab, active, group }: { tab: TabInfo; active: boolean; group?: TabGroup }) {
   const t = useT();
   const title = tabTitle(tab, t);
+  const Badge = tabBadge();
   return (
     <div
       className="np-tabstrip-item"
@@ -51,6 +61,7 @@ function TabItem({ tab, active, group }: { tab: TabInfo; active: boolean; group?
             <span className={tab.loading ? 'np-pulse np-tab-dot' : 'np-tab-dot'} data-loading={tab.loading} {...(tab.loading ? { role: 'img', 'aria-label': t('shell.tabs.loading') } : { 'aria-hidden': true })} />
             <span className="np-tabstrip-title">{title}</span>
             {tab.private ? <span className="np-tab-private">{t('shell.tabs.private')}</span> : null}
+            {Badge ? <Badge tab={tab} /> : null}
           </>
         )}
       </button>

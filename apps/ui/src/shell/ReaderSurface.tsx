@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 import { useI18n } from '@newpaper/i18n/react';
 import { Button, ReaderView } from '@newpaper/ui-kit';
 import { convertFileSrc } from '@tauri-apps/api/core';
@@ -37,11 +37,22 @@ const hostOf = (url: string): string => {
   }
 };
 
-export function DefaultReader(props: ReaderSurfaceProps) {
-  return props.page.kind === 'listing' ? <ListingReader {...props} /> : <ArticleReader {...props} />;
+/** Lo que una función (p. ej. el análisis) añade al lector de artículos sin sustituirlo (conserva tamaño de texto, progreso, aviso de suscripción…). */
+export interface ReaderEnhance {
+  /** Entre la barra de acciones y el artículo. */
+  top?: ReactNode;
+  /** Sustituye al cuerpo del lector por defecto. */
+  body?: ReactNode;
+  /** Envuelve el artículo (contenedor de la selección de texto). */
+  wrap?(content: ReactNode): ReactNode;
 }
 
-function ArticleReader({ tab, page }: ReaderSurfaceProps) {
+export function DefaultReader(props: ReaderSurfaceProps & { enhance?: ReaderEnhance }) {
+  const { enhance, ...rest } = props;
+  return rest.page.kind === 'listing' ? <ListingReader {...rest} /> : <ArticleReader {...rest} enhance={enhance} />;
+}
+
+function ArticleReader({ tab, page, enhance }: ReaderSurfaceProps & { enhance?: ReaderEnhance }) {
   const { t, formatDate } = useI18n();
   const a = page;
   const [step, setStep] = useSetting<number>('reader.sizeStep', DEFAULT_STEP);
@@ -140,53 +151,58 @@ function ArticleReader({ tab, page }: ReaderSurfaceProps) {
           </>
         ) : null}
       </p>
-      <ReaderView
-        article={a}
-        rewriteImage={rewrite}
-        notice={
-          a.limited ? (
-            <aside className="np-reader-notice" role="note">
-              <IconLimited />
-              <div>
-                <strong>{t('shell.reader.limitedTitle')}</strong>
-                <p>{t('shell.reader.limitedBody')}</p>
-                <button type="button" className="np-reader-link" onClick={() => commands.tabSetView(tab.id, 'original')}>
-                  {t('shell.reader.original')}
-                </button>
-              </div>
-            </aside>
-          ) : null
-        }
-        onOpenLink={(url) => navigate(url)}
-        kicker={
-          <>
-            <span className="np-reader-mark" aria-hidden="true">{site.trim().charAt(0).toUpperCase()}</span>
-            <span>{site}</span>
-          </>
-        }
-        deck={a.excerpt}
-        meta={
-          <>
-            {byline ? <span>{t('shell.reader.byline', { name: byline })}</span> : null}
-            {published ? <time dateTime={a.published ?? undefined}>{published}</time> : null}
-            {words > 0 ? <span>{t('shell.reader.minutes', { n: minutes })}</span> : null}
-          </>
-        }
-        empty={
-          <div className="np-reader-empty">
-            <h2>{t('shell.reader.emptyTitle')}</h2>
-            <p>{t('shell.reader.emptyHint')}</p>
-            <Button onClick={() => commands.tabSetView(tab.id, 'original')}>{t('shell.reader.original')}</Button>
-          </div>
-        }
-      >
-        <footer className="np-reader-foot">
-          <span>{t('shell.reader.source', { host: hostOf(a.url) })}</span>
-          <button type="button" className="np-reader-link" onClick={() => commands.tabSetView(tab.id, 'original')}>
-            {t('shell.reader.original')}
-          </button>
-        </footer>
-      </ReaderView>
+      {enhance?.top}
+      {(enhance?.wrap ?? ((c: ReactNode) => c))(
+        enhance?.body ?? (
+        <ReaderView
+          article={a}
+          rewriteImage={rewrite}
+          notice={
+            a.limited ? (
+              <aside className="np-reader-notice" role="note">
+                <IconLimited />
+                <div>
+                  <strong>{t('shell.reader.limitedTitle')}</strong>
+                  <p>{t('shell.reader.limitedBody')}</p>
+                  <button type="button" className="np-reader-link" onClick={() => commands.tabSetView(tab.id, 'original')}>
+                    {t('shell.reader.original')}
+                  </button>
+                </div>
+              </aside>
+            ) : null
+          }
+          onOpenLink={(url) => navigate(url)}
+          kicker={
+            <>
+              <span className="np-reader-mark" aria-hidden="true">{site.trim().charAt(0).toUpperCase()}</span>
+              <span>{site}</span>
+            </>
+          }
+          deck={a.excerpt}
+          meta={
+            <>
+              {byline ? <span>{t('shell.reader.byline', { name: byline })}</span> : null}
+              {published ? <time dateTime={a.published ?? undefined}>{published}</time> : null}
+              {words > 0 ? <span>{t('shell.reader.minutes', { n: minutes })}</span> : null}
+            </>
+          }
+          empty={
+            <div className="np-reader-empty">
+              <h2>{t('shell.reader.emptyTitle')}</h2>
+              <p>{t('shell.reader.emptyHint')}</p>
+              <Button onClick={() => commands.tabSetView(tab.id, 'original')}>{t('shell.reader.original')}</Button>
+            </div>
+          }
+        >
+          <footer className="np-reader-foot">
+            <span>{t('shell.reader.source', { host: hostOf(a.url) })}</span>
+            <button type="button" className="np-reader-link" onClick={() => commands.tabSetView(tab.id, 'original')}>
+              {t('shell.reader.original')}
+            </button>
+          </footer>
+        </ReaderView>
+        ),
+      )}
     </div>
   );
 }

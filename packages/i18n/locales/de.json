@@ -444,12 +444,14 @@
     "actions": {
       "analyze": "Analysieren",
       "full": "Vollständige Analyse starten",
-      "synthesis": "Neutrale Fassung ansehen",
-      "hemeroteca": "Änderungen ansehen"
+      "synthesis": "Neutrale Fassung lesen",
+      "hemeroteca": "Änderungen ansehen",
+      "verify": "Gegenprüfen und verifizieren"
     },
     "lens": {
       "toggle": "Bias-Linse",
-      "loaded": "Wertende Formulierung"
+      "loaded": "Wertende Formulierung",
+      "hint": "Markiere eine beliebige Stelle im Text oder klicke mit rechts, um den Agenten danach zu fragen."
     },
     "selection": {
       "label": "Den Agenten zur Auswahl fragen",
@@ -478,7 +480,10 @@
       "right": "rechts",
       "article": "dieser Artikel",
       "band": "Unsicherheitsband",
-      "groupCenter": "Mitte der Gruppe"
+      "groupCenter": "Mitte der Gruppe",
+      "title": "Rahmung im Vergleich zu {n, plural, one {# Bericht} other {# Berichten}}",
+      "titleNone": "Rahmung",
+      "me": "dieser"
     },
     "verdictText": {
       "neutral": "Neutral",
@@ -501,16 +506,25 @@
     },
     "loadedCount": "{n, plural, one {# wertende Formulierung im Text} other {# wertende Formulierungen im Text}}",
     "ai": {
-      "title": "Möglicherweise KI-generierter Text",
+      "title": "Möglicherweise mit KI erzeugter oder bearbeiteter Text",
       "probability": "Wahrscheinlichkeit für generierten Text: {value}",
-      "disclaimer": "Ein Hinweis, kein Beweis.",
+      "disclaimer": "KI-Detektoren irren sich oft, vor allem bei kurzen oder stark bearbeiteten Texten. Nimm es als Hinweis, genauer zu lesen, nie als Beweis.",
       "signal": {
         "burstiness": "Gleichförmiger Satzrhythmus",
         "templates": "Floskeln",
         "repetition": "Wiederholte Satzanfänge",
         "c2pa": "Bilder ohne Inhaltsnachweis",
         "llm": "Urteil eines Modells"
-      }
+      },
+      "summary": "{n} von {total} Absätzen · Wahrscheinlichkeit {value} · am Rand markiert",
+      "row": "KI-Urheberschaft wahrscheinlich in {n} von {total} Absätzen",
+      "level": {
+        "high": "hoch",
+        "medium": "mittel",
+        "low": "niedrig"
+      },
+      "toggle": "Details des KI-Detektors anzeigen",
+      "badge": "KI"
     },
     "stagesLabel": "Analyseschritte",
     "stage": {
@@ -531,6 +545,35 @@
       "cached": "zwischengespeichert",
       "failed": "fehlgeschlagen",
       "skipped": "kein Modell"
+    },
+    "outlet": "Medium: {side} · {value} ± {uncertainty}",
+    "note": {
+      "quick": "Nur die Sprache wurde gelesen. Noch nicht gegengeprüft.",
+      "full": "{verified} von {total} Aussagen verifiziert.",
+      "noClaims": "Keine Aussagen zum Gegenprüfen gefunden."
+    },
+    "tier": {
+      "quick": "Schnell",
+      "full": "Vollständig",
+      "local": "lokal",
+      "coverages": "{n, plural, one {# Bericht} other {# Berichte}}",
+      "sources": "{n, plural, one {# Quelle} other {# Quellen}}"
+    },
+    "metrics": {
+      "loaded": "wertende Formulierungen",
+      "voices": "zitierte Stimmen",
+      "figures": "genaue Zahlen",
+      "omissions": "Auslassungen"
+    },
+    "hemeroteca": {
+      "row": "Mit früheren Fassungen des Textes vergleichen",
+      "open": "Archiv →"
+    },
+    "claim": {
+      "ask": "Fragen",
+      "pending": "Noch nicht verifiziert",
+      "pendingDetail": "Wird beim Gegenprüfen verifiziert.",
+      "noSource": "Keine passende Quelle"
     }
   },
   "agent": {
@@ -565,7 +608,16 @@
     "openVideo": "Video in der Quelle ansehen",
     "mediaNote": "Originalbilder der zitierten Quellen, niemals generiert.",
     "noModel": "Dem Agenten ist kein Modell zugewiesen. Verbinde eines unter Einstellungen › KI oder nutze ein lokales Modell.",
-    "error": "Der Agent konnte nicht antworten: {message}"
+    "error": "Der Agent konnte nicht antworten: {message}",
+    "emptyTitle": "Frag, was du über diese Nachricht wissen willst",
+    "emptyBody": "Der Agent liest den Artikel, {coverages, plural, one {den Bericht} other {die # Berichte}} und die Primärquellen. Er belegt alles, was er sagt. Markiere eine Textstelle, um nur danach zu fragen.",
+    "fragment": "Textstelle",
+    "steps": "{steps, plural, one {# Schritt} other {# Schritte}} · {sources, plural, one {# Quelle} other {# Quellen}}",
+    "thinking": "Denkt nach…",
+    "placeholderFragment": "Frag zur Textstelle…",
+    "placeholderVerify": "Füge eine Aussage zum Verifizieren ein",
+    "placeholderExplain": "Was soll ich erklären?",
+    "placeholderAsk": "Frag, was du über die Nachricht wissen willst"
   },
   "charts": {
     "sources": "Quellen:",
@@ -611,11 +663,13 @@
     },
     "leanTitle": "Gemessene redaktionelle Linie des Mediums (0 links – 100 rechts)",
     "leanUnknown": "nicht gemessen",
-    "howMeasured": "Wie die Linie jedes Mediums gemessen wird"
+    "howMeasured": "Wie die Linie jedes Mediums gemessen wird",
+    "intro": "So titelt jedes Medium dasselbe Ereignis:",
+    "thisOne": "dieser"
   },
   "position": {
     "title": "Warum diese Position?",
-    "back": "Zurück zur Analyse",
+    "back": "Analyse-Leiste",
     "none": "Es wurde noch keine Position berechnet.",
     "intro": "Gemessen wird am Text, nie am Ruf des Mediums. Das Modell liest den anonymisierten Artikel und vergleicht ihn mit den anderen Berichten über dasselbe Ereignis.",
     "blind": "Blindlesung: Medium verborgen",
@@ -624,12 +678,12 @@
     "signalsHint": "Jedes mit einem Zitat aus dem Text als Beleg. Ohne Zitat zählt das Signal nicht.",
     "signal": {
       "lexico": "Wortwahl",
-      "encuadre": "Rahmung",
+      "encuadre": "Rahmung des Themas",
       "voces": "Zitierte Stimmen",
-      "atribucion": "Zuschreibende Verben",
-      "adjetivacion": "Adjektive",
-      "omision": "Auslassungen",
-      "orden": "Reihenfolge und Schlagzeile"
+      "atribucion": "Asymmetrie der Zuschreibung",
+      "adjetivacion": "Adjektive und emotionale Aufladung",
+      "omision": "Auswahl und Auslassung",
+      "orden": "Reihenfolge und Überschrift"
     },
     "voices": "Stimmen",
     "voice": "{name}: {quotes, plural, one {# Zitat} other {# Zitate}}",
@@ -650,33 +704,111 @@
     "mirrorRunning": "Wird geprüft…",
     "mirrorResult": "Original {a} · Spiegel {b}.",
     "mirrorOk": "Symmetrisch",
-    "mirrorBad": "Asymmetrisch: Prüfe das zugewiesene Modell"
+    "mirrorBad": "Asymmetrisch: Prüfe das zugewiesene Modell",
+    "docBlind": "Dokument A · anonymisiert · {n, plural, =0 {keine weiteren Berichte} one {# Bericht} other {# Berichte}} zum selben Ereignis",
+    "docOpen": "{outlet} · Namen nur für dich sichtbar",
+    "blindOn": "Medien als Dok. A–{last}, so wie das Modell sie sah",
+    "blindOff": "Das Modell hat diese Namen nie gesehen",
+    "relativeTitle": "Position im Verhältnis zur Berichterstattung über dasselbe Ereignis",
+    "verdict": {
+      "left": "Weiter links als die Gruppe",
+      "right": "Weiter rechts als die Gruppe",
+      "center": "Nahe der Mitte der Gruppe",
+      "none": "Nicht bestimmbar"
+    },
+    "groupCenter": "Mitte der Gruppe",
+    "thisOne": "{doc} · dieser",
+    "legend": {
+      "me": "dieser Artikel",
+      "band": "Unsicherheitsband",
+      "others": "{n, plural, one {ein weiterer Bericht, ebenfalls anonymisiert} other {# weitere Berichte, ebenfalls anonymisiert}}"
+    },
+    "signalsLeft": "← links",
+    "signalsRight": "rechts →",
+    "signalDesc": {
+      "lexico": "Begriffe, die ein Lager überproportional nutzt",
+      "encuadre": "Wirtschaftlich, moralisch, Konflikt, Rechte…",
+      "voces": "Wer spricht und wer das letzte Wort hat",
+      "atribucion": "Verben, die den Sprecher bewerten",
+      "adjetivacion": "Wertende Adjektive und Übertreibungen",
+      "omision": "Fakten, die andere Berichte nennen und dieser nicht",
+      "orden": "Was hervorgehoben wird und was am Ende bleibt"
+    },
+    "signalFoot": {
+      "lexico": "Quelle: kalibriertes Lexikon. Ein vom Modell unabhängiges Signal.",
+      "encuadre": "KI-Richter mit geschlossenem Raster und Ankerbeispielen von beiden Seiten.",
+      "voces": "Automatische Zählung direkter und indirekter Zitate.",
+      "atribucion": "„prangert an“, „warnt“, „droht“ gegenüber „sagt“, „erklärt“.",
+      "adjetivacion": "Dichte im Vergleich zum Gruppendurchschnitt.",
+      "omision": "Zählt nur, was die Mehrheit der Gruppe nennt und verifiziert ist.",
+      "orden": "Position jedes Akteurs in Überschrift, Einstieg und Schluss."
+    },
+    "noEvidence": "Keine zitierte Evidenz: Dieses Signal zählt nicht.",
+    "omittedBy": "von anderen Berichten genannt",
+    "lexiconKicker": "Vom Modell unabhängiges Signal",
+    "lexiconNone": "Dieser Text enthält keine Ausdrücke des kalibrierten Lexikons.",
+    "lexiconInsufficient": "Der Text ist zu kurz, um das Lexikon zu messen.",
+    "lexiconUnavailable": "Das Lexikon für diese Sprache ist nicht verfügbar.",
+    "confidenceHigh": "Hoch · {value}",
+    "confidenceLow": "Niedrig · {value}",
+    "confidenceNone": "Nicht bestimmbar",
+    "confidenceNoteOk": "{n, plural, one {# Signal mit zitierter Evidenz.} other {# Signale mit zitierter Evidenz.}}",
+    "confidenceNoteLow": "Vertrauen {value}: schwache oder widersprüchliche Signale. Es wird kein Etikett erzwungen.",
+    "controlsHint": "Tests, damit sich das System selbst nicht zu einer Seite neigt",
+    "mirrorOriginal": "Original",
+    "mirrorMirror": "Spiegel",
+    "mirrorChipOk": "Umgekehrt",
+    "mirrorChipBad": "Asymmetrisch",
+    "mirrorStats": "Asymmetrie {gap} · Toleranz {tolerance}",
+    "judgesTitle": "Übereinstimmung zweier Modelle",
+    "judgesBody": "Derselbe Richter mit demselben Raster, ausgeführt mit zwei verschiedenen Anbietern.",
+    "judgesAgreeChip": "Sie stimmen überein",
+    "judgesDisagreeChip": "Sie weichen ab",
+    "judgesStats": "Unterschied {gap} · markiert ab {limit}",
+    "demoMissing": "Noch keine Position. Öffne die Nachricht und warte auf die Analyse.",
+    "doc": "Dok. {letter}"
   },
   "noCoverage": {
-    "title": "Kaum jemand hat darüber berichtet",
-    "body": "{outlets, plural, =0 {Kein Medium} one {Nur # Medium} other {Nur # Medien}} und keine Primärquelle. Es lässt sich nicht wie der Rest gegenprüfen.",
-    "investigate": "Trotzdem recherchieren",
-    "investigating": "Wird recherchiert…",
+    "title": "Nicht genug Berichterstattung zum Gegenprüfen",
+    "body": "{outlets, plural, =0 {Kein anderes Medium deiner Liste und keine Ersatzsuche hat dieses Ereignis veröffentlicht. Auch offizielle Quellen gibt es noch nicht.} one {Nur # Medium hat es veröffentlicht und es gibt noch keine offiziellen Quellen. Es lässt sich nicht wie der Rest gegenprüfen.} other {Nur # Medien haben es veröffentlicht und es gibt noch keine offiziellen Quellen. Es lässt sich nicht wie der Rest gegenprüfen.}}",
+    "investigate": "Mit KI recherchieren…",
+    "investigating": "Recherche ohne gegengeprüfte Quellen…",
     "watch": "Benachrichtigen, wenn berichtet wird",
-    "watching": "Wir melden uns",
+    "watching": "✓ Wir sagen Bescheid, wenn Berichte erscheinen",
     "consent": {
-      "title": "Ohne Berichterstattung recherchieren",
-      "body": "Das Ergebnis wird nicht geprüft: Es kann Fehler enthalten und stützt sich auf sehr wenige Quellen.",
-      "checkbox": "Ich verstehe, dass das Ergebnis nicht geprüft ist",
-      "confirm": "Ungeprüft recherchieren",
-      "cancel": "Abbrechen"
+      "title": "Die KI behandelt ein Ereignis, das niemand gegengeprüft hat",
+      "body": "Ohne weitere Berichte oder offizielle Quellen kann sich der Agent nur auf den Originalartikel und die wenigen gefundenen Quellen stützen. Das heißt:",
+      "checkbox": "Ich verstehe, dass das Ergebnis falsch sein kann und ich es selbst prüfen muss.",
+      "confirm": "Trotzdem erzeugen",
+      "cancel": "Abbrechen",
+      "bullet1": "Die Informationen **können falsch** oder unvollständig sein.",
+      "bullet2": "Die KI kann sich beim Zusammenfassen irren oder Details erfinden.",
+      "bullet3": "**Es wird nicht empfohlen, sie ungeprüft zu verwenden**.",
+      "error": "Setze das Häkchen, um fortzufahren."
     },
     "report": {
-      "title": "Ungeprüfter Bericht",
-      "badge": "Nicht geprüft",
-      "confidence": "Vertrauen {value}",
-      "howToCheck": "So prüfst du es selbst"
+      "title": "Was sich bisher sagen lässt",
+      "badge": "KI-generiert · ungeprüft",
+      "confidence": "Vertrauen",
+      "howToCheck": "So prüfst du es selbst",
+      "warning": "Nicht weitergeben und nicht ungeprüft für wahr halten.",
+      "level": {
+        "low": "niedrig",
+        "medium": "mittel",
+        "high": "hoch"
+      },
+      "sources": "Quellen: {n, plural, =0 {keine abgerufen} one {# Quelle} other {# Quellen}}"
     },
     "tags": {
       "fuente_unica": "Einzige Quelle",
       "solo_redes": "Nur in sozialen Netzwerken",
       "varias_no_oficiales": "Mehrere inoffizielle Quellen",
       "sin_fuente": "Ohne Quelle"
+    },
+    "stats": {
+      "coverages": "weitere Berichte",
+      "official": "offizielle Quellen",
+      "outlets": "geprüfte Medien"
     }
   },
   "synthesis": {

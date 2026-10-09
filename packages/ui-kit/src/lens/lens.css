@@ -1,13 +1,20 @@
-.np-lens { font: 19px/1.65 var(--np-font-read); color: var(--np-ink); max-width: 68ch; margin: 0 auto; }
-.np-lens p { margin: 0 0 1.1em; }
-.np-lens mark { background: none; color: inherit; border-radius: 3px; padding: 0 1px; cursor: pointer; transition: background-color 160ms var(--np-ease); }
-.np-lens mark:focus-visible { outline: 2px solid var(--np-accent); outline-offset: 2px; }
-.np-mark--ok { box-shadow: inset 0 -2px var(--np-ok); }
-.np-mark--warn { box-shadow: inset 0 -2px var(--np-warn); background: var(--np-warn-bg); }
-.np-mark--bad { box-shadow: inset 0 -2px var(--np-bad); background: var(--np-bad-bg); }
-.np-mark--accent { box-shadow: inset 0 -2px var(--np-accent); }
-.np-mark--muted { box-shadow: inset 0 -1px var(--np-faint); }
-.np-mark--ai { background: var(--np-ai-bg); }
-.np-lens-active { outline: 2px solid var(--np-accent); }
-.np-lens-ai-paragraph { border-left: 3px solid var(--np-ai); padding-left: 10px; }
-@media (prefers-reduced-motion: reduce) { .np-lens mark { transition: none; } }
+/* Lente de sesgo (mockup Main): el texto sin marcar se atenúa y cada marca lleva su color de veredicto. */
+.np-lens { font: 400 19px/1.8 var(--np-font-read); color: var(--np-dim); transition: color .9s var(--np-ease); }
+.np-lens p { position: relative; margin: 0 0 24px; }
+.np-lens p:last-child { margin-bottom: 0; }
+:where(.np-lens) mark { background: none; color: var(--np-ink); border-radius: 3px; padding: 0 1px; cursor: pointer; transition: background-color .8s var(--np-ease), box-shadow .5s var(--np-ease); }
+:where(.np-lens) mark:focus-visible { outline: 2px solid var(--np-accent); outline-offset: 2px; }
+.np-mark--ok { background: var(--np-mark-ok); }
+.np-mark--warn { background: var(--np-mark-warn); }
+.np-mark--bad { background: var(--np-mark-bad); }
+.np-mark--accent { background: var(--np-mark-muted); }
+.np-mark--muted { background: var(--np-mark-pending); }
+.np-mark--ai { background: var(--np-mark-bad); }
+.np-lens-active { box-shadow: 0 0 0 2px var(--np-ink); }
+/* Párrafo con probable texto generado: etiqueta «IA» en el margen. */
+.np-lens-ai-paragraph::before {
+  content: var(--np-ai-label, 'IA'); position: absolute; left: -42px; top: 7px; padding: 1px 5px; border: 1px solid var(--np-ai-line); border-radius: 5px;
+  background: var(--np-ai-bg); color: var(--np-ai); font: 600 10px/1.5 var(--np-font-mono); user-select: none;
+}
+@media (max-width: 760px) { .np-lens-ai-paragraph::before { left: -2px; top: -18px; } }
+@media (prefers-reduced-motion: reduce) { .np-lens, :where(.np-lens) mark { transition: none; } }

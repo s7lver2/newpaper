@@ -9,8 +9,11 @@ describe('ConsentDialog (§6.4)', () => {
   it('requires ticking the box every single time', async () => {
     const onConfirm = vi.fn();
     const { rerender } = renderWithI18n(<ConsentDialog open onConfirm={onConfirm} onCancel={() => {}} />);
-    const confirm = screen.getByRole('button', { name: 'Investigar sin verificar' });
-    expect(confirm).toBeDisabled();
+    const confirm = screen.getByRole('button', { name: 'Generar igualmente' });
+    // Sin la casilla no se avanza: el botón explica por qué en vez de quedarse mudo (mockup SinCobertura).
+    await userEvent.click(confirm);
+    expect(onConfirm).not.toHaveBeenCalled();
+    expect(screen.getByRole('alert')).toHaveTextContent('Marca la casilla para continuar.');
     await userEvent.click(screen.getByRole('checkbox'));
     await userEvent.click(confirm);
     expect(onConfirm).toHaveBeenCalledWith(true);
@@ -20,6 +23,8 @@ describe('ConsentDialog (§6.4)', () => {
     rerender(wrap(false));
     rerender(wrap(true));
     expect(screen.getByRole('checkbox')).not.toBeChecked();
-    expect(screen.getByRole('button', { name: 'Investigar sin verificar' })).toBeDisabled();
+    onConfirm.mockClear();
+    await userEvent.click(screen.getByRole('button', { name: 'Generar igualmente' }));
+    expect(onConfirm).not.toHaveBeenCalled();
   });
 });

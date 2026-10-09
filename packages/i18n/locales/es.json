@@ -444,12 +444,14 @@
     "actions": {
       "analyze": "Analizar",
       "full": "Hacer el análisis completo",
-      "synthesis": "Ver la versión neutral",
-      "hemeroteca": "Ver cómo ha cambiado"
+      "synthesis": "Leer la noticia neutral",
+      "hemeroteca": "Ver cómo ha cambiado",
+      "verify": "Contrastar y verificar"
     },
     "lens": {
       "toggle": "Lente de sesgo",
-      "loaded": "Frase cargada"
+      "loaded": "Frase cargada",
+      "hint": "Selecciona cualquier parte del texto, o haz clic derecho, para preguntar al agente por ese fragmento."
     },
     "selection": {
       "label": "Preguntar al agente sobre la selección",
@@ -478,7 +480,10 @@
       "right": "derecha",
       "article": "este artículo",
       "band": "banda de incertidumbre",
-      "groupCenter": "centro del grupo"
+      "groupCenter": "centro del grupo",
+      "title": "Encuadre frente a {n, plural, one {# cobertura} other {# coberturas}}",
+      "titleNone": "Encuadre",
+      "me": "este"
     },
     "verdictText": {
       "neutral": "Neutral",
@@ -501,16 +506,25 @@
     },
     "loadedCount": "{n, plural, one {# frase cargada en el texto} other {# frases cargadas en el texto}}",
     "ai": {
-      "title": "Posible texto generado con IA",
+      "title": "Posible texto generado o editado con IA",
       "probability": "Probabilidad de texto generado: {value}",
-      "disclaimer": "Es un indicio, no una prueba.",
+      "disclaimer": "Los detectores de IA se equivocan a menudo, sobre todo con textos cortos o muy editados. Tómalo como un indicio para leer con más cuidado, nunca como una prueba.",
       "signal": {
         "burstiness": "Ritmo uniforme de las frases",
         "templates": "Frases de plantilla",
         "repetition": "Arranques repetidos",
         "c2pa": "Imágenes sin credenciales de contenido",
         "llm": "Juicio de un modelo"
-      }
+      },
+      "summary": "{n} de {total} párrafos · probabilidad {value} · marcados al margen",
+      "row": "Autoría con IA probable en {n} de {total} párrafos",
+      "level": {
+        "high": "alta",
+        "medium": "media",
+        "low": "baja"
+      },
+      "toggle": "Mostrar el detalle del detector de IA",
+      "badge": "IA"
     },
     "stagesLabel": "Pasos del análisis",
     "stage": {
@@ -531,6 +545,35 @@
       "cached": "en caché",
       "failed": "ha fallado",
       "skipped": "sin modelo"
+    },
+    "outlet": "Medio: {side} · {value} ± {uncertainty}",
+    "note": {
+      "quick": "Solo se ha leído el lenguaje. Falta contrastar.",
+      "full": "{verified} de {total} afirmaciones verificadas.",
+      "noClaims": "No se han encontrado afirmaciones que contrastar."
+    },
+    "tier": {
+      "quick": "Rápido",
+      "full": "Completo",
+      "local": "local",
+      "coverages": "{n, plural, one {# cobertura} other {# coberturas}}",
+      "sources": "{n, plural, one {# fuente} other {# fuentes}}"
+    },
+    "metrics": {
+      "loaded": "frases cargadas",
+      "voices": "voces citadas",
+      "figures": "datos exactos",
+      "omissions": "omisiones"
+    },
+    "hemeroteca": {
+      "row": "Compara con las versiones anteriores del texto",
+      "open": "Hemeroteca →"
+    },
+    "claim": {
+      "ask": "Preguntar",
+      "pending": "Pendiente de verificar",
+      "pendingDetail": "Se verificará al contrastar.",
+      "noSource": "Sin fuente aplicable"
     }
   },
   "agent": {
@@ -565,7 +608,16 @@
     "openVideo": "Ver el vídeo en la fuente",
     "mediaNote": "Imágenes originales de las fuentes citadas, nunca generadas.",
     "noModel": "No hay ningún modelo asignado al agente. Conecta uno en Ajustes › IA o usa un modelo local.",
-    "error": "El agente no ha podido responder: {message}"
+    "error": "El agente no ha podido responder: {message}",
+    "emptyTitle": "Pregunta lo que quieras sobre esta noticia",
+    "emptyBody": "El agente lee el artículo, {coverages, plural, one {la cobertura} other {las # coberturas}} y las fuentes primarias. Cita todo lo que dice. Selecciona un fragmento del texto para preguntar solo por él.",
+    "fragment": "Fragmento",
+    "steps": "{steps, plural, one {# paso} other {# pasos}} · {sources, plural, one {# fuente} other {# fuentes}}",
+    "thinking": "Pensando…",
+    "placeholderFragment": "Pregunta sobre el fragmento…",
+    "placeholderVerify": "Pega una afirmación para verificar",
+    "placeholderExplain": "¿Qué quieres que te explique?",
+    "placeholderAsk": "Pregunta lo que quieras sobre la noticia"
   },
   "charts": {
     "sources": "Fuentes:",
@@ -611,11 +663,13 @@
     },
     "leanTitle": "Línea editorial medida del medio (0 izquierda – 100 derecha)",
     "leanUnknown": "sin medir",
-    "howMeasured": "Cómo se mide la línea de cada medio"
+    "howMeasured": "Cómo se mide la línea de cada medio",
+    "intro": "Así titula cada medio el mismo hecho:",
+    "thisOne": "este"
   },
   "position": {
     "title": "¿Por qué esta posición?",
-    "back": "Volver al análisis",
+    "back": "Panel de análisis",
     "none": "Todavía no hay una posición calculada.",
     "intro": "Se mide desde el texto, nunca desde la fama del medio. El modelo lee el artículo anonimizado y lo compara con las otras coberturas del mismo hecho.",
     "blind": "Lectura ciega: medio oculto",
@@ -623,12 +677,12 @@
     "signals": "Señales",
     "signalsHint": "Cada una con su evidencia citada del texto. Sin cita, la señal no cuenta.",
     "signal": {
-      "lexico": "Léxico",
-      "encuadre": "Encuadre",
+      "lexico": "Elección léxica",
+      "encuadre": "Encuadre del tema",
       "voces": "Voces citadas",
-      "atribucion": "Verbos de atribución",
-      "adjetivacion": "Adjetivación",
-      "omision": "Omisiones",
+      "atribucion": "Asimetría de atribución",
+      "adjetivacion": "Adjetivación y carga emocional",
+      "omision": "Selección y omisión",
       "orden": "Orden y titular"
     },
     "voices": "Voces",
@@ -650,33 +704,111 @@
     "mirrorRunning": "Comprobando…",
     "mirrorResult": "Original {a} · espejo {b}.",
     "mirrorOk": "Simétrica",
-    "mirrorBad": "Asimétrica: revisa el modelo asignado"
+    "mirrorBad": "Asimétrica: revisa el modelo asignado",
+    "docBlind": "Documento A · anonimizado · {n, plural, =0 {sin otras coberturas} one {# cobertura} other {# coberturas}} del mismo hecho",
+    "docOpen": "{outlet} · nombres visibles solo para ti",
+    "blindOn": "Medios como Doc. A–{last}, igual que los vio el modelo",
+    "blindOff": "El modelo nunca vio estos nombres",
+    "relativeTitle": "Posición relativa a la cobertura del mismo hecho",
+    "verdict": {
+      "left": "Más a la izquierda que el grupo",
+      "right": "Más a la derecha que el grupo",
+      "center": "Cerca del centro del grupo",
+      "none": "No determinable"
+    },
+    "groupCenter": "centro del grupo",
+    "thisOne": "{doc} · este",
+    "legend": {
+      "me": "este artículo",
+      "band": "banda de incertidumbre",
+      "others": "{n, plural, one {otra cobertura, también anonimizada} other {otras # coberturas, también anonimizadas}}"
+    },
+    "signalsLeft": "← izquierda",
+    "signalsRight": "derecha →",
+    "signalDesc": {
+      "lexico": "Términos que un bloque usa de forma desproporcionada",
+      "encuadre": "Económico, moral, de conflicto, de derechos…",
+      "voces": "Quién habla y quién tiene la última palabra",
+      "atribucion": "Verbos que valoran a quien habla",
+      "adjetivacion": "Adjetivos valorativos e hipérboles",
+      "omision": "Datos que dan otras coberturas y esta no",
+      "orden": "Qué se destaca y qué queda al final"
+    },
+    "signalFoot": {
+      "lexico": "Fuente: léxico calibrado. Es una señal independiente del modelo.",
+      "encuadre": "Juez de IA con rúbrica cerrada y ejemplos ancla de ambos lados.",
+      "voces": "Recuento automático de citas directas e indirectas.",
+      "atribucion": "«denuncia», «alerta», «amenaza» frente a «dice», «afirma».",
+      "adjetivacion": "Densidad comparada con la media del grupo.",
+      "omision": "Solo cuenta lo que da la mayoría del grupo y está verificado.",
+      "orden": "Posición de cada actor en titular, entradilla y cierre."
+    },
+    "noEvidence": "Sin evidencia citada: esta señal no cuenta.",
+    "omittedBy": "lo dan otras coberturas",
+    "lexiconKicker": "Señal independiente del modelo",
+    "lexiconNone": "Este texto no contiene expresiones del léxico calibrado.",
+    "lexiconInsufficient": "El texto es demasiado corto para medir el léxico.",
+    "lexiconUnavailable": "El léxico de este idioma no está disponible.",
+    "confidenceHigh": "Alta · {value}",
+    "confidenceLow": "Baja · {value}",
+    "confidenceNone": "No determinable",
+    "confidenceNoteOk": "{n, plural, one {# señal con evidencia citada.} other {# señales con evidencia citada.}}",
+    "confidenceNoteLow": "Confianza {value}: señales débiles o contradictorias. No se fuerza una etiqueta.",
+    "controlsHint": "Pruebas para que el propio sistema no se incline hacia un lado",
+    "mirrorOriginal": "Original",
+    "mirrorMirror": "Espejo",
+    "mirrorChipOk": "Invertido",
+    "mirrorChipBad": "Asimétrico",
+    "mirrorStats": "asimetría {gap} · tolerancia {tolerance}",
+    "judgesTitle": "Concordancia entre 2 modelos",
+    "judgesBody": "El mismo juez, con la misma rúbrica, ejecutado con dos proveedores distintos.",
+    "judgesAgreeChip": "Concuerdan",
+    "judgesDisagreeChip": "No concuerdan",
+    "judgesStats": "diferencia {gap} · se marca si supera {limit}",
+    "demoMissing": "No hay posición todavía. Abre la noticia y espera al análisis.",
+    "doc": "Doc. {letter}"
   },
   "noCoverage": {
-    "title": "Casi nadie ha contado esto",
-    "body": "{outlets, plural, =0 {Ningún medio} one {Solo # medio} other {Solo # medios}} y ninguna fuente primaria. No se puede contrastar como el resto.",
-    "investigate": "Investigar de todos modos",
-    "investigating": "Investigando…",
+    "title": "No hay suficiente cobertura para contrastar",
+    "body": "{outlets, plural, =0 {Ningún otro medio de tu lista ni la búsqueda de respaldo han publicado este hecho. Tampoco hay fuentes oficiales todavía.} one {Solo # medio lo ha publicado y no hay fuentes oficiales todavía. No se puede contrastar como el resto.} other {Solo # medios lo han publicado y no hay fuentes oficiales todavía. No se puede contrastar como el resto.}}",
+    "investigate": "Investigar con IA…",
+    "investigating": "Investigando sin fuentes contrastadas…",
     "watch": "Avisarme cuando haya cobertura",
-    "watching": "Te avisaremos",
+    "watching": "✓ Te avisaremos si aparece cobertura",
     "consent": {
-      "title": "Investigar sin cobertura",
-      "body": "El resultado no estará verificado: puede contener errores y se basa en muy pocas fuentes.",
-      "checkbox": "Entiendo que el resultado no está verificado",
-      "confirm": "Investigar sin verificar",
-      "cancel": "Cancelar"
+      "title": "La IA va a cubrir un hecho que nadie ha contrastado",
+      "body": "Sin otras coberturas ni fuentes oficiales, el agente solo podrá apoyarse en el artículo original y en las pocas fuentes que encuentre. Eso significa que:",
+      "checkbox": "Entiendo que el resultado puede ser incorrecto y que debo contrastarlo manualmente.",
+      "confirm": "Generar igualmente",
+      "cancel": "Cancelar",
+      "bullet1": "La información **puede no ser correcta** o estar incompleta.",
+      "bullet2": "La IA puede equivocarse al resumir o inventar detalles.",
+      "bullet3": "**No se recomienda usarla sin contrastarla tú** antes.",
+      "error": "Marca la casilla para continuar."
     },
     "report": {
-      "title": "Informe sin verificar",
-      "badge": "No verificado",
-      "confidence": "Confianza {value}",
-      "howToCheck": "Cómo comprobarlo tú"
+      "title": "Lo que se puede decir hasta ahora",
+      "badge": "Generado por IA · sin contrastar",
+      "confidence": "Confianza",
+      "howToCheck": "Cómo comprobarlo tú",
+      "warning": "No lo compartas ni lo tomes como cierto sin comprobarlo.",
+      "level": {
+        "low": "baja",
+        "medium": "media",
+        "high": "alta"
+      },
+      "sources": "Fuentes: {n, plural, =0 {ninguna recuperada} one {# fuente} other {# fuentes}}"
     },
     "tags": {
       "fuente_unica": "Fuente única",
       "solo_redes": "Solo en redes",
       "varias_no_oficiales": "Varias fuentes no oficiales",
       "sin_fuente": "Sin fuente"
+    },
+    "stats": {
+      "coverages": "otras coberturas",
+      "official": "fuentes oficiales",
+      "outlets": "medios revisados"
     }
   },
   "synthesis": {

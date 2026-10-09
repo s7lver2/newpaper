@@ -444,12 +444,14 @@
     "actions": {
       "analyze": "Analyse",
       "full": "Run the full analysis",
-      "synthesis": "See the neutral version",
-      "hemeroteca": "See how it changed"
+      "synthesis": "Read the neutral version",
+      "hemeroteca": "See how it changed",
+      "verify": "Cross-check and verify"
     },
     "lens": {
       "toggle": "Bias lens",
-      "loaded": "Loaded phrase"
+      "loaded": "Loaded phrase",
+      "hint": "Select any part of the text, or right-click, to ask the agent about that passage."
     },
     "selection": {
       "label": "Ask the agent about the selection",
@@ -478,7 +480,10 @@
       "right": "right",
       "article": "this article",
       "band": "uncertainty band",
-      "groupCenter": "group centre"
+      "groupCenter": "group centre",
+      "title": "Framing against {n, plural, one {# coverage} other {# coverages}}",
+      "titleNone": "Framing",
+      "me": "this one"
     },
     "verdictText": {
       "neutral": "Neutral",
@@ -501,16 +506,25 @@
     },
     "loadedCount": "{n, plural, one {# loaded phrase in the text} other {# loaded phrases in the text}}",
     "ai": {
-      "title": "Possible AI-generated text",
+      "title": "Possibly AI-generated or AI-edited text",
       "probability": "Probability of generated text: {value}",
-      "disclaimer": "This is a hint, not proof.",
+      "disclaimer": "AI detectors are often wrong, especially with short or heavily edited texts. Take it as a hint to read more carefully, never as proof.",
       "signal": {
         "burstiness": "Uniform sentence rhythm",
         "templates": "Template phrases",
         "repetition": "Repeated openings",
         "c2pa": "Images without content credentials",
         "llm": "A model’s judgement"
-      }
+      },
+      "summary": "{n} of {total} paragraphs · probability {value} · marked in the margin",
+      "row": "AI authorship likely in {n} of {total} paragraphs",
+      "level": {
+        "high": "high",
+        "medium": "medium",
+        "low": "low"
+      },
+      "toggle": "Show the AI detector details",
+      "badge": "AI"
     },
     "stagesLabel": "Analysis steps",
     "stage": {
@@ -531,6 +545,35 @@
       "cached": "cached",
       "failed": "failed",
       "skipped": "no model"
+    },
+    "outlet": "Outlet: {side} · {value} ± {uncertainty}",
+    "note": {
+      "quick": "Only the language was read. Not cross-checked yet.",
+      "full": "{verified} of {total} claims verified.",
+      "noClaims": "No claims to cross-check were found."
+    },
+    "tier": {
+      "quick": "Quick",
+      "full": "Full",
+      "local": "local",
+      "coverages": "{n, plural, one {# coverage} other {# coverages}}",
+      "sources": "{n, plural, one {# source} other {# sources}}"
+    },
+    "metrics": {
+      "loaded": "loaded phrases",
+      "voices": "voices quoted",
+      "figures": "exact figures",
+      "omissions": "omissions"
+    },
+    "hemeroteca": {
+      "row": "Compare with earlier versions of the text",
+      "open": "Archive →"
+    },
+    "claim": {
+      "ask": "Ask",
+      "pending": "Waiting to be verified",
+      "pendingDetail": "It will be checked when you cross-check.",
+      "noSource": "No applicable source"
     }
   },
   "agent": {
@@ -565,7 +608,16 @@
     "openVideo": "Watch the video at the source",
     "mediaNote": "Original images from the cited sources, never generated.",
     "noModel": "No model is assigned to the agent. Connect one in Settings › AI or use a local model.",
-    "error": "The agent could not answer: {message}"
+    "error": "The agent could not answer: {message}",
+    "emptyTitle": "Ask anything about this story",
+    "emptyBody": "The agent reads the article, {coverages, plural, one {the coverage} other {the # coverages}} and the primary sources. It cites everything it says. Select a passage of the text to ask only about it.",
+    "fragment": "Passage",
+    "steps": "{steps, plural, one {# step} other {# steps}} · {sources, plural, one {# source} other {# sources}}",
+    "thinking": "Thinking…",
+    "placeholderFragment": "Ask about the passage…",
+    "placeholderVerify": "Paste a claim to verify",
+    "placeholderExplain": "What should I explain?",
+    "placeholderAsk": "Ask anything about the story"
   },
   "charts": {
     "sources": "Sources:",
@@ -611,11 +663,13 @@
     },
     "leanTitle": "Measured editorial line of the outlet (0 left – 100 right)",
     "leanUnknown": "not measured",
-    "howMeasured": "How each outlet’s line is measured"
+    "howMeasured": "How each outlet’s line is measured",
+    "intro": "How each outlet headlines the same event:",
+    "thisOne": "this one"
   },
   "position": {
     "title": "Why this position?",
-    "back": "Back to the analysis",
+    "back": "Analysis panel",
     "none": "No position has been computed yet.",
     "intro": "It is measured from the text, never from the outlet’s reputation. The model reads the anonymised article and compares it with the other coverage of the same event.",
     "blind": "Blind reading: outlet hidden",
@@ -623,12 +677,12 @@
     "signals": "Signals",
     "signalsHint": "Each one quotes its evidence from the text. Without a quote, a signal does not count.",
     "signal": {
-      "lexico": "Vocabulary",
-      "encuadre": "Framing",
-      "voces": "Quoted voices",
-      "atribucion": "Attribution verbs",
-      "adjetivacion": "Adjectives",
-      "omision": "Omissions",
+      "lexico": "Word choice",
+      "encuadre": "Topic framing",
+      "voces": "Voices quoted",
+      "atribucion": "Attribution asymmetry",
+      "adjetivacion": "Adjectives and emotional charge",
+      "omision": "Selection and omission",
       "orden": "Order and headline"
     },
     "voices": "Voices",
@@ -650,33 +704,111 @@
     "mirrorRunning": "Checking…",
     "mirrorResult": "Original {a} · mirror {b}.",
     "mirrorOk": "Symmetric",
-    "mirrorBad": "Asymmetric: review the assigned model"
+    "mirrorBad": "Asymmetric: review the assigned model",
+    "docBlind": "Document A · anonymised · {n, plural, =0 {no other coverage} one {# coverage} other {# coverages}} of the same event",
+    "docOpen": "{outlet} · names visible only to you",
+    "blindOn": "Outlets as Doc. A–{last}, as the model saw them",
+    "blindOff": "The model never saw these names",
+    "relativeTitle": "Position relative to the coverage of the same event",
+    "verdict": {
+      "left": "Further left than the group",
+      "right": "Further right than the group",
+      "center": "Close to the group centre",
+      "none": "Not determinable"
+    },
+    "groupCenter": "group centre",
+    "thisOne": "{doc} · this one",
+    "legend": {
+      "me": "this article",
+      "band": "uncertainty band",
+      "others": "{n, plural, one {another coverage, also anonymised} other {# other coverages, also anonymised}}"
+    },
+    "signalsLeft": "← left",
+    "signalsRight": "right →",
+    "signalDesc": {
+      "lexico": "Terms one bloc uses disproportionately",
+      "encuadre": "Economic, moral, conflict, rights…",
+      "voces": "Who speaks and who gets the last word",
+      "atribucion": "Verbs that judge the speaker",
+      "adjetivacion": "Judgemental adjectives and hyperbole",
+      "omision": "Facts other coverages give and this one does not",
+      "orden": "What is highlighted and what is left for the end"
+    },
+    "signalFoot": {
+      "lexico": "Source: calibrated lexicon. A signal independent of the model.",
+      "encuadre": "AI judge with a closed rubric and anchor examples from both sides.",
+      "voces": "Automatic count of direct and indirect quotes.",
+      "atribucion": "“denounces”, “warns”, “threatens” versus “says”, “states”.",
+      "adjetivacion": "Density compared with the group average.",
+      "omision": "Only counts what most of the group gives and is verified.",
+      "orden": "Position of each actor in headline, lead and ending."
+    },
+    "noEvidence": "No quoted evidence: this signal does not count.",
+    "omittedBy": "given by other coverages",
+    "lexiconKicker": "Signal independent of the model",
+    "lexiconNone": "This text contains no expressions from the calibrated lexicon.",
+    "lexiconInsufficient": "The text is too short to measure the lexicon.",
+    "lexiconUnavailable": "The lexicon for this language is not available.",
+    "confidenceHigh": "High · {value}",
+    "confidenceLow": "Low · {value}",
+    "confidenceNone": "Not determinable",
+    "confidenceNoteOk": "{n, plural, one {# signal with quoted evidence.} other {# signals with quoted evidence.}}",
+    "confidenceNoteLow": "Confidence {value}: weak or contradictory signals. No label is forced.",
+    "controlsHint": "Tests so the system itself does not lean to one side",
+    "mirrorOriginal": "Original",
+    "mirrorMirror": "Mirror",
+    "mirrorChipOk": "Inverted",
+    "mirrorChipBad": "Asymmetric",
+    "mirrorStats": "asymmetry {gap} · tolerance {tolerance}",
+    "judgesTitle": "Agreement between 2 models",
+    "judgesBody": "The same judge, with the same rubric, run with two different providers.",
+    "judgesAgreeChip": "They agree",
+    "judgesDisagreeChip": "They disagree",
+    "judgesStats": "difference {gap} · flagged above {limit}",
+    "demoMissing": "There is no position yet. Open the story and wait for the analysis.",
+    "doc": "Doc. {letter}"
   },
   "noCoverage": {
-    "title": "Almost nobody has reported this",
-    "body": "{outlets, plural, =0 {No outlet} one {Only # outlet} other {Only # outlets}} and no primary source. It cannot be cross-checked like the rest.",
-    "investigate": "Investigate anyway",
-    "investigating": "Investigating…",
+    "title": "Not enough coverage to cross-check",
+    "body": "{outlets, plural, =0 {No other outlet on your list, and no fallback search, has published this event. There are no official sources yet either.} one {Only # outlet has published it and there are no official sources yet. It cannot be cross-checked like the rest.} other {Only # outlets have published it and there are no official sources yet. It cannot be cross-checked like the rest.}}",
+    "investigate": "Investigate with AI…",
+    "investigating": "Investigating without cross-checked sources…",
     "watch": "Tell me when there is coverage",
-    "watching": "We will let you know",
+    "watching": "✓ We will tell you if coverage appears",
     "consent": {
-      "title": "Investigate without coverage",
-      "body": "The result will not be verified: it may contain mistakes and relies on very few sources.",
-      "checkbox": "I understand the result is not verified",
-      "confirm": "Investigate unverified",
-      "cancel": "Cancel"
+      "title": "The AI is about to cover an event nobody has cross-checked",
+      "body": "Without other coverage or official sources, the agent can only rely on the original article and the few sources it finds. That means:",
+      "checkbox": "I understand the result may be wrong and that I must check it manually.",
+      "confirm": "Generate anyway",
+      "cancel": "Cancel",
+      "bullet1": "The information **may be wrong** or incomplete.",
+      "bullet2": "The AI may make mistakes when summarising or invent details.",
+      "bullet3": "**It is not recommended to use it without checking it yourself** first.",
+      "error": "Tick the box to continue."
     },
     "report": {
-      "title": "Unverified report",
-      "badge": "Not verified",
-      "confidence": "Confidence {value}",
-      "howToCheck": "How to check it yourself"
+      "title": "What can be said so far",
+      "badge": "AI-generated · unverified",
+      "confidence": "Confidence",
+      "howToCheck": "How to check it yourself",
+      "warning": "Do not share it or take it as true without checking it.",
+      "level": {
+        "low": "low",
+        "medium": "medium",
+        "high": "high"
+      },
+      "sources": "Sources: {n, plural, =0 {none retrieved} one {# source} other {# sources}}"
     },
     "tags": {
       "fuente_unica": "Single source",
       "solo_redes": "Social media only",
       "varias_no_oficiales": "Several unofficial sources",
       "sin_fuente": "No source"
+    },
+    "stats": {
+      "coverages": "other coverages",
+      "official": "official sources",
+      "outlets": "outlets checked"
     }
   },
   "synthesis": {

@@ -6,9 +6,9 @@ export function verdictTone(s: VerdictStatusLike): Tone {
     case 'verificado':
       return 'ok';
     case 'enganoso':
-    case 'falta_contexto':
       return 'warn';
     case 'falso':
+    case 'falta_contexto':
       return 'bad';
     case 'opinion':
       return 'accent';

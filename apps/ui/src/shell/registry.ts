@@ -39,6 +39,13 @@ export const readerView = () => reader;
 export const registerOverlay = (o: Overlay) => void overlayMap.set(o.id, o);
 export const overlays = () => [...overlayMap.values()];
 
+/** Marca pequeña tras el título de la pestaña (p. ej. la nota de neutralidad). El componente devuelve `null` si no hay nada que mostrar. */
+let tabBadgeComponent: ComponentType<{ tab: TabInfo }> | null = null;
+export const registerTabBadge = (C: ComponentType<{ tab: TabInfo }>): void => {
+  tabBadgeComponent = C;
+};
+export const tabBadge = () => tabBadgeComponent;
+
 export interface SidePanelProps { tab: TabInfo }
 let sidePanelComponent: ComponentType<SidePanelProps> | null = null;
 /** Un único panel lateral (el de análisis). El componente decide si se muestra (devuelve `null` cerrado). */

@@ -1,15 +1,20 @@
 import { commands } from '../../ipc/commands';
-import { registerReaderView, registerShortcut, registerSidePanel, registerToolbarItem } from '../../shell/registry';
+import { registerInternalPage, registerReaderView, registerShortcut, registerSidePanel, registerTabBadge, registerToolbarItem } from '../../shell/registry';
 import { browserStore } from '../../state/browser';
 import './analysis.css';
+import './position.css';
 import { AnalysisButton } from './AnalysisButton';
 import { AnalysisPanel } from './AnalysisPanel';
 import { AnalysisReader } from './AnalysisReader';
 import { analysisStore, controller, startAutoAnalysis } from './controller';
 import { openPanel } from './panelStore';
+import { PositionPage } from './PositionPage';
+import { AnalysisTabBadge } from './TabBadge';
 
 registerReaderView(AnalysisReader);
 registerSidePanel(AnalysisPanel);
+registerTabBadge(AnalysisTabBadge);
+registerInternalPage('analisis', PositionPage);
 registerToolbarItem({ id: 'analysis', order: 60, Component: AnalysisButton });
 
 registerShortcut('analyze', ({ tab }) => {
