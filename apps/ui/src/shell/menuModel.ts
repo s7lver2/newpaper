@@ -14,13 +14,25 @@ export interface MenuContext {
   /** Hay lector (o selector de artículos) para esta página. */
   readable: boolean;
   readerOpen: boolean;
+  /** Pestaña o grupo de la tira bajo el cursor. */
+  target?: TabTarget;
 }
 
 export type MenuActionId =
   | 'openTab' | 'openReader' | 'copyLink'
   | 'openImage' | 'copyImageUrl'
   | 'copy' | 'cut' | 'paste' | 'selectAll' | 'search'
-  | 'back' | 'forward' | 'reload' | 'toggleReader' | 'copyPageUrl';
+  | 'back' | 'forward' | 'reload' | 'toggleReader' | 'copyPageUrl'
+  | 'pin' | 'unpin' | 'newGroup' | 'ungroup' | 'closeTab'
+  | 'renameGroup' | 'toggleGroup' | 'ungroupAll' | 'closeGroup'
+  | `addToGroup:${number}` | `color:${string}`;
+
+/** Elemento de la tira de pestañas sobre el que se hizo clic derecho. */
+export type TabTarget =
+  | { type: 'tab'; id: number; pinned: boolean; group: number | null; groups: { id: number; name: string }[] }
+  | { type: 'group'; id: number; collapsed: boolean; color: string };
+
+export const TAB_COLORS = ['blue', 'green', 'amber', 'rose', 'violet', 'teal'];
 
 export interface MenuItem {
   id: MenuActionId;
@@ -38,7 +50,33 @@ const short = (s: string, n = 28) => {
   return t.length > n ? `${t.slice(0, n - 1)}…` : t;
 };
 
+function buildTargetMenu(t: TabTarget): MenuGroups {
+  if (t.type === 'group') {
+    return [
+      [
+        { id: 'renameGroup', key: 'renameGroup' },
+        { id: 'toggleGroup', key: t.collapsed ? 'expandGroup' : 'collapseGroup' },
+      ],
+      TAB_COLORS.filter((c) => c !== t.color).map((c): MenuItem => ({ id: `color:${c}`, key: `color.${c}` })),
+      [
+        { id: 'ungroupAll', key: 'ungroupAll' },
+        { id: 'closeGroup', key: 'closeGroup' },
+      ],
+    ];
+  }
+  const groups: MenuGroups = [[{ id: t.pinned ? 'unpin' : 'pin', key: t.pinned ? 'unpin' : 'pin' }]];
+  if (!t.pinned) {
+    const grouping: MenuItem[] = [{ id: 'newGroup', key: 'newGroup' }];
+    for (const g of t.groups.filter((x) => x.id !== t.group)) grouping.push({ id: `addToGroup:${g.id}`, key: 'addToGroup', params: { name: g.name } });
+    if (t.group !== null) grouping.push({ id: 'ungroup', key: 'ungroup' });
+    groups.push(grouping);
+  }
+  groups.push([{ id: 'closeTab', key: 'closeTab' }]);
+  return groups;
+}
+
 export function buildMenu(c: MenuContext): MenuGroups {
+  if (c.target) return buildTargetMenu(c.target);
   const hasSelection = !!c.selection;
   if (c.editable) {
     return [[

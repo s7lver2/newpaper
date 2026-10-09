@@ -38,3 +38,20 @@ describe('clampMenu', () => {
     expect(clampMenu(950, 780, 200, 150, 1000, 800)).toEqual({ left: 792, top: 642 });
   });
 });
+
+describe('tab strip menus', () => {
+  const blank = { ...base, source: 'ui' as const };
+  it('a loose tab can be pinned, grouped (new or existing) and closed; a grouped one can leave', () => {
+    const loose = buildMenu({ ...blank, target: { type: 'tab', id: 1, pinned: false, group: null, groups: [{ id: 7, name: 'Prensa' }] } });
+    expect(loose.map((g) => g.map((i) => i.id))).toEqual([['pin'], ['newGroup', 'addToGroup:7'], ['closeTab']]);
+    const grouped = buildMenu({ ...blank, target: { type: 'tab', id: 1, pinned: false, group: 7, groups: [{ id: 7, name: 'Prensa' }] } });
+    expect(grouped[1]!.map((i) => i.id)).toEqual(['newGroup', 'ungroup']);
+  });
+  it('pinned tabs cannot be grouped; group chips offer rename, colours without the current one, and close', () => {
+    expect(buildMenu({ ...blank, target: { type: 'tab', id: 1, pinned: true, group: null, groups: [] } }).map((g) => g.map((i) => i.id))).toEqual([['unpin'], ['closeTab']]);
+    const g = buildMenu({ ...blank, target: { type: 'group', id: 3, collapsed: true, color: 'rose' } });
+    expect(g[0]!.map((i) => i.key)).toEqual(['renameGroup', 'expandGroup']);
+    expect(g[1]!.map((i) => i.id)).not.toContain('color:rose');
+    expect(g[2]!.map((i) => i.id)).toEqual(['ungroupAll', 'closeGroup']);
+  });
+});

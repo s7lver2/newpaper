@@ -1,6 +1,7 @@
 import { useI18n } from '@newpaper/i18n/react';
 import { Button, Switch } from '@newpaper/ui-kit';
 import { useEffect, useId, useRef, useState } from 'react';
+import { useUnderlay } from '../../shell/underlay';
 import { commands } from '../../ipc/commands';
 import type { TabInfo } from '../../ipc/types';
 import { openInternal } from '../../shell/navigate';
@@ -17,6 +18,7 @@ export function ShieldBadge({ tab }: { tab: TabInfo | null }) {
   const count = useBlockedCount(tab?.id ?? null);
   const today = useTodayBlocked();
   const [open, setOpen] = useState(false);
+  useUnderlay(open);
   const [enabled, setEnabled] = useState(true);
   const panelId = useId();
   const wrap = useRef<HTMLDivElement>(null);

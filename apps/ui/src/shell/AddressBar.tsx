@@ -5,6 +5,7 @@ import type { Suggestion, TabInfo } from '../ipc/types';
 import { IconLock, IconSearch } from './icons';
 import { navigate } from './navigate';
 import { shellBus } from './shellBus';
+import { useUnderlay } from './underlay';
 
 /** "host/" (muted) + "path" (ink), like the mockup; null when the URL is not a plain web address. */
 export function splitDisplayUrl(url: string): { host: string; path: string } | null {
@@ -27,6 +28,7 @@ export function AddressBar({ tab, children }: { tab: TabInfo | null; children?: 
   const [items, setItems] = useState<Suggestion[]>([]);
   const [index, setIndex] = useState(-1);
   const [open, setOpen] = useState(false);
+  useUnderlay(open && items.length > 0);
   const [focused, setFocused] = useState(false);
 
   useEffect(() => setText(tab?.url ?? ''), [tab?.id, tab?.url]);

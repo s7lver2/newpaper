@@ -5,6 +5,7 @@ import { commands } from '../ipc/commands';
 import { onContextMenu, type ContextMenuEvent } from '../ipc/events';
 import { browserStore } from '../state/browser';
 import { buildMenu, clampMenu, type MenuActionId, type MenuContext, type MenuItem } from './menuModel';
+import { RENAME_GROUP_EVENT } from './TabStrip';
 import { navigate } from './navigate';
 
 interface Open {
@@ -58,6 +59,18 @@ async function openInReader(url: string): Promise<void> {
 /** Estado de edición de un elemento de la propia interfaz bajo el cursor. */
 function uiContext(e: MouseEvent): MenuContext | null {
   const target = e.target as HTMLElement | null;
+  const snap = browserStore.get().snapshot;
+  const blank = { source: 'ui', kind: 'page', link: null, imageSrc: null, selection: null, editable: false, pageUrl: '', canBack: false, canForward: false, readable: false, readerOpen: false } as const;
+  const tabEl = target?.closest?.('[data-tab-id]') as HTMLElement | null;
+  if (tabEl) {
+    const tab = snap.tabs.find((x) => x.id === Number(tabEl.dataset.tabId));
+    if (tab) return { ...blank, target: { type: 'tab', id: tab.id, pinned: !!tab.pinned, group: tab.group ?? null, groups: (snap.groups ?? []).map((g) => ({ id: g.id, name: g.name })) } };
+  }
+  const groupEl = target?.closest?.('[data-group-id]') as HTMLElement | null;
+  if (groupEl) {
+    const g = (snap.groups ?? []).find((x) => x.id === Number(groupEl.dataset.groupId));
+    if (g) return { ...blank, target: { type: 'group', id: g.id, collapsed: g.collapsed, color: g.color } };
+  }
   const el = target?.closest?.('input, textarea, [contenteditable="true"]') as HTMLInputElement | null;
   const sel = window.getSelection()?.toString() ?? '';
   const editable = !!el && !el.readOnly && !el.disabled && !(el instanceof HTMLInputElement && ['checkbox', 'radio', 'button', 'range'].includes(el.type));
@@ -65,6 +78,25 @@ function uiContext(e: MouseEvent): MenuContext | null {
   const selection = inputSel || sel || null;
   if (!editable && !selection) return null;
   return { source: 'ui', kind: 'page', link: null, imageSrc: null, selection, editable, pageUrl: '', canBack: false, canForward: false, readable: false, readerOpen: false };
+}
+
+async function runTargetAction(id: MenuActionId, target: NonNullable<MenuContext['target']>): Promise<void> {
+  if (target.type === 'group') {
+    const gid = target.id;
+    if (id === 'renameGroup') window.dispatchEvent(new CustomEvent(RENAME_GROUP_EVENT, { detail: gid }));
+    else if (id === 'toggleGroup') await commands.tabGroupUpdate(gid, { collapsed: !target.collapsed });
+    else if (id.startsWith('color:')) await commands.tabGroupUpdate(gid, { color: id.slice(6) });
+    else if (id === 'ungroupAll') {
+      for (const t of browserStore.get().snapshot.tabs.filter((x) => x.group === gid)) await commands.tabUngroup(t.id);
+    } else if (id === 'closeGroup') await commands.tabCloseGroup(gid);
+    return;
+  }
+  const tid = target.id;
+  if (id === 'pin' || id === 'unpin') await commands.tabPin(tid, id === 'pin');
+  else if (id === 'newGroup') await commands.tabGroup([tid]);
+  else if (id === 'ungroup') await commands.tabUngroup(tid);
+  else if (id === 'closeTab') await commands.tabClose(tid);
+  else if (id.startsWith('addToGroup:')) await commands.tabGroup([tid], { groupId: Number(id.slice(11)) });
 }
 
 export function ContextMenuHost() {
@@ -169,6 +201,10 @@ export function ContextMenuHost() {
     const { ctx, tabId } = o;
     const sel = ctx.selection ?? '';
     const id: MenuActionId = item.id;
+    if (ctx.target) {
+      await runTargetAction(id, ctx.target);
+      return;
+    }
     // El menú se cierra antes de actuar: la webview vuelve a la vista y recupera el foco.
     close(true);
     const active = browserStore.get().snapshot.activeId;

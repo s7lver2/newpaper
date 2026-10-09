@@ -18,7 +18,15 @@
       "close": "Close tab {title}",
       "untitled": "Untitled",
       "private": "Private",
-      "loading": "Loading"
+      "loading": "Loading",
+      "list": "All tabs",
+      "listSearch": "Search tabs",
+      "listEmpty": "No tab matches.",
+      "pinned": "Pinned",
+      "groupName": "Group name",
+      "groupExpand": "Expand group {name}",
+      "groupCollapse": "Collapse group {name}",
+      "groupCount": "{count, plural, one {# tab} other {# tabs}}"
     },
     "address": {
       "label": "Search or type an address",
@@ -99,7 +107,26 @@
       "reload": "Reload",
       "viewReader": "View in reader",
       "viewOriginal": "View original",
-      "copyPageUrl": "Copy page address"
+      "copyPageUrl": "Copy page address",
+      "pin": "Pin tab",
+      "unpin": "Unpin tab",
+      "newGroup": "Add to new group",
+      "addToGroup": "Add to group {name}",
+      "ungroup": "Remove from group",
+      "closeTab": "Close tab",
+      "renameGroup": "Rename group",
+      "collapseGroup": "Collapse group",
+      "expandGroup": "Expand group",
+      "ungroupAll": "Ungroup tabs",
+      "closeGroup": "Close group and its tabs",
+      "color": {
+        "blue": "Blue colour",
+        "green": "Green colour",
+        "amber": "Amber colour",
+        "rose": "Rose colour",
+        "violet": "Violet colour",
+        "teal": "Teal colour"
+      }
     }
   },
   "settings": {

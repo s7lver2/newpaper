@@ -3,6 +3,7 @@ import { useActiveTab, useArticle } from '../state/browser';
 import { ContentSlot } from './ContentSlot';
 import { ContextMenuHost } from './ContextMenu';
 import { PageTransition } from './PageTransition';
+import { NativeUnderlay } from './underlay';
 import { parseInternalUrl } from './internalUrl';
 import { overlays, readerView, resolveInternalPage, tabSurface } from './registry';
 import { TabStrip } from './TabStrip';
@@ -42,6 +43,7 @@ export function BrowserShell() {
         <ContentSlot />
         <ActiveSurface />
         <PageTransition />
+        <NativeUnderlay />
         <ContextMenuHost />
       </main>
       {overlays().map(({ id, Component }) => (

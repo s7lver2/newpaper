@@ -5,6 +5,9 @@ export type TabId = number;
 export type TabKind = 'web' | 'internal';
 export type TabView = 'original' | 'reader';
 
+export interface TabGroup { id: number; name: string; color: 'blue' | 'green' | 'amber' | 'rose' | 'violet' | 'teal'; collapsed: boolean }
+export const GROUP_COLORS = ['blue', 'green', 'amber', 'rose', 'violet', 'teal'] as const;
+
 export interface NavFailure { url: string; webErrorStatus: number; httpStatus: number | null }
 
 export interface TabInfo {
@@ -22,9 +25,12 @@ export interface TabInfo {
   readable: boolean;
   failure: NavFailure | null;
   crashed: boolean;
+  /** Anclada: va al principio, solo con icono y sin grupo. */
+  pinned?: boolean;
+  group?: number | null;
 }
 
-export interface TabsSnapshot { tabs: TabInfo[]; activeId: TabId | null }
+export interface TabsSnapshot { tabs: TabInfo[]; activeId: TabId | null; groups?: TabGroup[] }
 
 export interface PageArticle extends Article {
   type: 'page';

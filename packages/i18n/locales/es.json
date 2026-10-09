@@ -18,7 +18,15 @@
       "close": "Cerrar la pestaña {title}",
       "untitled": "Sin título",
       "private": "Privada",
-      "loading": "Cargando"
+      "loading": "Cargando",
+      "list": "Todas las pestañas",
+      "listSearch": "Buscar pestañas",
+      "listEmpty": "Ninguna pestaña coincide.",
+      "pinned": "Ancladas",
+      "groupName": "Nombre del grupo",
+      "groupExpand": "Desplegar el grupo {name}",
+      "groupCollapse": "Plegar el grupo {name}",
+      "groupCount": "{count, plural, one {# pestaña} other {# pestañas}}"
     },
     "address": {
       "label": "Buscar o escribir una dirección",
@@ -99,7 +107,26 @@
       "reload": "Recargar",
       "viewReader": "Ver en el lector",
       "viewOriginal": "Ver original",
-      "copyPageUrl": "Copiar dirección de la página"
+      "copyPageUrl": "Copiar dirección de la página",
+      "pin": "Anclar pestaña",
+      "unpin": "Desanclar pestaña",
+      "newGroup": "Añadir a un grupo nuevo",
+      "addToGroup": "Añadir al grupo {name}",
+      "ungroup": "Quitar del grupo",
+      "closeTab": "Cerrar pestaña",
+      "renameGroup": "Renombrar grupo",
+      "collapseGroup": "Plegar grupo",
+      "expandGroup": "Desplegar grupo",
+      "ungroupAll": "Deshacer el grupo",
+      "closeGroup": "Cerrar el grupo y sus pestañas",
+      "color": {
+        "blue": "Color azul",
+        "green": "Color verde",
+        "amber": "Color ámbar",
+        "rose": "Color rosa",
+        "violet": "Color violeta",
+        "teal": "Color turquesa"
+      }
     }
   },
   "settings": {

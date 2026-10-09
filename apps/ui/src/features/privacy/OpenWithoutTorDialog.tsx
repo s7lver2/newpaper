@@ -2,12 +2,14 @@ import { useT } from '@newpaper/i18n/react';
 import { Button } from '@newpaper/ui-kit';
 import { useEffect, useId, useRef } from 'react';
 import { commands } from '../../ipc/commands';
+import { useUnderlay } from '../../shell/underlay';
 import { applyStatus } from './usePrivacy';
 import { cancelOpenWithoutTor, withoutTorStore } from './withoutTor';
 
 export function OpenWithoutTorDialog() {
   const t = useT();
   const tabId = withoutTorStore.use((s) => s.pendingTabId);
+  useUnderlay(tabId !== null);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
   const titleId = useId();

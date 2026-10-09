@@ -5,9 +5,9 @@
   "webviews": ["ui"],
   "permissions": [
     "core:default",
-    "allow-tab-open", "allow-tab-close", "allow-tab-activate", "allow-tab-navigate",
+    "allow-tab-open", "allow-tab-close", "allow-tab-activate", "allow-tab-pin", "allow-tab-group", "allow-tab-ungroup", "allow-tab-group-update", "allow-tab-close-group", "allow-tab-navigate",
     "allow-tab-back", "allow-tab-forward", "allow-tab-reload", "allow-tab-set-view",
-    "allow-tab-set-bounds", "allow-tabs-snapshot", "allow-chrome-set-theme", "allow-chrome-set-motion", "allow-ctx-close", "allow-ctx-edit", "allow-clipboard-text",
+    "allow-tab-set-bounds", "allow-tabs-snapshot", "allow-chrome-set-theme", "allow-chrome-set-motion", "allow-ctx-close", "allow-overlay-open", "allow-ctx-edit", "allow-clipboard-text",
     "allow-settings-get", "allow-settings-set", "allow-settings-list",
     "allow-history-record-visit", "allow-history-record-search", "allow-history-mark-analyzed",
     "allow-history-search", "allow-history-delete", "allow-omnibox-suggest",

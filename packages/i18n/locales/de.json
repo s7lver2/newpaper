@@ -18,7 +18,15 @@
       "close": "Tab {title} schließen",
       "untitled": "Ohne Titel",
       "private": "Privat",
-      "loading": "Wird geladen"
+      "loading": "Wird geladen",
+      "list": "Alle Tabs",
+      "listSearch": "Tabs durchsuchen",
+      "listEmpty": "Kein Tab passt.",
+      "pinned": "Angeheftet",
+      "groupName": "Gruppenname",
+      "groupExpand": "Gruppe {name} aufklappen",
+      "groupCollapse": "Gruppe {name} einklappen",
+      "groupCount": "{count, plural, one {# Tab} other {# Tabs}}"
     },
     "address": {
       "label": "Suchen oder Adresse eingeben",
@@ -99,7 +107,26 @@
       "reload": "Neu laden",
       "viewReader": "Im Lesemodus ansehen",
       "viewOriginal": "Original ansehen",
-      "copyPageUrl": "Seitenadresse kopieren"
+      "copyPageUrl": "Seitenadresse kopieren",
+      "pin": "Tab anheften",
+      "unpin": "Tab lösen",
+      "newGroup": "Zu neuer Gruppe hinzufügen",
+      "addToGroup": "Zu Gruppe {name} hinzufügen",
+      "ungroup": "Aus Gruppe entfernen",
+      "closeTab": "Tab schließen",
+      "renameGroup": "Gruppe umbenennen",
+      "collapseGroup": "Gruppe einklappen",
+      "expandGroup": "Gruppe aufklappen",
+      "ungroupAll": "Gruppe auflösen",
+      "closeGroup": "Gruppe samt Tabs schließen",
+      "color": {
+        "blue": "Blau",
+        "green": "Grün",
+        "amber": "Bernstein",
+        "rose": "Rosa",
+        "violet": "Violett",
+        "teal": "Türkis"
+      }
     }
   },
   "settings": {

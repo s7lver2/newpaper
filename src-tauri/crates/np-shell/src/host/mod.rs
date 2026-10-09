@@ -26,7 +26,7 @@ use crate::{
     extensions::ShellExtensions,
     input::{parse_input, search_url, Target},
     message::{parse_content_message, ContentMessage, PageKind, PagePayload},
-    model::{NavFailure, TabInfo, TabKind, TabList, TabView, TabsSnapshot},
+    model::{GroupId, NavFailure, TabInfo, TabKind, TabList, TabView, TabsSnapshot},
     news::{is_news, reader_policy},
     transition::{self, Context as TransitionContext},
     TabId, NEW_TAB_URL,
@@ -238,6 +238,25 @@ impl TabManager {
         });
     }
 
+    /// Un popover o diálogo de la UI se abre sobre la zona de la página: la webview nativa se dibuja siempre
+    /// encima de la UI, así que se captura y se oculta; la UI muestra la captura debajo del popover.
+    /// Devuelve la captura (o `None` si no hay webview visible o falló). Se cierra con `ctx_close`.
+    pub async fn overlay_open(&self, id: TabId) -> Option<String> {
+        let wv = self.webview(id)?;
+        let visible = self.snapshot().active_id == Some(id) && self.revealed.lock().expect("revealed lock").contains(&id);
+        if !visible || !self.context_open.lock().expect("context lock").insert(id) {
+            return None;
+        }
+        // Un reintento: justo tras crear o activar una pestaña el compositor puede tardar en dar un fotograma.
+        let mut image = self.capture(&wv).await;
+        if image.is_none() {
+            tokio::time::sleep(Duration::from_millis(250)).await;
+            image = self.capture(&wv).await;
+        }
+        let _ = wv.hide();
+        image
+    }
+
     /// Cierra el menú: la webview vuelve a la vista y recupera el foco.
     pub fn ctx_close(&self, id: TabId) {
         self.context_open.lock().expect("context lock").remove(&id);
@@ -263,7 +282,7 @@ impl TabManager {
         let private = self.tab(from).is_some_and(|t| t.private);
         let app = self.app.clone();
         tauri::async_runtime::spawn(async move {
-            let _ = app.state::<Arc<TabManager>>().open(Some(url), private, true).await;
+            let _ = app.state::<Arc<TabManager>>().open_from(Some(url), private, true, Some(from)).await;
         });
     }
 
@@ -407,6 +426,11 @@ impl TabManager {
     }
 
     pub async fn open(&self, url: Option<String>, private: bool, activate: bool) -> Result<TabInfo, ShellError> {
+        self.open_from(url, private, activate, None).await
+    }
+
+    /// Abre una pestaña desde otra: queda junto a ella y, si es del mismo sitio, en su grupo.
+    pub async fn open_from(&self, url: Option<String>, private: bool, activate: bool, opener: Option<TabId>) -> Result<TabInfo, ShellError> {
         let url = url.unwrap_or_else(|| NEW_TAB_URL.to_string());
         let target = parse_input(&url).unwrap_or(Target::Internal(NEW_TAB_URL.into()));
         let resolved = match &target {
@@ -414,7 +438,7 @@ impl TabManager {
             Target::Internal(s) => s.clone(),
             Target::Search(q) => search_url(q),
         };
-        let id = self.tabs.lock().expect("tabs lock").open(&resolved, private, activate);
+        let id = self.tabs.lock().expect("tabs lock").open_from(&resolved, private, activate, opener);
         if let Target::Web(u) = target {
             self.create_webview(id, u, private).await?;
         }
@@ -603,6 +627,48 @@ impl TabManager {
 
     pub fn eval_in_tab(&self, id: TabId, js: &str) -> Result<(), ShellError> {
         self.webview(id).ok_or(ShellError::NoTab(id))?.eval(js)?;
+        Ok(())
+    }
+
+    // ---- Pestañas ancladas y grupos ----
+
+    pub fn pin(&self, id: TabId, on: bool) {
+        self.tabs.lock().expect("tabs lock").set_pinned(id, on);
+        self.emit_tabs();
+    }
+
+    pub fn group_tabs(&self, ids: &[TabId], name: Option<String>) -> Option<GroupId> {
+        let g = self.tabs.lock().expect("tabs lock").group(ids, name);
+        self.emit_tabs();
+        g
+    }
+
+    pub fn add_to_group(&self, id: TabId, group: GroupId) -> bool {
+        let ok = self.tabs.lock().expect("tabs lock").add_to_group(id, group);
+        self.emit_tabs();
+        ok
+    }
+
+    pub fn ungroup(&self, id: TabId) {
+        self.tabs.lock().expect("tabs lock").ungroup(id);
+        self.emit_tabs();
+    }
+
+    pub fn update_group(&self, group: GroupId, name: Option<String>, color: Option<String>, collapsed: Option<bool>) {
+        {
+            let mut tabs = self.tabs.lock().expect("tabs lock");
+            tabs.update_group(group, name, color, collapsed);
+            // Plegar el grupo de la pestaña activa mueve la activa a una visible: la primera suelta del mismo grupo.
+        }
+        self.emit_tabs();
+    }
+
+    /// Cierra todas las pestañas de un grupo (acción explícita del usuario).
+    pub async fn close_group(&self, group: GroupId) -> Result<(), ShellError> {
+        let ids = self.tabs.lock().expect("tabs lock").tabs_of_group(group);
+        for id in ids {
+            self.close(id).await?;
+        }
         Ok(())
     }
 

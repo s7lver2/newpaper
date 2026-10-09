@@ -6,7 +6,7 @@ import type {
 
 /** Único punto de la UI que conoce los nombres de los comandos Rust. Los subproyectos añaden entradas. */
 export const commands = {
-  tabOpen: (args: { url?: string; private?: boolean; activate?: boolean } = {}) => invoke<TabInfo>('tab_open', args),
+  tabOpen: (args: { url?: string; private?: boolean; activate?: boolean; openerId?: TabId } = {}) => invoke<TabInfo>('tab_open', args),
   tabClose: (tabId: TabId) => invoke<void>('tab_close', { tabId }),
   tabActivate: (tabId: TabId) => invoke<void>('tab_activate', { tabId }),
   tabNavigate: (tabId: TabId, input: string) => invoke<void>('tab_navigate', { tabId, input }),
@@ -15,7 +15,14 @@ export const commands = {
   tabReload: (tabId: TabId) => invoke<void>('tab_reload', { tabId }),
   tabSetView: (tabId: TabId, view: TabView) => invoke<void>('tab_set_view', { tabId, view }),
   tabSetBounds: (rect: Rect) => invoke<void>('tab_set_bounds', { rect }),
+  tabPin: (tabId: TabId, pinned: boolean) => invoke<void>('tab_pin', { tabId, pinned }),
+  tabGroup: (tabIds: TabId[], opts: { name?: string; groupId?: number } = {}) => invoke<number | null>('tab_group', { tabIds, name: opts.name, groupId: opts.groupId }),
+  tabUngroup: (tabId: TabId) => invoke<void>('tab_ungroup', { tabId }),
+  tabGroupUpdate: (groupId: number, u: { name?: string; color?: string; collapsed?: boolean }) =>
+    invoke<void>('tab_group_update', { groupId, name: u.name, color: u.color, collapsed: u.collapsed }),
+  tabCloseGroup: (groupId: number) => invoke<void>('tab_close_group', { groupId }),
   tabsSnapshot: () => invoke<TabsSnapshot>('tabs_snapshot'),
+  overlayOpen: (tabId: TabId) => invoke<string | null>('overlay_open', { tabId }),
   ctxClose: (tabId: TabId) => invoke<void>('ctx_close', { tabId }),
   ctxEdit: (tabId: TabId, action: 'delete' | 'paste' | 'selectAll', text?: string) => invoke<void>('ctx_edit', { tabId, action, text }),
   clipboardText: () => invoke<string | null>('clipboard_text'),

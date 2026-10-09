@@ -1,6 +1,7 @@
 import { useT } from '@newpaper/i18n/react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { TabInfo } from '../../ipc/types';
+import { useUnderlay } from '../../shell/underlay';
 import { TorPopup, torStateLabel } from './TorPopup';
 import { usePrivacyStatus } from './usePrivacy';
 
@@ -8,6 +9,7 @@ export function TorChip({ tab }: { tab: TabInfo | null }) {
   const t = useT();
   const status = usePrivacyStatus();
   const [open, setOpen] = useState(false);
+  useUnderlay(open);
   const close = useCallback(() => setOpen(false), []);
   const [bump, setBump] = useState(0);
   const sig = status ? `${status.mode}|${status.exitCountry ?? ''}|${status.tor.state}|${tab !== null && status.tabsWithoutTor.includes(tab.id)}` : '';
