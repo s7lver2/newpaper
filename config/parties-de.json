@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "parliament": "Deutscher Bundestag",
+  "parties": [
+    { "id": "LINKE", "name": "Die Linke", "short": "Linke", "color": "#BE3075", "order": 10, "bloc": "left" },
+    { "id": "BSW", "name": "Bündnis Sahra Wagenknecht", "short": "BSW", "color": "#792351", "order": 20, "bloc": null },
+    { "id": "GRUENE", "name": "Bündnis 90/Die Grünen", "short": "Grüne", "color": "#1AA037", "order": 24, "bloc": "left" },
+    { "id": "SPD", "name": "Sozialdemokratische Partei Deutschlands", "short": "SPD", "color": "#E3000F", "order": 32, "bloc": "left" },
+    { "id": "FDP", "name": "Freie Demokratische Partei", "short": "FDP", "color": "#FFED00", "order": 58, "bloc": "right" },
+    { "id": "UNION", "name": "CDU/CSU", "short": "Union", "color": "#151518", "order": 68, "bloc": "right" },
+    { "id": "AFD", "name": "Alternative für Deutschland", "short": "AfD", "color": "#009EE0", "order": 92, "bloc": "right" }
+  ]
+}

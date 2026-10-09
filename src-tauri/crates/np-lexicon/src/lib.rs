@@ -2,6 +2,7 @@
 pub mod congreso;
 pub mod ngrams;
 pub mod schema;
+pub mod score;
 pub mod slant;
 
 #[derive(Debug, thiserror::Error)]

@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "parliament": "Congreso de los Diputados",
+  "parties": [
+    { "id": "GEH-BILDU", "name": "Grupo Parlamentario Euskal Herria Bildu", "short": "EH Bildu", "color": "#A5C700", "order": 8, "bloc": "left" },
+    { "id": "GSUMAR", "name": "Grupo Parlamentario Plurinacional SUMAR", "short": "Sumar", "color": "#E51C55", "order": 14, "bloc": "left" },
+    { "id": "GR", "name": "Grupo Parlamentario Republicano", "short": "ERC", "color": "#FFB232", "order": 20, "bloc": "left" },
+    { "id": "GS", "name": "Grupo Parlamentario Socialista", "short": "PSOE", "color": "#E30613", "order": 30, "bloc": "left" },
+    { "id": "GMX", "name": "Grupo Parlamentario Mixto", "short": "Mixto", "color": "#9E9E9E", "order": 48, "bloc": null },
+    { "id": "GV-PNV", "name": "Grupo Parlamentario Vasco (EAJ-PNV)", "short": "PNV", "color": "#008136", "order": 52, "bloc": null },
+    { "id": "GJXCAT", "name": "Grupo Parlamentario Junts per Catalunya", "short": "Junts", "color": "#20C0B2", "order": 58, "bloc": null },
+    { "id": "GP", "name": "Grupo Parlamentario Popular en el Congreso", "short": "PP", "color": "#1D84CE", "order": 72, "bloc": "right" },
+    { "id": "GVOX", "name": "Grupo Parlamentario VOX", "short": "Vox", "color": "#63BE21", "order": 90, "bloc": "right" }
+  ]
+}

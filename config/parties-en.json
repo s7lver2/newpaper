@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "parliament": "House of Commons",
+  "parties": [
+    { "id": "SF", "name": "Sinn Féin", "short": "SF", "color": "#326760", "order": 10, "bloc": "left" },
+    { "id": "GRN", "name": "Green Party", "short": "Green", "color": "#02A95B", "order": 12, "bloc": "left" },
+    { "id": "PC", "name": "Plaid Cymru", "short": "Plaid", "color": "#005B54", "order": 18, "bloc": "left" },
+    { "id": "SNP", "name": "Scottish National Party", "short": "SNP", "color": "#FDF38E", "order": 24, "bloc": "left" },
+    { "id": "LAB", "name": "Labour Party", "short": "Labour", "color": "#E4003B", "order": 30, "bloc": "left" },
+    { "id": "LD", "name": "Liberal Democrats", "short": "Lib Dem", "color": "#FAA61A", "order": 48, "bloc": null },
+    { "id": "IND", "name": "Independent", "short": "Ind", "color": "#9E9E9E", "order": 50, "bloc": null },
+    { "id": "CON", "name": "Conservative Party", "short": "Con", "color": "#0087DC", "order": 72, "bloc": "right" },
+    { "id": "DUP", "name": "Democratic Unionist Party", "short": "DUP", "color": "#D46A4C", "order": 80, "bloc": "right" },
+    { "id": "REF", "name": "Reform UK", "short": "Reform", "color": "#12B6CF", "order": 88, "bloc": "right" }
+  ]
+}

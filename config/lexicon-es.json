@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "locale": "es",
+  "legislature": "XV",
+  "source": "Congreso de los Diputados",
+  "builtAt": "",
+  "status": "pending",
+  "blocs": { "left": [], "right": [] },
+  "phrases": []
+}
