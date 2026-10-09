@@ -6,3 +6,22 @@
 .np-seltool-btn:hover, .np-seltool-btn:focus-visible { background: color-mix(in srgb, var(--np-paper) 16%, transparent); }
 .np-reader-meta { display: flex; gap: 12px; font: 12px var(--np-font-mono); color: var(--np-muted); }
 @media (prefers-reduced-motion: reduce) { .np-areader { transition: none; } }
+.np-agent { display: flex; flex-direction: column; min-height: 0; flex: 1; }
+.np-agent-head { display: flex; align-items: center; gap: 8px; padding: 8px 12px; font: 12px var(--np-font-ui); color: var(--np-muted); }
+.np-agent-context { flex: 1; margin: 0; }
+.np-agent-log { flex: 1; overflow: auto; padding: 8px 12px; display: grid; gap: 12px; align-content: start; }
+.np-agent-msg { font: 14px/1.55 var(--np-font-ui); }
+.np-agent-msg--user { justify-self: end; max-width: 85%; padding: 8px 12px; border-radius: 12px; background: var(--np-accent-soft); }
+.np-agent-msg--user blockquote { margin: 0 0 4px; font: italic 13px var(--np-font-read); color: var(--np-ink2); }
+.np-agent-steps { font: 11px var(--np-font-mono); color: var(--np-muted); margin: 0 0 4px; }
+.np-cite { min-width: 20px; height: 20px; margin: 0 2px; padding: 0 5px; border: 0; border-radius: 10px; background: var(--np-accent-soft); color: var(--np-accent); font: 600 11px var(--np-font-mono); cursor: pointer; vertical-align: 1px; }
+.np-agent-media { margin: 8px 0; }
+.np-agent-media img { max-width: 100%; border-radius: var(--np-radius); }
+.np-agent-media figcaption, .np-agent-note { font: 11px var(--np-font-ui); color: var(--np-muted); }
+.np-agent-error { color: var(--np-bad); font: 13px var(--np-font-ui); }
+.np-agent-composer { display: grid; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--np-line); }
+.np-agent-composer textarea { resize: vertical; min-height: 44px; padding: 8px; border: 1px solid var(--np-line3); border-radius: 10px; font: 14px var(--np-font-ui); background: var(--np-card); color: var(--np-ink); }
+.np-agent-fragment { display: flex; gap: 6px; margin: 0; padding: 6px 8px; border-left: 3px solid var(--np-accent); background: var(--np-soft); font: italic 13px var(--np-font-read); }
+.np-agent-fragment span { flex: 1; }
+.np-agent-fragment button { min-width: 32px; border: 0; background: none; cursor: pointer; }
+.np-panel-empty { color: var(--np-muted); font: 13px var(--np-font-ui); padding: 12px; }
