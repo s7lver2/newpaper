@@ -276,5 +276,61 @@
     "closeBackground": "{count, plural, one {Close the background tab} other {Close the # background tabs}}",
     "quit": "Quit the app",
     "later": "Not now"
+  },
+  "sources": {
+    "save": {
+      "add": "Save to read later",
+      "remove": "Remove from “read later”",
+      "saved": "Saved for offline reading"
+    },
+    "settings": {
+      "title": "Sources",
+      "axis": "Measured position of each outlet (0 left · 100 right)",
+      "axisNote": "The position is measured from texts and public surveys; it never changes an article's score.",
+      "value": "{value} ± {uncertainty}",
+      "noData": "Not enough data",
+      "override": "Your correction",
+      "overrideLabel": "Correct the position of {outlet}",
+      "overrideSave": "Save correction",
+      "overrideRemove": "Remove correction",
+      "reliability": "Factual reliability: {pct}% ({n, plural, one {# claim} other {# claims}})",
+      "topics": "By topic",
+      "custom": "Your own sources",
+      "customName": "Outlet name",
+      "customDomain": "Domain",
+      "customFeed": "RSS feed address",
+      "customAdd": "Add source",
+      "customRemove": "Remove {name}",
+      "search": "Backup search",
+      "searchHint": "If a story has fewer than 3 outlets covering it, these services are searched for more.",
+      "searchKey": "{provider} key",
+      "searchKeySave": "Save key",
+      "searchKeySaved": "Key saved in the system keychain",
+      "refresh": "Refresh sources now",
+      "refreshed": "{count, plural, =0 {No new articles} one {# new article} other {# new articles}} · {failed, plural, =0 {all feeds responded} other {# feeds failed}}"
+    },
+    "offline": {
+      "title": "Offline",
+      "enabled": "Download the daily edition",
+      "time": "Download time",
+      "wifiOnly": "Only on Wi‑Fi",
+      "acOnly": "Only when plugged in",
+      "articles": "Number of articles",
+      "maxMb": "Space limit (MB)",
+      "expiry": "Editions expire after (days)",
+      "expiryNote": "“Read later” never expires.",
+      "used": "{used} of {limit} MB",
+      "buildNow": "Download the edition now",
+      "building": "Preparing the edition… {done}/{total}",
+      "built": "{count, plural, one {Edition ready: # article} other {Edition ready: # articles}}",
+      "editionTitle": "Today's edition",
+      "editionMeta": "Edition of {date} · {count, plural, one {# article} other {# articles}} · {mb} MB",
+      "essential": "The essentials",
+      "savedTitle": "Read later",
+      "search": "Search downloaded content",
+      "searchHint": "Search runs locally, even offline.",
+      "empty": "No edition has been downloaded yet.",
+      "cached": "Cached analysis"
+    }
   }
 }

@@ -276,5 +276,61 @@
     "closeBackground": "{count, plural, one {Hintergrund-Tab schließen} other {# Hintergrund-Tabs schließen}}",
     "quit": "App beenden",
     "later": "Jetzt nicht"
+  },
+  "sources": {
+    "save": {
+      "add": "Für später speichern",
+      "remove": "Aus „Später lesen“ entfernen",
+      "saved": "Für das Offline-Lesen gespeichert"
+    },
+    "settings": {
+      "title": "Quellen",
+      "axis": "Gemessene Position jedes Mediums (0 links · 100 rechts)",
+      "axisNote": "Die Position wird aus Texten und öffentlichen Umfragen gemessen; sie ändert nie die Bewertung eines Artikels.",
+      "value": "{value} ± {uncertainty}",
+      "noData": "Nicht genug Daten",
+      "override": "Deine Korrektur",
+      "overrideLabel": "Position von {outlet} korrigieren",
+      "overrideSave": "Korrektur speichern",
+      "overrideRemove": "Korrektur entfernen",
+      "reliability": "Faktische Zuverlässigkeit: {pct} % ({n, plural, one {# Aussage} other {# Aussagen}})",
+      "topics": "Nach Thema",
+      "custom": "Eigene Quellen",
+      "customName": "Name des Mediums",
+      "customDomain": "Domain",
+      "customFeed": "Adresse des RSS-Feeds",
+      "customAdd": "Quelle hinzufügen",
+      "customRemove": "{name} entfernen",
+      "search": "Ergänzende Suche",
+      "searchHint": "Hat ein Ereignis weniger als 3 Berichte, wird in diesen Diensten nach weiteren gesucht.",
+      "searchKey": "Schlüssel für {provider}",
+      "searchKeySave": "Schlüssel speichern",
+      "searchKeySaved": "Schlüssel im Schlüsselbund gespeichert",
+      "refresh": "Quellen jetzt aktualisieren",
+      "refreshed": "{count, plural, =0 {Keine neuen Artikel} one {# neuer Artikel} other {# neue Artikel}} · {failed, plural, =0 {alle Feeds haben geantwortet} other {# Feeds fehlgeschlagen}}"
+    },
+    "offline": {
+      "title": "Offline",
+      "enabled": "Tagesausgabe herunterladen",
+      "time": "Uhrzeit des Downloads",
+      "wifiOnly": "Nur mit WLAN",
+      "acOnly": "Nur am Stromnetz",
+      "articles": "Anzahl der Artikel",
+      "maxMb": "Speicherlimit (MB)",
+      "expiry": "Ausgaben verfallen nach (Tagen)",
+      "expiryNote": "„Später lesen“ verfällt nie.",
+      "used": "{used} von {limit} MB",
+      "buildNow": "Ausgabe jetzt herunterladen",
+      "building": "Ausgabe wird vorbereitet… {done}/{total}",
+      "built": "{count, plural, one {Ausgabe bereit: # Artikel} other {Ausgabe bereit: # Artikel}}",
+      "editionTitle": "Die Tagesausgabe",
+      "editionMeta": "Ausgabe vom {date} · {count, plural, one {# Artikel} other {# Artikel}} · {mb} MB",
+      "essential": "Das Wichtigste",
+      "savedTitle": "Später lesen",
+      "search": "In Heruntergeladenem suchen",
+      "searchHint": "Die Suche läuft lokal, auch offline.",
+      "empty": "Noch keine Ausgabe heruntergeladen.",
+      "cached": "Zwischengespeicherte Analyse"
+    }
   }
 }

@@ -3,6 +3,10 @@ import type {
   AdblockStatus, BlockedCounts, DeleteScope, HistoryEntry, HistoryFilter, NetMode, PrivacyStatus, Rect, RefreshReport,
   SearchSource, Suggestion, TabId, TabInfo, TabsSnapshot, TabView,
 } from './types';
+import type {
+  BeginResult, CaptureInput, CaptureText, CdxRow, CoverageResult, CustomOutlet, Edition, EventCard, EventDetail, IngestReport,
+  LexiconScore, OfflineArticle, OfflineHit, OfflineSettings, OutletLean, SavedArticle, TextDiff, TopicState, Watch, WaybackHistory,
+} from './types';
 
 /** Único punto de la UI que conoce los nombres de los comandos Rust. Los subproyectos añaden entradas. */
 export const commands = {
@@ -60,4 +64,38 @@ export const commands = {
   adblockSetList: (id: string, enabled: boolean) => invoke<AdblockStatus>('adblock_set_list', { id, enabled }),
   adblockRefresh: () => invoke<RefreshReport>('adblock_refresh'),
   blockedCounts: (tabId?: TabId) => invoke<BlockedCounts>('blocked_counts', { tabId }),
+  feedsRefreshNow: () => invoke<IngestReport>('feeds_refresh_now'),
+  coverageFor: (url: string, title: string, excerpt?: string) => invoke<CoverageResult>('coverage_for', { url, title, excerpt }),
+  eventsBriefing: (limit?: number) => invoke<EventCard[]>('events_briefing', { limit }),
+  eventsSearch: (query: string) => invoke<EventCard[]>('events_search', { query }),
+  eventDetail: (eventId: number) => invoke<EventDetail | null>('event_detail', { eventId }),
+  outletsList: () => invoke<OutletLean[]>('outlets_list'),
+  outletOverrideSet: (outletId: string, lean: number | null, note?: string) => invoke<OutletLean[]>('outlet_override_set', { outletId, lean, note }),
+  outletStatsRecompute: () => invoke<number>('outlet_stats_recompute'),
+  customOutletsList: () => invoke<CustomOutlet[]>('custom_outlets_list'),
+  customOutletAdd: (outlet: CustomOutlet) => invoke<CustomOutlet[]>('custom_outlet_add', { outlet }),
+  customOutletRemove: (domain: string) => invoke<CustomOutlet[]>('custom_outlet_remove', { domain }),
+  topicsList: () => invoke<TopicState[]>('topics_list'),
+  topicSetFollowing: (topicId: string, following: boolean) => invoke<TopicState[]>('topic_set_following', { topicId, following }),
+  watchAdd: (w: { articleUrl?: string; query?: string; eventId?: number }) => invoke<string>('watch_add', w),
+  watchesList: () => invoke<Watch[]>('watches_list'),
+  lexiconScore: (text: string, locale: string) => invoke<LexiconScore>('lexicon_score', { text, locale }),
+  waybackCaptures: (url: string) => invoke<CdxRow[]>('wayback_captures', { url }),
+  waybackCaptureHtml: (url: string, timestamp: string) => invoke<string>('wayback_capture_html', { url, timestamp }),
+  waybackAnalyze: (url: string, captures: CaptureInput[]) => invoke<WaybackHistory>('wayback_analyze', { url, captures }),
+  waybackDiff: (a: CaptureText, b: CaptureText) => invoke<TextDiff>('wayback_diff', { a, b }),
+  savedAdd: (article: SavedArticle) => invoke<void>('saved_add', { article }),
+  savedRemove: (url: string) => invoke<void>('saved_remove', { url }),
+  savedList: () => invoke<SavedArticle[]>('saved_list'),
+  savedGet: (url: string) => invoke<SavedArticle | null>('saved_get', { url }),
+  offlineBegin: (date: string) => invoke<BeginResult>('offline_begin', { date }),
+  offlineFetchHtml: (url: string) => invoke<string>('offline_fetch_html', { url }),
+  offlineSaveImage: (editionId: string, name: string, dataBase64: string) => invoke<string>('offline_save_image', { editionId, name, dataBase64 }),
+  offlineAddArticle: (a: { editionId: string; url: string; title: string; outlet: string | null; articleJson: string; analysisJson: string | null }) =>
+    invoke<void>('offline_add_article', a),
+  offlineFinish: (editionId: string, summaryJson: string, date: string) => invoke<string[]>('offline_finish', { editionId, summaryJson, date }),
+  offlineEditions: () => invoke<Edition[]>('offline_editions'),
+  offlineEdition: (id: string) => invoke<OfflineArticle[]>('offline_edition', { id }),
+  offlineSearch: (query: string) => invoke<OfflineHit[]>('offline_search', { query }),
+  offlineCleanup: () => invoke<string[]>('offline_cleanup'),
 };

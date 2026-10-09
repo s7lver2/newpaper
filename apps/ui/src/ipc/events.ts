@@ -1,3 +1,4 @@
+import type { IngestReport, Watch } from './types';
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
 import type { PrivacyStatus, TabPageEvent, TabShortcutEvent, TabsSnapshot } from './types';
 
@@ -37,3 +38,8 @@ export const onAdblockBlocked = (cb: (e: { tabId: number; tabCount: number }) =>
   listen<{ tabId: number; tabCount: number }>('adblock://blocked', (e) => cb(e.payload));
 export const onAdblockCounts = (cb: (e: { tabs: Record<string, number>; today: number }) => void) =>
   listen<{ tabs: Record<string, number>; today: number }>('adblock://counts', (e) => cb(e.payload));
+
+export const onFeedsUpdated = (cb: (r: IngestReport) => void) => listen<IngestReport>('feeds://updated', (e) => cb(e.payload));
+export const onWatchFulfilled = (cb: (w: Watch) => void) => listen<Watch>('feeds://watch-fulfilled', (e) => cb(e.payload));
+export const onOfflineBuildRequested = (cb: (e: { date: string }) => void) =>
+  listen<{ date: string }>('offline://build-requested', (e) => cb(e.payload));

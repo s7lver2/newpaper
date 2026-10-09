@@ -276,5 +276,61 @@
     "closeBackground": "{count, plural, one {Cerrar la pestaña en segundo plano} other {Cerrar las # pestañas en segundo plano}}",
     "quit": "Cerrar la app",
     "later": "Ahora no"
+  },
+  "sources": {
+    "save": {
+      "add": "Guardar para leer más tarde",
+      "remove": "Quitar de «leer más tarde»",
+      "saved": "Guardado para leer sin conexión"
+    },
+    "settings": {
+      "title": "Fuentes",
+      "axis": "Posición medida de cada medio (0 izquierda · 100 derecha)",
+      "axisNote": "La posición se mide con los textos y encuestas públicas; nunca cambia la nota de un artículo.",
+      "value": "{value} ± {uncertainty}",
+      "noData": "Sin datos suficientes",
+      "override": "Tu corrección",
+      "overrideLabel": "Corregir la posición de {outlet}",
+      "overrideSave": "Guardar corrección",
+      "overrideRemove": "Quitar corrección",
+      "reliability": "Fiabilidad factual: {pct} % ({n, plural, one {# afirmación} other {# afirmaciones}})",
+      "topics": "Por tema",
+      "custom": "Fuentes propias",
+      "customName": "Nombre del medio",
+      "customDomain": "Dominio",
+      "customFeed": "Dirección del feed RSS",
+      "customAdd": "Añadir fuente",
+      "customRemove": "Quitar {name}",
+      "search": "Búsqueda de respaldo",
+      "searchHint": "Si un hecho tiene menos de 3 coberturas, se buscan más en estos servicios.",
+      "searchKey": "Clave de {provider}",
+      "searchKeySave": "Guardar clave",
+      "searchKeySaved": "Clave guardada en el llavero",
+      "refresh": "Actualizar fuentes ahora",
+      "refreshed": "{count, plural, =0 {Sin artículos nuevos} one {# artículo nuevo} other {# artículos nuevos}} · {failed, plural, =0 {todos los feeds respondieron} other {# feeds fallaron}}"
+    },
+    "offline": {
+      "title": "Sin conexión",
+      "enabled": "Descargar la edición del día",
+      "time": "Hora de descarga",
+      "wifiOnly": "Solo con Wi‑Fi",
+      "acOnly": "Solo conectado a la corriente",
+      "articles": "Número de artículos",
+      "maxMb": "Límite de espacio (MB)",
+      "expiry": "Caducidad de las ediciones (días)",
+      "expiryNote": "«Leer más tarde» no caduca.",
+      "used": "{used} de {limit} MB",
+      "buildNow": "Descargar la edición ahora",
+      "building": "Preparando la edición… {done}/{total}",
+      "built": "{count, plural, one {Edición lista: # artículo} other {Edición lista: # artículos}}",
+      "editionTitle": "La edición del día",
+      "editionMeta": "Edición del {date} · {count, plural, one {# artículo} other {# artículos}} · {mb} MB",
+      "essential": "Lo esencial",
+      "savedTitle": "Leer más tarde",
+      "search": "Buscar en lo descargado",
+      "searchHint": "La búsqueda funciona en local, también sin conexión.",
+      "empty": "Todavía no hay ninguna edición descargada.",
+      "cached": "Análisis en caché"
+    }
   }
 }
