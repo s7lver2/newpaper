@@ -48,7 +48,7 @@ Verificado en la app real (build `custom-protocol`, `NP_FAKE_TOR=1`, CDP + captu
 | Nueva pestaña | Riesgo marcado por el informe: URL falsa `newpaper://inicio?q=…` como artículo. Evaluado: la etapa `investigate` solo lee `article.text` y la URL (válida para el esquema) no toca caché, historial ni `onAnalyzed`; el fallo real era que no había estado de carga ni de error | Estados `busy` y error; la URL se mantiene como marcador documentado | cd9712a |
 | Pestañas | Las páginas internas nuevas se titulaban «Sin título» | Títulos para síntesis, hemeroteca, historial y posición | a50e554 |
 | Síntesis | Los gráficos SVG dibujaban sus textos al doble de tamaño (viewBox 320) | viewBox 480 en barras, línea y rangos; marco de tarjeta como el mockup | cd9712a |
-| Ajustes | El asistente de proveedores se pintaba dentro del Ajustes con barra lateral | Página completa para subpasos de Ajustes | pendiente de commit final |
+| Ajustes | El asistente de proveedores se pintaba dentro del Ajustes con barra lateral | Página completa para subpasos de Ajustes | fa9c235 |
 | Mock LLM | Respuestas JSON contrastadas con los esquemas zod: claims, loaded phrases, verdicts, juez, síntesis, no cubierto y aiDetect validan y producen análisis rápido, completo, agente e investigación en la app real | Sin cambios | - |
 
 ### Fidelidad con los mockups (rediseñado)
