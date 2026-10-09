@@ -12,3 +12,5 @@ Registro de errores y desviaciones encontrados al ejecutar el plan y cómo se co
 | 9 | `SegmentedControl` del ui-kit tipa `onChange` como `(v: string)`; el plan pasa el setter de `useState<AgentMode>` (TS2322) | Callback con cast a `AgentMode` (mismo patrón que la tarea 6 del plan 01) | 8d2b809 |
 | 9 | Un `sed` de la sección CSS dejó una valla ```` ```css ```` sobrante en `analysis.css` al añadir reglas | Se elimina la línea sobrante antes de commit | 8d2b809 |
 | 10 | El test de `ConsentDialog` usa `rerender` sin el `I18nProvider` (`useI18n must be used inside <I18nProvider>`) | Los `rerender` envuelven el componente en `I18nProvider` (la nota del plan ya lo prevenía) | (ver commit de la tarea 10) |
+| 14 | `startAutoAnalysis()` se llama al importar `features` y rechaza sin el puente de Tauri (`transformCallback`): error no capturado en los tests de `App` | `.catch(() => undefined)` en el registro: sin puente no hay análisis automático, pero no se rompe el arranque | 28fe61c |
+| 15 | Mismo `SegmentedControl` con `setState` como `onChange` que en la tarea 9 (TS2322) | Cast a `View` | d0f4e5f |
