@@ -1,0 +1,13 @@
+.np-wizard, .np-ai-section { display: grid; gap: 12px; font: 14px/1.5 var(--np-font-ui); }
+.np-wizard h2 { font: 600 20px var(--np-font-ui); margin: 0; }
+.np-wizard h3, .np-ai-section h3 { font: 600 11px var(--np-font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--np-muted); margin: 8px 0 0; }
+.np-wizard-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+.np-wizard-card { display: grid; gap: 4px; min-height: var(--np-hit); padding: 12px; border: 1px solid var(--np-line3); border-radius: var(--np-radius); background: var(--np-card); text-align: left; font: inherit; color: var(--np-ink); cursor: pointer; }
+.np-wizard-card--big { padding: 16px; }
+.np-wizard-card:hover, .np-wizard-card:focus-visible { border-color: var(--np-accent); }
+.np-wizard-key, .np-field { display: grid; gap: 4px; }
+.np-wizard-key input, .np-field input, .np-ai-section select { min-height: var(--np-hit); padding: 0 10px; border: 1px solid var(--np-line3); border-radius: 10px; background: var(--np-card); color: var(--np-ink); font: 14px var(--np-font-mono); }
+.np-wizard-detected { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.np-wizard-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.np-ai-connected { list-style: none; padding: 0; display: grid; gap: 4px; }
+.np-ai-connected li { display: flex; justify-content: space-between; align-items: center; min-height: var(--np-hit); }
