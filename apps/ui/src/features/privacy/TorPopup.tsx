@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { commands } from '../../ipc/commands';
 import type { PrivacyStatus } from '../../ipc/types';
 import { openInternal } from '../../shell/navigate';
+import { useViewportClamp } from '../../shell/popoverClamp';
 import { countryName, EXIT_COUNTRIES } from './countries';
 import { RouteMap } from './DotMap';
 import { TorRoute } from './TorRoute';
@@ -46,6 +47,8 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
   const [flight, setFlight] = useState<{ id: number; from: string; to: string; landed: boolean } | null>(null);
   const [circuitBusy, setCircuitBusy] = useState(false);
   const flightCount = useRef(0);
+  const root = useRef<HTMLDivElement>(null);
+  useViewportClamp(root);
 
   useEffect(() => {
     const onKey = (e: globalThis.KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -115,7 +118,7 @@ export function TorPopup({ tabId, onClose }: { tabId: number | null; onClose(): 
       : candidate === 'auto' ? t('privacy.tor.flyAuto') : t('privacy.tor.fly', { country: name(candidate) });
 
   return (
-    <div role="dialog" aria-label={t('privacy.tor.popupTitle')} className="np-popover np-tor-popup">
+    <div ref={root} role="dialog" aria-label={t('privacy.tor.popupTitle')} className="np-popover np-tor-popup">
       {status.mode === 'direct' ? (
         <div className="np-tor-body">
           <p className="np-tor-note">{t('privacy.tor.directNote')}</p>

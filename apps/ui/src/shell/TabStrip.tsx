@@ -6,6 +6,7 @@ import { commands } from '../ipc/commands';
 import type { TabGroup, TabInfo } from '../ipc/types';
 import { useBrowser } from '../state/browser';
 import { IconClose, IconList } from './icons';
+import { useViewportClamp } from './popoverClamp';
 import { useUnderlay } from './underlay';
 import { filterTabs, glyphOf, hostOf, segments } from './tabModel';
 
@@ -111,6 +112,7 @@ function TabList({ onClose }: { onClose: () => void }) {
   const { tabs, activeId, groups = [] } = useBrowser((s) => s.snapshot);
   const [q, setQ] = useState('');
   const ref = useRef<HTMLDivElement>(null);
+  useViewportClamp(ref);
   const shown = useMemo(() => filterTabs(tabs, q), [tabs, q]);
   const segs = useMemo(() => segments(shown, groups), [shown, groups]);
 

@@ -1,6 +1,7 @@
 import { useI18n } from '@newpaper/i18n/react';
 import { Button, Switch } from '@newpaper/ui-kit';
 import { useEffect, useId, useRef, useState } from 'react';
+import { useViewportClamp } from '../../shell/popoverClamp';
 import { useUnderlay } from '../../shell/underlay';
 import { commands } from '../../ipc/commands';
 import type { TabInfo } from '../../ipc/types';
@@ -22,6 +23,8 @@ export function ShieldBadge({ tab }: { tab: TabInfo | null }) {
   const [enabled, setEnabled] = useState(true);
   const panelId = useId();
   const wrap = useRef<HTMLDivElement>(null);
+  const panel = useRef<HTMLDivElement>(null);
+  useViewportClamp(panel, open);
 
   useEffect(() => {
     if (!open) return;
@@ -52,7 +55,7 @@ export function ShieldBadge({ tab }: { tab: TabInfo | null }) {
         <span className="np-shield-count np-mono" aria-hidden="true">{formatNumber(count, { useGrouping: false })}</span>
       </button>
       {open ? (
-        <div id={panelId} role="dialog" aria-label={t('privacy.shield.title')} className="np-popover">
+        <div ref={panel} id={panelId} role="dialog" aria-label={t('privacy.shield.title')} className="np-popover">
           <dl className="np-shield-stats">
             <div><dt>{t('privacy.shield.page')}</dt><dd className="np-mono">{formatNumber(count, { useGrouping: false })}</dd></div>
             <div><dt>{t('privacy.shield.today')}</dt><dd className="np-mono">{formatNumber(today, { useGrouping: false })}</dd></div>
