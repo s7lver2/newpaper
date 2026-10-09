@@ -21,6 +21,7 @@ np-net = { path = "crates/np-net" }
 np-feeds = { path = "crates/np-feeds" }
 np-lexicon = { path = "crates/np-lexicon" }
 np-wayback = { path = "crates/np-wayback" }
+np-ai-proxy = { path = "crates/np-ai-proxy" }
 base64 = "0.23.1"
 rusqlite = { workspace = true }
 serde = { workspace = true }

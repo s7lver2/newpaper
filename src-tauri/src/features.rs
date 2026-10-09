@@ -2,5 +2,6 @@
 pub fn setup_all(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>> {
     crate::privacy::setup(app)?;
     crate::sources::setup(app)?;
+    crate::ai::setup(app)?;
     Ok(())
 }

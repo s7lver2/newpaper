@@ -3507,6 +3507,7 @@ dependencies = [
  "base64 0.23.1",
  "chrono",
  "np-adblock",
+ "np-ai-proxy",
  "np-feeds",
  "np-lexicon",
  "np-net",

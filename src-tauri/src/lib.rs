@@ -1,3 +1,4 @@
+pub mod ai;
 pub mod commands;
 pub mod config;
 pub mod error;
@@ -98,6 +99,15 @@ pub fn run() {
             sources::offline_cmds::offline_editions,
             sources::offline_cmds::offline_edition,
             sources::offline_cmds::offline_search,
+            ai::commands::ai_fetch,
+            ai::commands::ai_cancel,
+            ai::commands::ai_set_endpoints,
+            ai::commands::source_fetch,
+            ai::commands::analysis_cache_get,
+            ai::commands::analysis_cache_put,
+            ai::commands::usage_record,
+            ai::commands::usage_month,
+            ai::commands::ai_local_probe,
             sources::offline_cmds::offline_cleanup,
         ])
         .run(tauri::generate_context!())
