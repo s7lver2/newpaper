@@ -1,0 +1,19 @@
+.np-newtab { max-width: 760px; margin: 0 auto; padding: 48px 20px 64px; display: grid; gap: 24px; font: 14px/1.5 var(--np-font-ui); }
+.np-newtab h1 { font: 500 36px/1.15 var(--np-font-read); margin: 4px 0 0; }
+.np-newtab h2 { font: 600 11px var(--np-font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--np-muted); margin: 0 0 8px; }
+.np-newtab-search { position: relative; }
+.np-newtab-search input { width: 100%; min-height: 52px; padding: 0 20px; border: 1px solid var(--np-line3); border-radius: 999px; background: var(--np-card); font: 17px var(--np-font-ui); color: var(--np-ink); box-sizing: border-box; }
+.np-newtab-suggest { position: absolute; left: 0; right: 0; top: 56px; z-index: 3; list-style: none; margin: 0; padding: 6px; border-radius: 14px; background: var(--np-card); box-shadow: 0 10px 30px rgb(0 0 0 / .12); }
+.np-newtab-suggest button { width: 100%; min-height: var(--np-hit); border: 0; background: none; text-align: left; font: 14px var(--np-font-ui); color: var(--np-ink); cursor: pointer; border-radius: 8px; }
+.np-newtab-suggest button:hover, .np-newtab-suggest button:focus-visible { background: var(--np-soft); }
+.np-cards { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.np-card { width: 100%; display: grid; gap: 6px; padding: 14px; border: 1px solid var(--np-line); border-radius: var(--np-radius); background: var(--np-card); text-align: left; cursor: pointer; color: var(--np-ink); }
+.np-card-title { font: 600 16px/1.3 var(--np-font-read); }
+.np-card-meta { font: 11px var(--np-font-mono); color: var(--np-muted); }
+.np-leanmix { display: flex; height: 4px; border-radius: 2px; overflow: hidden; background: var(--np-soft); }
+.np-leanmix-l { background: var(--np-left); } .np-leanmix-c { background: var(--np-center); } .np-leanmix-r { background: var(--np-right); }
+.np-topics { display: flex; flex-wrap: wrap; gap: 8px; }
+.np-topic { min-height: var(--np-hit); padding: 0 14px; border: 1px solid var(--np-line3); border-radius: 999px; background: var(--np-card); font: 13px var(--np-font-ui); cursor: pointer; }
+.np-topic[aria-pressed='true'] { background: var(--np-ink); color: var(--np-on-ink); border-color: var(--np-ink); }
+.np-continue { list-style: none; padding: 0; display: grid; gap: 6px; }
+.np-continue li { display: flex; justify-content: space-between; gap: 8px; min-height: var(--np-hit); align-items: center; }
