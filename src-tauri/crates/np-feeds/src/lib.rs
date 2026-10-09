@@ -8,5 +8,6 @@ pub mod text;
 pub mod tfidf;
 pub mod fetch;
 pub mod parse;
+pub mod repo;
 
 pub use error::{FeedsError, Result};

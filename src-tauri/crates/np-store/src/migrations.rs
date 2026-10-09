@@ -22,6 +22,11 @@ pub const MIGRATIONS: &[Migration] = &[Migration {
         name: "blocked_stats",
         sql: include_str!("../../np-adblock/sql/blocked_stats.sql"),
     },
+    Migration {
+        version: 3,
+        name: "sources",
+        sql: include_str!("../../np-feeds/sql/0003_sources.sql"),
+    },
 ];
 
 pub fn migrate(conn: &mut Connection) -> Result<u32, StoreError> {
