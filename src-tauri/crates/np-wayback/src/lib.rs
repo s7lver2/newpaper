@@ -1,5 +1,7 @@
 //! Hemeroteca (§5.3): capturas del Internet Archive, diff por palabras y ediciones.
 pub mod cdx;
+pub mod diff;
+pub mod editions;
 pub mod repo;
 
 #[derive(Debug, thiserror::Error)]
