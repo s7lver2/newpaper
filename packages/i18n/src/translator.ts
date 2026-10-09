@@ -42,8 +42,8 @@ export function createTranslator(
     },
     has: (key) => source[locale]?.[key] !== undefined,
     formatDate: (date, options) => new Intl.DateTimeFormat(tag, options).format(date),
-    formatNumber: (value, options) => new Intl.NumberFormat(tag, options).format(value),
-    formatCurrency: (value, currency) => new Intl.NumberFormat(tag, { style: 'currency', currency }).format(value),
+    formatNumber: (value, options) => new Intl.NumberFormat(tag, options).format(value + 0), // + 0: -0 would print as "-0"
+    formatCurrency: (value, currency) => new Intl.NumberFormat(tag, { style: 'currency', currency }).format(value + 0),
     formatRelativeDays: (days) => new Intl.RelativeTimeFormat(tag, { numeric: 'auto' }).format(days, 'day'),
   };
 }
