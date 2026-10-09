@@ -11,6 +11,8 @@ import type { ReaderSurfaceProps } from './registry';
 
 /** Imagen por el proxy `npimg`; `r` lleva la página para que Rust envíe el Referer (solo el origen). */
 export const rewriteImage = (absUrl: string, pageUrl?: string): string => {
+  // Las imágenes de una edición sin conexión ya son locales (protocolo `npoffline`).
+  if (absUrl.startsWith('http://npoffline.localhost/')) return absUrl;
   const base = convertFileSrc(absUrl, 'npimg');
   return pageUrl ? `${base}?r=${encodeURIComponent(pageUrl)}` : base;
 };
