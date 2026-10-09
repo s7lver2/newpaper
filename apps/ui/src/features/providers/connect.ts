@@ -1,5 +1,6 @@
 import type { ProviderEntry } from '@newpaper/pipeline';
 import { commands } from '../../ipc/commands';
+import { fetchLiveModels, pickFallback, saveLiveModels } from '../ai/liveModels';
 import { getPipeline, resetPipeline, type useAiSettings } from '../ai/pipeline';
 
 export interface CustomDraft { baseUrl: string; models: string }
@@ -33,8 +34,15 @@ export async function storeCredentials(p: ProviderEntry, key: string, custom: Cu
 /** Una llamada mínima al modelo; solo contiene la clave que ya está en el llavero. */
 export async function runConnectionTest(p: ProviderEntry, model: string): Promise<TestResult> {
   try {
+    // Los proveedores retiran modelos: si el del registro ya no existe, se prueba (y se usará) uno vivo.
+    const live = await fetchLiveModels(p);
+    let use = model;
+    if (live) {
+      await saveLiveModels(p.id, live).catch(() => {});
+      if (!live.includes(model)) use = pickFallback(live) ?? model;
+    }
     resetPipeline();
-    const r = await (await getPipeline()).testConnection({ provider: p.id, model });
+    const r = await (await getPipeline()).testConnection({ provider: p.id, model: use });
     return { ok: r.ok, latencyMs: r.latencyMs, error: r.ok ? null : r.error };
   } catch (e) {
     return { ok: false, latencyMs: 0, error: errorText(e) };
