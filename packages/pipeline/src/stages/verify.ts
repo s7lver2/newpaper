@@ -25,6 +25,8 @@ const host = (u: string) => {
 const inDomains = (u: string, domains: string[]) => domains.some((d) => host(u) === d || host(u).endsWith(`.${d}`));
 
 function mediaOf(html: string, base: string): RetrievedSource['media'] {
+  // Sin DOM (entornos de prueba sin jsdom) no hay medios que extraer; en WebView2 DOMParser siempre existe.
+  if (typeof DOMParser === 'undefined') return [];
   const doc = new DOMParser().parseFromString(html, 'text/html');
   const abs = (u: string | null) => {
     try {

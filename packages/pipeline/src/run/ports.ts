@@ -6,6 +6,7 @@ import type { UsageSink } from '../cost/estimate';
 import type { OutputLocale } from '../llm/language';
 import type { Registry } from '../registry/registry';
 import type { Coverage } from '../schemas/coverage';
+import type { FramingWeights } from '../stages/framing';
 
 export interface CoverageResult { eventId: number | null; coverages: Coverage[]; outletCount: number; searched: boolean; searchSkipped: string | null; enough: boolean }
 export interface LexiconScore { status: 'ok' | 'insufficient' | 'unavailable'; value: number | null; confidence: number; matches: { phrase: string; weight: number; start: number; end: number }[] }
@@ -34,6 +35,10 @@ export interface PipelineDeps {
   extract: ExtractFn;
   /** Dominios de fuentes primarias del idioma de contenidos. */
   primaryDomains(): Promise<string[]>;
+  /** Ids de partido de `config/parties-<locale>.json` (validan el hemiciclo). */
+  partyIds(): Promise<string[]>;
+  /** Pesos de `config/framing-weights.json`. */
+  framingWeights(): Promise<FramingWeights>;
   locale(): OutputLocale;
   onAnalyzed?(url: string): Promise<void>;
 }
