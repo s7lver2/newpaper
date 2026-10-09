@@ -18,7 +18,7 @@
         "default-src": "'self'",
         "script-src": "'self'",
         "style-src": "'self' 'unsafe-inline'",
-        "img-src": "'self' data: blob: http://npimg.localhost npimg:",
+        "img-src": "'self' data: blob: http://npimg.localhost npimg: http://npoffline.localhost npoffline:",
         "font-src": "'self' data:",
         "connect-src": "'self' ipc: http://ipc.localhost ws://localhost:1420",
         "object-src": "'none'",

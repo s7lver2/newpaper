@@ -27,6 +27,11 @@ pub const MIGRATIONS: &[Migration] = &[Migration {
         name: "sources",
         sql: include_str!("../../np-feeds/sql/0003_sources.sql"),
     },
+    Migration {
+        version: 4,
+        name: "offline",
+        sql: include_str!("../../np-feeds/sql/0004_offline.sql"),
+    },
 ];
 
 pub fn migrate(conn: &mut Connection) -> Result<u32, StoreError> {

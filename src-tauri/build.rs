@@ -15,6 +15,8 @@ const APP_COMMANDS: &[&str] = &[
     "outlet_override_set", "outlet_stats_recompute", "custom_outlets_list", "custom_outlet_add", "custom_outlet_remove",
     "topics_list", "topic_set_following", "watch_add", "watches_list", "lexicon_score",
     "wayback_captures", "wayback_capture_html", "wayback_analyze", "wayback_diff",
+    "saved_add", "saved_remove", "saved_list", "saved_get", "offline_begin", "offline_fetch_html", "offline_save_image",
+    "offline_add_article", "offline_finish", "offline_editions", "offline_edition", "offline_search", "offline_cleanup",
 ];
 
 fn main() {

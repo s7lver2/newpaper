@@ -20,6 +20,8 @@
     "allow-outlets-list", "allow-outlet-override-set", "allow-outlet-stats-recompute", "allow-custom-outlets-list",
     "allow-custom-outlet-add", "allow-custom-outlet-remove", "allow-topics-list", "allow-topic-set-following",
     "allow-watch-add", "allow-watches-list", "allow-lexicon-score",
-    "allow-wayback-captures", "allow-wayback-capture-html", "allow-wayback-analyze", "allow-wayback-diff"
+    "allow-wayback-captures", "allow-wayback-capture-html", "allow-wayback-analyze", "allow-wayback-diff",
+    "allow-saved-add", "allow-saved-remove", "allow-saved-list", "allow-saved-get", "allow-offline-begin", "allow-offline-fetch-html", "allow-offline-save-image",
+    "allow-offline-add-article", "allow-offline-finish", "allow-offline-editions", "allow-offline-edition", "allow-offline-search", "allow-offline-cleanup"
   ]
 }

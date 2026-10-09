@@ -3485,6 +3485,7 @@ name = "np-app"
 version = "0.1.0"
 dependencies = [
  "async-trait",
+ "base64 0.23.1",
  "chrono",
  "np-adblock",
  "np-feeds",
@@ -3505,6 +3506,7 @@ dependencies = [
  "tracing",
  "tracing-subscriber",
  "url",
+ "windows",
 ]
 
 [[package]]

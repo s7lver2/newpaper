@@ -1,5 +1,7 @@
 //! Subproyecto 3: fuentes, hechos, línea editorial, hemeroteca y lectura sin conexión.
 pub mod commands;
+pub mod offline_cmds;
+pub mod offline_sched;
 pub mod wayback;
 
 use std::{collections::HashMap, sync::{Arc, RwLock}, time::Duration};
@@ -154,5 +156,6 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
         }
     });
 
+    offline_sched::spawn(app.handle().clone());
     Ok(())
 }

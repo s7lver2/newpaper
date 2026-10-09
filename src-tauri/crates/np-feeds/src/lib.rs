@@ -15,10 +15,12 @@ pub mod fetch;
 pub mod ingest;
 pub mod events;
 pub mod lean;
+pub mod offline;
 pub mod parse;
 pub mod priors;
 pub mod stats;
 pub mod repo;
+pub mod saved;
 pub mod search;
 
 pub use error::{FeedsError, Result};

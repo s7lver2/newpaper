@@ -14,6 +14,7 @@ pub fn run() {
         .init();
     tauri::Builder::default()
         .register_asynchronous_uri_scheme_protocol("npimg", npimg::handle)
+        .register_asynchronous_uri_scheme_protocol("npoffline", sources::offline_cmds::protocol)
         .setup(setup::setup)
         .invoke_handler(tauri::generate_handler![
             commands::tabs::tab_open,
@@ -85,6 +86,19 @@ pub fn run() {
             sources::wayback::wayback_capture_html,
             sources::wayback::wayback_analyze,
             sources::wayback::wayback_diff,
+            sources::offline_cmds::saved_add,
+            sources::offline_cmds::saved_remove,
+            sources::offline_cmds::saved_list,
+            sources::offline_cmds::saved_get,
+            sources::offline_cmds::offline_begin,
+            sources::offline_cmds::offline_fetch_html,
+            sources::offline_cmds::offline_save_image,
+            sources::offline_cmds::offline_add_article,
+            sources::offline_cmds::offline_finish,
+            sources::offline_cmds::offline_editions,
+            sources::offline_cmds::offline_edition,
+            sources::offline_cmds::offline_search,
+            sources::offline_cmds::offline_cleanup,
         ])
         .run(tauri::generate_context!())
         .expect("error while running newpaper");
