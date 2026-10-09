@@ -16,5 +16,6 @@ pub mod parse;
 pub mod priors;
 pub mod stats;
 pub mod repo;
+pub mod search;
 
 pub use error::{FeedsError, Result};
