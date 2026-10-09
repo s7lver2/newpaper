@@ -37,3 +37,6 @@ export { MatrixChart } from './charts/MatrixChart';
 export { TableChart } from './charts/TableChart';
 export { TILE_GRIDS, gridFor, type GridId } from './charts/tileGrids';
 export { TileMap } from './charts/TileMap';
+export { hemicycleLayout, assignSeats, coalitionSeats, majorityOf, rowsFor, type Seat, type PartySeats } from './charts/parliament/hemicycle';
+export { ParliamentChart, ParliamentTable, type ParliamentLabels } from './charts/parliament/ParliamentChart';
+export { VisualizationView, type VizLabels, type PartyInfo } from './charts/VisualizationView';

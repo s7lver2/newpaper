@@ -30,3 +30,15 @@
 @keyframes np-grow { from { transform: scaleY(0); } }
 @keyframes np-draw { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .np-grow, .np-draw { animation: none; stroke-dashoffset: 0; } }
+.np-seat { transition: opacity 200ms var(--np-ease); }
+.np-seat--off { opacity: .22; }
+.np-parl-axis { stroke: var(--np-ink); stroke-dasharray: 2 3; }
+.np-parl-sum { font: 700 22px var(--np-font-ui); fill: var(--np-ink); }
+.np-parl-status { font: 13px var(--np-font-ui); color: var(--np-muted); margin: 6px 0; }
+.np-parl-status--ok { color: var(--np-ok); font-weight: 600; }
+.np-parl-parties { display: flex; flex-wrap: wrap; gap: 6px; }
+.np-parl-party { display: inline-flex; align-items: center; gap: 6px; min-height: var(--np-hit); padding: 0 10px; border: 1px solid var(--np-line3); border-radius: 999px; background: var(--np-card); font: 12px var(--np-font-ui); cursor: pointer; }
+.np-parl-party[aria-pressed='true'] { border-color: var(--np-ink); background: var(--np-soft); font-weight: 600; }
+.np-parl-party i { width: 10px; height: 10px; border-radius: 50%; }
+.np-parl-reset { min-height: var(--np-hit); border: 0; background: none; color: var(--np-accent); font: 12px var(--np-font-ui); cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .np-seat { transition: none; } }
