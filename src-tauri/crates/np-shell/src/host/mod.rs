@@ -445,6 +445,13 @@ impl TabManager {
 
     async fn create_webview(&self, id: TabId, url: url::Url, private: bool) -> Result<(), ShellError> {
         tracing::debug!(tab = id, "create_webview begin");
+        // Pestaña nueva, recreada o venida del lector hacia un medio: la superficie de carga sale ya (sin esperar
+        // a que la webview exista) y la original no se enseña hasta saber si abre el lector.
+        if self.ext.reader_auto_open() && (self.is_known_site(url.as_str()) || self.tab(id).is_some_and(|t| t.view == TabView::Reader)) {
+            self.hold_reader(id);
+            self.apply_visibility();
+            self.emit_tabs();
+        }
         let window = self.app.get_window(MAIN_WINDOW).ok_or(ShellError::NoWindow)?;
         let profile = self.ext.profile_for_tab(id);
         let label = format!("tab-{id}-{}", self.label_seq.fetch_add(1, Ordering::Relaxed));
@@ -772,6 +779,13 @@ impl TabManager {
             return self.recreate_tab(id).await;
         }
         if let Some(wv) = self.webview(id) {
+            // Recargar un artículo (o cualquier página de un medio) vuelve a abrir el lector: la original no se ve.
+            if tab.kind == TabKind::Web && self.ext.reader_auto_open() && (self.is_known_site(&tab.url) || tab.view == TabView::Reader) {
+                self.hold_reader(id);
+                self.update(id, |t| t.failure = None);
+                self.apply_visibility();
+                self.emit_tabs();
+            }
             self.update(id, |t| t.failure = None);
             wv.reload()?;
         }
