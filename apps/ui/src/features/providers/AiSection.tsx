@@ -48,7 +48,12 @@ export function AiSection() {
   return (
     <div className="np-ai-section">
       <h3>{t('providers.connected')}</h3>
-      {ai.connected.length === 0 && Object.keys(local).length === 0 ? <p className="np-muted">{t('providers.noneConnected')}</p> : null}
+      {ai.connected.length === 0 && Object.keys(local).length === 0 ? (
+        <div className="np-wizard-detected">
+          <p className="np-muted">{t('providers.noneConnected')}</p>
+          <p>{t('providers.subtitle')}</p>
+        </div>
+      ) : null}
       <ul className="np-ai-connected">
         {ai.connected.map((id) => (
           <li key={id}>
