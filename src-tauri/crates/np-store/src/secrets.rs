@@ -38,12 +38,12 @@ impl SecretStore for MemorySecrets {
     }
 }
 
-#[cfg(windows)]
+#[cfg(any(windows, target_os = "linux"))]
 pub struct KeyringSecrets {
     service: String,
 }
 
-#[cfg(windows)]
+#[cfg(any(windows, target_os = "linux"))]
 impl KeyringSecrets {
     pub fn new(service: &str) -> Self {
         Self { service: service.to_string() }
@@ -54,7 +54,7 @@ impl KeyringSecrets {
     }
 }
 
-#[cfg(windows)]
+#[cfg(any(windows, target_os = "linux"))]
 impl SecretStore for KeyringSecrets {
     fn get(&self, key: &str) -> Result<Option<String>, StoreError> {
         match self.entry(key)?.get_password() {
@@ -102,9 +102,9 @@ mod tests {
         assert!(s.set(&"a".repeat(65), "x").is_err());
     }
 
-    #[cfg(windows)]
+    #[cfg(any(windows, target_os = "linux"))]
     #[test]
-    #[ignore = "toca el Administrador de credenciales real; ejecutar con --ignored"]
+    #[ignore = "toca el llavero real (Credential Manager o Secret Service); ejecutar con --ignored"]
     fn keyring_store_round_trip() {
         exercise(&KeyringSecrets::new("newpaper-test"));
     }

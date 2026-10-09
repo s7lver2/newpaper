@@ -16,5 +16,8 @@ url = { workspace = true }
 [target.'cfg(windows)'.dependencies]
 keyring = { version = "3.6", features = ["windows-native"] }
 
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "3.6", features = ["sync-secret-service", "crypto-rust"] }
+
 [dev-dependencies]
 tempfile = { workspace = true }

@@ -14,9 +14,9 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     let data = app.path().app_local_data_dir()?;
     let store = Arc::new(Store::open(data.join("newpaper.sqlite"))?);
 
-    #[cfg(windows)]
+    #[cfg(any(windows, target_os = "linux"))]
     let secrets: Arc<dyn SecretStore> = Arc::new(np_store::secrets::KeyringSecrets::new("newpaper"));
-    #[cfg(not(windows))]
+    #[cfg(not(any(windows, target_os = "linux")))]
     let secrets: Arc<dyn SecretStore> = Arc::new(np_store::secrets::MemorySecrets::default());
 
     let outlets = Arc::new(OutletIndex::load(app.handle()));
