@@ -184,6 +184,21 @@
       "deleteAllHint": "Das lässt sich nicht rückgängig machen.",
       "deleteOutletHint": "Entfernt alle Besuche einer Domain.",
       "deleteAction": "Löschen"
+    },
+    "ai": {
+      "title": "KI",
+      "description": "Anbieter, Modell für jeden Schritt und Ausgaben"
+    },
+    "analysis": {
+      "title": "Analyse",
+      "description": "Wann analysiert wird und was angezeigt wird",
+      "quickOnOpen": "Schnellanalyse beim Öffnen eines Artikels",
+      "quickOnOpenHint": "Mit einem lokalen Modell; vorläufig.",
+      "autoFull": "Automatische vollständige Analyse",
+      "autoFullHint": "Nutzt deine Anbieter bei jedem geöffneten Artikel. Kann Geld kosten.",
+      "detector": "Erkennung KI-generierter Texte",
+      "detectorHint": "Zeigt einen Hinweis pro Absatz. Niemals ein Beweis.",
+      "language": "Analysen werden in der Sprache der Oberfläche geschrieben; Zitate bleiben in ihrer Originalsprache."
     }
   },
   "privacy": {
@@ -413,5 +428,434 @@
       "reset": "Zurücksetzen",
       "neverChanges": "Die Position eines Mediums ändert nie die Bewertung eines Artikels. Sie entscheidet nur, mit welchen anderen Medien abgeglichen wird, damit die Mischung ausgewogen ist."
     }
+  },
+  "analysis": {
+    "panel": {
+      "label": "Analysebereich",
+      "analysis": "Analyse",
+      "coverage": "Berichterstattung",
+      "agent": "Agent",
+      "close": "Bereich schließen"
+    },
+    "toolbar": {
+      "label": "Analyse",
+      "title": "Analysebereich öffnen oder schließen (Strg+Umschalt+A)"
+    },
+    "actions": {
+      "analyze": "Analysieren",
+      "full": "Vollständige Analyse starten",
+      "synthesis": "Neutrale Fassung ansehen",
+      "hemeroteca": "Änderungen ansehen"
+    },
+    "lens": {
+      "toggle": "Bias-Linse",
+      "loaded": "Wertende Formulierung"
+    },
+    "selection": {
+      "label": "Den Agenten zur Auswahl fragen",
+      "ask": "Fragen",
+      "verify": "Prüfen",
+      "explain": "Erklären"
+    },
+    "needsArticle": "Öffne einen Artikel, um ihn zu analysieren.",
+    "empty": "Dieser Artikel wurde noch nicht analysiert.",
+    "running": "Wird analysiert…",
+    "error": "Die Analyse wurde nicht abgeschlossen: {message}",
+    "noScore": "Noch keine Bewertung",
+    "neutrality": "Neutralität: {value} von 100",
+    "neutralityCaption": "Neutralität",
+    "mode": {
+      "quick": "Schnellanalyse · vorläufig",
+      "full": "Vollständige Analyse"
+    },
+    "capped": "Du hast dein Monatslimit erreicht: Diese Analyse lief mit lokalen Modellen.",
+    "disagreement": "Zwei verschiedene Modelle sind sich bei der Position uneinig. Mit Vorsicht betrachten.",
+    "whyPosition": "Warum diese Position?",
+    "axis": {
+      "label": "Position des Textes gegenüber der Berichterstattung über dasselbe Ereignis",
+      "left": "links",
+      "center": "Mitte",
+      "right": "rechts",
+      "article": "dieser Artikel",
+      "band": "Unsicherheitsband",
+      "groupCenter": "Mitte der Gruppe"
+    },
+    "verdictText": {
+      "neutral": "Neutral",
+      "sesgo_leve": "Leicht einseitig",
+      "sesgado": "Einseitig",
+      "muy_sesgado": "Stark einseitig",
+      "no_determinable": "Nicht bestimmbar"
+    },
+    "verdict": {
+      "verificado": "Bestätigt",
+      "enganoso": "Irreführend",
+      "falso": "Falsch",
+      "falta_contexto": "Kontext fehlt",
+      "opinion": "Meinung",
+      "no_verificable": "Nicht überprüfbar",
+      "pendiente": "Nicht geprüft"
+    },
+    "claims": {
+      "title": "Behauptungen"
+    },
+    "loadedCount": "{n, plural, one {# wertende Formulierung im Text} other {# wertende Formulierungen im Text}}",
+    "ai": {
+      "title": "Möglicherweise KI-generierter Text",
+      "probability": "Wahrscheinlichkeit für generierten Text: {value}",
+      "disclaimer": "Ein Hinweis, kein Beweis.",
+      "signal": {
+        "burstiness": "Gleichförmiger Satzrhythmus",
+        "templates": "Floskeln",
+        "repetition": "Wiederholte Satzanfänge",
+        "c2pa": "Bilder ohne Inhaltsnachweis",
+        "llm": "Urteil eines Modells"
+      }
+    },
+    "stagesLabel": "Analyseschritte",
+    "stage": {
+      "claims": "Behauptungen",
+      "quickScore": "Schnellbewertung",
+      "verify": "Prüfung",
+      "score": "Position und Neutralität",
+      "judgeB": "Zweiter Prüfer",
+      "synthesis": "Neutrale Fassung",
+      "aiDetect": "KI-Erkennung",
+      "agent": "Agent",
+      "investigate": "Recherche ohne Berichterstattung"
+    },
+    "stageStatus": {
+      "pending": "wartet",
+      "running": "läuft",
+      "done": "fertig",
+      "cached": "zwischengespeichert",
+      "failed": "fehlgeschlagen",
+      "skipped": "kein Modell"
+    }
+  },
+  "agent": {
+    "title": "Agent",
+    "needsArticle": "Öffne einen Artikel, um Fragen dazu zu stellen.",
+    "context": "Artikel, {coverages, plural, one {# Bericht} other {# Berichte}} und {sources, plural, one {# Quelle} other {# Quellen}} im Kontext",
+    "wide": "Agent verbreitern",
+    "narrow": "Agent verschmälern",
+    "empty": "Frag alles zu diesem Artikel oder markiere eine Passage.",
+    "placeholder": "Deine Frage",
+    "send": "Senden",
+    "stop": "Anhalten",
+    "clearFragment": "Passage entfernen",
+    "mode": {
+      "label": "Modus",
+      "ask": "Fragen",
+      "verify": "Prüfen",
+      "explain": "Erklären"
+    },
+    "auto": {
+      "ask": "Was kannst du mir zu dieser Passage sagen?",
+      "verify": "Stimmt diese Passage?",
+      "explain": "Erkläre mir den Kontext dieser Passage."
+    },
+    "tools": {
+      "searchCoverage": "sucht Berichte",
+      "fetchSource": "liest eine Quelle",
+      "getVerdicts": "prüft die Bewertungen",
+      "renderVisualization": "zeichnet ein Diagramm",
+      "showMedia": "zeigt ein Bild aus der Quelle"
+    },
+    "openVideo": "Video in der Quelle ansehen",
+    "mediaNote": "Originalbilder der zitierten Quellen, niemals generiert.",
+    "noModel": "Dem Agenten ist kein Modell zugewiesen. Verbinde eines unter Einstellungen › KI oder nutze ein lokales Modell.",
+    "error": "Der Agent konnte nicht antworten: {message}"
+  },
+  "charts": {
+    "sources": "Quellen:",
+    "showTable": "Als Tabelle zeigen",
+    "showChart": "Diagramm zeigen",
+    "label": "Bezeichnung",
+    "value": "Wert",
+    "region": "Region",
+    "matrix": {
+      "si": "Ja",
+      "par": "Teilweise",
+      "mal": "Schlecht",
+      "no": "Nein"
+    },
+    "parliament": {
+      "chart": "Sitzverteilung",
+      "majority": "{n} · Mehrheit",
+      "seatsFor": "{n, plural, one {# Sitz dafür} other {# Sitze dafür}}",
+      "reached": "Mehrheit erreicht",
+      "short": "{n, plural, one {# Sitz fehlt} other {# Sitze fehlen}}",
+      "hint": "Tippe auf eine Partei, um sie zum „Ja“ hinzuzufügen oder zu entfernen",
+      "party": "Partei",
+      "seats": "Sitze",
+      "vote": "Angenommene Stimme",
+      "yes": "Ja",
+      "no": "Nein",
+      "reset": "Neu beginnen"
+    }
+  },
+  "coverage": {
+    "title": "Berichterstattung über dasselbe Ereignis",
+    "needsArticle": "Öffne einen Artikel, um zu sehen, wie andere Medien berichten.",
+    "loading": "Berichte werden gesucht…",
+    "error": "Die Berichterstattung konnte nicht geladen werden.",
+    "summary": "{outlets, plural, =0 {Noch kein anderes Medium hat berichtet} one {# Medium berichtet} other {# Medien berichten}}",
+    "noSearchKey": "Füge unter Einstellungen › Quellen einen Suchschlüssel hinzu, um mehr Berichte zu finden.",
+    "searchFailed": "Die Ersatzsuche hat nicht geantwortet.",
+    "bucket": {
+      "left": "Links",
+      "center": "Mitte",
+      "right": "Rechts",
+      "unknown": "Nicht gemessen"
+    },
+    "leanTitle": "Gemessene redaktionelle Linie des Mediums (0 links – 100 rechts)",
+    "leanUnknown": "nicht gemessen",
+    "howMeasured": "Wie die Linie jedes Mediums gemessen wird"
+  },
+  "position": {
+    "title": "Warum diese Position?",
+    "back": "Zurück zur Analyse",
+    "none": "Es wurde noch keine Position berechnet.",
+    "intro": "Gemessen wird am Text, nie am Ruf des Mediums. Das Modell liest den anonymisierten Artikel und vergleicht ihn mit den anderen Berichten über dasselbe Ereignis.",
+    "blind": "Blindlesung: Medium verborgen",
+    "relative": "Neutral heißt nah an der Mitte der Gruppe, nicht in der Mitte der Skala.",
+    "signals": "Signale",
+    "signalsHint": "Jedes mit einem Zitat aus dem Text als Beleg. Ohne Zitat zählt das Signal nicht.",
+    "signal": {
+      "lexico": "Wortwahl",
+      "encuadre": "Rahmung",
+      "voces": "Zitierte Stimmen",
+      "atribucion": "Zuschreibende Verben",
+      "adjetivacion": "Adjektive",
+      "omision": "Auslassungen",
+      "orden": "Reihenfolge und Schlagzeile"
+    },
+    "voices": "Stimmen",
+    "voice": "{name}: {quotes, plural, one {# Zitat} other {# Zitate}}",
+    "lastWord": "Das letzte Wort hat {name}.",
+    "omissions": "Was andere Berichte enthalten und hier fehlt",
+    "lexicon": "Kalibrierte Wortwahl",
+    "lexiconBody": "Ein Wörterbuch parteiischer Ausdrücke aus dem Parlament: Für jeden Ausdruck wird gemessen, wie viel häufiger ihn ein Lager nutzt als das andere. Ein vom Modell unabhängiges Signal.",
+    "confidence": "Gesamtvertrauen",
+    "threshold": "Schwelle {value}",
+    "confidenceNote": "Ist das Vertrauen gering, steht „Nicht bestimmbar“ statt einer Zahl.",
+    "controls": "Kontrollen",
+    "judgesAgree": "Zwei Modelle stimmen überein",
+    "judgesDisagree": "Zwei Modelle stimmen nicht überein",
+    "judgesOff": "Der Modellvergleich wird mit einem zweiten starken Anbieter aktiviert.",
+    "mirror": "Spiegeltest",
+    "mirrorBody": "Akteure und Begriffe eines Lagers werden gegen die des anderen getauscht. Die Bewertung sollte sich umkehren.",
+    "mirrorRun": "Test wiederholen",
+    "mirrorRunning": "Wird geprüft…",
+    "mirrorResult": "Original {a} · Spiegel {b}.",
+    "mirrorOk": "Symmetrisch",
+    "mirrorBad": "Asymmetrisch: Prüfe das zugewiesene Modell"
+  },
+  "noCoverage": {
+    "title": "Kaum jemand hat darüber berichtet",
+    "body": "{outlets, plural, =0 {Kein Medium} one {Nur # Medium} other {Nur # Medien}} und keine Primärquelle. Es lässt sich nicht wie der Rest gegenprüfen.",
+    "investigate": "Trotzdem recherchieren",
+    "investigating": "Wird recherchiert…",
+    "watch": "Benachrichtigen, wenn berichtet wird",
+    "watching": "Wir melden uns",
+    "consent": {
+      "title": "Ohne Berichterstattung recherchieren",
+      "body": "Das Ergebnis wird nicht geprüft: Es kann Fehler enthalten und stützt sich auf sehr wenige Quellen.",
+      "checkbox": "Ich verstehe, dass das Ergebnis nicht geprüft ist",
+      "confirm": "Ungeprüft recherchieren",
+      "cancel": "Abbrechen"
+    },
+    "report": {
+      "title": "Ungeprüfter Bericht",
+      "badge": "Nicht geprüft",
+      "confidence": "Vertrauen {value}",
+      "howToCheck": "So prüfst du es selbst"
+    },
+    "tags": {
+      "fuente_unica": "Einzige Quelle",
+      "solo_redes": "Nur in sozialen Netzwerken",
+      "varias_no_oficiales": "Mehrere inoffizielle Quellen",
+      "sin_fuente": "Ohne Quelle"
+    }
+  },
+  "synthesis": {
+    "kicker": "Neutrale Fassung",
+    "loading": "Zusammenfassung wird geladen…",
+    "missing": "Diese Zusammenfassung ist nicht mehr zwischengespeichert. Analysiere den Artikel erneut.",
+    "view": {
+      "label": "Ansicht",
+      "brief": "Kurz",
+      "full": "Vollständig",
+      "changes": "Änderungen"
+    },
+    "facts": "Fakten",
+    "factKind": {
+      "hecho": "Fakt",
+      "atribuida": "Zugeschrieben",
+      "disputa": "Umstritten"
+    },
+    "parties": "Was jede Seite sagt",
+    "evidence": "Gewicht der Belege",
+    "unknowns": "Was noch unbekannt ist",
+    "removed": "(entfernt)"
+  },
+  "hemeroteca": {
+    "kicker": "Archiv",
+    "noUrl": "Die Adresse des Artikels fehlt.",
+    "loading": "Archivkopien werden gesucht…",
+    "progress": "Archivkopien werden gelesen: {done} von {total}",
+    "error": "Das Archiv konnte nicht abgefragt werden: {message}",
+    "none": "Das Archiv hat keine Kopien dieses Artikels.",
+    "silent": "{n, plural, one {# Mal ohne Hinweis geändert} other {# Mal ohne Hinweis geändert}}",
+    "notice": "Das Medium kennzeichnet Änderungen: {notice}",
+    "timeline": "Archivkopien",
+    "mode": {
+      "label": "Modus",
+      "unified": "Zusammengeführt",
+      "side": "Nebeneinander",
+      "read": "Kopie lesen"
+    },
+    "comparing": "Vergleich von {a} mit {b}",
+    "single": "Es gibt nur eine Kopie: nichts zu vergleichen.",
+    "edits": "Erkannte Änderungen",
+    "kind": {
+      "titular": "Schlagzeile",
+      "dato": "Zahl",
+      "parrafo_anadido": "Absatz hinzugefügt",
+      "parrafo_eliminado": "Absatz entfernt",
+      "texto": "Formulierung"
+    }
+  },
+  "providers": {
+    "loading": "Anbieter werden geladen…",
+    "title": "Anbieter verbinden",
+    "subtitle": "Drei Schritte, fertig. KI-Kenntnisse sind nicht nötig.",
+    "cat": {
+      "recommended": "Empfohlen",
+      "cloud": "Cloud",
+      "cloudHint": "Bezahlung nach Nutzung mit deinem eigenen Schlüssel",
+      "local": "Auf deinem Rechner",
+      "localHint": "Kostenlos und ohne Daten zu senden",
+      "advanced": "Erweitert"
+    },
+    "pitch": {
+      "openai": "Der bekannteste. Schnell und in fast allem gut.",
+      "nous": "Offene Hermes-Modelle ohne Stilfilter."
+    },
+    "connect": "{name} verbinden",
+    "pasteKey": "Hast du schon einen Schlüssel? Hier einfügen",
+    "pasteHint": "Wir erkennen den Anbieter am Anfang des Schlüssels.",
+    "detected": "Er gehört zu {name}.",
+    "ambiguous": "Dieser Schlüssel kann zu mehreren Anbietern gehören. Wähle einen:",
+    "unknownPrefix": "Wir erkennen dieses Präfix nicht. Wähle den Anbieter aus der Liste unten.",
+    "continue": "Weiter",
+    "detectedLocal": "{n, plural, one {erkannt · # Modell} other {erkannt · # Modelle}}",
+    "notRunning": "läuft nicht",
+    "customTitle": "OpenAI-kompatibel",
+    "customHint": "Dein eigener /v1-Endpunkt",
+    "customName": "Name",
+    "baseUrl": "Basisadresse",
+    "customModels": "Modelle (durch Kommas getrennt)",
+    "key": "Schlüssel",
+    "startsWith": "Beginnt mit {prefix}",
+    "keyStorage": "Dein Schlüssel wird verschlüsselt im Schlüsselbund des Systems gespeichert. Er verlässt deinen Rechner nur in Richtung {name}, und nicht einmal der Web-Teil von newpaper sieht ihn.",
+    "noKey": "Noch kein Schlüssel?",
+    "getKey": "Schlüssel holen",
+    "back": "Zurück",
+    "test": "Verbindung testen",
+    "testing": "Wird getestet…",
+    "testOk": "Verbunden in {ms} ms",
+    "testFail": "Hat nicht funktioniert: {message}",
+    "doneTitle": "{name} ist bereit",
+    "doneSub": "Bereit, mit dir Nachrichten zu lesen. Jedem Schritt wurde ein Modell zugewiesen.",
+    "where": {
+      "local": "Auf deinem Rechner"
+    },
+    "priceUnknown": "Preis unbekannt",
+    "estimate": "Geschätzte Kosten pro Analyse: {total}",
+    "estimateUnknown": "(ohne Modelle mit unbekanntem Preis)",
+    "another": "Weiteren Anbieter verbinden",
+    "done": "Fertig",
+    "connected": "Verbundene Anbieter",
+    "noneConnected": "Noch kein Anbieter verbunden.",
+    "disconnect": "Trennen",
+    "connectOne": "Anbieter verbinden",
+    "pipeline": "Modell für jeden Schritt",
+    "preset": {
+      "label": "Voreinstellung",
+      "privacy": "Volle Privatsphäre",
+      "balanced": "Ausgewogen",
+      "quality": "Beste Qualität",
+      "cheap": "Geringste Kosten"
+    },
+    "presetHint": {
+      "privacy": "Alles mit Modellen auf deinem Rechner. Nichts verlässt das Haus.",
+      "balanced": "Leichte Schritte lokal, wenn möglich; die wichtigen mit einem guten Cloud-Modell.",
+      "quality": "Die besten Modelle für jeden Schritt und ein zweiter Prüfer für die Position.",
+      "cheap": "Die günstigsten verbundenen Modelle."
+    },
+    "stage": "Schritt",
+    "model": "Modell",
+    "modelFor": "Modell für {stage}",
+    "backToAuto": "Zurück zur automatischen Zuweisung",
+    "auto": "Automatisch nach der Voreinstellung zugewiesen.",
+    "budget": "Ausgaben",
+    "limit": "Monatslimit (USD)",
+    "limitHint": "Ist das Limit erreicht, läuft die Analyse mit lokalen Modellen. Leer lassen für kein Limit.",
+    "spent": "Diesen Monat ausgegeben: {amount}"
+  },
+  "history": {
+    "title": "Verlauf",
+    "search": "Im Verlauf suchen",
+    "paused": "Der Verlauf ist pausiert: Nichts Neues wird gespeichert, bis du ihn fortsetzt.",
+    "resume": "Fortsetzen",
+    "pause": "Verlauf pausieren",
+    "kind": {
+      "label": "Art",
+      "all": "Alles",
+      "visit": "Besuche",
+      "search": "Suchen",
+      "analysis": "Analysen"
+    },
+    "outlet": "Medium",
+    "allOutlets": "Alle Medien",
+    "today": "Heute",
+    "yesterday": "Gestern",
+    "searched": "Suche: {query}",
+    "analyzed": "Analysiert",
+    "deleteOne": "Diesen Eintrag löschen",
+    "empty": "Der Verlauf ist leer.",
+    "noResults": "Keine Treffer.",
+    "manage": "Löschen und aufbewahren",
+    "delete": {
+      "hour": "Letzte Stunde löschen",
+      "today": "Heute löschen",
+      "week": "Letzte 7 Tage löschen",
+      "outlet": "Alles von {outlet} löschen",
+      "all": "Gesamten Verlauf löschen"
+    },
+    "retention": "Verlauf aufbewahren",
+    "days": "{n, plural, one {# Tag} other {# Tage}}",
+    "forever": "Für immer",
+    "privateNote": "Private Tabs speichern nichts: keine Besuche, Suchen oder Analysen."
+  },
+  "newtab": {
+    "greeting": {
+      "night": "Gute Nacht",
+      "morning": "Guten Morgen",
+      "afternoon": "Guten Tag",
+      "evening": "Guten Abend"
+    },
+    "search": "Thema oder Ereignis suchen oder Adresse eingeben",
+    "results": "Ergebnisse für „{query}“",
+    "searching": "Wird gesucht…",
+    "noCoverage": "Kein Medium hat über „{query}“ berichtet.",
+    "briefing": "Was gerade passiert",
+    "outlets": "{n, plural, one {# Medium} other {# Medien}}",
+    "leanMix": "Links {left}, Mitte {center}, rechts {right}",
+    "topics": "Deine Themen",
+    "continue": "Weiterlesen",
+    "saved": "Gespeichert"
   }
 }

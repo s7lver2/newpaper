@@ -184,6 +184,21 @@
       "deleteAllHint": "No se puede deshacer.",
       "deleteOutletHint": "Quita todas las visitas de un dominio.",
       "deleteAction": "Borrar"
+    },
+    "ai": {
+      "title": "IA",
+      "description": "Proveedores, modelo de cada paso y gasto"
+    },
+    "analysis": {
+      "title": "Análisis",
+      "description": "Cuándo se analiza y qué se muestra",
+      "quickOnOpen": "Análisis rápido al abrir una noticia",
+      "quickOnOpenHint": "Con un modelo local; es provisional.",
+      "autoFull": "Análisis completo automático",
+      "autoFullHint": "Usa tus proveedores en cada noticia que abras. Puede costar dinero.",
+      "detector": "Detector de texto generado con IA",
+      "detectorHint": "Muestra un indicio por párrafo. Nunca es una prueba.",
+      "language": "Los análisis se escriben en el idioma de la interfaz; las citas se dejan en su idioma original."
     }
   },
   "privacy": {
@@ -413,5 +428,434 @@
       "reset": "Restablecer",
       "neverChanges": "La posición de un medio nunca cambia la nota de un artículo. Solo decide con qué otros medios se contrasta, para que la mezcla esté equilibrada."
     }
+  },
+  "analysis": {
+    "panel": {
+      "label": "Panel de análisis",
+      "analysis": "Análisis",
+      "coverage": "Coberturas",
+      "agent": "Agente",
+      "close": "Cerrar el panel"
+    },
+    "toolbar": {
+      "label": "Análisis",
+      "title": "Abrir o cerrar el panel de análisis (Ctrl+Shift+A)"
+    },
+    "actions": {
+      "analyze": "Analizar",
+      "full": "Hacer el análisis completo",
+      "synthesis": "Ver la versión neutral",
+      "hemeroteca": "Ver cómo ha cambiado"
+    },
+    "lens": {
+      "toggle": "Lente de sesgo",
+      "loaded": "Frase cargada"
+    },
+    "selection": {
+      "label": "Preguntar al agente sobre la selección",
+      "ask": "Preguntar",
+      "verify": "Verificar",
+      "explain": "Explicar"
+    },
+    "needsArticle": "Abre una noticia para analizarla.",
+    "empty": "Aún no hay análisis de esta noticia.",
+    "running": "Analizando…",
+    "error": "El análisis no ha terminado: {message}",
+    "noScore": "Sin nota todavía",
+    "neutrality": "Neutralidad: {value} de 100",
+    "neutralityCaption": "neutralidad",
+    "mode": {
+      "quick": "Análisis rápido · provisional",
+      "full": "Análisis completo"
+    },
+    "capped": "Has llegado al límite mensual: este análisis se ha hecho con modelos locales.",
+    "disagreement": "Dos modelos distintos no coinciden en la posición. Tómala con cautela.",
+    "whyPosition": "¿Por qué esta posición?",
+    "axis": {
+      "label": "Posición del texto respecto a la cobertura del mismo hecho",
+      "left": "izquierda",
+      "center": "centro",
+      "right": "derecha",
+      "article": "este artículo",
+      "band": "banda de incertidumbre",
+      "groupCenter": "centro del grupo"
+    },
+    "verdictText": {
+      "neutral": "Neutral",
+      "sesgo_leve": "Sesgo leve",
+      "sesgado": "Sesgado",
+      "muy_sesgado": "Muy sesgado",
+      "no_determinable": "No determinable"
+    },
+    "verdict": {
+      "verificado": "Verificado",
+      "enganoso": "Engañoso",
+      "falso": "Falso",
+      "falta_contexto": "Falta contexto",
+      "opinion": "Opinión",
+      "no_verificable": "No verificable",
+      "pendiente": "Sin verificar"
+    },
+    "claims": {
+      "title": "Afirmaciones"
+    },
+    "loadedCount": "{n, plural, one {# frase cargada en el texto} other {# frases cargadas en el texto}}",
+    "ai": {
+      "title": "Posible texto generado con IA",
+      "probability": "Probabilidad de texto generado: {value}",
+      "disclaimer": "Es un indicio, no una prueba.",
+      "signal": {
+        "burstiness": "Ritmo uniforme de las frases",
+        "templates": "Frases de plantilla",
+        "repetition": "Arranques repetidos",
+        "c2pa": "Imágenes sin credenciales de contenido",
+        "llm": "Juicio de un modelo"
+      }
+    },
+    "stagesLabel": "Pasos del análisis",
+    "stage": {
+      "claims": "Afirmaciones",
+      "quickScore": "Nota rápida",
+      "verify": "Verificación",
+      "score": "Posición y neutralidad",
+      "judgeB": "Segundo juez",
+      "synthesis": "Versión neutral",
+      "aiDetect": "Detector de IA",
+      "agent": "Agente",
+      "investigate": "Investigación sin cobertura"
+    },
+    "stageStatus": {
+      "pending": "en espera",
+      "running": "en curso",
+      "done": "hecho",
+      "cached": "en caché",
+      "failed": "ha fallado",
+      "skipped": "sin modelo"
+    }
+  },
+  "agent": {
+    "title": "Agente",
+    "needsArticle": "Abre una noticia para preguntar sobre ella.",
+    "context": "Artículo, {coverages, plural, one {# cobertura} other {# coberturas}} y {sources, plural, one {# fuente} other {# fuentes}} en contexto",
+    "wide": "Ampliar el agente",
+    "narrow": "Estrechar el agente",
+    "empty": "Pregunta lo que quieras sobre esta noticia o selecciona un fragmento.",
+    "placeholder": "Tu pregunta",
+    "send": "Enviar",
+    "stop": "Detener",
+    "clearFragment": "Quitar el fragmento",
+    "mode": {
+      "label": "Modo",
+      "ask": "Preguntar",
+      "verify": "Verificar",
+      "explain": "Explicar"
+    },
+    "auto": {
+      "ask": "¿Qué puedes decirme de este fragmento?",
+      "verify": "¿Es cierto este fragmento?",
+      "explain": "Explícame el contexto de este fragmento."
+    },
+    "tools": {
+      "searchCoverage": "busca coberturas",
+      "fetchSource": "lee una fuente",
+      "getVerdicts": "consulta los veredictos",
+      "renderVisualization": "dibuja un gráfico",
+      "showMedia": "muestra una imagen de la fuente"
+    },
+    "openVideo": "Ver el vídeo en la fuente",
+    "mediaNote": "Imágenes originales de las fuentes citadas, nunca generadas.",
+    "noModel": "No hay ningún modelo asignado al agente. Conecta uno en Ajustes › IA o usa un modelo local.",
+    "error": "El agente no ha podido responder: {message}"
+  },
+  "charts": {
+    "sources": "Fuentes:",
+    "showTable": "Ver como tabla",
+    "showChart": "Ver el gráfico",
+    "label": "Etiqueta",
+    "value": "Valor",
+    "region": "Región",
+    "matrix": {
+      "si": "Sí",
+      "par": "En parte",
+      "mal": "Mal",
+      "no": "No"
+    },
+    "parliament": {
+      "chart": "Hemiciclo",
+      "majority": "{n} · mayoría",
+      "seatsFor": "{n, plural, one {# escaño a favor} other {# escaños a favor}}",
+      "reached": "mayoría alcanzada",
+      "short": "{n, plural, one {falta # escaño} other {faltan # escaños}}",
+      "hint": "Pulsa un partido para sumarlo o quitarlo del «sí»",
+      "party": "Partido",
+      "seats": "Escaños",
+      "vote": "Voto supuesto",
+      "yes": "Sí",
+      "no": "No",
+      "reset": "Empezar de nuevo"
+    }
+  },
+  "coverage": {
+    "title": "Coberturas del mismo hecho",
+    "needsArticle": "Abre una noticia para ver cómo la cuentan otros medios.",
+    "loading": "Buscando coberturas…",
+    "error": "No se han podido cargar las coberturas.",
+    "summary": "{outlets, plural, =0 {Ningún otro medio lo ha contado todavía} one {Lo cuenta # medio} other {Lo cuentan # medios}}",
+    "noSearchKey": "Añade una clave de búsqueda en Ajustes › Fuentes para encontrar más coberturas.",
+    "searchFailed": "La búsqueda de respaldo no ha respondido.",
+    "bucket": {
+      "left": "Izquierda",
+      "center": "Centro",
+      "right": "Derecha",
+      "unknown": "Sin medir"
+    },
+    "leanTitle": "Línea editorial medida del medio (0 izquierda – 100 derecha)",
+    "leanUnknown": "sin medir",
+    "howMeasured": "Cómo se mide la línea de cada medio"
+  },
+  "position": {
+    "title": "¿Por qué esta posición?",
+    "back": "Volver al análisis",
+    "none": "Todavía no hay una posición calculada.",
+    "intro": "Se mide desde el texto, nunca desde la fama del medio. El modelo lee el artículo anonimizado y lo compara con las otras coberturas del mismo hecho.",
+    "blind": "Lectura ciega: medio oculto",
+    "relative": "Neutral es estar cerca del centro del grupo, no a mitad de la escala.",
+    "signals": "Señales",
+    "signalsHint": "Cada una con su evidencia citada del texto. Sin cita, la señal no cuenta.",
+    "signal": {
+      "lexico": "Léxico",
+      "encuadre": "Encuadre",
+      "voces": "Voces citadas",
+      "atribucion": "Verbos de atribución",
+      "adjetivacion": "Adjetivación",
+      "omision": "Omisiones",
+      "orden": "Orden y titular"
+    },
+    "voices": "Voces",
+    "voice": "{name}: {quotes, plural, one {# cita} other {# citas}}",
+    "lastWord": "La última palabra es de {name}.",
+    "omissions": "Lo que dan otras coberturas y aquí falta",
+    "lexicon": "Léxico calibrado",
+    "lexiconBody": "Un diccionario de frases partidistas sacado del parlamento: para cada expresión se mide cuánto más la usa un bloque que otro. Es una señal independiente del modelo.",
+    "confidence": "Confianza total",
+    "threshold": "umbral {value}",
+    "confidenceNote": "Si la confianza es baja, se muestra «No determinable» en lugar de un número.",
+    "controls": "Controles",
+    "judgesAgree": "Dos modelos concuerdan",
+    "judgesDisagree": "Dos modelos no concuerdan",
+    "judgesOff": "La comparación entre modelos se activa con un segundo proveedor fuerte.",
+    "mirror": "Prueba de espejo",
+    "mirrorBody": "Se intercambian actores y términos de un bando por los del otro. La puntuación debe invertirse.",
+    "mirrorRun": "Repetir la prueba",
+    "mirrorRunning": "Comprobando…",
+    "mirrorResult": "Original {a} · espejo {b}.",
+    "mirrorOk": "Simétrica",
+    "mirrorBad": "Asimétrica: revisa el modelo asignado"
+  },
+  "noCoverage": {
+    "title": "Casi nadie ha contado esto",
+    "body": "{outlets, plural, =0 {Ningún medio} one {Solo # medio} other {Solo # medios}} y ninguna fuente primaria. No se puede contrastar como el resto.",
+    "investigate": "Investigar de todos modos",
+    "investigating": "Investigando…",
+    "watch": "Avisarme cuando haya cobertura",
+    "watching": "Te avisaremos",
+    "consent": {
+      "title": "Investigar sin cobertura",
+      "body": "El resultado no estará verificado: puede contener errores y se basa en muy pocas fuentes.",
+      "checkbox": "Entiendo que el resultado no está verificado",
+      "confirm": "Investigar sin verificar",
+      "cancel": "Cancelar"
+    },
+    "report": {
+      "title": "Informe sin verificar",
+      "badge": "No verificado",
+      "confidence": "Confianza {value}",
+      "howToCheck": "Cómo comprobarlo tú"
+    },
+    "tags": {
+      "fuente_unica": "Fuente única",
+      "solo_redes": "Solo en redes",
+      "varias_no_oficiales": "Varias fuentes no oficiales",
+      "sin_fuente": "Sin fuente"
+    }
+  },
+  "synthesis": {
+    "kicker": "Versión neutral",
+    "loading": "Cargando la síntesis…",
+    "missing": "Esta síntesis ya no está en la caché. Vuelve a analizar la noticia.",
+    "view": {
+      "label": "Vista",
+      "brief": "Breve",
+      "full": "Completa",
+      "changes": "Cambios"
+    },
+    "facts": "Hechos",
+    "factKind": {
+      "hecho": "Hecho",
+      "atribuida": "Atribuido",
+      "disputa": "En disputa"
+    },
+    "parties": "Lo que dice cada parte",
+    "evidence": "Peso de la evidencia",
+    "unknowns": "Lo que aún no se sabe",
+    "removed": "(se elimina)"
+  },
+  "hemeroteca": {
+    "kicker": "Hemeroteca",
+    "noUrl": "Falta la dirección del artículo.",
+    "loading": "Buscando capturas…",
+    "progress": "Leyendo capturas: {done} de {total}",
+    "error": "No se ha podido consultar el archivo: {message}",
+    "none": "No hay capturas de este artículo en el archivo.",
+    "silent": "{n, plural, one {Editada # vez sin aviso} other {Editada # veces sin aviso}}",
+    "notice": "El medio avisa de cambios: {notice}",
+    "timeline": "Capturas",
+    "mode": {
+      "label": "Modo",
+      "unified": "Unificado",
+      "side": "Lado a lado",
+      "read": "Leer captura"
+    },
+    "comparing": "Comparando {a} con {b}",
+    "single": "Solo hay una captura: no hay nada que comparar.",
+    "edits": "Cambios detectados",
+    "kind": {
+      "titular": "Titular",
+      "dato": "Cifra",
+      "parrafo_anadido": "Párrafo añadido",
+      "parrafo_eliminado": "Párrafo eliminado",
+      "texto": "Redacción"
+    }
+  },
+  "providers": {
+    "loading": "Cargando proveedores…",
+    "title": "Conectar un proveedor",
+    "subtitle": "Tres pasos y listo. No hace falta saber nada de inteligencia artificial.",
+    "cat": {
+      "recommended": "Recomendados",
+      "cloud": "Nube",
+      "cloudHint": "Pagas por uso con tu propia clave",
+      "local": "En tu equipo",
+      "localHint": "Gratis y sin enviar datos",
+      "advanced": "Avanzado"
+    },
+    "pitch": {
+      "openai": "El más conocido. Rápido y bueno en casi todo.",
+      "nous": "Modelos abiertos Hermes, sin filtros de estilo."
+    },
+    "connect": "Conectar {name}",
+    "pasteKey": "¿Ya tienes una clave? Pégala aquí",
+    "pasteHint": "Reconocemos el proveedor por cómo empieza la clave.",
+    "detected": "Es de {name}.",
+    "ambiguous": "Esa clave puede ser de varios proveedores. Elige cuál:",
+    "unknownPrefix": "No reconocemos este prefijo. Elige el proveedor en la lista de abajo.",
+    "continue": "Continuar",
+    "detectedLocal": "{n, plural, one {detectado · # modelo} other {detectado · # modelos}}",
+    "notRunning": "no está en marcha",
+    "customTitle": "Compatible con OpenAI",
+    "customHint": "Tu propio endpoint /v1",
+    "customName": "Nombre",
+    "baseUrl": "Dirección base",
+    "customModels": "Modelos (separados por comas)",
+    "key": "Clave",
+    "startsWith": "Empieza por {prefix}",
+    "keyStorage": "Tu clave se guarda en el llavero del sistema, cifrada. Nunca sale de tu equipo salvo hacia {name}, y ni siquiera la ve la parte web de newpaper.",
+    "noKey": "¿No tienes clave?",
+    "getKey": "Consigue tu clave",
+    "back": "Atrás",
+    "test": "Probar conexión",
+    "testing": "Probando…",
+    "testOk": "Conectado en {ms} ms",
+    "testFail": "No ha funcionado: {message}",
+    "doneTitle": "{name} está listo",
+    "doneSub": "Listo para leer noticias contigo. Hemos asignado un modelo a cada paso.",
+    "where": {
+      "local": "En tu equipo"
+    },
+    "priceUnknown": "precio desconocido",
+    "estimate": "Coste estimado por análisis: {total}",
+    "estimateUnknown": "(sin contar los modelos de precio desconocido)",
+    "another": "Conectar otro proveedor",
+    "done": "Listo",
+    "connected": "Proveedores conectados",
+    "noneConnected": "Aún no hay ningún proveedor conectado.",
+    "disconnect": "Desconectar",
+    "connectOne": "Conectar un proveedor",
+    "pipeline": "Modelo de cada paso",
+    "preset": {
+      "label": "Preset",
+      "privacy": "Privacidad total",
+      "balanced": "Equilibrado",
+      "quality": "Máxima calidad",
+      "cheap": "Mínimo coste"
+    },
+    "presetHint": {
+      "privacy": "Todo con modelos de tu equipo. Nada sale de casa.",
+      "balanced": "Lo ligero en local si puedes; lo importante, con un buen modelo en la nube.",
+      "quality": "Los mejores modelos en cada paso y un segundo juez para la posición.",
+      "cheap": "Los modelos más baratos que tengas conectados."
+    },
+    "stage": "Paso",
+    "model": "Modelo",
+    "modelFor": "Modelo para {stage}",
+    "backToAuto": "Volver a la asignación automática",
+    "auto": "Asignado automáticamente según el preset.",
+    "budget": "Gasto",
+    "limit": "Límite mensual (USD)",
+    "limitHint": "Al llegar al límite, el análisis pasa a modelos locales. Déjalo vacío para no poner límite.",
+    "spent": "Gastado este mes: {amount}"
+  },
+  "history": {
+    "title": "Historial",
+    "search": "Buscar en el historial",
+    "paused": "El historial está en pausa: no se guarda nada nuevo hasta que lo reanudes.",
+    "resume": "Reanudar",
+    "pause": "Pausar el historial",
+    "kind": {
+      "label": "Tipo",
+      "all": "Todo",
+      "visit": "Visitas",
+      "search": "Búsquedas",
+      "analysis": "Análisis"
+    },
+    "outlet": "Medio",
+    "allOutlets": "Todos los medios",
+    "today": "Hoy",
+    "yesterday": "Ayer",
+    "searched": "Búsqueda: {query}",
+    "analyzed": "Analizado",
+    "deleteOne": "Borrar esta entrada",
+    "empty": "El historial está vacío.",
+    "noResults": "No hay nada que coincida.",
+    "manage": "Borrar y conservar",
+    "delete": {
+      "hour": "Borrar la última hora",
+      "today": "Borrar hoy",
+      "week": "Borrar los últimos 7 días",
+      "outlet": "Borrar todo lo de {outlet}",
+      "all": "Borrar todo el historial"
+    },
+    "retention": "Conservar el historial",
+    "days": "{n, plural, one {# día} other {# días}}",
+    "forever": "Para siempre",
+    "privateNote": "Las pestañas privadas no guardan nada: ni visitas, ni búsquedas, ni análisis."
+  },
+  "newtab": {
+    "greeting": {
+      "night": "Buenas noches",
+      "morning": "Buenos días",
+      "afternoon": "Buenas tardes",
+      "evening": "Buenas noches"
+    },
+    "search": "Busca un tema, un hecho o escribe una dirección",
+    "results": "Resultados para «{query}»",
+    "searching": "Buscando…",
+    "noCoverage": "Ningún medio ha cubierto «{query}».",
+    "briefing": "Lo que está pasando",
+    "outlets": "{n, plural, one {# medio} other {# medios}}",
+    "leanMix": "Izquierda {left}, centro {center}, derecha {right}",
+    "topics": "Tus temas",
+    "continue": "Continuar leyendo",
+    "saved": "Guardado"
   }
 }

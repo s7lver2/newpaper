@@ -184,6 +184,21 @@
       "deleteAllHint": "This cannot be undone.",
       "deleteOutletHint": "Removes every visit to one domain.",
       "deleteAction": "Delete"
+    },
+    "ai": {
+      "title": "AI",
+      "description": "Providers, the model for each step and spending"
+    },
+    "analysis": {
+      "title": "Analysis",
+      "description": "When to analyse and what to show",
+      "quickOnOpen": "Quick analysis when opening an article",
+      "quickOnOpenHint": "With a local model; it is provisional.",
+      "autoFull": "Automatic full analysis",
+      "autoFullHint": "Uses your providers on every article you open. It may cost money.",
+      "detector": "AI-generated text detector",
+      "detectorHint": "Shows a hint for each paragraph. It is never proof.",
+      "language": "Analyses are written in the interface language; quotes keep their original language."
     }
   },
   "privacy": {
@@ -413,5 +428,434 @@
       "reset": "Reset",
       "neverChanges": "An outlet’s position never changes an article’s score. It only decides which other outlets it is compared with, so the mix is balanced."
     }
+  },
+  "analysis": {
+    "panel": {
+      "label": "Analysis panel",
+      "analysis": "Analysis",
+      "coverage": "Coverage",
+      "agent": "Agent",
+      "close": "Close the panel"
+    },
+    "toolbar": {
+      "label": "Analysis",
+      "title": "Open or close the analysis panel (Ctrl+Shift+A)"
+    },
+    "actions": {
+      "analyze": "Analyse",
+      "full": "Run the full analysis",
+      "synthesis": "See the neutral version",
+      "hemeroteca": "See how it changed"
+    },
+    "lens": {
+      "toggle": "Bias lens",
+      "loaded": "Loaded phrase"
+    },
+    "selection": {
+      "label": "Ask the agent about the selection",
+      "ask": "Ask",
+      "verify": "Verify",
+      "explain": "Explain"
+    },
+    "needsArticle": "Open a news article to analyse it.",
+    "empty": "This article has not been analysed yet.",
+    "running": "Analysing…",
+    "error": "The analysis did not finish: {message}",
+    "noScore": "No score yet",
+    "neutrality": "Neutrality: {value} out of 100",
+    "neutralityCaption": "neutrality",
+    "mode": {
+      "quick": "Quick analysis · provisional",
+      "full": "Full analysis"
+    },
+    "capped": "You reached your monthly limit: this analysis used local models.",
+    "disagreement": "Two different models disagree on the position. Treat it with caution.",
+    "whyPosition": "Why this position?",
+    "axis": {
+      "label": "Position of the text relative to the coverage of the same event",
+      "left": "left",
+      "center": "centre",
+      "right": "right",
+      "article": "this article",
+      "band": "uncertainty band",
+      "groupCenter": "group centre"
+    },
+    "verdictText": {
+      "neutral": "Neutral",
+      "sesgo_leve": "Slight bias",
+      "sesgado": "Biased",
+      "muy_sesgado": "Very biased",
+      "no_determinable": "Not determinable"
+    },
+    "verdict": {
+      "verificado": "Verified",
+      "enganoso": "Misleading",
+      "falso": "False",
+      "falta_contexto": "Missing context",
+      "opinion": "Opinion",
+      "no_verificable": "Unverifiable",
+      "pendiente": "Not checked"
+    },
+    "claims": {
+      "title": "Claims"
+    },
+    "loadedCount": "{n, plural, one {# loaded phrase in the text} other {# loaded phrases in the text}}",
+    "ai": {
+      "title": "Possible AI-generated text",
+      "probability": "Probability of generated text: {value}",
+      "disclaimer": "This is a hint, not proof.",
+      "signal": {
+        "burstiness": "Uniform sentence rhythm",
+        "templates": "Template phrases",
+        "repetition": "Repeated openings",
+        "c2pa": "Images without content credentials",
+        "llm": "A model’s judgement"
+      }
+    },
+    "stagesLabel": "Analysis steps",
+    "stage": {
+      "claims": "Claims",
+      "quickScore": "Quick score",
+      "verify": "Verification",
+      "score": "Position and neutrality",
+      "judgeB": "Second judge",
+      "synthesis": "Neutral version",
+      "aiDetect": "AI detector",
+      "agent": "Agent",
+      "investigate": "Uncovered investigation"
+    },
+    "stageStatus": {
+      "pending": "waiting",
+      "running": "running",
+      "done": "done",
+      "cached": "cached",
+      "failed": "failed",
+      "skipped": "no model"
+    }
+  },
+  "agent": {
+    "title": "Agent",
+    "needsArticle": "Open a news article to ask about it.",
+    "context": "Article, {coverages, plural, one {# coverage} other {# coverages}} and {sources, plural, one {# source} other {# sources}} in context",
+    "wide": "Widen the agent",
+    "narrow": "Narrow the agent",
+    "empty": "Ask anything about this article or select a passage.",
+    "placeholder": "Your question",
+    "send": "Send",
+    "stop": "Stop",
+    "clearFragment": "Remove the passage",
+    "mode": {
+      "label": "Mode",
+      "ask": "Ask",
+      "verify": "Verify",
+      "explain": "Explain"
+    },
+    "auto": {
+      "ask": "What can you tell me about this passage?",
+      "verify": "Is this passage accurate?",
+      "explain": "Explain the context of this passage."
+    },
+    "tools": {
+      "searchCoverage": "searches coverage",
+      "fetchSource": "reads a source",
+      "getVerdicts": "checks the verdicts",
+      "renderVisualization": "draws a chart",
+      "showMedia": "shows an image from the source"
+    },
+    "openVideo": "Watch the video at the source",
+    "mediaNote": "Original images from the cited sources, never generated.",
+    "noModel": "No model is assigned to the agent. Connect one in Settings › AI or use a local model.",
+    "error": "The agent could not answer: {message}"
+  },
+  "charts": {
+    "sources": "Sources:",
+    "showTable": "Show as a table",
+    "showChart": "Show the chart",
+    "label": "Label",
+    "value": "Value",
+    "region": "Region",
+    "matrix": {
+      "si": "Yes",
+      "par": "Partly",
+      "mal": "Poorly",
+      "no": "No"
+    },
+    "parliament": {
+      "chart": "Hemicycle",
+      "majority": "{n} · majority",
+      "seatsFor": "{n, plural, one {# seat in favour} other {# seats in favour}}",
+      "reached": "majority reached",
+      "short": "{n, plural, one {# seat short} other {# seats short}}",
+      "hint": "Tap a party to add it to or remove it from the “yes” side",
+      "party": "Party",
+      "seats": "Seats",
+      "vote": "Assumed vote",
+      "yes": "Yes",
+      "no": "No",
+      "reset": "Start again"
+    }
+  },
+  "coverage": {
+    "title": "Coverage of the same event",
+    "needsArticle": "Open a news article to see how other outlets report it.",
+    "loading": "Looking for coverage…",
+    "error": "Coverage could not be loaded.",
+    "summary": "{outlets, plural, =0 {No other outlet has reported it yet} one {# outlet reports it} other {# outlets report it}}",
+    "noSearchKey": "Add a search key in Settings › Sources to find more coverage.",
+    "searchFailed": "The fallback search did not respond.",
+    "bucket": {
+      "left": "Left",
+      "center": "Centre",
+      "right": "Right",
+      "unknown": "Not measured"
+    },
+    "leanTitle": "Measured editorial line of the outlet (0 left – 100 right)",
+    "leanUnknown": "not measured",
+    "howMeasured": "How each outlet’s line is measured"
+  },
+  "position": {
+    "title": "Why this position?",
+    "back": "Back to the analysis",
+    "none": "No position has been computed yet.",
+    "intro": "It is measured from the text, never from the outlet’s reputation. The model reads the anonymised article and compares it with the other coverage of the same event.",
+    "blind": "Blind reading: outlet hidden",
+    "relative": "Neutral means close to the group centre, not the middle of the scale.",
+    "signals": "Signals",
+    "signalsHint": "Each one quotes its evidence from the text. Without a quote, a signal does not count.",
+    "signal": {
+      "lexico": "Vocabulary",
+      "encuadre": "Framing",
+      "voces": "Quoted voices",
+      "atribucion": "Attribution verbs",
+      "adjetivacion": "Adjectives",
+      "omision": "Omissions",
+      "orden": "Order and headline"
+    },
+    "voices": "Voices",
+    "voice": "{name}: {quotes, plural, one {# quote} other {# quotes}}",
+    "lastWord": "{name} has the last word.",
+    "omissions": "What other coverage includes and this article leaves out",
+    "lexicon": "Calibrated vocabulary",
+    "lexiconBody": "A dictionary of partisan phrases built from parliament: for each expression it measures how much more one bloc uses it than the other. It is a signal independent of the model.",
+    "confidence": "Overall confidence",
+    "threshold": "threshold {value}",
+    "confidenceNote": "When confidence is low, “Not determinable” is shown instead of a number.",
+    "controls": "Checks",
+    "judgesAgree": "Two models agree",
+    "judgesDisagree": "Two models disagree",
+    "judgesOff": "Model comparison turns on with a second strong provider.",
+    "mirror": "Mirror test",
+    "mirrorBody": "Actors and terms from one side are swapped for the other’s. The score should flip.",
+    "mirrorRun": "Run the test again",
+    "mirrorRunning": "Checking…",
+    "mirrorResult": "Original {a} · mirror {b}.",
+    "mirrorOk": "Symmetric",
+    "mirrorBad": "Asymmetric: review the assigned model"
+  },
+  "noCoverage": {
+    "title": "Almost nobody has reported this",
+    "body": "{outlets, plural, =0 {No outlet} one {Only # outlet} other {Only # outlets}} and no primary source. It cannot be cross-checked like the rest.",
+    "investigate": "Investigate anyway",
+    "investigating": "Investigating…",
+    "watch": "Tell me when there is coverage",
+    "watching": "We will let you know",
+    "consent": {
+      "title": "Investigate without coverage",
+      "body": "The result will not be verified: it may contain mistakes and relies on very few sources.",
+      "checkbox": "I understand the result is not verified",
+      "confirm": "Investigate unverified",
+      "cancel": "Cancel"
+    },
+    "report": {
+      "title": "Unverified report",
+      "badge": "Not verified",
+      "confidence": "Confidence {value}",
+      "howToCheck": "How to check it yourself"
+    },
+    "tags": {
+      "fuente_unica": "Single source",
+      "solo_redes": "Social media only",
+      "varias_no_oficiales": "Several unofficial sources",
+      "sin_fuente": "No source"
+    }
+  },
+  "synthesis": {
+    "kicker": "Neutral version",
+    "loading": "Loading the synthesis…",
+    "missing": "This synthesis is no longer cached. Analyse the article again.",
+    "view": {
+      "label": "View",
+      "brief": "Brief",
+      "full": "Full",
+      "changes": "Changes"
+    },
+    "facts": "Facts",
+    "factKind": {
+      "hecho": "Fact",
+      "atribuida": "Attributed",
+      "disputa": "Disputed"
+    },
+    "parties": "What each side says",
+    "evidence": "Weight of evidence",
+    "unknowns": "What is not known yet",
+    "removed": "(removed)"
+  },
+  "hemeroteca": {
+    "kicker": "Archive",
+    "noUrl": "The article address is missing.",
+    "loading": "Looking for captures…",
+    "progress": "Reading captures: {done} of {total}",
+    "error": "The archive could not be queried: {message}",
+    "none": "The archive has no captures of this article.",
+    "silent": "{n, plural, one {Edited # time without notice} other {Edited # times without notice}}",
+    "notice": "The outlet flags changes: {notice}",
+    "timeline": "Captures",
+    "mode": {
+      "label": "Mode",
+      "unified": "Unified",
+      "side": "Side by side",
+      "read": "Read capture"
+    },
+    "comparing": "Comparing {a} with {b}",
+    "single": "There is only one capture: nothing to compare.",
+    "edits": "Detected changes",
+    "kind": {
+      "titular": "Headline",
+      "dato": "Figure",
+      "parrafo_anadido": "Paragraph added",
+      "parrafo_eliminado": "Paragraph removed",
+      "texto": "Wording"
+    }
+  },
+  "providers": {
+    "loading": "Loading providers…",
+    "title": "Connect a provider",
+    "subtitle": "Three steps and you are done. No AI knowledge needed.",
+    "cat": {
+      "recommended": "Recommended",
+      "cloud": "Cloud",
+      "cloudHint": "Pay per use with your own key",
+      "local": "On your computer",
+      "localHint": "Free and nothing leaves your machine",
+      "advanced": "Advanced"
+    },
+    "pitch": {
+      "openai": "The best known. Fast and good at almost everything.",
+      "nous": "Open Hermes models without style filters."
+    },
+    "connect": "Connect {name}",
+    "pasteKey": "Already have a key? Paste it here",
+    "pasteHint": "We recognise the provider from how the key starts.",
+    "detected": "It is from {name}.",
+    "ambiguous": "That key could belong to several providers. Choose one:",
+    "unknownPrefix": "We do not recognise this prefix. Choose the provider from the list below.",
+    "continue": "Continue",
+    "detectedLocal": "{n, plural, one {detected · # model} other {detected · # models}}",
+    "notRunning": "not running",
+    "customTitle": "OpenAI-compatible",
+    "customHint": "Your own /v1 endpoint",
+    "customName": "Name",
+    "baseUrl": "Base address",
+    "customModels": "Models (comma-separated)",
+    "key": "Key",
+    "startsWith": "Starts with {prefix}",
+    "keyStorage": "Your key is stored encrypted in the system keychain. It never leaves your computer except towards {name}, and not even the web part of newpaper sees it.",
+    "noKey": "No key yet?",
+    "getKey": "Get your key",
+    "back": "Back",
+    "test": "Test connection",
+    "testing": "Testing…",
+    "testOk": "Connected in {ms} ms",
+    "testFail": "It did not work: {message}",
+    "doneTitle": "{name} is ready",
+    "doneSub": "Ready to read the news with you. Each step has been assigned a model.",
+    "where": {
+      "local": "On your computer"
+    },
+    "priceUnknown": "unknown price",
+    "estimate": "Estimated cost per analysis: {total}",
+    "estimateUnknown": "(excluding models with unknown prices)",
+    "another": "Connect another provider",
+    "done": "Done",
+    "connected": "Connected providers",
+    "noneConnected": "No provider is connected yet.",
+    "disconnect": "Disconnect",
+    "connectOne": "Connect a provider",
+    "pipeline": "Model for each step",
+    "preset": {
+      "label": "Preset",
+      "privacy": "Full privacy",
+      "balanced": "Balanced",
+      "quality": "Best quality",
+      "cheap": "Lowest cost"
+    },
+    "presetHint": {
+      "privacy": "Everything with models on your computer. Nothing leaves home.",
+      "balanced": "Light steps locally when possible; the important ones with a good cloud model.",
+      "quality": "The best models for every step and a second judge for the position.",
+      "cheap": "The cheapest models you have connected."
+    },
+    "stage": "Step",
+    "model": "Model",
+    "modelFor": "Model for {stage}",
+    "backToAuto": "Back to automatic assignment",
+    "auto": "Assigned automatically from the preset.",
+    "budget": "Spending",
+    "limit": "Monthly limit (USD)",
+    "limitHint": "When the limit is reached, analysis switches to local models. Leave it empty for no limit.",
+    "spent": "Spent this month: {amount}"
+  },
+  "history": {
+    "title": "History",
+    "search": "Search history",
+    "paused": "History is paused: nothing new is saved until you resume it.",
+    "resume": "Resume",
+    "pause": "Pause history",
+    "kind": {
+      "label": "Type",
+      "all": "All",
+      "visit": "Visits",
+      "search": "Searches",
+      "analysis": "Analyses"
+    },
+    "outlet": "Outlet",
+    "allOutlets": "All outlets",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "searched": "Search: {query}",
+    "analyzed": "Analysed",
+    "deleteOne": "Delete this entry",
+    "empty": "History is empty.",
+    "noResults": "Nothing matches.",
+    "manage": "Delete and keep",
+    "delete": {
+      "hour": "Delete the last hour",
+      "today": "Delete today",
+      "week": "Delete the last 7 days",
+      "outlet": "Delete everything from {outlet}",
+      "all": "Delete all history"
+    },
+    "retention": "Keep history for",
+    "days": "{n, plural, one {# day} other {# days}}",
+    "forever": "Forever",
+    "privateNote": "Private tabs save nothing: no visits, searches or analyses."
+  },
+  "newtab": {
+    "greeting": {
+      "night": "Good night",
+      "morning": "Good morning",
+      "afternoon": "Good afternoon",
+      "evening": "Good evening"
+    },
+    "search": "Search a topic or an event, or type an address",
+    "results": "Results for “{query}”",
+    "searching": "Searching…",
+    "noCoverage": "No outlet has covered “{query}”.",
+    "briefing": "What is happening",
+    "outlets": "{n, plural, one {# outlet} other {# outlets}}",
+    "leanMix": "Left {left}, centre {center}, right {right}",
+    "topics": "Your topics",
+    "continue": "Continue reading",
+    "saved": "Saved"
   }
 }
