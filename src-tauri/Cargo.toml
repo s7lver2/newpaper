@@ -63,3 +63,6 @@ windows = { version = "0.62.2", features = ["Win32_Foundation", "Win32_System_Co
 windows-core = "0.62.2"
 [target.'cfg(windows)'.dependencies]
 windows = { workspace = true, features = ["Foundation", "Networking_Connectivity", "Win32_System_Power"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+zbus = { version = "5", default-features = false, features = ["blocking-api", "tokio"] }
