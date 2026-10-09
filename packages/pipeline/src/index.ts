@@ -7,3 +7,5 @@ export * from './schemas';
 export { delimit, UNTRUSTED_NOTE } from './llm/delimit';
 export { languageInstruction, type OutputLocale } from './llm/language';
 export { generateStructured, StageError, type StageId, type Usage } from './llm/structured';
+export { autoAssign, describeAssignment, PRESETS, type Assignment, type Assignments, type PresetId } from './assign/presets';
+export { runWithFallback } from './assign/fallback';
