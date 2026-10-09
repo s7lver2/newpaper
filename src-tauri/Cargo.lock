@@ -3481,6 +3481,25 @@ dependencies = [
 ]
 
 [[package]]
+name = "np-ai-proxy"
+version = "0.1.0"
+dependencies = [
+ "base64 0.23.1",
+ "futures",
+ "np-store",
+ "reqwest",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "sha2",
+ "thiserror 2.0.21",
+ "tokio",
+ "tracing",
+ "url",
+ "wiremock",
+]
+
+[[package]]
 name = "np-app"
 version = "0.1.0"
 dependencies = [
