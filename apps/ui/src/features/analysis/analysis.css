@@ -58,3 +58,19 @@
 .np-signal-bar span { position: absolute; top: 0; bottom: 0; border-radius: 3px; background: var(--np-accent); }
 .np-signal-evidence { list-style: none; padding: 0; margin: 0; font: italic 13px var(--np-font-read); color: var(--np-ink2); }
 .np-control { padding: 10px; border: 1px solid var(--np-line); border-radius: var(--np-radius); background: var(--np-card); }
+.np-side-head { display: flex; align-items: center; gap: 4px; padding: 4px 8px; border-bottom: 1px solid var(--np-line); }
+.np-side-head .np-tabs { flex: 1; }
+.np-side-body { flex: 1; min-height: 0; overflow: auto; display: flex; flex-direction: column; }
+.np-atab { padding: 12px; display: grid; gap: 12px; font: 13px/1.5 var(--np-font-ui); }
+.np-atab-head { display: flex; gap: 12px; align-items: center; }
+.np-atab-verdict { font: 600 16px var(--np-font-ui); margin: 0 0 4px; }
+.np-claims { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+.np-claim { padding: 8px; border-radius: 10px; transition: background-color 200ms var(--np-ease); }
+.np-claim--focus { background: var(--np-accent-soft); }
+.np-claim-quote { font: 15px/1.45 var(--np-font-read); margin: 0 0 4px; }
+.np-claim-why { margin: 4px 0; }
+.np-claim-sources { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; font-size: 12px; }
+.np-ai { padding: 10px; border-radius: var(--np-radius); background: var(--np-soft); }
+.np-ai--high { background: var(--np-ai-bg); border-left: 3px solid var(--np-ai); }
+.np-atab-links { display: flex; gap: 8px; flex-wrap: wrap; }
+@media (prefers-reduced-motion: reduce) { .np-claim { transition: none; } }
