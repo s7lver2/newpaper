@@ -1,0 +1,1 @@
+{ "version": 1, "lexicon": 0.35, "judge": 0.45, "voices": 0.1, "omissions": 0.1, "minConfidence": 0.35, "maxIntervalWidth": 40 }
