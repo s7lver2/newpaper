@@ -163,3 +163,17 @@ Sustituye a la limitación de la revisión anterior: ahora sí se compararon `Ma
 - Recargar la UI (`Page.reload`) con una pestaña en lector la deja en blanco hasta recargar la página (el evento `tab://page` no se reemite); no es alcanzable por el usuario y no se toca aquí.
 - El estado vacío no se pudo provocar con una página real; solo verificado por tipos.
 - Sin paywalls: el lector muestra solo lo que la página ya entrega.
+
+## Pasada del 2026-10-09 (pendientes A1, A2, B1-B10)
+
+Detalle en `2026-10-09-pendientes-resultado.md`. Errores del plan o del código que salieron al verificar sobre la app real:
+
+| Área | Error | Corrección | Commit |
+|---|---|---|---|
+| Webviews | Se mostraban al crearse (fondo blanco de WebView2, HTML sin estilos) y al recrear se cerraba la vieja antes de que la nueva pintara | Fondo del tema, reveal tras estilos, la vieja se retira cuando la nueva pinta | b29d3e1 |
+| Adblock (hipótesis del plan) | Se sospechaba que bloqueaba CSS de El País | No: solo anuncios y rastreadores; la causa era mostrar la webview antes de tiempo | b29d3e1 |
+| Webviews | Cerrar una webview mientras WebView2 crea otra bloquea el hilo principal (ventana "no responde") | Los cierres esperan a que no haya creaciones en curso | 1ea371e |
+| Tor (A2) | `net_set_mode`/`tor_set_exit_country` recreaban todas las pestañas en serie (8 s con 9) y el popup esperaba | Solo la activa; el resto se suspende y se recrea al activarse | 8cfae7e |
+| UI | Popovers y diálogos quedaban detrás de la webview nativa en páginas web (no se vio en las revisiones con páginas internas) | Captura y ocultación de la página mientras estén abiertos | 9b4c24f |
+| ui-kit | `reader.test.tsx` y fixtures de `PageArticle` no incluían `limited`, `kind`, `items` | Actualizados (firmas nuevas) | 1ea371e |
+| Tooling | En Windows `ContextMenu.tsx` y `contextMenu.ts` colisionan por mayúsculas | El modelo puro pasa a `menuModel.ts` | 8f910a9 |

@@ -60,6 +60,12 @@ Reglas que siguen vigentes: sin bypass de paywall; tests solo para característi
 - Auditar: menús contextuales (B7), páginas de error de red de WebView2 (sustituirlas por las propias), navegación a `edge://`/`chrome://` bloqueada, diálogos de permisos (cámara, ubicación, notificaciones) con UI propia, descargas, autocompletado y contraseñas de Edge desactivados, barra de "traducir", teclas F12/Ctrl+U/Ctrl+Shift+I (en release), arrastrar y soltar, marca "Microsoft Edge WebView2" en procesos y en el título de ventanas auxiliares, icono de las ventanas emergentes.
 - Resultado esperado: checklist de auditoría y arreglos aplicados; lo que no se pueda ocultar se documenta como limitación.
 
+### B9. Modo lectura: texto basura en artículos con muro de pago
+- Párrafos cortados, llamadas a suscribirse ("Suscríbete para seguir leyendo", "Lee sin límites") y texto duplicado o que empieza a mitad de palabra; limpiarlo y avisar de que el artículo está limitado por suscripción, sin ningún bypass (hecho en 1ea371e).
+
+### B10. Portadas y secciones en el lector
+- La portada de El País se abría como un artículo gigante: clasificar artículo / listado y ofrecer un "selector de artículos" con filtro (hecho en 1ea371e).
+
 ## Orden sugerido
 1. B4 y B5 (los fallos más visibles: Edge por detrás y páginas en crudo), junto con B8 (auditoría).
 2. B3 y B6 (lector: imágenes).
