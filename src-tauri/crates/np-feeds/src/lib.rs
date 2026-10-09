@@ -2,6 +2,7 @@
 //! temas, vigilancias, artículos guardados y ediciones sin conexión.
 pub mod cluster;
 pub mod config;
+pub mod custom;
 pub mod briefing;
 pub mod coverage;
 pub mod error;
