@@ -1,4 +1,4 @@
-import type { Article, NewsSignals, ShortcutAction } from '@newpaper/extract';
+import type { Article, ListingItem, NewsSignals, ShortcutAction } from '@newpaper/extract';
 
 export type { ShortcutAction };
 export type TabId = number;
@@ -26,7 +26,14 @@ export interface TabInfo {
 
 export interface TabsSnapshot { tabs: TabInfo[]; activeId: TabId | null }
 
-export interface PageArticle extends Article { type: 'page'; article: boolean; signals: NewsSignals }
+export interface PageArticle extends Article {
+  type: 'page';
+  article: boolean;
+  signals: NewsSignals;
+  /** `listing`: portada, sección o búsqueda (selector de artículos). */
+  kind: 'article' | 'listing' | 'other';
+  items: ListingItem[];
+}
 export interface TabPageEvent { tabId: TabId; article: PageArticle; isNews: boolean }
 export interface TabShortcutEvent { tabId: TabId; action: ShortcutAction }
 

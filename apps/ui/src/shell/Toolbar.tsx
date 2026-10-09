@@ -1,7 +1,7 @@
 import { useT } from '@newpaper/i18n/react';
 import { IconButton } from '@newpaper/ui-kit';
 import { commands } from '../ipc/commands';
-import { useActiveTab } from '../state/browser';
+import { useActiveTab, useArticle } from '../state/browser';
 import { AddressBar } from './AddressBar';
 import { IconBack, IconForward, IconReader, IconReload, IconSettings } from './icons';
 import { openInternal } from './navigate';
@@ -10,6 +10,7 @@ import { toolbarItems } from './registry';
 export function Toolbar() {
   const t = useT();
   const tab = useActiveTab();
+  const page = useArticle(tab?.id ?? null);
   const id = tab?.id;
   const items = toolbarItems();
   return (
@@ -28,7 +29,7 @@ export function Toolbar() {
       {tab?.readable ? (
         <IconButton
           className="np-hit"
-          label={tab.view === 'reader' ? t('shell.reader.original') : t('shell.reader.open')}
+          label={tab.view === 'reader' ? t('shell.reader.original') : page?.article.kind === 'listing' ? t('shell.listing.open') : t('shell.reader.open')}
           icon={<IconReader />}
           pressed={tab.view === 'reader'}
           onClick={() => commands.tabSetView(tab.id, tab.view === 'reader' ? 'original' : 'reader')}

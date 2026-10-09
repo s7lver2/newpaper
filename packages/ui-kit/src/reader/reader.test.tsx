@@ -32,7 +32,7 @@ describe('sanitizeArticleHtml', () => {
 describe('ReaderView', () => {
   const article: Article = {
     url: 'https://d.example/a', title: 'Titular', byline: 'Ana', siteName: 'Diario', published: null, lang: 'es',
-    html: '<p>Cuerpo <a href="https://d.example/b">enlace</a></p><script>x</script>', text: 'Cuerpo enlace', excerpt: null,
+    html: '<p>Cuerpo <a href="https://d.example/b">enlace</a></p><script>x</script>', text: 'Cuerpo enlace', excerpt: null, limited: false,
   };
   it('renders the sanitized article and intercepts links', async () => {
     const onOpenLink = vi.fn();

@@ -15,6 +15,29 @@ pub struct NewsSignals {
     pub json_ld_types: Vec<String>,
 }
 
+/// Qué es la página: artículo (lector), listado (portada, sección, búsqueda: selector de artículos) u otra cosa.
+#[derive(Debug, Clone, Copy, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum PageKind {
+    Article,
+    Listing,
+    #[default]
+    Other,
+}
+
+/// Titular de un listado, ya acotado y con URL http(s).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+pub struct ListingItem {
+    pub title: String,
+    pub url: String,
+    pub summary: Option<String>,
+    pub image: Option<String>,
+    pub section: Option<String>,
+}
+
+const MAX_ITEMS: usize = 150;
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase", deny_unknown_fields)]
 pub struct PagePayload {
@@ -29,6 +52,13 @@ pub struct PagePayload {
     pub text: String,
     pub excerpt: Option<String>,
     pub signals: NewsSignals,
+    /// Artículo limitado por suscripción: solo se muestra lo que la página entrega.
+    #[serde(default)]
+    pub limited: bool,
+    #[serde(default)]
+    pub kind: PageKind,
+    #[serde(default)]
+    pub items: Vec<ListingItem>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
@@ -118,6 +148,20 @@ pub fn parse_content_message(raw: &str, source_url: &str) -> Result<ContentMessa
             if p.signals.json_ld_types.len() > 50 || p.signals.json_ld_types.iter().any(|t| t.len() > 100) {
                 return Err(MessageError::Invalid("too many json-ld types".into()));
             }
+            if p.items.len() > MAX_ITEMS {
+                return Err(MessageError::Invalid("too many listing items".into()));
+            }
+            for it in &p.items {
+                check_len("item.title", Some(&it.title), 300)?;
+                check_len("item.url", Some(&it.url), 2_000)?;
+                check_len("item.summary", it.summary.as_deref(), 400)?;
+                check_len("item.image", it.image.as_deref(), 2_000)?;
+                check_len("item.section", it.section.as_deref(), 100)?;
+                let web = |u: &str| u.starts_with("http://") || u.starts_with("https://");
+                if !web(&it.url) || it.image.as_deref().is_some_and(|i| !web(i)) {
+                    return Err(MessageError::Invalid("listing item url is not http(s)".into()));
+                }
+            }
             if !same_document(&p.url, source_url) {
                 return Err(MessageError::UrlMismatch);
             }
@@ -172,6 +216,26 @@ mod tests {
                 assert_eq!(p.site_name.as_deref(), Some("Diario"));
                 assert_eq!(p.signals.json_ld_types, vec!["NewsArticle".to_string()]);
             }
+            other => panic!("{other:?}"),
+        }
+    }
+
+    #[test]
+    fn parses_listing_pages_and_rejects_bad_items() {
+        let ok = page(json!({"article": false, "kind": "listing", "limited": false, "items": [
+            {"title": "Titular de prueba largo", "url": "https://diario.example/x.html", "summary": null, "image": null, "section": "Hoy"}]}));
+        match parse_content_message(&ok, SRC).unwrap() {
+            ContentMessage::Page(p) => {
+                assert_eq!(p.kind, PageKind::Listing);
+                assert_eq!(p.items.len(), 1);
+            }
+            other => panic!("{other:?}"),
+        }
+        let bad = page(json!({"kind": "listing", "items": [{"title": "t", "url": "javascript:alert(1)", "summary": null, "image": null, "section": null}]}));
+        assert!(matches!(parse_content_message(&bad, SRC), Err(MessageError::Invalid(_))));
+        // Mensajes antiguos sin los campos nuevos siguen siendo válidos.
+        match parse_content_message(&page(json!({})), SRC).unwrap() {
+            ContentMessage::Page(p) => assert_eq!((p.kind, p.limited, p.items.len()), (PageKind::Other, false, 0)),
             other => panic!("{other:?}"),
         }
     }

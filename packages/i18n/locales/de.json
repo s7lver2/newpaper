@@ -53,7 +53,9 @@
       "minutes": "{n} Min. Lesezeit",
       "source": "Quelle: {host}",
       "emptyTitle": "Kein Text vorhanden",
-      "emptyHint": "Die Seite hat keinen lesbaren Inhalt für den Lesemodus geliefert. Du kannst sie im Original ansehen."
+      "emptyHint": "Die Seite hat keinen lesbaren Inhalt für den Lesemodus geliefert. Du kannst sie im Original ansehen.",
+      "limitedTitle": "Dieser Artikel ist durch ein Abo eingeschränkt",
+      "limitedBody": "Hier wird nur angezeigt, was die Seite liefert. Der Rest liegt hinter der Abo-Schranke."
     },
     "surface": {
       "kicker": "Fehler",
@@ -67,7 +69,19 @@
       "results": "Ergebnisse für „{query}“",
       "soon": "Berichte erscheinen hier, sobald der Quellenindex aktiv ist."
     },
-    "notFound": "Diese interne Seite existiert nicht."
+    "notFound": "Diese interne Seite existiert nicht.",
+    "listing": {
+      "title": "Artikelauswahl",
+      "open": "Artikelauswahl",
+      "lead": "Schlagzeilen von {site}",
+      "filter": "Schlagzeilen filtern",
+      "filterPlaceholder": "Schlagzeilen durchsuchen",
+      "count": "{count, plural, one {# Artikel} other {# Artikel}}",
+      "noMatches": "Keine Schlagzeile passt zu deiner Suche.",
+      "otherSection": "Weitere Schlagzeilen",
+      "openHint": "Zum Lesen drücken; Strg+Klick oder Mittelklick öffnet in einem neuen Tab.",
+      "newTab": "In neuem Tab öffnen"
+    }
   },
   "settings": {
     "title": "Einstellungen",

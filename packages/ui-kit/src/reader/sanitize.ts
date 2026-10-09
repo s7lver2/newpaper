@@ -6,7 +6,9 @@ const ALLOWED_TAGS = [
   'a', 'img', 'figure', 'figcaption', 'picture', 'table', 'thead', 'tbody', 'tfoot', 'tr', 'th', 'td', 'caption',
   'section', 'div', 'span',
 ];
-const ALLOWED_ATTR = ['href', 'src', 'alt', 'title', 'datetime', 'colspan', 'rowspan', 'scope', 'lang', 'dir'];
+const ALLOWED_ATTR = ['href', 'src', 'alt', 'title', 'datetime', 'colspan', 'rowspan', 'scope', 'lang', 'dir', 'width', 'height'];
+/** Marcadores de posición típicos de la carga diferida: no son la imagen. */
+const PLACEHOLDER = /(?:^|[/_.-])(?:placeholder|spacer|blank|transparent|pixel|1x1|loader)[\w.-]*\.(?:gif|png|svg|jpe?g|webp)(?:$|[?#])/i;
 const DROP = 'data-np-drop';
 
 export function sanitizeArticleHtml(html: string, opts: { rewriteImage(absUrl: string): string | null }): string {
@@ -20,7 +22,11 @@ export function sanitizeArticleHtml(html: string, opts: { rewriteImage(absUrl: s
     }
     if (el.tagName === 'IMG') {
       const src = el.getAttribute('src') ?? '';
-      const rewritten = /^https?:\/\//i.test(src) ? opts.rewriteImage(src) : null;
+      for (const dim of ['width', 'height']) {
+        const v = el.getAttribute(dim);
+        if (v !== null && !/^\d{1,4}$/.test(v.trim())) el.removeAttribute(dim);
+      }
+      const rewritten = /^https?:\/\//i.test(src) && !PLACEHOLDER.test(src) ? opts.rewriteImage(src) : null;
       if (!rewritten) {
         // No se borra dentro del gancho (DOMPurify está recorriendo el árbol): se marca y se quita después.
         el.setAttribute(DROP, '');

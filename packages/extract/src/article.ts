@@ -10,6 +10,8 @@ export interface Article {
   html: string;
   text: string;
   excerpt: string | null;
+  /** El artículo está limitado por suscripción: solo se muestra lo que la página entrega. */
+  limited: boolean;
 }
 
 export interface NewsSignals {

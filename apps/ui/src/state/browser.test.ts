@@ -8,7 +8,7 @@ const tab = (id: number, url: string, extra: Partial<TabInfo> = {}): TabInfo => 
 });
 const page = (tabId: number, url: string): TabPageEvent => ({
   tabId, isNews: true,
-  article: { type: 'page', article: true, url, title: 'T', byline: null, siteName: null, published: null, lang: 'es', html: '<p>x</p>', text: 'x', excerpt: null, signals: { ogType: 'article', jsonLdTypes: [] } },
+  article: { type: 'page', article: true, url, title: 'T', byline: null, siteName: null, published: null, lang: 'es', html: '<p>x</p>', text: 'x', excerpt: null, signals: { ogType: 'article', jsonLdTypes: [] }, limited: false, kind: 'article', items: [] },
 });
 
 describe('browser store', () => {

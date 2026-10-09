@@ -9,7 +9,7 @@ use std::{
     collections::{HashMap, HashSet},
     path::PathBuf,
     sync::{
-        atomic::{AtomicU64, Ordering},
+        atomic::{AtomicU64, AtomicUsize, Ordering},
         Arc, Mutex,
     },
     time::Duration,
@@ -25,7 +25,7 @@ use tauri::{
 use crate::{
     extensions::ShellExtensions,
     input::{parse_input, search_url, Target},
-    message::{parse_content_message, ContentMessage, PagePayload},
+    message::{parse_content_message, ContentMessage, PageKind, PagePayload},
     model::{NavFailure, TabInfo, TabKind, TabList, TabView, TabsSnapshot},
     news::{is_news, reader_policy},
     TabId, NEW_TAB_URL,
@@ -113,6 +113,9 @@ pub struct TabManager {
     revealed: Mutex<HashSet<TabId>>,
     /// Webviews sustituidas que siguen visibles hasta que la nueva pinta (se cierran entonces).
     retired: Mutex<HashMap<TabId, Vec<String>>>,
+    /// Creaciones de webview en curso: cerrar otra webview mientras WebView2 crea un controlador
+    /// bloquea el hilo principal, así que los cierres esperan a que no haya ninguna.
+    creating: AtomicUsize,
     /// Color de fondo del tema (RGB); lo fija la UI al resolver el tema.
     bg: Mutex<(u8, u8, u8)>,
 }
@@ -138,6 +141,7 @@ impl TabManager {
             label_seq: AtomicU64::new(0),
             revealed: Mutex::default(),
             retired: Mutex::default(),
+            creating: AtomicUsize::new(0),
             bg: Mutex::new(PAPER_BG),
         }
     }
@@ -181,17 +185,28 @@ impl TabManager {
 
     /// Primer pintado de la webview vigente: se muestra y se cierran las sustituidas.
     pub(crate) fn reveal(&self, id: TabId) {
+        tracing::debug!(tab = id, "reveal");
         let first = self.revealed.lock().expect("revealed lock").insert(id);
         if !first {
             return;
         }
         let old = self.retired.lock().expect("retired lock").remove(&id).unwrap_or_default();
         self.apply_visibility();
-        for label in old {
-            if let Some(wv) = self.app.get_webview(&label) {
-                let _ = wv.close();
-            }
+        if old.is_empty() {
+            return;
         }
+        let app = self.app.clone();
+        std::thread::spawn(move || {
+            let mgr = app.state::<Arc<TabManager>>();
+            while mgr.creating.load(Ordering::SeqCst) > 0 {
+                std::thread::sleep(Duration::from_millis(50));
+            }
+            for label in old {
+                if let Some(wv) = app.get_webview(&label) {
+                    let _ = wv.close();
+                }
+            }
+        });
     }
 
     pub fn snapshot(&self) -> TabsSnapshot {
@@ -213,6 +228,7 @@ impl TabManager {
     }
 
     async fn create_webview(&self, id: TabId, url: url::Url, private: bool) -> Result<(), ShellError> {
+        tracing::debug!(tab = id, "create_webview begin");
         let window = self.app.get_window(MAIN_WINDOW).ok_or(ShellError::NoWindow)?;
         let profile = self.ext.profile_for_tab(id);
         let label = format!("tab-{id}-{}", self.label_seq.fetch_add(1, Ordering::Relaxed));
@@ -252,7 +268,10 @@ impl TabManager {
         let r = *self.bounds.lock().expect("bounds lock");
         // La webview nueva nace oculta y sin "revelar": se enseña tras su primer pintado.
         self.revealed.lock().expect("revealed lock").remove(&id);
-        let webview = window.add_child(builder, LogicalPosition::new(r.x, r.y), LogicalSize::new(r.width.max(1.0), r.height.max(1.0)))?;
+        self.creating.fetch_add(1, Ordering::SeqCst);
+        let added = window.add_child(builder, LogicalPosition::new(r.x, r.y), LogicalSize::new(r.width.max(1.0), r.height.max(1.0)));
+        self.creating.fetch_sub(1, Ordering::SeqCst);
+        let webview = added?;
         let _ = webview.hide();
         if let Some(prev) = self.labels.lock().expect("labels lock").insert(id, label) {
             self.retired.lock().expect("retired lock").entry(id).or_default().push(prev);
@@ -270,6 +289,7 @@ impl TabManager {
         for h in self.ext.hooks() {
             h.on_content_webview_created(id, &webview);
         }
+        tracing::debug!(tab = id, "create_webview end");
         Ok(())
     }
 
@@ -497,9 +517,12 @@ impl TabManager {
     fn on_page(&self, id: TabId, page: PagePayload) {
         // `readable` (hay artículo extraíble) habilita el botón de lector en cualquier web;
         // `news` solo decide la apertura automática.
+        // Un listado (portada, sección) se ofrece como selector de artículos; solo se abre solo
+        // si es de un medio conocido.
+        let has = page.article || (page.kind == PageKind::Listing && !page.items.is_empty());
         let (readable, news, auto) = reader_policy(
-            page.article,
-            page.article && is_news(&page.url, &page.signals, &self.ext.known_domains()),
+            has,
+            has && is_news(&page.url, &page.signals, &self.ext.known_domains()),
             self.ext.reader_auto_open(),
         );
         self.update(id, |t| {

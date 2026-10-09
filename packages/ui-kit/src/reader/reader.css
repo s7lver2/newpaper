@@ -66,12 +66,19 @@
 .np-reader-body blockquote cite, .np-reader-body blockquote footer { display: block; margin-top: .6em; font: 400 .65em/1.4 var(--np-font-mono); font-style: normal; letter-spacing: .04em; color: var(--np-muted); }
 
 /* Imágenes y pies */
-.np-reader-body img { display: block; max-width: 100%; height: auto; margin: 2em auto; border-radius: 12px; background: var(--np-soft); }
+/* Las fotos nunca superan la columna ni 70 vh: un retrato alto no ocupa la pantalla entera. */
+.np-reader-body img { display: block; max-width: 100%; max-height: min(70vh, 640px); width: auto; height: auto; object-fit: contain; margin: 2em auto; border-radius: 12px; background: var(--np-soft); }
 .np-reader-body p img, .np-reader-body li img, .np-reader-body a > img:only-child { margin-top: 1em; margin-bottom: 1em; }
 .np-reader-body figure { margin: 2.2em 0; padding: 0; }
-.np-reader-body figure img { margin: 0; width: 100%; }
+.np-reader-body figure img { margin: 0 auto; }
 .np-reader-body > figure:first-child, .np-reader-body > img:first-child { margin-top: 0; }
-.np-reader-body > img:first-child { width: 100%; }
+/* Fotos anchas (>= 560 px de origen): ocupan la columna; las pequeñas conservan su tamaño. */
+.np-reader-body img[data-np-size='wide'] { width: 100%; }
+/* Retratos y avatares de autor: pequeños y redondos, alineados con el texto. */
+.np-reader-body img[data-np-size='avatar'] { width: 72px; height: 72px; max-height: none; margin: 1.2em 0; border-radius: 50%; object-fit: cover; }
+.np-reader-body figure img[data-np-size='avatar'] { margin: 0; }
+.np-reader-body img[data-np-size='pixel'], .np-reader-body img[data-np-failed='true'] { display: none; }
+.np-reader-body img[src=''] { display: none; }
 .np-reader-body figcaption, .np-reader-body caption { margin-top: .8em; font: 400 13px/1.5 var(--np-font-ui); color: var(--np-muted); text-wrap: pretty; }
 .np-reader-body figcaption { padding-left: 14px; border-left: 2px solid var(--np-reader-rule); }
 
@@ -84,6 +91,14 @@
 .np-reader-body td, .np-reader-body th { padding: 9px 14px 9px 0; border-bottom: 1px solid var(--np-line); vertical-align: top; }
 .np-reader-body sup, .np-reader-body sub { font-size: .7em; line-height: 0; }
 .np-reader-body abbr[title] { text-decoration: underline dotted; text-underline-offset: 3px; }
+
+/* Aviso de artículo limitado por suscripción */
+.np-reader-notice { display: flex; align-items: flex-start; gap: 14px; margin: -8px 0 36px; padding: 16px 18px; border-radius: 14px; background: var(--np-warn-bg); color: var(--np-ink); font: 400 14px/1.5 var(--np-font-ui); animation: np-rise-sm .6s var(--np-ease) both; }
+.np-reader-notice svg { flex: none; width: 20px; height: 20px; margin-top: 1px; color: var(--np-warn); }
+.np-reader-notice strong { display: block; font-weight: 600; margin-bottom: 2px; }
+.np-reader-notice p { margin: 0; color: var(--np-ink2); }
+.np-reader-notice .np-reader-link { display: inline-flex; align-items: center; margin-top: 6px; padding: 0; min-height: var(--np-hit); }
+@media (prefers-reduced-motion: reduce) { .np-reader-notice { animation: none; } }
 
 /* Pie y estado vacío */
 .np-reader-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 20px; margin-top: 64px; padding-top: 22px; border-top: 1px solid var(--np-reader-rule); font: 400 12.5px/1.5 var(--np-font-mono); letter-spacing: .02em; color: var(--np-muted); }

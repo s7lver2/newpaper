@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type CSSProperties } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useI18n } from '@newpaper/i18n/react';
 import { Button, ReaderView } from '@newpaper/ui-kit';
 import { convertFileSrc } from '@tauri-apps/api/core';
@@ -6,9 +6,21 @@ import { commands } from '../ipc/commands';
 import { useSetting } from '../state/settings';
 import { navigate } from './navigate';
 import { IconBack } from './icons';
+import { ListingReader } from './ListingSurface';
 import type { ReaderSurfaceProps } from './registry';
 
-export const rewriteImage = (absUrl: string): string => convertFileSrc(absUrl, 'npimg');
+/** Imagen por el proxy `npimg`; `r` lleva la página para que Rust envíe el Referer (solo el origen). */
+export const rewriteImage = (absUrl: string, pageUrl?: string): string => {
+  const base = convertFileSrc(absUrl, 'npimg');
+  return pageUrl ? `${base}?r=${encodeURIComponent(pageUrl)}` : base;
+};
+
+const IconLimited = () => (
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <rect x="5" y="11" width="14" height="10" rx="2" />
+    <path d="M8 11V7a4 4 0 018 0v4" />
+  </svg>
+);
 
 /** Tamaños de texto del lector (px); el 2 es el predeterminado. */
 export const READER_SIZES = [17, 18.5, 20, 22, 24];
@@ -23,7 +35,11 @@ const hostOf = (url: string): string => {
   }
 };
 
-export function DefaultReader({ tab, page }: ReaderSurfaceProps) {
+export function DefaultReader(props: ReaderSurfaceProps) {
+  return props.page.kind === 'listing' ? <ListingReader {...props} /> : <ArticleReader {...props} />;
+}
+
+function ArticleReader({ tab, page }: ReaderSurfaceProps) {
   const { t, formatDate } = useI18n();
   const a = page;
   const [step, setStep] = useSetting<number>('reader.sizeStep', DEFAULT_STEP);
@@ -31,6 +47,8 @@ export function DefaultReader({ tab, page }: ReaderSurfaceProps) {
   const [undo, setUndo] = useState(false);
   const surface = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLDivElement>(null);
+  const pageUrl = a.url;
+  const rewrite = useCallback((abs: string) => rewriteImage(abs, pageUrl), [pageUrl]);
 
   useEffect(() => {
     if (!undo) return;
@@ -122,7 +140,21 @@ export function DefaultReader({ tab, page }: ReaderSurfaceProps) {
       </p>
       <ReaderView
         article={a}
-        rewriteImage={rewriteImage}
+        rewriteImage={rewrite}
+        notice={
+          a.limited ? (
+            <aside className="np-reader-notice" role="note">
+              <IconLimited />
+              <div>
+                <strong>{t('shell.reader.limitedTitle')}</strong>
+                <p>{t('shell.reader.limitedBody')}</p>
+                <button type="button" className="np-reader-link" onClick={() => commands.tabSetView(tab.id, 'original')}>
+                  {t('shell.reader.original')}
+                </button>
+              </div>
+            </aside>
+          ) : null
+        }
         onOpenLink={(url) => navigate(url)}
         kicker={
           <>

@@ -53,7 +53,9 @@
       "minutes": "{n} min read",
       "source": "Source: {host}",
       "emptyTitle": "Nothing to show",
-      "emptyHint": "The page didn't provide readable content for the reader. You can view it as is."
+      "emptyHint": "The page didn't provide readable content for the reader. You can view it as is.",
+      "limitedTitle": "This article is limited by subscription",
+      "limitedBody": "Only what the page delivers is shown here. The rest is behind the subscription wall."
     },
     "surface": {
       "kicker": "Error",
@@ -67,7 +69,19 @@
       "results": "Results for “{query}”",
       "soon": "Coverage will appear here once the source index is active."
     },
-    "notFound": "This internal page doesn't exist."
+    "notFound": "This internal page doesn't exist.",
+    "listing": {
+      "title": "Article picker",
+      "open": "Article picker",
+      "lead": "Headlines from {site}",
+      "filter": "Filter headlines",
+      "filterPlaceholder": "Search the headlines",
+      "count": "{count, plural, one {# article} other {# articles}}",
+      "noMatches": "No headline matches your search.",
+      "otherSection": "More headlines",
+      "openHint": "Press to read it; Ctrl+click or middle click opens it in another tab.",
+      "newTab": "Open in new tab"
+    }
   },
   "settings": {
     "title": "Settings",

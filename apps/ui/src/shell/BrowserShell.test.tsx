@@ -16,7 +16,7 @@ const tab = (extra: Partial<TabInfo> = {}): TabInfo => ({
 });
 const page: TabPageEvent = {
   tabId: 1, isNews: true,
-  article: { type: 'page', article: true, url: 'https://d.example/a', title: 'Titular', byline: 'Ana', siteName: 'Diario', published: null, lang: 'es', html: '<p>Cuerpo</p>', text: 'Cuerpo', excerpt: null, signals: { ogType: 'article', jsonLdTypes: [] } },
+  article: { type: 'page', article: true, url: 'https://d.example/a', title: 'Titular', byline: 'Ana', siteName: 'Diario', published: null, lang: 'es', html: '<p>Cuerpo</p>', text: 'Cuerpo', excerpt: null, signals: { ogType: 'article', jsonLdTypes: [] }, limited: false, kind: 'article', items: [] },
 };
 
 describe('BrowserShell surfaces', () => {

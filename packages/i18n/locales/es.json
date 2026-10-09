@@ -53,7 +53,9 @@
       "minutes": "{n} min de lectura",
       "source": "Fuente: {host}",
       "emptyTitle": "No hay texto que mostrar",
-      "emptyHint": "La página no entregó contenido legible en el lector. Puedes verla tal cual."
+      "emptyHint": "La página no entregó contenido legible en el lector. Puedes verla tal cual.",
+      "limitedTitle": "Este artículo está limitado por suscripción",
+      "limitedBody": "Aquí solo se muestra lo que la página entrega. El resto está detrás del muro de suscripción."
     },
     "surface": {
       "kicker": "Error",
@@ -67,7 +69,19 @@
       "results": "Resultados para «{query}»",
       "soon": "Las coberturas aparecerán aquí cuando el índice de fuentes esté activo."
     },
-    "notFound": "Esta página interna no existe."
+    "notFound": "Esta página interna no existe.",
+    "listing": {
+      "title": "Selector de artículos",
+      "open": "Selector de artículos",
+      "lead": "Titulares de {site}",
+      "filter": "Filtrar titulares",
+      "filterPlaceholder": "Buscar en los titulares",
+      "count": "{count, plural, one {# artículo} other {# artículos}}",
+      "noMatches": "Ningún titular coincide con tu búsqueda.",
+      "otherSection": "Más titulares",
+      "openHint": "Pulsa para leerlo; Ctrl+clic o clic central lo abre en otra pestaña.",
+      "newTab": "Abrir en pestaña nueva"
+    }
   },
   "settings": {
     "title": "Ajustes",

@@ -1,5 +1,6 @@
 import { LIMITS, type NewsSignals } from './article';
 import { extractArticle } from './extract';
+import { classifyPage, extractListing, MIN_ITEMS, type ListingItem } from './listing';
 import { collectSignals } from './signals';
 
 export type ShortcutAction = 'focus-address' | 'new-tab' | 'analyze' | 'ask-agent';
@@ -17,21 +18,34 @@ export interface PageMessage {
   text: string;
   excerpt: string | null;
   signals: NewsSignals;
+  /** Artículo limitado por suscripción (solo lo que la página entrega). */
+  limited: boolean;
+  /** `article` (lector), `listing` (portada o sección: selector de artículos) u `other`. */
+  kind: 'article' | 'listing' | 'other';
+  items: ListingItem[];
 }
 export interface NavMessage { type: 'nav'; url: string; title: string }
 export interface ShortcutMessage { type: 'shortcut'; action: ShortcutAction }
 
 export function buildPageMessage(doc: Document, url: string): PageMessage {
   const signals = collectSignals(doc);
-  const a = extractArticle(doc, url);
-  if (!a) {
-    return {
-      type: 'page', article: false, url, title: (doc.title || '').slice(0, LIMITS.title),
-      byline: null, siteName: null, published: null, lang: doc.documentElement.lang || null,
-      html: '', text: '', excerpt: null, signals,
-    };
+  const base = {
+    type: 'page' as const, url, title: (doc.title || '').slice(0, LIMITS.title),
+    byline: null, siteName: null, published: null, lang: doc.documentElement.lang || null,
+    html: '', text: '', excerpt: null, signals, limited: false, items: [] as ListingItem[],
+  };
+  // Portadas, secciones y búsquedas no son artículos: se ofrecen como selector de artículos.
+  if (classifyPage(doc, url, signals).kind === 'listing') {
+    const items = extractListing(doc, url);
+    if (items.length >= MIN_ITEMS) {
+      const site = doc.querySelector('meta[property="og:site_name"]')?.getAttribute('content')?.trim() || null;
+      return { ...base, article: false, kind: 'listing', siteName: site, excerpt: null, items };
+    }
+    return { ...base, article: false, kind: 'other' };
   }
-  return { type: 'page', article: true, ...a, signals };
+  const a = extractArticle(doc, url);
+  if (!a) return { ...base, article: false, kind: 'other' };
+  return { ...base, ...a, article: true, kind: 'article', items: [] };
 }
 
 export function shortcutFor(e: Pick<KeyboardEvent, 'key' | 'ctrlKey' | 'metaKey' | 'shiftKey' | 'altKey'>): ShortcutAction | null {
