@@ -6,3 +6,4 @@ import './privacy/register';
 import './resources/register';
 import './ai/register';
 import './analysis/register';
+import './synthesis/register';

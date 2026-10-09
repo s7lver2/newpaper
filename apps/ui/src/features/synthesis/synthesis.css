@@ -1,0 +1,17 @@
+.np-synth { max-width: 72ch; margin: 0 auto; padding: 32px 20px 64px; font: 17px/1.6 var(--np-font-read); color: var(--np-ink); display: grid; gap: 16px; }
+.np-synth h1 { font: 600 32px/1.2 var(--np-font-read); margin: 0; }
+.np-synth h2 { font: 600 15px var(--np-font-ui); margin: 8px 0; }
+.np-synth-kicker { font: 600 11px var(--np-font-mono); letter-spacing: .08em; color: var(--np-accent); text-transform: uppercase; margin: 0; }
+.np-synth-summary li { margin-bottom: 8px; }
+.np-synth-facts { list-style: none; padding: 0; display: grid; gap: 8px; }
+.np-fact--disputa { border-left: 3px solid var(--np-warn); padding-left: 8px; }
+.np-synth-parties { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
+.np-synth-party { padding: 10px; border: 1px solid var(--np-line); border-radius: var(--np-radius); background: var(--np-card); font: 14px/1.5 var(--np-font-ui); }
+.np-dispute { padding: 12px; border-radius: var(--np-radius); background: var(--np-soft); }
+.np-dispute-bar { height: 6px; border-radius: 3px; background: var(--np-line2); }
+.np-dispute-bar span { display: block; height: 100%; border-radius: 3px; background: var(--np-accent); }
+.np-dispute-conclusion { font-weight: 600; }
+.np-changes { white-space: pre-wrap; }
+.np-change del { color: var(--np-bad); background: var(--np-bad-bg); }
+.np-change ins { color: var(--np-ok); background: var(--np-ok-bg); text-decoration: none; }
+.np-synth-sources { display: flex; flex-direction: column; gap: 4px; font: 12px var(--np-font-ui); }
