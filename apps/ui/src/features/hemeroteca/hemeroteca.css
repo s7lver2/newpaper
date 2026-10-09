@@ -1,0 +1,15 @@
+.np-hem { max-width: 80ch; margin: 0 auto; padding: 32px 20px 64px; display: grid; gap: 14px; font: 14px/1.5 var(--np-font-ui); }
+.np-hem h1 { font: 600 28px/1.2 var(--np-font-read); margin: 0; }
+.np-hem-silent { padding: 10px; border-radius: var(--np-radius); background: var(--np-warn-bg); color: var(--np-warn); font-weight: 600; }
+.np-hem-timeline { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+.np-hem-cap { display: grid; grid-template-columns: 1fr 44px 44px; align-items: center; gap: 6px; padding-left: 10px; border-left: 2px solid var(--np-line3); }
+.np-hem-cap--edited { border-left-color: var(--np-warn); }
+.np-hem-cap button { min-height: var(--np-hit); border: 1px solid var(--np-line3); border-radius: 8px; background: var(--np-card); font: 600 12px var(--np-font-mono); cursor: pointer; }
+.np-hem-cap button[aria-pressed='true'] { background: var(--np-ink); color: var(--np-on-ink); }
+.np-hem-text { font: 17px/1.6 var(--np-font-read); }
+.np-hem-text del { color: var(--np-bad); background: var(--np-bad-bg); }
+.np-hem-text ins { color: var(--np-ok); background: var(--np-ok-bg); text-decoration: none; }
+.np-hem-edited { border-left: 3px solid var(--np-warn); padding-left: 8px; }
+.np-hem-side { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.np-hem-edits { list-style: none; padding: 0; display: grid; gap: 8px; }
+.np-hem-edits del, .np-hem-edits ins { display: block; font: 14px var(--np-font-read); }

@@ -7,3 +7,4 @@ import './resources/register';
 import './ai/register';
 import './analysis/register';
 import './synthesis/register';
+import './hemeroteca/register';
