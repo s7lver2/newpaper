@@ -9,3 +9,4 @@ import './analysis/register';
 import './synthesis/register';
 import './hemeroteca/register';
 import './providers/register';
+import './history/register';

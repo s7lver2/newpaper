@@ -1,0 +1,10 @@
+.np-history { max-width: 80ch; margin: 0 auto; padding: 32px 20px 64px; display: grid; gap: 14px; font: 14px/1.5 var(--np-font-ui); }
+.np-history h1 { font: 600 28px var(--np-font-read); margin: 0; }
+.np-history h2 { font: 600 12px var(--np-font-mono); letter-spacing: .06em; text-transform: uppercase; color: var(--np-muted); margin: 0 0 6px; }
+.np-history-search { min-height: var(--np-hit); padding: 0 14px; border: 1px solid var(--np-line3); border-radius: 999px; background: var(--np-card); font: 15px var(--np-font-ui); color: var(--np-ink); }
+.np-history-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.np-history-filters select, .np-history-settings select { min-height: var(--np-hit); border: 1px solid var(--np-line3); border-radius: 10px; background: var(--np-card); color: var(--np-ink); }
+.np-history-day ul { list-style: none; padding: 0; margin: 0; }
+.np-history-row { display: grid; grid-template-columns: 56px 1fr auto auto 44px; gap: 8px; align-items: center; min-height: var(--np-hit); border-bottom: 1px solid var(--np-line2); }
+.np-history-open { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.np-history-actions { display: flex; flex-wrap: wrap; gap: 8px; }
