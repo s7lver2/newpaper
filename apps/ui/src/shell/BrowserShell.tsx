@@ -6,7 +6,7 @@ import { PageTransition } from './PageTransition';
 import { ReaderLoading } from './ReaderLoading';
 import { NativeUnderlay } from './underlay';
 import { parseInternalUrl } from './internalUrl';
-import { overlays, readerView, resolveInternalPage, tabSurface } from './registry';
+import { overlays, readerView, resolveInternalPage, sidePanel, tabSurface } from './registry';
 import { TabStrip } from './TabStrip';
 import { Toolbar } from './Toolbar';
 
@@ -39,17 +39,22 @@ function ActiveSurface() {
 }
 
 export function BrowserShell() {
+  const tab = useActiveTab();
+  const Panel = sidePanel();
   return (
     <div className="np-app np-root">
       <TabStrip />
       <Toolbar />
-      <main className="np-main">
-        <ContentSlot />
-        <ActiveSurface />
-        <PageTransition />
-        <NativeUnderlay />
-        <ContextMenuHost />
-      </main>
+      <div className="np-workspace">
+        <main className="np-main">
+          <ContentSlot />
+          <ActiveSurface />
+          <PageTransition />
+          <NativeUnderlay />
+          <ContextMenuHost />
+        </main>
+        {Panel && tab && tab.kind === 'web' ? <Panel tab={tab} /> : null}
+      </div>
       {overlays().map(({ id, Component }) => (
         <Component key={id} />
       ))}

@@ -39,6 +39,16 @@ export const readerView = () => reader;
 export const registerOverlay = (o: Overlay) => void overlayMap.set(o.id, o);
 export const overlays = () => [...overlayMap.values()];
 
+export interface SidePanelProps { tab: TabInfo }
+let sidePanelComponent: ComponentType<SidePanelProps> | null = null;
+/** Un único panel lateral (el de análisis). El componente decide si se muestra (devuelve `null` cerrado). */
+export function registerSidePanel(C: ComponentType<SidePanelProps>): void {
+  sidePanelComponent = C;
+}
+export function sidePanel(): ComponentType<SidePanelProps> | null {
+  return sidePanelComponent;
+}
+
 export const registerShortcut = (action: ShortcutAction, handler: (ctx: ShortcutContext) => void) => void shortcuts.set(action, handler);
 export const shortcutHandler = (action: ShortcutAction) => shortcuts.get(action);
 
@@ -50,4 +60,5 @@ export function _resetRegistry(): void {
   reader = undefined;
   overlayMap = new Map();
   shortcuts = new Map();
+  sidePanelComponent = null;
 }
