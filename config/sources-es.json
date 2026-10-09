@@ -32,7 +32,7 @@
     { "id": "cincodias", "nombre": "Cinco Días", "dominio": "cincodias.elpais.com", "feeds": ["https://feeds.elpais.com/mrss-s/pages/ep/site/cincodias.elpais.com/portada"], "pais": "ES", "idioma": "es", "tipo": "medio" },
     { "id": "efe", "nombre": "EFE", "dominio": "efe.com", "feeds": ["https://efe.com/feed/"], "pais": "ES", "idioma": "es", "tipo": "agencia" },
     { "id": "europapress", "nombre": "Europa Press", "dominio": "europapress.es", "feeds": ["https://www.europapress.es/rss/rss.aspx"], "pais": "ES", "idioma": "es", "tipo": "agencia" },
-    { "id": "servimedia", "nombre": "Servimedia", "dominio": "servimedia.es", "feeds": ["https://www.servimedia.es/rss"], "pais": "ES", "idioma": "es", "tipo": "agencia" },
+    { "id": "servimedia", "nombre": "Servimedia", "dominio": "servimedia.es", "feeds": ["https://www.servimedia.es/rss.xml"], "pais": "ES", "idioma": "es", "tipo": "agencia" },
     { "id": "maldita", "nombre": "Maldita.es", "dominio": "maldita.es", "feeds": ["https://maldita.es/feed/"], "pais": "ES", "idioma": "es", "tipo": "verificador" },
     { "id": "newtral", "nombre": "Newtral", "dominio": "newtral.es", "feeds": ["https://www.newtral.es/feed/"], "pais": "ES", "idioma": "es", "tipo": "verificador" }
   ]

@@ -106,6 +106,9 @@ pub fn coverage_for_event(conn: &Connection, event_id: i64, exclude_url: Option<
     let mut outlets: HashSet<String> = HashSet::new();
     for a in arts {
         let Some(oid) = a.outlet_id.clone() else { continue };
+        if s.disabled_outlets.contains(&oid) {
+            continue;
+        }
         if Some(a.url.as_str()) == exclude_url || Some(&oid) == exclude_outlet.as_ref() {
             continue;
         }

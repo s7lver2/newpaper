@@ -29,6 +29,8 @@ pub struct FeedsSettings {
     pub prior_default_sd: f64,
     /// Días de análisis propios que cuentan para la línea editorial.
     pub lean_window_days: i64,
+    /// Medios que el usuario no quiere usar para contrastar (ids de `outlets`).
+    pub disabled_outlets: Vec<String>,
 }
 
 impl Default for FeedsSettings {
@@ -44,6 +46,7 @@ impl Default for FeedsSettings {
             search_provider: "brave".into(),
             prior_default_sd: 10.0,
             lean_window_days: 90,
+            disabled_outlets: Vec::new(),
         }
     }
 }

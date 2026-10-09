@@ -88,6 +88,17 @@ pub fn sync_sources(conn: &Connection, sources: &Sources) -> Result<()> {
     for url in existing.iter().filter(|u| !wanted.contains(u)) {
         conn.execute("DELETE FROM feeds WHERE url = ?1", [url])?;
     }
+    // Una fuente propia que el usuario quita (o que otro dispositivo borra) debe desaparecer también de `outlets`;
+    // sus artículos se conservan sin medio. Los medios de la lista integrada no se tocan nunca.
+    let stale: Vec<String> = {
+        let mut st = conn.prepare("SELECT id FROM outlets WHERE id LIKE 'custom-%'")?;
+        let rows = st.query_map([], |r| r.get::<_, String>(0))?;
+        rows.collect::<rusqlite::Result<Vec<_>>>()?
+    };
+    for id in stale.iter().filter(|id| !sources.outlets.iter().any(|o| &o.id == *id)) {
+        conn.execute("UPDATE articles SET outlet_id = NULL WHERE outlet_id = ?1", [id])?;
+        conn.execute("DELETE FROM outlets WHERE id = ?1", [id])?;
+    }
     Ok(())
 }
 
@@ -169,6 +180,17 @@ mod tests {
 
     fn art(url: &str, outlet: &str, title: &str, lang: &str) -> NewArticle {
         NewArticle { url: url.into(), outlet_id: Some(outlet.into()), title: title.into(), summary: String::new(), language: lang.into(), published_at: 100, origin: "rss".into(), topic: None }
+    }
+
+    #[test]
+    fn removes_custom_outlets_that_are_no_longer_wanted() {
+        let s = store();
+        let with_custom = SRC.replace(r#"]}"#, r#",{"id":"custom-c-test","nombre":"C","dominio":"c.test","feeds":["https://c.test/rss"],"pais":"ES","idioma":"es","tipo":"medio"}]}"#);
+        s.with_tx(|c| sync_sources(c, &Sources::from_json(&with_custom).unwrap()).map_err(|_| rusqlite::Error::InvalidQuery)).unwrap();
+        let count = |s: &Store| s.with_conn(|c| c.query_row("SELECT count(*) FROM outlets", [], |r| r.get::<_, i64>(0))).unwrap();
+        assert_eq!(count(&s), 3);
+        s.with_tx(|c| sync_sources(c, &Sources::from_json(SRC).unwrap()).map_err(|_| rusqlite::Error::InvalidQuery)).unwrap();
+        assert_eq!(count(&s), 2);
     }
 
     #[test]

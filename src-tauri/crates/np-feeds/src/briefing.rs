@@ -85,7 +85,8 @@ pub fn events_search(conn: &Connection, query: &str, lang: Lang, limit: usize) -
 
 pub fn event_detail(conn: &Connection, event_id: i64, leans: &[OutletLean], s: &FeedsSettings) -> Result<Option<EventDetail>> {
     let Some(c) = card(conn, event_id, leans, s)? else { return Ok(None) };
-    let all = FeedsSettings { coverage_per_bucket: usize::MAX, ..s.clone() };
+    // El detalle de un hecho enseña todas las coberturas, también las de medios que el usuario no usa para contrastar.
+    let all = FeedsSettings { coverage_per_bucket: usize::MAX, disabled_outlets: Vec::new(), ..s.clone() };
     let (articles, _) = coverage_for_event(conn, event_id, None, leans, &all)?;
     Ok(Some(EventDetail { card: c, articles }))
 }
