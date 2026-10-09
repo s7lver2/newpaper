@@ -66,9 +66,34 @@ Main (lector con lente, banner de IA, etiquetas «IA» al margen, barra de selec
 ### Pendiente (no verificado o sin igualar al mockup)
 
 - Hemeroteca: no se ha podido ver con datos (necesita Wayback; con una URL local no devuelve capturas) y no se ha comparado píxel a píxel.
-- Proveedores (asistente) y Ajustes › IA: ahora a página completa con tarjetas grandes, pero sin pasos con indicador, logos de proveedor ni la cuadrícula de 13 proveedores / tarjetas de preset del mockup; la sección «IA» y «Análisis» de la barra lateral no tienen icono ni resumen.
+- Proveedores (asistente) y Ajustes › IA: rehechos para coincidir con los mockups (ver «Ajuste del asistente de proveedores y Ajustes › IA» más abajo).
 - Historial: sin columna lateral (conservar, pausar, sincronización), iconos de medio ni pestañas con contadores.
 - Gráficos de la síntesis: marco y escala corregidos, pero sin selector Barras/Línea/Tabla en la tarjeta, valor destacado ni barra rayada del dato provisional; la matriz no usa chips de color.
 - Nueva pestaña: sin la tarjeta «Continúa leyendo» con progreso ni el pie de página.
 - No se ha probado `useUnderlay` con la vista original visible (solo lector, donde la webview nativa está oculta) ni el atajo Ctrl+K sobre la webview nativa; sí funcionan el botón de la barra y la selección en el lector.
 - e2e: especificación actualizada a los nuevos selectores; sigue sin ejecutarse.
+
+## Ajuste del asistente de proveedores y Ajustes › IA
+
+El usuario señaló que el asistente (`newpaper://ajustes/ia/conectar`) y la pestaña Ajustes › IA no se parecían a los mockups. Se rehicieron ambos contra `Proveedores.dc.html` y `Ajustes.dc.html`, midiendo con `getBoundingClientRect`/capturas del mockup servido (Chrome sin cabeza, 1280 px) frente a la app real (build `custom-protocol` con el proveedor simulado local; nunca proveedores reales ni claves reales). Papel y tinta revisados a 1280 px y a 760–820 px de ancho.
+
+### Qué se hizo
+
+- **Asistente (3 pasos)**: indicador de pasos con pista animada, tarjetas «Recomendados» (ChatGPT y Nous), recuadro de «Pega tu clave» con reconocimiento por prefijo (logo que rebota, «Es de X», lista si el prefijo es ambiguo, aviso si no se reconoce), cuadrícula «Nube» con 10 proveedores, «En tu equipo» (Ollama y LM Studio con la etiqueta «detectado» cuando la sonda los encuentra) y «Avanzado» (endpoint compatible con OpenAI). Paso 2 con la tarjeta de la clave (detección del prefijo en vivo, aviso de privacidad) y la columna «¿No tienes clave?» (abrir la web del proveedor, tres pasos, nota extra para OpenAI y Gemini). Paso 3 con las tres comprobaciones animadas, el esqueleto «Asignando modelos…», la tarjeta «Asignado automáticamente» (6 pasos con modelo, dónde corre y coste, total y límite mensual, «Opciones avanzadas»), el estado de error y la tarjeta final («está conectado» / «Asistente cerrado»). Animaciones del mockup (`rise`, `swR/swL`, `bnc`, `drop`, `shut`, resorte del conmutador y de la flecha) como `np-*`; teclado: foco visible, Enter en los campos, Escape = un paso atrás (o cerrar), el cursor va al primer campo al entrar en el paso 2.
+- **Ajustes › IA**: «Punto de partida» (4 presets con coste por noticia), «Proveedores» con filtros Todos/Activos/Nube/Local y 15 fichas con logo, el panel del proveedor (clave, dirección, modelos con coste por paso típico, conmutador, «Probar conexión»), «Pipeline de análisis» de 8 pasos con conectores animados, inspector (proveedor, modelo, creatividad, respaldo, coste y tiempo), resumen oscuro con franjas y «Límite de gasto mensual». Estado vacío «Conecta un proveedor» cuando no hay ninguno.
+- **Barra lateral de Ajustes**: «Inteligencia artificial» y «Análisis» con icono y línea de resumen («Pipeline de 8 pasos» o «Sin proveedor»; «Automático», «Bajo demanda» o «Escalonado»), en el orden del mockup. La sección Análisis pasa a tener las tres tarjetas de disparo del mockup.
+- **Logos**: los 12 SVG de una sola trazada que ya estaban en `design/mockups/assets/` (copiados a `features/providers/logos/`, sin red); Nous, Groq y el endpoint propio usan el monograma del mockup (`N`, `gq`, `{ }`). Se pintan con `currentColor`: en tinta la ficha se mezcla con el fondo de tarjeta.
+- Las claves siguen yendo solo por `secret_set` al llavero. El estado de React las guarda hasta que se prueba la conexión y se vacía justo después (el campo pasa a «•••• guardada»); si el asistente se abandona sin terminar, se borra la clave del llavero (salvo que el proveedor ya estuviera conectado). Ninguna clave se escribe en ajustes ni en el registro.
+
+### Diferencias que se mantienen
+
+- Moneda: los precios del registro están en dólares, así que los importes salen en `$` (no en `€`). Los costes son estimaciones con un artículo de 6.000 caracteres y 5 coberturas (`estimateAnalysis`), no los números inventados del mockup.
+- Se omiten los botones «Claves de ejemplo» / «Probar con una clave de ejemplo» (claves falsas de demostración que en la app real inducirían a probar una conexión con claves inventadas).
+- Paso 3: una sola llamada real alimenta las tres comprobaciones, que se revelan una a una (el mockup las temporiza con retardos fijos). La burbuja «Listo para leer noticias contigo.» es un texto de la interfaz, no la respuesta del modelo (que es solo «ok»). El tiempo de la prueba solo aparece en «Responde en N ms».
+- Endpoint propio: se mantiene el campo «Modelos (separados por comas)» que el mockup no tiene (no se listan modelos del servidor) y se oculta el botón «Consigue tu clave» (no hay URL).
+- Tras abrir «Consigue tu clave» el aviso dice «Abierta en una pestaña nueva»: la web se abre en una pestaña de newpaper, no en el navegador del sistema.
+- Ajustes › IA: falta el deslizador «Fuentes a contrastar por afirmación» (no hay ajuste ni parámetro en el pipeline que lo lea). El interruptor de un proveedor local queda desactivado: los locales se usan solos cuando están en marcha. El límite mensual usa 0 = «Sin límite» (no existe «límite de 0»). El interruptor de un proveedor en la nube conectado lo desconecta y borra su clave del llavero.
+- En «Local» las etiquetas de modelos detectados se recortan con puntos suspensivos en lugar de romper la ficha a varias líneas (el mockup las parte en una columna estrecha).
+- En tinta el bloque oscuro del resumen no se invierte a una franja clara: usa el negro de la barra de título sobre el fondo.
+- Fuera de alcance, sin hacer: el buscador «Buscar ajuste» y el pie «newpaper 0.1 · Tauri 2 · WebView2» de la barra lateral; en Análisis, «Excepciones por medio» y los tres interruptores del mockup (no existen en el producto).
+- Un fallo de conexión en el asistente solo distingue «ok / no ok» (`testConnection` devuelve un único error): se muestra como fallo del primer paso.
