@@ -9,7 +9,7 @@ use windows::Win32::Foundation::HGLOBAL;
 use webview2_com::{
     take_pwstr,
     Microsoft::Web::WebView2::Win32::{
-        ICoreWebView2, ICoreWebView2NavigationCompletedEventArgs2, ICoreWebView2Settings2, ICoreWebView2Settings3,
+        ICoreWebView2, ICoreWebView2NavigationCompletedEventArgs2, ICoreWebView2Settings3,
         ICoreWebView2Settings4, ICoreWebView2Settings6, ICoreWebView2Settings8, ICoreWebView2_11, ICoreWebView2_13, ICoreWebView2_4, COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_AUDIO,
         COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_IMAGE, COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_SELECTED_TEXT,
         COREWEBVIEW2_CONTEXT_MENU_TARGET_KIND_VIDEO, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_DARK, COREWEBVIEW2_PREFERRED_COLOR_SCHEME_LIGHT,
@@ -38,7 +38,12 @@ pub(super) fn attach(app: &AppHandle, tab: TabId, webview: &Webview) -> tauri::R
     })
 }
 
-/// Quita las marcas de Edge/WebView2 del user agent (`Edg/...`): la app se presenta como un Chromium genérico.
+/// Quita las marcas de Edge/WebView2 del user agent (`Edg/...`).
+///
+/// **No se aplica a las webviews**: WebView2 no cambia las cabeceras `Sec-CH-UA*` al cambiar el user agent, y la
+/// combinación "UA de Chromium + client hints de Edge/WebView2" la rechazan los WAF (DataDome en El País: 403 en
+/// 3 de cada 5 cargas sin cookies). El user agent se deja el de WebView2, coherente con sus client hints.
+#[allow(dead_code)]
 pub(super) fn sanitize_user_agent(ua: &str) -> String {
     ua.split(' ').filter(|t| !t.starts_with("Edg/") && !t.starts_with("EdgA/") && !t.contains("WebView2")).collect::<Vec<_>>().join(" ")
 }
@@ -59,13 +64,6 @@ pub(super) unsafe fn harden(core: &ICoreWebView2) -> windows::core::Result<()> {
     s.SetIsStatusBarEnabled(false)?;
     s.SetIsBuiltInErrorPageEnabled(false)?;
     s.SetAreDevToolsEnabled(dev)?;
-    if let Ok(s2) = s.cast::<ICoreWebView2Settings2>() {
-        let mut ua = PWSTR::null();
-        if s2.UserAgent(&mut ua).is_ok() {
-            let clean = sanitize_user_agent(&take_pwstr(ua));
-            let _ = s2.SetUserAgent(&HSTRING::from(clean));
-        }
-    }
     if let Ok(s3) = s.cast::<ICoreWebView2Settings3>() {
         s3.SetAreBrowserAcceleratorKeysEnabled(dev)?;
     }
