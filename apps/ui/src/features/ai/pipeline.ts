@@ -32,6 +32,7 @@ async function build(): Promise<Pipeline> {
   const contentLocale = asLocale(await commands.settingsGet<string>('content.locale'));
   const uiLocale = asLocale(await commands.settingsGet<string>('general.locale'));
   const liveModels = (await commands.settingsGet<Record<string, string[]>>('ai.liveModels')) ?? {};
+  const working = (await commands.settingsGet<Record<string, string>>('ai.workingModels')) ?? {};
   const custom = (await commands.settingsGet<CustomEndpoint[]>('ai.customEndpoints')) ?? [];
   const primary = await readJson<Record<string, { dominio: string }[]>>('primary-sources.json', {});
   const parties = await readJson<{ parties?: { id: string }[] }>(`parties-${contentLocale}.json`, {});
@@ -45,7 +46,7 @@ async function build(): Promise<Pipeline> {
         const base = custom.find((c) => c.id === ref.provider)?.baseUrl;
         // Un modelo retirado por el proveedor (410/404) se sustituye por uno vivo de su lista.
         const live = liveModels[ref.provider];
-        const id = live?.length && !live.includes(ref.model) ? (pickFallback(live) ?? ref.model) : ref.model;
+        const id = working[ref.provider] ?? (live?.length && !live.includes(ref.model) ? (pickFallback(live) ?? ref.model) : ref.model);
         const m = registry.model(ref.provider, id) ?? registry.model(ref.provider, ref.model);
         return { model: createModel(p, id, makeProxyFetch(ref.provider, tauriInvoker), base), noTemperature: m?.noTemperature ?? false };
       },

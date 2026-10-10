@@ -228,7 +228,7 @@ export function createPipeline(deps: PipelineDeps) {
     runFullAnalysis,
     askAgent,
     investigateUncovered,
-    testConnection: (ref: { provider: string; model: string }) => testConnection(deps.models.get(ref).model),
+    testConnection: (ref: { provider: string; model: string }, timeoutMs?: number) => testConnection(deps.models.get(ref).model, timeoutMs),
   };
 }
 

@@ -1,6 +1,6 @@
 import type { ProviderEntry } from '@newpaper/pipeline';
 import { commands } from '../../ipc/commands';
-import { fetchLiveModels, pickFallback, saveLiveModels } from '../ai/liveModels';
+import { fetchLiveModels, rankLive, saveLiveModels, saveWorkingModel } from '../ai/liveModels';
 import { getPipeline, resetPipeline, type useAiSettings } from '../ai/pipeline';
 
 export interface CustomDraft { baseUrl: string; models: string }
@@ -34,16 +34,28 @@ export async function storeCredentials(p: ProviderEntry, key: string, custom: Cu
 /** Una llamada mínima al modelo; solo contiene la clave que ya está en el llavero. */
 export async function runConnectionTest(p: ProviderEntry, model: string): Promise<TestResult> {
   try {
-    // Los proveedores retiran modelos: si el del registro ya no existe, se prueba (y se usará) uno vivo.
+    // Los proveedores retiran modelos, o no todos los de su lista sirven a esta cuenta: si el del registro falla
+    // con 404/410 se prueban, de uno en uno y con poco margen, otros de la lista viva.
     const live = await fetchLiveModels(p);
-    let use = model;
-    if (live) {
-      await saveLiveModels(p.id, live).catch(() => {});
-      if (!live.includes(model)) use = pickFallback(live) ?? model;
-    }
+    if (live) await saveLiveModels(p.id, live).catch(() => {});
+    await saveWorkingModel(p.id, null).catch(() => {});
     resetPipeline();
-    const r = await (await getPipeline()).testConnection({ provider: p.id, model: use });
-    return { ok: r.ok, latencyMs: r.latencyMs, error: r.ok ? null : r.error };
+    const pipe = await getPipeline();
+    const first = await pipe.testConnection({ provider: p.id, model }, live ? 20_000 : undefined);
+    if (first.ok || !live || !/HTTP (404|410)/.test(first.error)) {
+      return { ok: first.ok, latencyMs: first.latencyMs, error: first.ok ? null : first.error };
+    }
+    let last = first;
+    for (const alt of rankLive(live).filter((m) => m !== model).slice(0, 4)) {
+      const r = await pipe.testConnection({ provider: p.id, model: alt }, 20_000);
+      if (r.ok) {
+        await saveWorkingModel(p.id, alt).catch(() => {});
+        resetPipeline();
+        return { ok: true, latencyMs: r.latencyMs, error: null };
+      }
+      last = r;
+    }
+    return { ok: false, latencyMs: last.latencyMs, error: last.ok ? null : last.error };
   } catch (e) {
     return { ok: false, latencyMs: 0, error: errorText(e) };
   }
