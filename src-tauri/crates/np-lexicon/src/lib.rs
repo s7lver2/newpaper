@@ -1,6 +1,7 @@
 //! Léxico partidista calibrado con diarios de sesiones (§5.2.1.4): construcción y puntuación.
 pub mod congreso;
 pub mod ngrams;
+pub mod noise;
 pub mod schema;
 pub mod score;
 pub mod slant;

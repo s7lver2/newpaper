@@ -28,6 +28,12 @@ fn speaker_head(line: &str) -> Option<(String, String)> {
     let colon = rest.find(':')?;
     let head = &rest[..colon];
     let name = head.split(" (").next()?.trim();
+    // Gobierno: "MINISTRO DE X (Apellidos):" → los apellidos van entre paréntesis.
+    let govt = name.contains("MINISTR") || name.contains("DEL GOBIERNO");
+    let paren = head.split_once(" (").and_then(|(_, p)| p.split(')').next()).map(str::trim).filter(|p| govt && !p.is_empty());
+    if let Some(p) = paren {
+        return Some((p.to_string(), rest[colon + 1..].trim().to_string()));
+    }
     let is_upper = name.chars().filter(|c| c.is_alphabetic()).all(|c| c.is_uppercase()) && name.chars().any(|c| c.is_alphabetic());
     is_upper.then(|| (name.to_string(), rest[colon + 1..].trim().to_string()))
 }
@@ -37,8 +43,37 @@ const CHAIR: &[&str] = &["PRESIDENTA", "PRESIDENTE", "VICEPRESIDENTA", "VICEPRES
 /// Turnos (encabezado en mayúsculas, texto). Se quitan acotaciones entre paréntesis en línea propia.
 pub fn split_turns(text: &str) -> Vec<(String, String)> {
     let mut turns: Vec<(String, String)> = Vec::new();
-    for raw in text.lines() {
-        let line = raw.trim();
+    let mut lines = text.lines().map(str::trim).peekable();
+    while let Some(first) = lines.next() {
+        // Encabezado partido en varias líneas (la segunda empieza p. ej. con "TRANSICIÓN ECOLÓGICA ... (Aagesen Muñoz):"): se une hasta el ':'.
+        let mut joined = String::new();
+        let starts_head = (first.starts_with("El señor ") || first.starts_with("La señora ")) && !first.contains(':');
+        let word_upper = first.split_whitespace().nth(2).is_some_and(|w| w.chars().any(|c| c.is_alphabetic()) && w.chars().filter(|c| c.is_alphabetic()).all(|c| c.is_uppercase()));
+        if starts_head && word_upper {
+            let mut probe = lines.clone();
+            let mut acc = first.to_string();
+            let mut used = 0;
+            while used < 3 {
+                match probe.next() {
+                    Some(next) if !next.is_empty() => {
+                        acc.push(' ');
+                        acc.push_str(next);
+                        used += 1;
+                        if next.contains(':') {
+                            joined = acc.clone();
+                            break;
+                        }
+                    }
+                    _ => break,
+                }
+            }
+            if !joined.is_empty() {
+                for _ in 0..used {
+                    lines.next();
+                }
+            }
+        }
+        let line = if joined.is_empty() { first } else { joined.as_str() };
         // Acotaciones en línea propia: "(Aplausos)." / "(Rumores)".
         if line.is_empty() || (line.starts_with('(') && (line.ends_with(')') || line.ends_with(")."))) {
             continue;
@@ -61,6 +96,10 @@ pub fn speeches_from_text(text: &str, date: &str, deputies: &[Deputy]) -> Vec<Sp
         .into_iter()
         .filter(|(who, _)| !CHAIR.contains(&who.as_str()))
         .filter_map(|(who, said)| {
+            let said = crate::noise::strip_parentheticals(&said);
+            if !crate::noise::looks_spanish(&said) {
+                return None;
+            }
             let key = fold_upper(&who);
             let d = index.iter().find(|(s, _)| *s == key).map(|(_, d)| *d)?;
             Some(Speech { date: date.to_string(), speaker: format!("{} {}", d.name, d.surnames), party: d.group.clone(), text: said })

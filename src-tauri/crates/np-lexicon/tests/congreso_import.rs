@@ -16,3 +16,19 @@ fn splits_speaker_turns_and_drops_chair_and_stage_directions() {
     assert!(speeches[1].text.starts_with("La seguridad jurídica"));
     assert_eq!(speeches[2].date, "2026-02-10");
 }
+
+#[test]
+fn government_headers_use_the_surname_in_parentheses_even_when_wrapped() {
+    let text = "El señor VICEPRESIDENTE (Rodríguez Gómez de Celis): Gracias.\n\
+        La señora VICEPRESIDENTA TERCERA Y MINISTRA PARA LA TRANSICIÓN ECOLÓGICA Y EL\n\
+        RETO DEMOGRÁFICO (Aagesen Muñoz): La transición ecológica crea empleo.\n\
+        El señor MINISTRO DEL INTERIOR (Grande-Marlaska Gómez): Defendemos la seguridad.\n";
+    let deputies = load_deputies(
+        r#"[{"apellidos":"AAGESEN MUÑOZ","nombre":"Sara","grupo":"GS"},{"apellidos":"GRANDE-MARLASKA GÓMEZ","nombre":"Fernando","grupo":"GS"},{"apellidos":"RODRÍGUEZ GÓMEZ DE CELIS","nombre":"Alfonso","grupo":"GS"}]"#,
+    )
+    .unwrap();
+    let speeches = speeches_from_text(text, "2026-02-10", &deputies);
+    assert_eq!(speeches.len(), 2, "the chair is excluded, wrapped and ministerial headers are kept");
+    assert!(speeches[0].text.starts_with("La transición ecológica"));
+    assert_eq!(speeches[1].party, "GS");
+}

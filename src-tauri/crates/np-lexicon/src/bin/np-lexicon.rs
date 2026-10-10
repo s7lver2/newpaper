@@ -1,5 +1,5 @@
 //! np-lexicon import-congreso --text-dir <dir> --deputies <json> --out <speeches.jsonl>
-//! np-lexicon build --speeches <jsonl> --parties <json> --lang es --legislature XV --min-count 10 --top 1500 --out <lexicon.json>
+//! np-lexicon build --speeches <jsonl> --parties <json> --lang es --legislature XV [--deputies <json>] --min-count 10 --top 1500 --out <lexicon.json>
 use std::{collections::HashMap, fs, io::Write, path::PathBuf};
 
 use np_feeds::text::Lang;
@@ -7,6 +7,7 @@ use np_lexicon::{
     congreso::{load_deputies, speeches_from_text},
     schema::{Bloc, BlocsUsed, Lexicon, PartiesFile, Speech},
     slant::{build, count},
+    noise::{drop_noise, personal_names},
     LexError,
 };
 
@@ -50,7 +51,16 @@ fn build_cmd(m: &HashMap<String, String>) -> Result<(), LexError> {
     let lang = Lang::from_code(lang_code);
     let min: u32 = m.get("min-count").and_then(|v| v.parse().ok()).unwrap_or(10);
     let top: usize = m.get("top").and_then(|v| v.parse().ok()).unwrap_or(1500);
-    let phrases = build(&count(&speeches, &parties, lang), min, top);
+    // Se pide un margen amplio y se quitan las fórmulas de tratamiento y los nombres propios antes de recortar.
+    let mut phrases = build(&count(&speeches, &parties, lang), min, top.saturating_mul(4));
+    if let Some(path) = m.get("deputies") {
+        let deputies = load_deputies(&fs::read_to_string(path)?)?;
+        let names: Vec<String> = deputies.iter().flat_map(|d| [d.name.clone(), d.surnames.clone()]).collect();
+        let banned = personal_names(names.iter().map(String::as_str), speeches.iter().map(|s| s.text.as_str()));
+        eprintln!("{} personal-name tokens excluded", banned.len());
+        phrases = drop_noise(phrases, &banned);
+    }
+    phrases.truncate(top);
     let ids = |b: Bloc| parties.parties.iter().filter(|p| p.bloc == Some(b)).map(|p| p.id.clone()).collect();
     let lex = Lexicon {
         version: 1,
