@@ -1,21 +1,397 @@
 {
   "version": 1,
   "medios": {
-    "elpais": { "audiencia": null, "externas": [] },
-    "elmundo": { "audiencia": null, "externas": [] },
-    "abc": { "audiencia": null, "externas": [] },
-    "lavanguardia": { "audiencia": null, "externas": [] },
-    "elconfidencial": { "audiencia": null, "externas": [] },
-    "eldiario": { "audiencia": null, "externas": [] },
-    "publico": { "audiencia": null, "externas": [] },
-    "larazon": { "audiencia": null, "externas": [] },
-    "elespanol": { "audiencia": null, "externas": [] },
-    "20minutos": { "audiencia": null, "externas": [] },
-    "rtve": { "audiencia": null, "externas": [] },
-    "cadenaser": { "audiencia": null, "externas": [] },
-    "cope": { "audiencia": null, "externas": [] },
-    "ondacero": { "audiencia": null, "externas": [] },
-    "lasexta": { "audiencia": null, "externas": [] },
-    "antena3": { "audiencia": null, "externas": [] }
+    "elpais": {
+      "audiencia": {
+        "valor": 4.18,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de El País, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 4.16,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P22: posición media que la población española asigna a la línea de El País (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "elmundo": {
+      "audiencia": {
+        "valor": 5.59,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de El Mundo, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 6.92,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P22: posición media que la población española asigna a la línea de El Mundo (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "abc": {
+      "audiencia": {
+        "valor": 6.11,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de ABC, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 7.79,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P22: posición media que la población española asigna a la línea de ABC (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "lavanguardia": {
+      "audiencia": {
+        "valor": 4.32,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de La Vanguardia, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 5.48,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P22: posición media que la población española asigna a la línea de La Vanguardia (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "elconfidencial": {
+      "audiencia": {
+        "valor": 5.11,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de El Confidencial, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": []
+    },
+    "eldiario": {
+      "audiencia": {
+        "valor": 2.96,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Eldiario.es, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 4.47,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P22: posición media que la población española asigna a la línea de Eldiario.es (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "publico": {
+      "audiencia": {
+        "valor": 2.71,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Publico.es, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": []
+    },
+    "larazon": {
+      "audiencia": {
+        "valor": 6.05,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de La Razón, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 7.66,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P22: posición media que la población española asigna a la línea de La Razón (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "elespanol": {
+      "audiencia": {
+        "valor": 5.78,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Elespañol.com, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": []
+    },
+    "20minutos": {
+      "audiencia": {
+        "valor": 4.6,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de 20 Minutos, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": []
+    },
+    "rtve": {
+      "audiencia": {
+        "valor": 4.45,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de TVE1 (cadena de referencia de RTVE; RNE da 4,47), calculada a partir de la tabla P9a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 4.35,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P23: posición media que la población española asigna a la línea de TVE1 (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "cadenaser": {
+      "audiencia": {
+        "valor": 3.71,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Cadena SER, calculada a partir de la tabla P14a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 3.97,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P24: posición media que la población española asigna a la línea de Cadena SER (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "cope": {
+      "audiencia": {
+        "valor": 6.51,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Cadena COPE, calculada a partir de la tabla P14a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 7.9,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P24: posición media que la población española asigna a la línea de Cadena COPE (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "ondacero": {
+      "audiencia": {
+        "valor": 5.52,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Onda Cero, calculada a partir de la tabla P14a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 6.14,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P24: posición media que la población española asigna a la línea de Onda Cero (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "lasexta": {
+      "audiencia": {
+        "valor": 3.89,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de La Sexta, calculada a partir de la tabla P9a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 3.75,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P23: posición media que la población española asigna a la línea de La Sexta (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "antena3": {
+      "audiencia": {
+        "valor": 5.7,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Antena 3, calculada a partir de la tabla P9a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": [
+        {
+          "valor": 6.34,
+          "escala": [
+            1,
+            10
+          ],
+          "fuente": "CIS, estudio 3421 (sep-oct 2023), P23: posición media que la población española asigna a la línea de Antena 3 (1 izquierda – 10 derecha; excluye NS/NC).",
+          "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+          "fecha": "2023-10"
+        }
+      ]
+    },
+    "okdiario": {
+      "audiencia": {
+        "valor": 6.2,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Okdiario.es, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": []
+    },
+    "elperiodico": {
+      "audiencia": {
+        "valor": 3.96,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de El Periódico de Cataluña, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": []
+    },
+    "expansion": {
+      "audiencia": {
+        "valor": 5.8,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Expansión, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": []
+    },
+    "infolibre": {
+      "audiencia": {
+        "valor": 2.79,
+        "escala": [
+          1,
+          10
+        ],
+        "fuente": "CIS, estudio 3421 (Audiencias de medios de comunicación social, sep-oct 2023, n=27.433). Autoubicación media de los lectores/espectadores/oyentes habituales de Infolibre, calculada a partir de la tabla P3a por autoubicación (1 izquierda – 10 derecha) ponderando por el tamaño muestral de cada categoría (cálculo propio; el total de la tabla se reproduce con error ≤0,6 pt).",
+        "url": "https://www.cis.es/documents/d/guest/es3421creenciasmt_a",
+        "fecha": "2023-10"
+      },
+      "externas": []
+    }
   }
 }
