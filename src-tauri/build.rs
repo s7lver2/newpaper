@@ -20,6 +20,7 @@ const APP_COMMANDS: &[&str] = &[
     "ai_fetch", "ai_cancel", "ai_set_endpoints", "source_fetch", "analysis_cache_get", "analysis_cache_put", "usage_record", "usage_month", "ai_local_probe",
     "app_ready", "system_info", "crash_report_save",
     "update_status", "update_check", "update_install_now", "update_set_channel", "update_ack_notes",
+    "content_status", "content_check_now", "content_revert",
 ];
 
 fn main() {

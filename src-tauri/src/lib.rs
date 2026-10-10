@@ -122,6 +122,9 @@ pub fn run() {
             system::updater::update_install_now,
             system::updater::update_set_channel,
             system::updater::update_ack_notes,
+            system::content::content_status,
+            system::content::content_check_now,
+            system::content::content_revert,
         ])
         .build(tauri::generate_context!())
         .expect("error while building newpaper")
