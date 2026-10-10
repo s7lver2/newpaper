@@ -42,7 +42,6 @@ export function NetErrorSurface({ tab }: { tab: TabInfo }) {
   if (!tab.failure) return null;
   const failure = tab.failure;
   const { kind, actions } = classifyFailure(failure, { online, torBlocked });
-  if (kind === 'notFound') return <div className="np-surface"><NotFoundPage address={failure.url} /></div>;
   const run = (a: NetAction) => {
     if (a === 'retry') return void commands.tabReload(tab.id);
     if (a === 'offlinePage') return void openInternal('sin-conexion');
@@ -50,6 +49,7 @@ export function NetErrorSurface({ tab }: { tab: TabInfo }) {
     if (a === 'archive') return void openInternal('hemeroteca', [], { url: failure.url });
     return void commands.tabBack(tab.id);
   };
+  if (kind === 'notFound') return <div className="np-surface"><NotFoundPage address={failure.url} actions={actions.map((a) => ({ label: t(`pages.netError.actions.${a}`), run: () => run(a) }))} /></div>;
   return (
     <div className="np-surface">
       <div className="np-sp np-neterr" role="alert" data-kind={kind}>
