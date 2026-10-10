@@ -125,6 +125,11 @@ pub fn run() {
             system::content::content_status,
             system::content::content_check_now,
             system::content::content_revert,
+            system::firstrun::first_run_status,
+            system::firstrun::first_run_apply,
+            system::firstrun::bookmarks_scan,
+            system::firstrun::ollama_pull,
+            system::firstrun::open_default_apps,
         ])
         .build(tauri::generate_context!())
         .expect("error while building newpaper")

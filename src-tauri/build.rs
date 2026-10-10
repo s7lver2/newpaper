@@ -21,6 +21,7 @@ const APP_COMMANDS: &[&str] = &[
     "app_ready", "system_info", "crash_report_save",
     "update_status", "update_check", "update_install_now", "update_set_channel", "update_ack_notes",
     "content_status", "content_check_now", "content_revert",
+    "first_run_status", "first_run_apply", "bookmarks_scan", "ollama_pull", "open_default_apps",
 ];
 
 fn main() {
