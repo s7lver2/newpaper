@@ -1,10 +1,12 @@
 import { useI18n } from '@newpaper/i18n/react';
 import { useEffect, useState } from 'react';
+import type { InternalPageProps } from '../../shell/registry';
 
 export const COLUMNS = ['erratas', 'chiste', 'necrologica', 'anuncio', 'horoscopo', 'ultimaHora'] as const;
 export const ROTATE_MS = 7000;
 
-export function NotFoundPage({ address }: { address?: string }) {
+/** Usada como página interna (recibe `url` y `tab`, que no necesita) y como superficie de error (`address`). */
+export function NotFoundPage({ address }: Partial<InternalPageProps> & { address?: string }) {
   const { t } = useI18n();
   const [i, setI] = useState(0);
   const reduced = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;

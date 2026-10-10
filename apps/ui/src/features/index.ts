@@ -11,3 +11,5 @@ import './synthesis/register';
 import './hemeroteca/register';
 import './providers/register';
 import './history/register';
+import './pages/register';
+import './system/register';

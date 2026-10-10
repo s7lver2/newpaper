@@ -23,11 +23,14 @@ export function FirstRun() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    void commands.firstRunStatus().then((s) => {
-      setSt(s);
-      setAutostart(s.autostart);
-      setBrowser(s.browsers[0] ?? '');
-    });
+    void commands
+      .firstRunStatus()
+      .then((s) => {
+        setSt(s);
+        setAutostart(s.autostart);
+        setBrowser(s.browsers[0] ?? '');
+      })
+      .catch(() => {});
   }, []);
   if (!st || st.done) return null;
 

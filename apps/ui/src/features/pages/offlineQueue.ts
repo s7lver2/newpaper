@@ -10,7 +10,9 @@ export async function enqueue(a: QueuedAction): Promise<void> {
 
 /** Ejecuta lo pendiente; lo que vuelve a fallar se queda en la cola. */
 export async function flush(): Promise<number> {
-  const q = (await commands.settingsGet<QueuedAction[]>(KEY)) ?? [];
+  const stored = await commands.settingsGet<QueuedAction[]>(KEY).catch(() => undefined);
+  if (stored === undefined) return 0; // sin leer la cola no se reescribe
+  const q = stored ?? [];
   const left: QueuedAction[] = [];
   for (const a of q) {
     try {
@@ -25,6 +27,6 @@ export async function flush(): Promise<number> {
 }
 
 export function startOfflineQueue(): void {
-  window.addEventListener('online', () => void flush());
-  if (navigator.onLine) void flush();
+  window.addEventListener('online', () => void flush().catch(() => {}));
+  if (navigator.onLine) void flush().catch(() => {});
 }
