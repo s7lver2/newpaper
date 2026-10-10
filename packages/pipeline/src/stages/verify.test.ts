@@ -55,3 +55,11 @@ describe('verifyClaims', () => {
     expect(JSON.stringify(c.model.doGenerateCalls[0]!.prompt)).toContain('<<<DATA SOURCE S1');
   });
 });
+
+describe('humanizeSourceIds', () => {
+  it('replaces internal source ids with the source title', async () => {
+    const { humanizeSourceIds } = await import('./verify');
+    const by = new Map([['S1', { title: 'INE' }], ['S2', { title: 'El País' }]]);
+    expect(humanizeSourceIds('Según S1 y [S2], es cierto (S3).', by)).toBe('Según «INE» y «El País», es cierto.');
+  });
+});

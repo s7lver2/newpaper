@@ -104,6 +104,18 @@ const VerifyOutSchema = z.object({
   verdicts: z.array(z.object({ claimId: z.string(), status: VerdictStatusSchema, explanation: z.string(), sourceIds: z.array(z.string()) })),
 });
 
+/** El modelo cita las fuentes por su id interno (S1, S2…): al usuario se le muestra el título de la fuente, no el id. */
+export function humanizeSourceIds(text: string, byId: Map<string, { title: string }>): string {
+  return text
+    .replace(/\(?\[?\bS(\d+)\b\]?\)?/g, (_m, n: string) => {
+      const s = byId.get(`S${n}`);
+      return s ? `«${s.title.slice(0, 70)}»` : '';
+    })
+    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+([,.;:])/g, '$1')
+    .trim();
+}
+
 export async function verifyClaims(ctx: StageCtx, article: ArticleInput, claims: Claim[], sources: RetrievedSource[]): Promise<StageResult<{ verdicts: Verdict[]; dropped: string[] }>> {
   if (!claims.length) return { value: { verdicts: [], dropped: [] }, usage: ZERO_USAGE };
   const r = await generateStructured({
@@ -137,7 +149,7 @@ export async function verifyClaims(ctx: StageCtx, article: ArticleInput, claims:
     }
     // Un veredicto factual sin ninguna fuente recuperada no se sostiene.
     const factual = v.status === 'verificado' || v.status === 'enganoso' || v.status === 'falso' || v.status === 'falta_contexto';
-    verdicts.push({ claimId: v.claimId, status: factual && !cited.length ? 'no_verificable' : v.status, explanation: v.explanation, sources: cited });
+    verdicts.push({ claimId: v.claimId, status: factual && !cited.length ? 'no_verificable' : v.status, explanation: humanizeSourceIds(v.explanation, byId), sources: cited });
   }
   return { value: { verdicts, dropped }, usage: addUsage(ZERO_USAGE, r.usage) };
 }

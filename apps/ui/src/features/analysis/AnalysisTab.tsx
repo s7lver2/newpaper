@@ -1,5 +1,5 @@
 import { useI18n, useT } from '@newpaper/i18n/react';
-import type { AnalysisResult, StageId } from '@newpaper/pipeline';
+import { humanizeSourceIds, type AnalysisResult, type StageId } from '@newpaper/pipeline';
 import { FramingAxis, NeutralityRing, StageList, type StageItem } from '@newpaper/ui-kit';
 import { useEffect, useRef, useState } from 'react';
 import type { TabInfo } from '../../ipc/types';
@@ -91,6 +91,8 @@ export function AnalysisTab({ tab }: { tab: TabInfo }) {
   }
 
   const score = result.score;
+  // Sin señales suficientes la nota no es fiable: la fórmula daría 100 % por no encontrar sesgo, no por haberlo medido.
+  const neutrality = score && score.verdict !== 'no_determinable' ? score.neutrality : null;
   const claims = result.claims?.claims ?? [];
   const verdicts = new Map((result.verdicts ?? []).map((v) => [v.claimId, v]));
   const coverages = result.coverage?.coverages ?? [];
@@ -123,7 +125,7 @@ export function AnalysisTab({ tab }: { tab: TabInfo }) {
   return (
     <div className="np-atab np-rise">
       <header className="np-atab-head">
-        <NeutralityRing value={score?.neutrality ?? null} label={t('analysis.neutrality', { value: score?.neutrality ?? 0 })} caption={t('analysis.neutralityCaption')} />
+        <NeutralityRing value={neutrality} label={t('analysis.neutrality', { value: neutrality ?? 0 })} caption={t('analysis.neutralityCaption')} />
         <div className="np-atab-head-text">
           <p className="np-atab-verdict">{score ? t(`analysis.verdictText.${score.verdict}`) : t('analysis.noScore')}</p>
           <p className="np-atab-note">{note}</p>
@@ -208,7 +210,7 @@ export function AnalysisTab({ tab }: { tab: TabInfo }) {
                   </button>
                   {open ? (
                     <div className="np-claim-detail np-rise">
-                      <p>{v ? v.explanation : t('analysis.claim.pendingDetail')}</p>
+                      <p>{v ? humanizeSourceIds(v.explanation, new Map(v.sources.map((s) => [s.id, s]))) : t('analysis.claim.pendingDetail')}</p>
                       <div className="np-claim-foot">
                         <span className="np-claim-sources">
                           {v?.sources.length

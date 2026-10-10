@@ -18,4 +18,4 @@ export { DEFAULT_WEIGHTS, type FramingWeights } from './stages/framing';
 export { mirrorCheck, mirrorText, blocError } from './stages/mirror';
 export { isUncovered } from './stages/noCoverage';
 export { cleanCitations } from './stages/agent';
-export type { RetrievedSource } from './stages/verify';
+export { humanizeSourceIds, type RetrievedSource } from './stages/verify';
