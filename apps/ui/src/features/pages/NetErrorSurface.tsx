@@ -6,6 +6,7 @@ import type { TabInfo } from '../../ipc/types';
 import { openInternal } from '../../shell/navigate';
 import { requestOpenWithoutTor } from '../privacy/withoutTor';
 import { classifyFailure, type NetAction } from './netError';
+import { NetArt } from './art';
 import { NotFoundPage } from './NotFoundPage';
 
 function useOnline() {
@@ -50,16 +51,21 @@ export function NetErrorSurface({ tab }: { tab: TabInfo }) {
     return void commands.tabBack(tab.id);
   };
   return (
-    <div className="np-surface np-neterr" role="alert">
-      <p className="np-404-kicker">{t(`pages.netError.${kind}.kicker`)}</p>
-      <h1>{t(`pages.netError.${kind}.title`)}</h1>
-      <p>{t(`pages.netError.${kind}.body`, { host: hostOf(failure.url) })}</p>
-      <div className="np-consent-actions">
-        {actions.map((a, i) => (
-          <Button key={a} variant={i === 0 ? 'primary' : 'secondary'} onClick={() => run(a)}>{t(`pages.netError.actions.${a}`)}</Button>
-        ))}
+    <div className="np-surface">
+      <div className="np-sp np-neterr" role="alert" data-kind={kind}>
+        <div className="np-sp-art"><NetArt kind={kind} /></div>
+        <div className="np-sp-main np-rise">
+          <p className="np-sp-kicker" data-tone={kind}>{t(`pages.netError.${kind}.kicker`)}</p>
+          <h1>{t(`pages.netError.${kind}.title`)}</h1>
+          <p className="np-sp-lead">{t(`pages.netError.${kind}.body`, { host: hostOf(failure.url) })}</p>
+          <div className="np-sp-actions">
+            {actions.map((a, i) => (
+              <Button key={a} variant={i === 0 ? 'primary' : 'secondary'} onClick={() => run(a)}>{t(`pages.netError.actions.${a}`)}</Button>
+            ))}
+          </div>
+          <p className="np-sp-code">{t('pages.netError.code', { code: failure.webErrorStatus })}</p>
+        </div>
       </div>
-      <p className="np-mono np-muted">{t('pages.netError.code', { code: failure.webErrorStatus })}</p>
     </div>
   );
 }

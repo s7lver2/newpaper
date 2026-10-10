@@ -312,7 +312,8 @@
     },
     "updates": {
       "title": "Updates",
-      "description": "Version, Kanal und Inhalte"
+      "description": "Version, Kanal und Inhalte",
+      "version": "Version {version}"
     },
     "help": {
       "title": "Hilfe",
@@ -1345,6 +1346,7 @@
     "skip": "Überspringen",
     "start": "Los geht’s",
     "next": "Weiter",
+    "back": "Zurück",
     "notVisible": "Du siehst es, sobald du einen Artikel öffnest.",
     "welcome": {
       "title": "Willkommen bei newpaper",
@@ -1459,13 +1461,17 @@
       "report": "Technischen Bericht auf diesem Rechner speichern",
       "reportHint": "Nur Version, System und Speicher. Niemals Adresse oder Inhalt.",
       "saved": "Bericht gespeichert.",
-      "reload": "Tab neu laden"
+      "reload": "Tab neu laden",
+      "close": "Tab schließen",
+      "safe": "Deine anderen Tabs und gespeicherten Analysen sind sicher."
     },
     "notFound": {
       "kicker": "Berichtigung",
       "title": "Diese Seite gibt es nicht",
       "lead": "Wo „{address}“ stand, hätte etwas anderes stehen sollen. Wir bedauern den Fehler.",
       "columnsLabel": "Rubriken",
+      "prev": "Vorherige Spalte",
+      "next": "Nächste Spalte",
       "columns": {
         "erratas": {
           "title": "Berichtigung",
@@ -1510,7 +1516,10 @@
       "youWin": "Du hast gewonnen. Das ist seltener, als es aussieht.",
       "iWin": "Ich habe gewonnen.",
       "draw": "Unentschieden.",
-      "again": "Noch eine Partie"
+      "again": "Noch eine Partie",
+      "scoreYou": "Du · ×",
+      "scoreDraw": "Remis",
+      "scoreHouse": "Die Zeitung · ○"
     }
   }
 }

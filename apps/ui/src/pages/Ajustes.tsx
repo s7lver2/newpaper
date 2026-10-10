@@ -1,4 +1,5 @@
 import { useT } from '@newpaper/i18n/react';
+import { useEffect } from 'react';
 import { openInternal } from '../shell/navigate';
 import { settingsSections, type InternalPageProps } from '../shell/registry';
 
@@ -9,6 +10,11 @@ export function Ajustes({ url }: InternalPageProps) {
   const t = useT();
   const sections = settingsSections();
   const current = sections.find((s) => s.id === url.path[0]) ?? sections[0];
+  const currentId = current?.id;
+  // En ventanas estrechas la barra lateral es una tira con scroll: la entrada activa se mantiene a la vista.
+  useEffect(() => {
+    document.querySelector('.np-settings-navitem[aria-current="page"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+  }, [currentId]);
   if (!current) return null;
   const Section = current.Component;
   const index = Math.max(0, sections.findIndex((s) => s.id === current.id));

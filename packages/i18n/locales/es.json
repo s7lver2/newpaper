@@ -312,7 +312,8 @@
     },
     "updates": {
       "title": "Actualizaciones",
-      "description": "Versión, canal y contenido"
+      "description": "Versión, canal y contenido",
+      "version": "Versión {version}"
     },
     "help": {
       "title": "Ayuda",
@@ -1345,6 +1346,7 @@
     "skip": "Saltar",
     "start": "Empezar",
     "next": "Siguiente",
+    "back": "Atrás",
     "notVisible": "Lo verás en cuanto abras una noticia.",
     "welcome": {
       "title": "Bienvenido a newpaper",
@@ -1459,13 +1461,17 @@
       "report": "Guardar un informe técnico en este equipo",
       "reportHint": "Solo versión, sistema y memoria. Nunca la dirección ni el contenido.",
       "saved": "Informe guardado.",
-      "reload": "Recargar la pestaña"
+      "reload": "Recargar la pestaña",
+      "close": "Cerrar pestaña",
+      "safe": "Tus otras pestañas y los análisis guardados están a salvo."
     },
     "notFound": {
       "kicker": "Fe de erratas",
       "title": "Esta página no existe",
       "lead": "Donde decía «{address}» debía decir otra cosa. Lamentamos el error.",
       "columnsLabel": "Columnas",
+      "prev": "Columna anterior",
+      "next": "Columna siguiente",
       "columns": {
         "erratas": {
           "title": "Fe de erratas",
@@ -1510,7 +1516,10 @@
       "youWin": "Has ganado. Es más raro de lo que parece.",
       "iWin": "He ganado yo.",
       "draw": "Tablas.",
-      "again": "Otra partida"
+      "again": "Otra partida",
+      "scoreYou": "Tú · ×",
+      "scoreDraw": "Tablas",
+      "scoreHouse": "El Diario · ○"
     }
   }
 }

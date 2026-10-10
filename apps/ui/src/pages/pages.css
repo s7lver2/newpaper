@@ -46,3 +46,18 @@
 /* Asistente de proveedores: main de 1040 px con 36/24/64 px de margen interior (Proveedores.dc.html) */
 .np-settings--full .np-settings-body { flex: none; max-width: 1088px; margin: 0 auto; padding: 36px 24px 64px; }
 .np-settings--full .np-settings-body > * { max-width: none; }
+
+/* Ventanas estrechas: la barra lateral pasa a ser una tira horizontal sobre la sección (que sigue desplazándose sola) */
+@media (max-width: 760px) {
+  .np-settings:not(.np-settings--full) { flex-direction: column; }
+  .np-settings-nav { flex: 0 0 auto; flex-direction: row; align-items: center; gap: 6px; padding: 10px 14px; overflow-x: auto; overflow-y: hidden; border-right: 0; border-bottom: 1px solid var(--np-line); scrollbar-width: thin; }
+  .np-settings-h1 { display: none; }
+  .np-settings-navlist { flex-direction: row; gap: 6px; }
+  .np-settings-navhi { display: none; }
+  .np-settings-navitem { flex: none; width: auto; height: 44px; padding: 0 14px 0 8px; gap: 8px; white-space: nowrap; }
+  .np-settings-navitem[aria-current='page'] { background: var(--np-ink); box-shadow: 0 6px 16px rgba(23, 23, 26, .16); }
+  .np-settings-navsub { display: none; }
+  .np-settings-body { flex: 1 1 0; min-height: 0; padding: 24px 18px 48px; }
+  .np-settings-h2 { font-size: 28px; }
+}
+@media (max-height: 560px) and (min-width: 761px) { .np-settings-nav { padding-top: 16px; padding-bottom: 16px; } .np-settings-body { padding-top: 24px; } }

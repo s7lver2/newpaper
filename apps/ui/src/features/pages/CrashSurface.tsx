@@ -3,6 +3,7 @@ import { Button, Switch } from '@newpaper/ui-kit';
 import { useState } from 'react';
 import { commands } from '../../ipc/commands';
 import type { TabInfo } from '../../ipc/types';
+import { CrashArt } from './art';
 
 export function CrashSurface({ tab }: { tab: TabInfo }) {
   const t = useT();
@@ -14,14 +15,23 @@ export function CrashSurface({ tab }: { tab: TabInfo }) {
     await commands.tabReload(tab.id);
   };
   return (
-    <div className="np-surface np-neterr" role="alert">
-      <p className="np-404-kicker">{t('pages.crash.kicker')}</p>
-      <h1>{t('pages.crash.title')}</h1>
-      <p>{t('pages.crash.body')}</p>
-      <Switch checked={report} onChange={setReport} label={t('pages.crash.report')} description={t('pages.crash.reportHint')} />
-      {saved ? <p className="np-muted">{t('pages.crash.saved')}</p> : null}
-      <div className="np-consent-actions">
-        <Button variant="primary" onClick={() => void reload()}>{t('pages.crash.reload')}</Button>
+    <div className="np-surface">
+      <div className="np-sp np-neterr" role="alert" data-kind="crash">
+        <div className="np-sp-art np-rise"><CrashArt /></div>
+        <div className="np-sp-main np-rise">
+          <p className="np-sp-kicker" data-tone="crash">{t('pages.crash.kicker')}</p>
+          <h1>{t('pages.crash.title')}</h1>
+          <p className="np-sp-lead">{t('pages.crash.body')}</p>
+          <div className="np-sp-actions">
+            <Button variant="primary" onClick={() => void reload()}>{t('pages.crash.reload')}</Button>
+            <Button onClick={() => void commands.tabClose(tab.id)}>{t('pages.crash.close')}</Button>
+          </div>
+          <div className="np-sp-card">
+            <Switch checked={report} onChange={setReport} label={t('pages.crash.report')} description={t('pages.crash.reportHint')} />
+            {saved ? <p className="np-muted">{t('pages.crash.saved')}</p> : null}
+          </div>
+          <p className="np-sp-note">{t('pages.crash.safe')}</p>
+        </div>
       </div>
     </div>
   );

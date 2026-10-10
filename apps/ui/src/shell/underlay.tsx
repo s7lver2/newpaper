@@ -12,21 +12,40 @@ const store = createStore<{ image: string | null }>({ image: null });
 let count = 0;
 let tabId: number | null = null;
 let pending: Promise<void> = Promise.resolve();
+// La página sigue oculta unos instantes tras soltar el último popover: si otro diálogo se abre justo después (primer
+// arranque seguido del recorrido), reutiliza la captura en lugar de capturar una página ya oculta (saldría en blanco).
+let keptImage: string | null = null;
+let hiddenId: number | null = null;
+let closeTimer: ReturnType<typeof setTimeout> | null = null;
+const CLOSE_DELAY_MS = 150;
 
 export function acquireUnderlay(): () => void {
   count += 1;
   if (count === 1) {
+    if (closeTimer !== null) {
+      clearTimeout(closeTimer);
+      closeTimer = null;
+    }
     const id = browserStore.get().snapshot.activeId;
     tabId = id;
-    pending =
-      id === null
-        ? Promise.resolve()
-        : commands
-            .overlayOpen(id)
-            .then((image) => {
-              if (count > 0) store.set({ image });
-            })
-            .catch(() => {});
+    if (id !== null && hiddenId === id && keptImage !== null) {
+      store.set({ image: keptImage });
+      pending = Promise.resolve();
+    } else {
+      pending =
+        id === null
+          ? Promise.resolve()
+          : commands
+              .overlayOpen(id)
+              .then((image) => {
+                if (count > 0) {
+                  keptImage = image;
+                  hiddenId = image === null ? null : id;
+                  store.set({ image });
+                }
+              })
+              .catch(() => {});
+    }
   }
   let released = false;
   return () => {
@@ -37,9 +56,16 @@ export function acquireUnderlay(): () => void {
     store.set({ image: null });
     const id = tabId;
     tabId = null;
-    void pending.finally(() => {
-      if (id !== null && count === 0) void commands.ctxClose(id).catch(() => {});
-    });
+    closeTimer = setTimeout(() => {
+      closeTimer = null;
+      void pending.finally(() => {
+        if (id !== null && count === 0) {
+          hiddenId = null;
+          keptImage = null;
+          void commands.ctxClose(id).catch(() => {});
+        }
+      });
+    }, CLOSE_DELAY_MS);
   };
 }
 

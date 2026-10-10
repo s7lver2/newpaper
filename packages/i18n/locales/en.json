@@ -312,7 +312,8 @@
     },
     "updates": {
       "title": "Updates",
-      "description": "Version, channel and content"
+      "description": "Version, channel and content",
+      "version": "Version {version}"
     },
     "help": {
       "title": "Help",
@@ -1345,6 +1346,7 @@
     "skip": "Skip",
     "start": "Start",
     "next": "Next",
+    "back": "Back",
     "notVisible": "You will see it as soon as you open a news article.",
     "welcome": {
       "title": "Welcome to newpaper",
@@ -1459,13 +1461,17 @@
       "report": "Save a technical report on this computer",
       "reportHint": "Only version, system and memory. Never the address or the content.",
       "saved": "Report saved.",
-      "reload": "Reload the tab"
+      "reload": "Reload the tab",
+      "close": "Close tab",
+      "safe": "Your other tabs and saved analyses are safe."
     },
     "notFound": {
       "kicker": "Corrections",
       "title": "This page does not exist",
       "lead": "Where it said “{address}” it should have said something else. We regret the error.",
       "columnsLabel": "Columns",
+      "prev": "Previous column",
+      "next": "Next column",
       "columns": {
         "erratas": {
           "title": "Corrections",
@@ -1510,7 +1516,10 @@
       "youWin": "You won. That is rarer than it looks.",
       "iWin": "I won.",
       "draw": "Draw.",
-      "again": "Play again"
+      "again": "Play again",
+      "scoreYou": "You · ×",
+      "scoreDraw": "Draws",
+      "scoreHouse": "The Paper · ○"
     }
   }
 }

@@ -6,6 +6,7 @@ import { commands } from '../../ipc/commands';
 import { onOllamaProgress } from '../../ipc/events';
 import type { FirstRunStatus } from '../../ipc/types';
 import { navigate } from '../../shell/navigate';
+import { useUnderlay } from '../../shell/underlay';
 import { startTour } from './tour/Tour';
 
 const MODEL = 'qwen3:8b';
@@ -32,6 +33,9 @@ export function FirstRun() {
       })
       .catch(() => {});
   }, []);
+  const open = !!st && !st.done;
+  // La webview nativa se dibuja encima de la interfaz: mientras se muestra el diálogo se sustituye por su captura.
+  useUnderlay(open);
   if (!st || st.done) return null;
 
   const importBookmarks = async () => {
@@ -68,8 +72,9 @@ export function FirstRun() {
   };
 
   return (
-    <div className="np-consent-backdrop">
-      <div className="np-firstrun np-rise" role="dialog" aria-modal="true" aria-labelledby="np-firstrun-t">
+    <div className="np-sys-backdrop">
+      <div className="np-sys-card np-firstrun" role="dialog" aria-modal="true" aria-labelledby="np-firstrun-t">
+        <div className="np-sys-body">
         <h2 id="np-firstrun-t">{t('firstRun.title')}</h2>
         <p className="np-muted">{t('firstRun.subtitle')}</p>
         <Switch checked={autostart} onChange={setAutostart} label={t('firstRun.autostart')} description={t('firstRun.autostartHint')} />
@@ -113,7 +118,8 @@ export function FirstRun() {
             <Button variant="quiet" onClick={() => void navigate('https://ollama.com/download', { newTab: true })}>{t('firstRun.getOllama')}</Button>
           )}
         </div>
-        <div className="np-consent-actions">
+        </div>
+        <div className="np-sys-foot">
           <Button variant="primary" disabled={busy} onClick={() => void finish()}>{t('firstRun.continue')}</Button>
         </div>
       </div>

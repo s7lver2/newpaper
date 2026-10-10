@@ -8,6 +8,7 @@ const KEY_STEPS: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, ArrowU
 export function TicTacToeGame() {
   const t = useT();
   const [board, setBoard] = useState<Board>(Array(9).fill(null));
+  const [score, setScore] = useState({ you: 0, draw: 0, house: 0 });
   const refs = useRef<(HTMLButtonElement | null)[]>([]);
   const w = winner(board);
   const play = (i: number) => {
@@ -18,6 +19,8 @@ export function TicTacToeGame() {
       if (m >= 0) next[m] = 'O';
     }
     setBoard(next);
+    const r = winner(next);
+    if (r) setScore((c) => ({ you: c.you + (r === 'X' ? 1 : 0), draw: c.draw + (r === 'draw' ? 1 : 0), house: c.house + (r === 'O' ? 1 : 0) }));
   };
   const key = (i: number) => (e: KeyboardEvent) => {
     const step = KEY_STEPS[e.key];
@@ -48,8 +51,15 @@ export function TicTacToeGame() {
           </button>
         ))}
       </div>
-      <p role="status">{status}</p>
-      {w ? <Button onClick={() => setBoard(Array(9).fill(null))}>{t('pages.game.again')}</Button> : null}
+      <div className="np-ttt-side">
+        <dl className="np-ttt-score">
+          <div><dt>{t('pages.game.scoreYou')}</dt><dd>{score.you}</dd></div>
+          <div><dt>{t('pages.game.scoreDraw')}</dt><dd>{score.draw}</dd></div>
+          <div data-house><dt>{t('pages.game.scoreHouse')}</dt><dd>{score.house}</dd></div>
+        </dl>
+        <p role="status" className="np-ttt-status">{status}</p>
+        {w ? <Button onClick={() => setBoard(Array(9).fill(null))}>{t('pages.game.again')}</Button> : null}
+      </div>
     </section>
   );
 }
