@@ -43,8 +43,8 @@
       "adapter": "openai-compatible", "baseUrl": "https://integrate.api.nvidia.com/v1", "auth": "bearer",
       "keyPrefixes": ["nvapi-"], "keyUrl": "https://build.nvidia.com/settings/api-keys",
       "models": [
-        { "id": "deepseek-ai/deepseek-v3.1", "name": "DeepSeek V3.1 (NIM)", "price": null, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "strong" },
-        { "id": "meta/llama-3.3-70b-instruct", "name": "Llama 3.3 70B (NIM)", "price": null, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "light" }
+        { "id": "deepseek-ai/deepseek-v4.1-flash", "name": "DeepSeek V4.1 Flash (NIM)", "price": null, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "strong" },
+        { "id": "nvidia/nemotron-3.5-lightning-30b-a3b", "name": "Nemotron 3.5 Lightning 30B (NIM)", "price": null, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "light" }
       ]
     },
     {
