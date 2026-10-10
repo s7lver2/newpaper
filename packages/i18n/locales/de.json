@@ -572,6 +572,7 @@
     "needsArticle": "Öffne einen Artikel, um ihn zu analysieren.",
     "empty": "Dieser Artikel wurde noch nicht analysiert.",
     "running": "Wird analysiert…",
+    "progress": { "waiting": "Warte auf das Modell…", "elapsed": "{time} vergangen", "hint": "Große oder ausgelastete Modelle können langsam sein. Du kannst weiterlesen." },
     "error": "Die Analyse wurde nicht abgeschlossen: {message}",
     "noScore": "Noch keine Bewertung",
     "neutrality": "Neutralität: {value} von 100",

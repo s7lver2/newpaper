@@ -1,7 +1,7 @@
-import { useI18n } from '@newpaper/i18n/react';
+import { useI18n, useT } from '@newpaper/i18n/react';
 import type { AnalysisResult, StageId } from '@newpaper/pipeline';
 import { FramingAxis, NeutralityRing, StageList, type StageItem } from '@newpaper/ui-kit';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { TabInfo } from '../../ipc/types';
 import { navigate, openInternal } from '../../shell/navigate';
 import { useArticle } from '../../state/browser';
@@ -36,6 +36,28 @@ function AiDetail({ result }: { result: AnalysisResult }) {
   );
 }
 
+function mmss(ms: number): string {
+  const sec = Math.max(0, Math.floor(ms / 1000));
+  return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`;
+}
+
+/** Barra indeterminada + tiempo transcurrido: los modelos remotos pueden tardar minutos y la espera no puede parecer un cuelgue. */
+function RunProgress({ startedAt }: { startedAt: number | undefined }) {
+  const t = useT();
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(id);
+  }, []);
+  return (
+    <div className="np-runprog" role="status" aria-live="off">
+      <span className="np-runprog-bar" aria-hidden="true" />
+      <span className="np-runprog-row"><span>{t('analysis.progress.waiting')}</span><span className="np-mono">{t('analysis.progress.elapsed', { time: mmss(now - (startedAt ?? now)) })}</span></span>
+      <span className="np-runprog-hint">{t('analysis.progress.hint')}</span>
+    </div>
+  );
+}
+
 export function AnalysisTab({ tab }: { tab: TabInfo }) {
   const { t, formatNumber } = useI18n();
   const axis = useAxisLabels();
@@ -58,6 +80,7 @@ export function AnalysisTab({ tab }: { tab: TabInfo }) {
     return (
       <div className="np-panel-empty">
         <p>{running ? t('analysis.running') : t('analysis.empty')}</p>
+        {running ? <RunProgress startedAt={a?.startedAt} /> : null}
         {!running ? (
           <button type="button" className="np-cta" onClick={() => void controller.analyzeFull(tab.id, page)}>
             {t('analysis.actions.verify')}
@@ -156,6 +179,7 @@ export function AnalysisTab({ tab }: { tab: TabInfo }) {
 
       <NoCoverageBlock analysis={a!} />
 
+      {running ? <RunProgress startedAt={a?.startedAt} /> : null}
       {stages.length ? <StageList items={stages} label={t('analysis.stagesLabel')} /> : null}
 
       {result.quick && !running ? (

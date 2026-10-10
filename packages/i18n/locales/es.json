@@ -572,6 +572,7 @@
     "needsArticle": "Abre una noticia para analizarla.",
     "empty": "Aún no hay análisis de esta noticia.",
     "running": "Analizando…",
+    "progress": { "waiting": "Esperando al modelo…", "elapsed": "{time} transcurridos", "hint": "Los modelos grandes o saturados pueden tardar. Puedes seguir leyendo." },
     "error": "El análisis no ha terminado: {message}",
     "noScore": "Sin nota todavía",
     "neutrality": "Neutralidad: {value} de 100",
