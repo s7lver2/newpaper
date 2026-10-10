@@ -128,8 +128,14 @@ export function createPipeline(deps: PipelineDeps) {
     const stage = stageRunner(article, hash, opts, failed);
     const locale = deps.locale();
 
-    const claims = await stage('claims', as.claims, (ctx) => detectClaims(ctx, article, { quick: false }));
-    const coverage = await findCoverage(deps.coverage, article).catch(() => null);
+    // Independientes entre sí: afirmaciones, cobertura (red) y detector de IA corren a la vez.
+    const aiP: Promise<AiAuthorship | null> = as.aiDetect
+      ? stage('aiDetect', as.aiDetect, (ctx) => detectAiText({ text: article.text, locale, c2pa: null, ctx }))
+      : detectAiText({ text: article.text, locale, c2pa: null }).then((r) => r.value);
+    const [claims, coverage] = await Promise.all([
+      stage('claims', as.claims, (ctx) => detectClaims(ctx, article, { quick: false })),
+      findCoverage(deps.coverage, article).catch(() => null),
+    ]);
     const coverages = coverage?.coverages ?? [];
     let sources: RetrievedSource[] = [];
 
@@ -168,10 +174,7 @@ export function createPipeline(deps: PipelineDeps) {
       synthesize({ ctx, article, claims: claims?.claims ?? [], verdicts: verdicts ?? [], sources, coverages, score, partyIds }),
     );
 
-    // El detector funciona sin modelo (señales heurísticas); el juicio LLM es opcional.
-    let aiAuthorship: AiAuthorship | null = null;
-    if (as.aiDetect) aiAuthorship = await stage('aiDetect', as.aiDetect, (ctx) => detectAiText({ text: article.text, locale, c2pa: null, ctx }));
-    else aiAuthorship = (await detectAiText({ text: article.text, locale, c2pa: null })).value;
+    const aiAuthorship = await aiP;
 
     const primaryCount = sources.filter((s) => s.kind === 'primary').length;
     const uncovered = coverage ? isUncovered(coverage, primaryCount) : false;

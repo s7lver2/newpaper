@@ -80,16 +80,22 @@ export async function retrieveSources(o: {
     ...proposed.map((url) => ({ url, kind: 'primary' as const, extra: [] })),
     ...o.coverages.slice(0, o.maxCoverage ?? 6).map((c) => ({ url: c.url, kind: 'coverage' as const, extra: [c.url] })),
   ];
+  // En paralelo (por Tor cada descarga es lenta); el orden de los ids se conserva.
+  const fetched = await Promise.all(
+    targets.map(async (t) => {
+      try {
+        const html = await o.fetcher.fetch(t.url, t.extra);
+        const a = o.extract(html, t.url);
+        return a ? { t, a, html } : null;
+      } catch {
+        return null; // fuente no disponible: se omite y no se puede citar
+      }
+    }),
+  );
   const out: RetrievedSource[] = [];
-  for (const t of targets) {
-    try {
-      const html = await o.fetcher.fetch(t.url, t.extra);
-      const a = o.extract(html, t.url);
-      if (!a) continue;
-      out.push({ id: `S${out.length + 1}`, url: t.url, title: a.title || t.url, kind: t.kind, text: a.text.slice(0, 6000), media: mediaOf(html, t.url) });
-    } catch {
-      /* fuente no disponible: se omite y no se puede citar */
-    }
+  for (const f of fetched) {
+    if (!f) continue;
+    out.push({ id: `S${out.length + 1}`, url: f.t.url, title: f.a.title || f.t.url, kind: f.t.kind, text: f.a.text.slice(0, 6000), media: mediaOf(f.html, f.t.url) });
   }
   return { value: out, usage };
 }
