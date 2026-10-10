@@ -11,6 +11,7 @@ use tauri::{webview::WebviewBuilder, window::WindowBuilder, App, Emitter, Logica
 use crate::config::OutletIndex;
 
 pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
+    crate::system::boot_check(app)?;
     let data = app.path().app_local_data_dir()?;
     let store = Arc::new(Store::open(data.join("newpaper.sqlite"))?);
 

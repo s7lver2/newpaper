@@ -8,12 +8,17 @@ pub mod privacy;
 pub mod resources;
 pub mod sources;
 mod setup;
+pub mod system;
 
 pub fn run() {
     tracing_subscriber::fmt()
         .with_env_filter(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
         .init();
     tauri::Builder::default()
+        .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| crate::system::on_second_instance(app, argv)))
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, None))
         .register_asynchronous_uri_scheme_protocol("npimg", npimg::handle)
         .register_asynchronous_uri_scheme_protocol("npoffline", sources::offline_cmds::protocol)
         .setup(setup::setup)
@@ -109,6 +114,9 @@ pub fn run() {
             ai::commands::usage_month,
             ai::commands::ai_local_probe,
             sources::offline_cmds::offline_cleanup,
+            system::commands::app_ready,
+            system::commands::system_info,
+            system::commands::crash_report_save,
         ])
         .run(tauri::generate_context!())
         .expect("error while running newpaper");

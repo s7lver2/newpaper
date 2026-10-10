@@ -34,6 +34,12 @@ reqwest = { workspace = true }
 percent-encoding = "2.3"
 chrono = { workspace = true }
 async-trait = { workspace = true }
+np-update = { path = "crates/np-update" }
+tauri-plugin-updater = "=2.13.2"
+tauri-plugin-process = "=2.4.0"
+tauri-plugin-autostart = "=2.7.0"
+tauri-plugin-single-instance = "=2.5.2"
+sysinfo = "=0.39.6"
 
 [dev-dependencies]
 tempfile = { workspace = true }
