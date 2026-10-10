@@ -37,6 +37,11 @@ pub const MIGRATIONS: &[Migration] = &[Migration {
         name: "ai",
         sql: include_str!("../../np-ai-proxy/sql/0005_ai.sql"),
     },
+    Migration {
+        version: 6,
+        name: "content",
+        sql: include_str!("../../np-update/sql/0006_content.sql"),
+    },
 ];
 
 pub fn migrate(conn: &mut Connection) -> Result<u32, StoreError> {
