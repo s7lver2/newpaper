@@ -117,7 +117,17 @@ pub fn run() {
             system::commands::app_ready,
             system::commands::system_info,
             system::commands::crash_report_save,
+            system::updater::update_status,
+            system::updater::update_check,
+            system::updater::update_install_now,
+            system::updater::update_set_channel,
+            system::updater::update_ack_notes,
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running newpaper");
+        .build(tauri::generate_context!())
+        .expect("error while building newpaper")
+        .run(|app, event| {
+            if let tauri::RunEvent::ExitRequested { .. } = event {
+                crate::system::updater::on_exit(app);
+            }
+        });
 }

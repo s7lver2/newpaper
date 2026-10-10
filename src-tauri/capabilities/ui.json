@@ -25,6 +25,7 @@
     "allow-offline-add-article", "allow-offline-finish", "allow-offline-editions", "allow-offline-edition", "allow-offline-search", "allow-offline-cleanup",
     "allow-ai-fetch", "allow-ai-cancel", "allow-ai-set-endpoints", "allow-source-fetch", "allow-analysis-cache-get", "allow-analysis-cache-put", "allow-usage-record", "allow-usage-month", "allow-ai-local-probe",
     "allow-app-ready", "allow-system-info", "allow-crash-report-save",
+    "allow-update-status", "allow-update-check", "allow-update-install-now", "allow-update-set-channel", "allow-update-ack-notes",
     "updater:default", "process:allow-restart", "autostart:allow-enable", "autostart:allow-disable", "autostart:allow-is-enabled"
   ]
 }
