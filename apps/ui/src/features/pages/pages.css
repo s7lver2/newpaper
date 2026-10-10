@@ -8,3 +8,8 @@
 .np-404-dots button { width: 44px; height: 44px; border: 0; background: none; cursor: pointer; position: relative; }
 .np-404-dots button::after { content: ''; position: absolute; inset: 18px; border-radius: 50%; background: var(--np-line3); }
 .np-404-dots button[aria-current='true']::after { background: var(--np-ink); }
+.np-ttt { display: grid; gap: 8px; justify-items: start; margin-top: 24px; font: 14px var(--np-font-ui); }
+.np-ttt h2 { font: 600 13px var(--np-font-mono); letter-spacing: .08em; text-transform: uppercase; margin: 0; }
+.np-ttt-board { display: grid; grid-template-columns: repeat(3, 64px); gap: 4px; }
+.np-ttt-cell { width: 64px; height: 64px; border: 1px solid var(--np-line3); border-radius: 10px; background: var(--np-card); font: 600 30px var(--np-font-read); color: var(--np-ink); cursor: pointer; }
+.np-ttt-cell:focus-visible { outline: 2px solid var(--np-accent); outline-offset: 2px; }
