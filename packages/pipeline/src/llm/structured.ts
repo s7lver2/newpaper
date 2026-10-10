@@ -31,6 +31,7 @@ async function generateNative<T>(opts: {
   system: string;
   prompt: string;
   stage: StageId;
+  maxOutputTokens?: number;
   temperature?: number;
   noTemperature?: boolean;
   signal?: AbortSignal;
@@ -45,6 +46,8 @@ async function generateNative<T>(opts: {
       temperature: opts.noTemperature ? undefined : opts.temperature,
       abortSignal: opts.signal,
       maxRetries: 1,
+      // Sin tope, OpenRouter reserva toda la ventana de contexto y responde 402 si el saldo no la cubre.
+      maxOutputTokens: opts.maxOutputTokens ?? 4096,
     });
     usage.inputTokens += r.usage.inputTokens ?? 0;
     usage.outputTokens += r.usage.outputTokens ?? 0;
@@ -92,6 +95,7 @@ ${schemaJson}`;
           temperature: opts.noTemperature ? undefined : opts.temperature,
           abortSignal: opts.signal,
           maxRetries: 1,
+          maxOutputTokens: opts.maxOutputTokens ?? 4096,
         });
         usage.inputTokens += r.usage.inputTokens ?? 0;
         usage.outputTokens += r.usage.outputTokens ?? 0;

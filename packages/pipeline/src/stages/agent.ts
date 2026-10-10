@@ -154,6 +154,7 @@ export async function runAgent(o: {
       ...(useTools ? { tools, stopWhen: stepCountIs(6) } : {}),
       temperature: o.ctx.noTemperature ? undefined : o.ctx.temperature,
       abortSignal: o.ctx.signal,
+      maxOutputTokens: 2048,
       // streamText no lanza los errores del proveedor: sin esto la respuesta quedaba vacía en silencio.
       onError: ({ error }) => {
         streamError ??= error;

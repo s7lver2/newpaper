@@ -56,7 +56,7 @@ function closestSentence(text: string, quote: string): [number, number] | null {
 }
 
 /** Recoloca cada cita en el texto: exacta, normalizada o, como último recurso, la frase más parecida. */
-export function repairSpans<T extends { quote: string; span: [number, number] }>(text: string, items: T[]): T[] {
+export function repairSpans<T extends { quote: string; span: [number, number] }>(text: string, items: T[], opts: { sentenceFallback?: boolean } = {}): T[] {
   const out: T[] = [];
   const { folded, map } = foldWithMap(text);
   for (const it of items) {
@@ -80,10 +80,22 @@ export function repairSpans<T extends { quote: string; span: [number, number] }>
       out.push({ ...it, quote: text.slice(a, b), span: [a, b] });
       continue;
     }
-    const near = closestSentence(text, it.quote);
+    const near = opts.sentenceFallback === false ? null : closestSentence(text, it.quote);
     if (near) out.push({ ...it, quote: text.slice(near[0], near[1]), span: near });
   }
   return out;
+}
+
+const isWordChar = (ch: string | undefined): boolean => !!ch && /[p{L}p{N}]/u.test(ch);
+
+/** Descarta lo que no es una cita útil: demasiado corta o larga (párrafos enteros) o que empieza/termina a mitad de palabra. */
+function keepSane<T extends { span: [number, number] }>(text: string, items: T[], min: number, max: number): T[] {
+  return items.filter((c) => {
+    const [a, b] = c.span;
+    const len = b - a;
+    if (len < min || len > max) return false;
+    return !(isWordChar(text[a - 1]) && isWordChar(text[a])) && !(isWordChar(text[b - 1]) && isWordChar(text[b]));
+  });
 }
 
 function dedupe<T extends { span: [number, number] }>(items: T[]): T[] {
@@ -99,6 +111,7 @@ function dedupe<T extends { span: [number, number] }>(items: T[]): T[] {
 const SYSTEM = (quick: boolean) => `You analyse news articles for a fact-checking tool.
 ${quick ? 'Return only loaded phrases: set "claims" to an empty array.' : `List the article's claims. kind: "hecho" (verifiable fact), "cifra" (number or statistic), "opinion" (value judgement or intention), "atribucion" (something attributed to a named source). checkable=true only if public evidence could confirm or refute it.`}
 List loaded phrases: emotionally charged, hyperbolic or evaluative wording; give the reason in one short sentence.
+Be selective and precise: a claim is ONE sentence (or a clause) that states something, never a whole paragraph; list at most 12, the most important and checkable first, skipping filler. A loaded phrase is 2 to 8 consecutive words that carry the charged or evaluative wording itself (never a single common word, never a whole sentence); list at most 6, only if clearly loaded.
 Every "quote" must be copied verbatim from the article (exact characters) and "span" must be its [start, end) character offsets.`;
 
 export async function detectClaims(ctx: StageCtx, article: ArticleInput, opts: { quick: boolean }): Promise<StageResult<ClaimsOutput>> {
@@ -112,8 +125,12 @@ export async function detectClaims(ctx: StageCtx, article: ArticleInput, opts: {
     noTemperature: ctx.noTemperature,
     signal: ctx.signal,
   });
-  const claims = dedupe(repairSpans(article.text, r.object.claims)).map((c, i) => ({ ...c, id: `c${i + 1}` }));
-  const loadedPhrases = dedupe(repairSpans(article.text, r.object.loadedPhrases));
+  // Una afirmación es una frase (no un párrafo); una expresión cargada, unas pocas palabras. Tope para que el texto no quede todo subrayado.
+  const located = repairSpans(article.text, r.object.claims);
+  const claims = keepSane(article.text, dedupe(located), 12, 320)
+    .slice(0, 14)
+    .map((c, i) => ({ ...c, id: `c${i + 1}` }));
+  const loadedPhrases = keepSane(article.text, dedupe(repairSpans(article.text, r.object.loadedPhrases.filter((l) => l.reason.trim()), { sentenceFallback: false })), 4, 90).slice(0, 8);
   if (!opts.quick && r.object.claims.length > 0 && claims.length === 0) {
     throw new StageError('claims', 'invalid_output', 'none of the claims could be located in the article text');
   }

@@ -4,7 +4,8 @@ export interface CacheStore {
 }
 
 export async function textHash(url: string, text: string): Promise<string> {
-  const bytes = new TextEncoder().encode(`${url}\n${text}`);
+  // v2: invalida las etapas guardadas con la extracción de afirmaciones anterior.
+  const bytes = new TextEncoder().encode(`v2\n${url}\n${text}`);
   const digest = await crypto.subtle.digest('SHA-256', bytes);
   return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('');
 }
