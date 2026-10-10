@@ -144,37 +144,41 @@ export async function runAgent(o: {
     `Question: ${o.question}`,
   ].filter(Boolean).join('\n');
 
-  let streamError: unknown;
-  const result = streamText({
-    model: o.ctx.model,
-    system,
-    messages: [...(o.history ?? []), { role: 'user', content: prompt }],
-    tools,
-    stopWhen: stepCountIs(6),
-    temperature: o.ctx.noTemperature ? undefined : o.ctx.temperature,
-    abortSignal: o.ctx.signal,
-    // streamText no lanza los errores del proveedor: sin esto la respuesta quedaba vacía en silencio.
-    onError: ({ error }) => {
-      streamError ??= error;
-    },
-  });
-  let raw = '';
-  try {
-    for await (const delta of result.textStream) {
-      raw += delta;
-      o.onEvent({ type: 'text', delta });
+  // Algunos endpoints (p. ej. los gratuitos de NVIDIA NIM) no admiten herramientas: si falla con ellas, se responde sin ellas.
+  const attempt = async (useTools: boolean) => {
+    let streamError: unknown;
+    const result = streamText({
+      model: o.ctx.model,
+      system,
+      messages: [...(o.history ?? []), { role: 'user', content: prompt }],
+      ...(useTools ? { tools, stopWhen: stepCountIs(6) } : {}),
+      temperature: o.ctx.noTemperature ? undefined : o.ctx.temperature,
+      abortSignal: o.ctx.signal,
+      // streamText no lanza los errores del proveedor: sin esto la respuesta quedaba vacía en silencio.
+      onError: ({ error }) => {
+        streamError ??= error;
+      },
+    });
+    let raw = '';
+    try {
+      for await (const delta of result.textStream) {
+        raw += delta;
+        o.onEvent({ type: 'text', delta });
+      }
+    } catch (e) {
+      streamError ??= e;
     }
-  } catch (e) {
-    o.onEvent({ type: 'error', message: e instanceof Error ? e.message : String(e) });
-    throw e;
-  }
-  if (streamError || !raw.trim()) {
-    const message = streamError ? describeError(streamError) : 'el modelo no devolvió ninguna respuesta';
+    return { raw, streamError, usage: streamError ? null : await result.totalUsage };
+  };
+  let run = await attempt(true);
+  if ((run.streamError || !run.raw.trim()) && !o.ctx.signal?.aborted) run = await attempt(false);
+  if (run.streamError || !run.raw.trim() || !run.usage) {
+    const message = run.streamError ? describeError(run.streamError) : 'el modelo no devolvió ninguna respuesta';
     o.onEvent({ type: 'error', message });
     throw new Error(message);
   }
-  const usage = await result.totalUsage;
-  const final = cleanCitations(raw, sources);
+  const usage = run.usage;
+  const final = cleanCitations(run.raw, sources);
   o.onEvent({ type: 'done', text: final.text, citations: final.citations });
   return { ...final, usage: { inputTokens: usage.inputTokens ?? 0, outputTokens: usage.outputTokens ?? 0 } };
 }

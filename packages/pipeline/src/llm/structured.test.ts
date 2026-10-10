@@ -47,3 +47,12 @@ describe('prompt helpers', () => {
     expect(languageInstruction('es')).toMatch(/original language/);
   });
 });
+
+describe('extractJson', () => {
+  it('reads JSON from fenced, think-wrapped or chatty replies', async () => {
+    const { extractJson } = await import('./structured');
+    expect(extractJson('```json\n{"n":1}\n```')).toEqual({ n: 1 });
+    expect(extractJson('<think>pienso {x}</think>\nAquí va: {"n":2} gracias')).toEqual({ n: 2 });
+    expect(() => extractJson('sin json')).toThrow();
+  });
+});
