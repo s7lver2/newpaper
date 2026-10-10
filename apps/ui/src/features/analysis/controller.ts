@@ -50,6 +50,7 @@ export function createAnalysisController(pipeline: () => Promise<Pipeline>) {
       return { byTab: { ...s.byTab, [tabId]: { ...base, phase: kind, error: null, startedAt: Date.now(), stages: kind === 'full' ? {} : base.stages, ...(kind === 'full' ? { stageErrors: {} } : {}) } } };
     });
     const live = () => !ac.signal.aborted && runs.get(tabId) === ac;
+    if (kind === 'full') writePending(article.url, true);
     try {
       const p = await pipeline();
       const onStage = (e: StageEvent) => {
@@ -58,9 +59,11 @@ export function createAnalysisController(pipeline: () => Promise<Pipeline>) {
       const opts = { signal: ac.signal, onStage };
       const r = kind === 'quick' ? await p.runQuickAnalysis(article, opts) : await p.runFullAnalysis(article, opts);
       if (!live()) return;
+      if (kind === 'full') writePending(article.url, false);
       patch(tabId, article.url, (a) => (kind === 'quick' ? { ...a, phase: 'done', quick: r } : { ...a, phase: 'done', full: r }));
     } catch (e) {
       if (!live()) return;
+      if (kind === 'full') writePending(article.url, false);
       patch(tabId, article.url, (a) => ({ ...a, phase: 'error', error: e instanceof Error ? e.message : String(e) }));
     } finally {
       if (runs.get(tabId) === ac) runs.delete(tabId);
@@ -88,9 +91,40 @@ export function createAnalysisController(pipeline: () => Promise<Pipeline>) {
 
 export const controller = createAnalysisController(getPipeline);
 
+/** Análisis completos que no llegaron a terminar (pestaña cerrada, app cerrada): al volver a abrir el artículo se reanudan; las etapas ya hechas salen de la caché. */
+const PENDING_KEY = 'np.analysis.pending';
+const PENDING_TTL_MS = 24 * 3600 * 1000;
+function readPending(): Record<string, number> {
+  try {
+    return JSON.parse(localStorage.getItem(PENDING_KEY) ?? '{}') as Record<string, number>;
+  } catch {
+    return {};
+  }
+}
+function writePending(url: string, on: boolean): void {
+  try {
+    const m = readPending();
+    const now = Date.now();
+    for (const [u, t] of Object.entries(m)) if (now - t > PENDING_TTL_MS) delete m[u];
+    if (on) m[url] = now;
+    else delete m[url];
+    localStorage.setItem(PENDING_KEY, JSON.stringify(m));
+  } catch {
+    /* sin almacenamiento: no se reanuda, nada más */
+  }
+}
+export const hasPendingRun = (url: string): boolean => url in readPending();
+
 export function startAutoAnalysis(): Promise<() => void> {
   return onTabPage(async (e) => {
     if (!e.isNews || !e.article.article) return;
+    // Volver a la pestaña (p. ej. desde la hemeroteca) no debe reiniciar ni pisar un análisis en curso o terminado.
+    const cur = analysisStore.get().byTab[e.tabId];
+    if (cur && cur.url === e.article.url && (cur.phase === 'quick' || cur.phase === 'full' || cur.full)) return;
+    if (hasPendingRun(e.article.url)) {
+      void controller.analyzeFull(e.tabId, e.article);
+      return;
+    }
     const autoFull = (await commands.settingsGet<boolean>('ai.autoFull')) ?? false;
     const quick = (await commands.settingsGet<boolean>('ai.quickOnOpen')) ?? true;
     if (autoFull) void controller.analyzeFull(e.tabId, e.article);
