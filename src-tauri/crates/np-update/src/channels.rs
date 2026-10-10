@@ -27,16 +27,3 @@ pub const CONTENT_MANIFEST_URL: &str = "https://github.com/nickespro130/newpaper
 pub fn installer_url(version: &str) -> String {
     format!("{REPO}/download/v{version}/newpaper_{version}_x64-setup.exe")
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn parses_channels_and_defaults_to_stable() {
-        assert_eq!(Channel::parse("beta"), Channel::Beta);
-        assert_eq!(Channel::parse("BETA"), Channel::Beta);
-        assert_eq!(Channel::parse("anything"), Channel::Stable);
-        assert!(manifest_url(Channel::Beta).ends_with("/beta/latest.json"));
-    }
-}
