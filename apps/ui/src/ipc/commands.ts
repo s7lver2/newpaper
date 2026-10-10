@@ -7,6 +7,7 @@ import type {
   BeginResult, CaptureInput, CaptureText, CdxRow, CoverageResult, CustomOutlet, Edition, EventCard, EventDetail, IngestReport,
   LexiconScore, OfflineArticle, OfflineHit, OfflineSettings, OutletLean, SavedArticle, TextDiff, TopicState, Watch, WaybackHistory,
   CachedStage, CustomEndpoint, LocalProbe, MonthUsage,
+  ContentStatus, FirstRunStatus, BookmarkScan, ReadyInfo, SystemInfo, UpdateInfo,
 } from './types';
 
 /** Único punto de la UI que conoce los nombres de los comandos Rust. Los subproyectos añaden entradas. */
@@ -109,4 +110,20 @@ export const commands = {
     invoke<void>('usage_record', { provider, model, inputTokens, outputTokens, cost }),
   usageMonth: (month?: string) => invoke<MonthUsage>('usage_month', { month }),
   aiLocalProbe: () => invoke<LocalProbe>('ai_local_probe'),
+  appReady: () => invoke<ReadyInfo>('app_ready'),
+  systemInfo: () => invoke<SystemInfo>('system_info'),
+  crashReportSave: (report: { reason: string; exitCode: number | null; tabKind: string; at: number }) => invoke<string>('crash_report_save', { report }),
+  updateStatus: () => invoke<UpdateInfo>('update_status'),
+  updateCheck: () => invoke<void>('update_check'),
+  updateInstallNow: () => invoke<void>('update_install_now'),
+  updateSetChannel: (channel: 'stable' | 'beta') => invoke<void>('update_set_channel', { channel }),
+  updateAckNotes: () => invoke<void>('update_ack_notes'),
+  contentStatus: () => invoke<ContentStatus>('content_status'),
+  contentCheckNow: () => invoke<string[]>('content_check_now'),
+  contentRevert: () => invoke<void>('content_revert'),
+  firstRunStatus: () => invoke<FirstRunStatus>('first_run_status'),
+  firstRunApply: (opts: { autostart: boolean; tor: boolean }) => invoke<void>('first_run_apply', { opts }),
+  bookmarksScan: (browser: string) => invoke<BookmarkScan>('bookmarks_scan', { browser }),
+  ollamaPull: (model: string) => invoke<void>('ollama_pull', { model }),
+  openDefaultApps: () => invoke<void>('open_default_apps'),
 };

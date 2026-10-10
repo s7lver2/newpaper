@@ -1,0 +1,4 @@
+.np-updates { display: grid; gap: 10px; font: 14px/1.5 var(--np-font-ui); }
+.np-updates h3 { font: 600 11px var(--np-font-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--np-muted); margin: 12px 0 0; }
+.np-notes { white-space: pre-wrap; font: 13px/1.5 var(--np-font-ui); background: var(--np-soft); padding: 10px; border-radius: var(--np-radius); max-height: 240px; overflow: auto; }
+.np-updates-history { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; font-size: 13px; }

@@ -113,3 +113,9 @@ export function useAiSettings() {
     detector, setDetector,
   };
 }
+
+/** Tras una actualización de contenido (`providers.json`, `prices.json`…). */
+export function resetRegistry(): void {
+  registryP = null;
+  pipelineP = null;
+}

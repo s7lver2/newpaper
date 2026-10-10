@@ -136,3 +136,22 @@ export interface MonthUsage { month: string; cost: number; inputTokens: number; 
 export interface LocalProbe { ollama: string[] | null; lmstudio: string[] | null }
 /** Igual que `np_ai_proxy::CustomEndpoint` (camelCase). La clave de cada endpoint vive en el llavero (`ai.<id>`). */
 export interface CustomEndpoint { id: string; baseUrl: string; auth: 'bearer' | 'x_api_key' | 'x_goog_api_key' | 'none'; local: boolean }
+
+// Subproyecto 6: arranque, actualizaciones y primer arranque.
+export type UpdateStatus =
+  | { state: 'idle' }
+  | { state: 'checking' }
+  | { state: 'upToDate'; checkedAt: number }
+  | { state: 'downloading'; version: string; received: number; total: number | null }
+  | { state: 'ready'; version: string; notes: string | null; date: string | null }
+  | { state: 'torUnavailable' }
+  | { state: 'error'; message: string };
+export interface UpdateInfo { status: UpdateStatus; current: string; channel: 'stable' | 'beta'; whatsNew: { version: string; notes: string } | null }
+export interface ContentUpdate { manifestVersion: number; appliedAt: number; action: 'apply' | 'revert'; resources: string[] }
+export interface ContentStatus { version: number | null; history: ContentUpdate[]; lastCheck: number | null; lastError: string | null }
+export interface ReadyInfo { pendingUrls: string[]; rolledBackFrom: string | null }
+export interface SystemInfo { version: string; os: string; arch: string; memoryMb: number; webview2: string | null }
+export interface FirstRunStatus { done: boolean; browsers: ('edge' | 'chrome' | 'brave')[]; ollama: boolean; autostart: boolean }
+export interface Bookmark { url: string; title: string }
+export interface BookmarkScan { bookmarks: Bookmark[]; ignored: number }
+export interface OllamaProgress { status: string; completed?: number; total?: number }

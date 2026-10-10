@@ -1,6 +1,6 @@
 import type { IngestReport, Watch } from './types';
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
-import type { PrivacyStatus, TabPageEvent, TabShortcutEvent, TabsSnapshot } from './types';
+import type { OllamaProgress, PrivacyStatus, TabPageEvent, TabShortcutEvent, TabsSnapshot, UpdateStatus as SystemUpdateStatus } from './types';
 
 export type { UnlistenFn };
 
@@ -43,3 +43,11 @@ export const onFeedsUpdated = (cb: (r: IngestReport) => void) => listen<IngestRe
 export const onWatchFulfilled = (cb: (w: Watch) => void) => listen<Watch>('feeds://watch-fulfilled', (e) => cb(e.payload));
 export const onOfflineBuildRequested = (cb: (e: { date: string }) => void) =>
   listen<{ date: string }>('offline://build-requested', (e) => cb(e.payload));
+
+// Subproyecto 6.
+
+export const onUpdateStatus = (cb: (s: SystemUpdateStatus) => void) => listen<SystemUpdateStatus>('update://status', (e) => cb(e.payload));
+export const onContentApplied = (cb: (e: { version: number; resources: string[] }) => void) =>
+  listen<{ version: number; resources: string[] }>('content://applied', (e) => cb(e.payload));
+export const onOpenUrl = (cb: (url: string) => void) => listen<string>('app://open-url', (e) => cb(e.payload));
+export const onOllamaProgress = (cb: (p: OllamaProgress) => void) => listen<OllamaProgress>('ollama://progress', (e) => cb(e.payload));

@@ -27,3 +27,7 @@ export function useParties(): PartyInfo[] {
   }, []);
   return parties;
 }
+
+export function clearPartiesCache(): void {
+  cache.clear();
+}
