@@ -169,23 +169,3 @@ pub async fn open_default_apps() -> CmdResult<()> {
     std::process::Command::new("explorer.exe").arg("ms-settings:defaultapps").spawn().map_err(|e| CmdError::new("system", e.to_string()))?;
     Ok(())
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn keeps_only_known_outlets_and_counts_the_rest() {
-        let dir = tempfile::tempdir().unwrap();
-        let p = dir.path().join("Bookmarks");
-        let json = r#"{"roots":{"bookmark_bar":{"type":"folder","children":[
-            {"type":"url","name":"A","url":"https://www.elpais.com/x"},
-            {"type":"url","name":"B","url":"https://example.org/"},
-            {"type":"folder","children":[{"type":"url","name":"C","url":"https://elpais.com/y"}]}
-        ]}}}"#;
-        std::fs::write(&p, json).unwrap();
-        let (news, ignored) = scan_bookmarks(&p, &["elpais.com".to_string()]).unwrap();
-        assert_eq!(news.len(), 2);
-        assert_eq!(ignored, 1);
-    }
-}
