@@ -309,6 +309,14 @@
         "demand": "only when you ask",
         "tiered": "quick is free · full on demand"
       }
+    },
+    "updates": {
+      "title": "Updates",
+      "description": "Version, channel and content"
+    },
+    "help": {
+      "title": "Help",
+      "description": "Welcome tour"
     }
   },
   "privacy": {
@@ -572,7 +580,11 @@
     "needsArticle": "Open a news article to analyse it.",
     "empty": "This article has not been analysed yet.",
     "running": "Analysing…",
-    "progress": { "waiting": "Waiting for the model…", "elapsed": "{time} elapsed", "hint": "Large or busy models can be slow. You can keep reading." },
+    "progress": {
+      "waiting": "Waiting for the model…",
+      "elapsed": "{time} elapsed",
+      "hint": "Large or busy models can be slow. You can keep reading."
+    },
     "error": "The analysis did not finish: {message}",
     "noScore": "No score yet",
     "neutrality": "Neutrality: {value} out of 100",
@@ -1259,5 +1271,245 @@
     "continue": "Continue reading",
     "saved": "Saved",
     "important": "{n, plural, one {# important story} other {# important stories}}"
+  },
+  "updates": {
+    "current": "Installed version: {version}",
+    "channel": {
+      "label": "Channel",
+      "stable": "Stable",
+      "beta": "Beta",
+      "stableHint": "Tested releases. Recommended.",
+      "betaHint": "New features first, with the odd bug."
+    },
+    "status": {
+      "idle": "Not checked yet.",
+      "checking": "Checking for updates…",
+      "upToDate": "You have the latest version (checked {when}).",
+      "downloading": "Downloading version {version}: {percent}%",
+      "ready": "Version {version} is ready. It will be installed when you close newpaper.",
+      "torUnavailable": "Tor is not available: nothing is checked over a direct connection.",
+      "error": "Could not check: {message}"
+    },
+    "check": "Check for updates",
+    "installNow": "Restart and update",
+    "signedNote": "Only packages with a valid newpaper signature are installed.",
+    "whatsNew": "What’s new in version {version}",
+    "rolledBack": {
+      "title": "Rolled back to the previous version",
+      "body": "Version {version} did not start properly, so the previous one was restored. It will not be offered again."
+    },
+    "close": "Got it",
+    "content": {
+      "title": "Content",
+      "version": "Updated content: version {version}",
+      "bundled": "Content shipped with this version",
+      "check": "Check for content updates",
+      "revert": "Revert the last change",
+      "error": "The last check failed: {message}",
+      "applied": "Version {version} applied ({n} files)",
+      "reverted": "Reverted to version {version}"
+    }
+  },
+  "firstRun": {
+    "title": "Before you start",
+    "subtitle": "A few preferences. You can change them any time in Settings.",
+    "autostart": "Start with Windows",
+    "autostartHint": "newpaper opens when you turn on your computer.",
+    "tor": "Browse through Tor from the start",
+    "torHint": "More private, a bit slower. Choose the exit country whenever you like.",
+    "links": "Open news links with newpaper",
+    "linksHint": "Windows lets you pick it as your browser in its settings.",
+    "linksOpen": "Open Windows settings",
+    "bookmarks": "Import news bookmarks",
+    "bookmarksHint": "Only those from known outlets, saved to read later.",
+    "browser": "Browser",
+    "browsers": {
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "brave": "Brave"
+    },
+    "import": "Import",
+    "imported": "Imported {done} of {total}",
+    "model": "Download a local model",
+    "modelHint": "Uses Ollama to download {model}: quick analyses without anything leaving your computer.",
+    "noOllama": "To use models on your computer, install Ollama.",
+    "modelPull": "Download",
+    "modelProgress": "Downloading: {pct}%",
+    "modelDone": "Model ready.",
+    "getOllama": "Get Ollama",
+    "continue": "Continue"
+  },
+  "tour": {
+    "count": "{n} of {total}",
+    "skip": "Skip",
+    "start": "Start",
+    "next": "Next",
+    "notVisible": "You will see it as soon as you open a news article.",
+    "welcome": {
+      "title": "Welcome to newpaper",
+      "body": "A browser for reading the news knowing how it is told. In a minute we will show you the essentials."
+    },
+    "topics": {
+      "title": "What are you into?",
+      "body": "Follow a few topics and you will see what happens in them first."
+    },
+    "ai": {
+      "title": "Which artificial intelligence?",
+      "body": "You can analyse with models on your computer only, or connect a provider for full analyses.",
+      "local": "Only on my computer",
+      "connect": "Connect a provider"
+    },
+    "network": {
+      "title": "How do you connect?",
+      "body": "With Tor, outlets do not know who you are. Without Tor, everything is faster.",
+      "direct": "Direct connection",
+      "tor": "Use Tor"
+    },
+    "marks": {
+      "lens": {
+        "title": "The lens",
+        "body": "Underlines claims and loaded phrases in the text."
+      },
+      "phrase": {
+        "title": "A phrase",
+        "body": "Tap any mark to see its verdict and its sources."
+      },
+      "score": {
+        "title": "The score",
+        "body": "Neutrality from 0 to 100 and where the text stands compared with how others tell it."
+      },
+      "neutral": {
+        "title": "The neutral story",
+        "body": "A version without adjectives or framing, with what is known and what is not."
+      },
+      "tor": {
+        "title": "Tor",
+        "body": "Here you see whether you browse through Tor and which country you exit from."
+      },
+      "settings": {
+        "title": "Settings",
+        "body": "Providers, sources, privacy and this tour, whenever you want."
+      }
+    },
+    "done": {
+      "title": "All set",
+      "body": "Open any article and press Analyse. Enjoy your reading.",
+      "cta": "Start reading"
+    },
+    "settingsButton": "Settings",
+    "repeat": "Take the tour again",
+    "repeatHint": "See the newpaper introduction once more."
+  },
+  "pages": {
+    "netError": {
+      "code": "Code {code}",
+      "actions": {
+        "retry": "Try again",
+        "offlinePage": "Go to the offline page",
+        "openWithoutTor": "Open without Tor",
+        "archive": "Search the archive",
+        "back": "Go back"
+      },
+      "offline": {
+        "kicker": "Offline",
+        "title": "No internet connection",
+        "body": "{host} could not be opened. Until the network is back, you have today’s edition and your saved articles."
+      },
+      "dns": {
+        "kicker": "Unknown address",
+        "title": "We cannot find that address",
+        "body": "{host} does not exist or does not answer. Check the spelling."
+      },
+      "timeout": {
+        "kicker": "No answer",
+        "title": "The page is taking too long",
+        "body": "{host} did not answer in time."
+      },
+      "unreachable": {
+        "kicker": "No answer",
+        "title": "The page cannot be reached",
+        "body": "{host} is not accepting connections right now."
+      },
+      "cert": {
+        "kicker": "Insecure connection",
+        "title": "The page’s certificate is not valid",
+        "body": "{host} is not opened because someone could be reading or changing what you see. There is no way to continue."
+      },
+      "torBlocked": {
+        "kicker": "Tor not available",
+        "title": "Tor is not ready and nothing goes out without it",
+        "body": "To open {host} without Tor you have to ask for it explicitly."
+      },
+      "server": {
+        "kicker": "Outlet error",
+        "title": "The outlet’s website is failing",
+        "body": "{host} returned an error. Try later or look for a copy in the archive."
+      },
+      "unknown": {
+        "kicker": "Error",
+        "title": "The page could not be loaded",
+        "body": "Something went wrong while opening {host}."
+      }
+    },
+    "crash": {
+      "kicker": "Tab stopped",
+      "title": "This tab stopped responding",
+      "body": "The rest of newpaper keeps working.",
+      "report": "Save a technical report on this computer",
+      "reportHint": "Only version, system and memory. Never the address or the content.",
+      "saved": "Report saved.",
+      "reload": "Reload the tab"
+    },
+    "notFound": {
+      "kicker": "Corrections",
+      "title": "This page does not exist",
+      "lead": "Where it said “{address}” it should have said something else. We regret the error.",
+      "columnsLabel": "Columns",
+      "columns": {
+        "erratas": {
+          "title": "Corrections",
+          "body": "Yesterday’s edition said “link”. It should have said “broken link”. Where it said “tomorrow”, it should have said “never”."
+        },
+        "chiste": {
+          "title": "The joke",
+          "body": "Why did the web page go to therapy? It had a 404: it could not find itself."
+        },
+        "necrologica": {
+          "title": "Obituary",
+          "body": "This page has passed away after a long life of links. Its parents, the server and the content management system, are at a loss."
+        },
+        "anuncio": {
+          "title": "Classifieds",
+          "body": "Lost: one web page. Answers to “the one you were looking for”. Reward: a visit."
+        },
+        "horoscopo": {
+          "title": "Horoscope",
+          "body": "The stars suggest you go back today. Lucky number: 404."
+        },
+        "ultimaHora": {
+          "title": "Breaking",
+          "body": "Sources close to this newspaper confirm the page is missing. More to follow."
+        }
+      }
+    },
+    "offline": {
+      "kicker": "Offline",
+      "title": "You are offline",
+      "body": "You can keep reading what you saved. Anything that needs the network will happen when you are back online.",
+      "edition": "Read the {date} edition",
+      "noEdition": "No edition has been downloaded yet.",
+      "saved": "Saved to read"
+    },
+    "game": {
+      "title": "Tic-tac-toe",
+      "board": "Board",
+      "cell": "Square {n}: {value}",
+      "empty": "empty",
+      "yourTurn": "Your turn: you are ×",
+      "youWin": "You won. That is rarer than it looks.",
+      "iWin": "I won.",
+      "draw": "Draw.",
+      "again": "Play again"
+    }
   }
 }

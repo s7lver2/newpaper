@@ -309,6 +309,14 @@
         "demand": "nur auf Anfrage",
         "tiered": "schnell kostenlos · vollständig auf Abruf"
       }
+    },
+    "updates": {
+      "title": "Updates",
+      "description": "Version, Kanal und Inhalte"
+    },
+    "help": {
+      "title": "Hilfe",
+      "description": "Willkommenstour"
     }
   },
   "privacy": {
@@ -572,7 +580,11 @@
     "needsArticle": "Öffne einen Artikel, um ihn zu analysieren.",
     "empty": "Dieser Artikel wurde noch nicht analysiert.",
     "running": "Wird analysiert…",
-    "progress": { "waiting": "Warte auf das Modell…", "elapsed": "{time} vergangen", "hint": "Große oder ausgelastete Modelle können langsam sein. Du kannst weiterlesen." },
+    "progress": {
+      "waiting": "Warte auf das Modell…",
+      "elapsed": "{time} vergangen",
+      "hint": "Große oder ausgelastete Modelle können langsam sein. Du kannst weiterlesen."
+    },
     "error": "Die Analyse wurde nicht abgeschlossen: {message}",
     "noScore": "Noch keine Bewertung",
     "neutrality": "Neutralität: {value} von 100",
@@ -1259,5 +1271,245 @@
     "continue": "Weiterlesen",
     "saved": "Gespeichert",
     "important": "{n, plural, one {# wichtige Meldung} other {# wichtige Meldungen}}"
+  },
+  "updates": {
+    "current": "Installierte Version: {version}",
+    "channel": {
+      "label": "Kanal",
+      "stable": "Stabil",
+      "beta": "Beta",
+      "stableHint": "Geprüfte Versionen. Empfohlen.",
+      "betaHint": "Neues zuerst, mit gelegentlichen Fehlern."
+    },
+    "status": {
+      "idle": "Noch nicht geprüft.",
+      "checking": "Suche nach Updates…",
+      "upToDate": "Du hast die neueste Version (geprüft {when}).",
+      "downloading": "Version {version} wird geladen: {percent} %",
+      "ready": "Version {version} ist bereit. Sie wird beim Schließen von newpaper installiert.",
+      "torUnavailable": "Tor ist nicht verfügbar: Über eine direkte Verbindung wird nichts geprüft.",
+      "error": "Prüfung nicht möglich: {message}"
+    },
+    "check": "Nach Updates suchen",
+    "installNow": "Neu starten und aktualisieren",
+    "signedNote": "Installiert werden nur Pakete mit gültiger newpaper-Signatur.",
+    "whatsNew": "Neu in Version {version}",
+    "rolledBack": {
+      "title": "Zur vorherigen Version zurückgekehrt",
+      "body": "Version {version} startete nicht richtig, deshalb wurde die vorherige wiederhergestellt. Sie wird nicht erneut angeboten."
+    },
+    "close": "Verstanden",
+    "content": {
+      "title": "Inhalte",
+      "version": "Aktualisierte Inhalte: Version {version}",
+      "bundled": "Mitgelieferte Inhalte dieser Version",
+      "check": "Nach Inhaltsupdates suchen",
+      "revert": "Letzte Änderung zurücknehmen",
+      "error": "Die letzte Prüfung ist fehlgeschlagen: {message}",
+      "applied": "Version {version} angewendet ({n} Dateien)",
+      "reverted": "Auf Version {version} zurückgesetzt"
+    }
+  },
+  "firstRun": {
+    "title": "Bevor es losgeht",
+    "subtitle": "Ein paar Einstellungen. Du kannst sie jederzeit in den Einstellungen ändern.",
+    "autostart": "Mit Windows starten",
+    "autostartHint": "newpaper öffnet sich beim Einschalten des Rechners.",
+    "tor": "Von Anfang an über Tor surfen",
+    "torHint": "Privater, etwas langsamer. Das Ausgangsland wählst du, wann du willst.",
+    "links": "Nachrichtenlinks mit newpaper öffnen",
+    "linksHint": "Windows lässt dich newpaper in seinen Einstellungen als Browser wählen.",
+    "linksOpen": "Windows-Einstellungen öffnen",
+    "bookmarks": "Nachrichten-Lesezeichen importieren",
+    "bookmarksHint": "Nur die bekannter Medien, zum späteren Lesen gespeichert.",
+    "browser": "Browser",
+    "browsers": {
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "brave": "Brave"
+    },
+    "import": "Importieren",
+    "imported": "{done} von {total} importiert",
+    "model": "Lokales Modell herunterladen",
+    "modelHint": "Lädt {model} über Ollama: schnelle Analysen, ohne dass etwas deinen Rechner verlässt.",
+    "noOllama": "Für Modelle auf deinem Rechner installiere Ollama.",
+    "modelPull": "Herunterladen",
+    "modelProgress": "Wird geladen: {pct} %",
+    "modelDone": "Modell bereit.",
+    "getOllama": "Ollama holen",
+    "continue": "Weiter"
+  },
+  "tour": {
+    "count": "{n} von {total}",
+    "skip": "Überspringen",
+    "start": "Los geht’s",
+    "next": "Weiter",
+    "notVisible": "Du siehst es, sobald du einen Artikel öffnest.",
+    "welcome": {
+      "title": "Willkommen bei newpaper",
+      "body": "Ein Browser, um Nachrichten zu lesen und zu wissen, wie sie erzählt werden. In einer Minute zeigen wir dir das Wichtigste."
+    },
+    "topics": {
+      "title": "Was interessiert dich?",
+      "body": "Folge ein paar Themen und du siehst zuerst, was dort passiert."
+    },
+    "ai": {
+      "title": "Mit welcher künstlichen Intelligenz?",
+      "body": "Du kannst nur mit Modellen auf deinem Rechner analysieren oder einen Anbieter für vollständige Analysen verbinden.",
+      "local": "Nur auf meinem Rechner",
+      "connect": "Anbieter verbinden"
+    },
+    "network": {
+      "title": "Wie verbindest du dich?",
+      "body": "Mit Tor wissen die Medien nicht, wer du bist. Ohne Tor geht alles schneller.",
+      "direct": "Direkte Verbindung",
+      "tor": "Tor nutzen"
+    },
+    "marks": {
+      "lens": {
+        "title": "Die Linse",
+        "body": "Unterstreicht Behauptungen und wertende Formulierungen im Text."
+      },
+      "phrase": {
+        "title": "Eine Formulierung",
+        "body": "Tippe auf eine Markierung, um Bewertung und Quellen zu sehen."
+      },
+      "score": {
+        "title": "Die Bewertung",
+        "body": "Neutralität von 0 bis 100 und wo der Text im Vergleich zu anderen Berichten steht."
+      },
+      "neutral": {
+        "title": "Die neutrale Nachricht",
+        "body": "Eine Fassung ohne Adjektive und Rahmung, mit dem, was man weiß und was nicht."
+      },
+      "tor": {
+        "title": "Tor",
+        "body": "Hier siehst du, ob du über Tor surfst und aus welchem Land du austrittst."
+      },
+      "settings": {
+        "title": "Einstellungen",
+        "body": "Anbieter, Quellen, Privatsphäre und diese Tour, wann immer du willst."
+      }
+    },
+    "done": {
+      "title": "Fertig",
+      "body": "Öffne einen Artikel und tippe auf Analysieren. Viel Spaß beim Lesen.",
+      "cta": "Lesen beginnen"
+    },
+    "settingsButton": "Einstellungen",
+    "repeat": "Tour wiederholen",
+    "repeatHint": "Sieh dir die Einführung in newpaper noch einmal an."
+  },
+  "pages": {
+    "netError": {
+      "code": "Code {code}",
+      "actions": {
+        "retry": "Erneut versuchen",
+        "offlinePage": "Zur Offline-Seite",
+        "openWithoutTor": "Ohne Tor öffnen",
+        "archive": "Im Archiv suchen",
+        "back": "Zurück"
+      },
+      "offline": {
+        "kicker": "Offline",
+        "title": "Keine Internetverbindung",
+        "body": "{host} konnte nicht geöffnet werden. Bis das Netz zurück ist, hast du die heutige Ausgabe und deine gespeicherten Artikel."
+      },
+      "dns": {
+        "kicker": "Unbekannte Adresse",
+        "title": "Diese Adresse finden wir nicht",
+        "body": "{host} existiert nicht oder antwortet nicht. Prüfe die Schreibweise."
+      },
+      "timeout": {
+        "kicker": "Keine Antwort",
+        "title": "Die Seite braucht zu lange",
+        "body": "{host} hat nicht rechtzeitig geantwortet."
+      },
+      "unreachable": {
+        "kicker": "Keine Antwort",
+        "title": "Die Seite ist nicht erreichbar",
+        "body": "{host} nimmt gerade keine Verbindungen an."
+      },
+      "cert": {
+        "kicker": "Unsichere Verbindung",
+        "title": "Das Zertifikat der Seite ist ungültig",
+        "body": "{host} wird nicht geöffnet, weil jemand mitlesen oder verändern könnte, was du siehst. Es gibt keinen Weg, fortzufahren."
+      },
+      "torBlocked": {
+        "kicker": "Tor nicht verfügbar",
+        "title": "Tor ist nicht bereit und ohne Tor geht nichts hinaus",
+        "body": "Um {host} ohne Tor zu öffnen, musst du es ausdrücklich anfordern."
+      },
+      "server": {
+        "kicker": "Fehler beim Medium",
+        "title": "Die Website des Mediums hat Probleme",
+        "body": "{host} hat einen Fehler gemeldet. Versuche es später oder suche eine Kopie im Archiv."
+      },
+      "unknown": {
+        "kicker": "Fehler",
+        "title": "Die Seite konnte nicht geladen werden",
+        "body": "Beim Öffnen von {host} ist etwas schiefgegangen."
+      }
+    },
+    "crash": {
+      "kicker": "Tab angehalten",
+      "title": "Dieser Tab reagiert nicht mehr",
+      "body": "Der Rest von newpaper funktioniert weiter.",
+      "report": "Technischen Bericht auf diesem Rechner speichern",
+      "reportHint": "Nur Version, System und Speicher. Niemals Adresse oder Inhalt.",
+      "saved": "Bericht gespeichert.",
+      "reload": "Tab neu laden"
+    },
+    "notFound": {
+      "kicker": "Berichtigung",
+      "title": "Diese Seite gibt es nicht",
+      "lead": "Wo „{address}“ stand, hätte etwas anderes stehen sollen. Wir bedauern den Fehler.",
+      "columnsLabel": "Rubriken",
+      "columns": {
+        "erratas": {
+          "title": "Berichtigung",
+          "body": "In der gestrigen Ausgabe stand „Link“. Richtig ist „toter Link“. Wo „morgen“ stand, muss es „nie“ heißen."
+        },
+        "chiste": {
+          "title": "Der Witz",
+          "body": "Treffen sich zwei Webseiten. Sagt die eine: „Ich bin 404.“ Sagt die andere: „Dich gibt’s doch gar nicht.“"
+        },
+        "necrologica": {
+          "title": "Nachruf",
+          "body": "Nach einem langen Leben voller Links ist diese Seite von uns gegangen. Server und Redaktionssystem sind ratlos."
+        },
+        "anuncio": {
+          "title": "Kleinanzeige",
+          "body": "Webseite entlaufen. Hört auf den Namen „die, die du gesucht hast“. Finderlohn: ein Besuch."
+        },
+        "horoscopo": {
+          "title": "Horoskop",
+          "body": "Die Sterne raten dir heute zur Rückkehr. Glückszahl: 404."
+        },
+        "ultimaHora": {
+          "title": "Eilmeldung",
+          "body": "Wie unsere Zeitung aus gut unterrichteten Kreisen erfuhr, fehlt die Seite. Wir berichten weiter."
+        }
+      }
+    },
+    "offline": {
+      "kicker": "Offline",
+      "title": "Du bist offline",
+      "body": "Du kannst weiterlesen, was du gespeichert hast. Was Netz braucht, passiert, sobald du wieder online bist.",
+      "edition": "Ausgabe vom {date} lesen",
+      "noEdition": "Es wurde noch keine Ausgabe heruntergeladen.",
+      "saved": "Zum Lesen gespeichert"
+    },
+    "game": {
+      "title": "Tic-Tac-Toe",
+      "board": "Spielfeld",
+      "cell": "Feld {n}: {value}",
+      "empty": "leer",
+      "yourTurn": "Du bist dran: Du spielst ×",
+      "youWin": "Du hast gewonnen. Das ist seltener, als es aussieht.",
+      "iWin": "Ich habe gewonnen.",
+      "draw": "Unentschieden.",
+      "again": "Noch eine Partie"
+    }
   }
 }

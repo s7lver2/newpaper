@@ -309,6 +309,14 @@
         "demand": "solo cuando lo pides",
         "tiered": "rápido gratis · completo bajo demanda"
       }
+    },
+    "updates": {
+      "title": "Actualizaciones",
+      "description": "Versión, canal y contenido"
+    },
+    "help": {
+      "title": "Ayuda",
+      "description": "Recorrido de bienvenida"
     }
   },
   "privacy": {
@@ -572,7 +580,11 @@
     "needsArticle": "Abre una noticia para analizarla.",
     "empty": "Aún no hay análisis de esta noticia.",
     "running": "Analizando…",
-    "progress": { "waiting": "Esperando al modelo…", "elapsed": "{time} transcurridos", "hint": "Los modelos grandes o saturados pueden tardar. Puedes seguir leyendo." },
+    "progress": {
+      "waiting": "Esperando al modelo…",
+      "elapsed": "{time} transcurridos",
+      "hint": "Los modelos grandes o saturados pueden tardar. Puedes seguir leyendo."
+    },
     "error": "El análisis no ha terminado: {message}",
     "noScore": "Sin nota todavía",
     "neutrality": "Neutralidad: {value} de 100",
@@ -1259,5 +1271,245 @@
     "continue": "Continuar leyendo",
     "saved": "Guardado",
     "important": "{n, plural, one {# hecho importante} other {# hechos importantes}}"
+  },
+  "updates": {
+    "current": "Versión instalada: {version}",
+    "channel": {
+      "label": "Canal",
+      "stable": "Estable",
+      "beta": "Beta",
+      "stableHint": "Versiones probadas. Recomendado.",
+      "betaHint": "Novedades antes que nadie, con algún fallo posible."
+    },
+    "status": {
+      "idle": "Sin comprobar todavía.",
+      "checking": "Buscando actualizaciones…",
+      "upToDate": "Tienes la última versión (comprobado {when}).",
+      "downloading": "Descargando la versión {version}: {percent} %",
+      "ready": "La versión {version} está lista. Se instalará al cerrar newpaper.",
+      "torUnavailable": "Tor no está disponible: no se comprueba nada por conexión directa.",
+      "error": "No se ha podido comprobar: {message}"
+    },
+    "check": "Buscar actualizaciones",
+    "installNow": "Reiniciar y actualizar",
+    "signedNote": "Solo se instalan paquetes con firma válida de newpaper.",
+    "whatsNew": "Novedades de la versión {version}",
+    "rolledBack": {
+      "title": "Se ha vuelto a la versión anterior",
+      "body": "La versión {version} no arrancaba bien, así que se ha restaurado la anterior. No se volverá a ofrecer."
+    },
+    "close": "Entendido",
+    "content": {
+      "title": "Contenido",
+      "version": "Contenido actualizado: versión {version}",
+      "bundled": "Contenido de serie de esta versión",
+      "check": "Buscar actualizaciones de contenido",
+      "revert": "Revertir el último cambio",
+      "error": "La última comprobación falló: {message}",
+      "applied": "Versión {version} aplicada ({n} ficheros)",
+      "reverted": "Revertido a la versión {version}"
+    }
+  },
+  "firstRun": {
+    "title": "Antes de empezar",
+    "subtitle": "Unas pocas preferencias. Puedes cambiarlas cuando quieras en Ajustes.",
+    "autostart": "Iniciar con Windows",
+    "autostartHint": "newpaper se abre al encender el equipo.",
+    "tor": "Navegar por Tor desde el principio",
+    "torHint": "Más privado, algo más lento. Elige el país de salida cuando quieras.",
+    "links": "Abrir enlaces de noticias con newpaper",
+    "linksHint": "Windows te deja elegirlo como navegador en sus ajustes.",
+    "linksOpen": "Abrir los ajustes de Windows",
+    "bookmarks": "Importar marcadores de noticias",
+    "bookmarksHint": "Solo los de medios conocidos, para leerlos más tarde.",
+    "browser": "Navegador",
+    "browsers": {
+      "edge": "Microsoft Edge",
+      "chrome": "Google Chrome",
+      "brave": "Brave"
+    },
+    "import": "Importar",
+    "imported": "Importados {done} de {total}",
+    "model": "Descargar un modelo local",
+    "modelHint": "Usa Ollama para descargar {model}: análisis rápidos sin que nada salga de tu equipo.",
+    "noOllama": "Para usar modelos en tu equipo, instala Ollama.",
+    "modelPull": "Descargar",
+    "modelProgress": "Descargando: {pct} %",
+    "modelDone": "Modelo listo.",
+    "getOllama": "Conseguir Ollama",
+    "continue": "Continuar"
+  },
+  "tour": {
+    "count": "{n} de {total}",
+    "skip": "Saltar",
+    "start": "Empezar",
+    "next": "Siguiente",
+    "notVisible": "Lo verás en cuanto abras una noticia.",
+    "welcome": {
+      "title": "Bienvenido a newpaper",
+      "body": "Un navegador para leer noticias sabiendo cómo están contadas. En un minuto te enseñamos lo esencial."
+    },
+    "topics": {
+      "title": "¿Qué te interesa?",
+      "body": "Sigue algunos temas y verás primero lo que pasa en ellos."
+    },
+    "ai": {
+      "title": "¿Con qué inteligencia artificial?",
+      "body": "Puedes analizar solo con modelos de tu equipo o conectar un proveedor para análisis completos.",
+      "local": "Solo en mi equipo",
+      "connect": "Conectar un proveedor"
+    },
+    "network": {
+      "title": "¿Cómo te conectas?",
+      "body": "Con Tor, los medios no saben quién eres. Sin Tor, todo va más rápido.",
+      "direct": "Conexión directa",
+      "tor": "Usar Tor"
+    },
+    "marks": {
+      "lens": {
+        "title": "La lente",
+        "body": "Subraya en el texto las afirmaciones y las frases cargadas."
+      },
+      "phrase": {
+        "title": "Una frase",
+        "body": "Pulsa cualquier marca para ver su veredicto y sus fuentes."
+      },
+      "score": {
+        "title": "La nota",
+        "body": "Neutralidad de 0 a 100 y la posición del texto frente a cómo lo cuentan otros."
+      },
+      "neutral": {
+        "title": "La noticia neutral",
+        "body": "Una versión sin adjetivos ni encuadre, con lo que se sabe y lo que no."
+      },
+      "tor": {
+        "title": "Tor",
+        "body": "Aquí ves si navegas por Tor y desde qué país sales."
+      },
+      "settings": {
+        "title": "Ajustes",
+        "body": "Proveedores, fuentes, privacidad y este recorrido, cuando quieras."
+      }
+    },
+    "done": {
+      "title": "Listo",
+      "body": "Abre cualquier noticia y pulsa Analizar. Buena lectura.",
+      "cta": "Empezar a leer"
+    },
+    "settingsButton": "Ajustes",
+    "repeat": "Repetir el recorrido",
+    "repeatHint": "Vuelve a ver la presentación de newpaper."
+  },
+  "pages": {
+    "netError": {
+      "code": "Código {code}",
+      "actions": {
+        "retry": "Reintentar",
+        "offlinePage": "Ir a la página sin conexión",
+        "openWithoutTor": "Abrir sin Tor",
+        "archive": "Buscar en la hemeroteca",
+        "back": "Volver"
+      },
+      "offline": {
+        "kicker": "Sin conexión",
+        "title": "No hay conexión a internet",
+        "body": "No se ha podido abrir {host}. Mientras vuelve la red, tienes la edición del día y tus guardados."
+      },
+      "dns": {
+        "kicker": "Dirección desconocida",
+        "title": "No encontramos esa dirección",
+        "body": "{host} no existe o no responde. Revisa cómo está escrita."
+      },
+      "timeout": {
+        "kicker": "Sin respuesta",
+        "title": "La página tarda demasiado",
+        "body": "{host} no ha contestado a tiempo."
+      },
+      "unreachable": {
+        "kicker": "Sin respuesta",
+        "title": "No se puede llegar a la página",
+        "body": "{host} no acepta la conexión ahora mismo."
+      },
+      "cert": {
+        "kicker": "Conexión no segura",
+        "title": "El certificado de la página no es válido",
+        "body": "No se abre {host} porque alguien podría estar leyendo o cambiando lo que ves. No hay forma de continuar."
+      },
+      "torBlocked": {
+        "kicker": "Tor no disponible",
+        "title": "Tor no está listo y nada sale sin él",
+        "body": "Para abrir {host} sin Tor tienes que pedirlo expresamente."
+      },
+      "server": {
+        "kicker": "Error del medio",
+        "title": "La web del medio está fallando",
+        "body": "{host} ha devuelto un error. Prueba más tarde o busca una copia en la hemeroteca."
+      },
+      "unknown": {
+        "kicker": "Error",
+        "title": "No se ha podido cargar la página",
+        "body": "Algo ha fallado al abrir {host}."
+      }
+    },
+    "crash": {
+      "kicker": "Pestaña detenida",
+      "title": "Esta pestaña ha dejado de responder",
+      "body": "El resto de newpaper sigue funcionando.",
+      "report": "Guardar un informe técnico en este equipo",
+      "reportHint": "Solo versión, sistema y memoria. Nunca la dirección ni el contenido.",
+      "saved": "Informe guardado.",
+      "reload": "Recargar la pestaña"
+    },
+    "notFound": {
+      "kicker": "Fe de erratas",
+      "title": "Esta página no existe",
+      "lead": "Donde decía «{address}» debía decir otra cosa. Lamentamos el error.",
+      "columnsLabel": "Columnas",
+      "columns": {
+        "erratas": {
+          "title": "Fe de erratas",
+          "body": "En la edición de ayer, donde decía «enlace», debía decir «enlace roto». Donde decía «mañana», debía decir «nunca»."
+        },
+        "chiste": {
+          "title": "El chiste",
+          "body": "—¿Cuál es la página más visitada de internet? —La 404: todo el mundo acaba en ella alguna vez."
+        },
+        "necrologica": {
+          "title": "Necrológica",
+          "body": "Nos deja esta página, tras una larga vida de enlaces. Sus padres, el servidor y el gestor de contenidos, no saben qué pasó."
+        },
+        "anuncio": {
+          "title": "Anuncio por palabras",
+          "body": "Se busca página extraviada. Responde al nombre de «la que buscabas». Se gratificará con una visita."
+        },
+        "horoscopo": {
+          "title": "Horóscopo",
+          "body": "Hoy los astros te recomiendan volver atrás. Número de la suerte: 404."
+        },
+        "ultimaHora": {
+          "title": "Última hora",
+          "body": "Fuentes consultadas por este diario confirman que la página no está. Ampliaremos."
+        }
+      }
+    },
+    "offline": {
+      "kicker": "Sin conexión",
+      "title": "Estás sin conexión",
+      "body": "Puedes seguir leyendo lo que tienes guardado. Lo que necesite red se hará al volver la conexión.",
+      "edition": "Leer la edición del {date}",
+      "noEdition": "Todavía no hay ninguna edición descargada.",
+      "saved": "Guardado para leer"
+    },
+    "game": {
+      "title": "Tres en raya",
+      "board": "Tablero",
+      "cell": "Casilla {n}: {value}",
+      "empty": "vacía",
+      "yourTurn": "Te toca: eres ×",
+      "youWin": "Has ganado. Es más raro de lo que parece.",
+      "iWin": "He ganado yo.",
+      "draw": "Tablas.",
+      "again": "Otra partida"
+    }
   }
 }
