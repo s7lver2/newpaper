@@ -1,0 +1,27 @@
+[package]
+name = "np-update"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+minisign-verify = "=0.3.0"
+base64 = "=0.23.1"
+sha2 = "0.10"
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+rusqlite = { workspace = true }
+np-store = { path = "../np-store" }
+minisign = { version = "=0.10.0", optional = true }
+
+[features]
+sign = ["dep:minisign"]
+
+[[bin]]
+name = "np-content-sign"
+required-features = ["sign"]
+
+[dev-dependencies]
+minisign = "=0.10.0"
+tempfile = { workspace = true }
