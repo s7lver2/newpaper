@@ -13,6 +13,8 @@ export interface TabAnalysis {
   quick: AnalysisResult | null;
   full: AnalysisResult | null;
   stages: Partial<Record<StageId, StageEvent['status']>>;
+  /** Motivo de cada etapa fallida (mensaje del proveedor o de la validación). */
+  stageErrors?: Partial<Record<StageId, string>>;
   error: string | null;
 }
 
@@ -43,13 +45,13 @@ export function createAnalysisController(pipeline: () => Promise<Pipeline>) {
     analysisStore.set((s) => {
       const cur = s.byTab[tabId];
       const base: TabAnalysis = cur && cur.url === article.url ? cur : { url: article.url, article, phase: 'idle', quick: null, full: null, stages: {}, error: null };
-      return { byTab: { ...s.byTab, [tabId]: { ...base, phase: kind, error: null, stages: kind === 'full' ? {} : base.stages } } };
+      return { byTab: { ...s.byTab, [tabId]: { ...base, phase: kind, error: null, stages: kind === 'full' ? {} : base.stages, ...(kind === 'full' ? { stageErrors: {} } : {}) } } };
     });
     const live = () => !ac.signal.aborted && runs.get(tabId) === ac;
     try {
       const p = await pipeline();
       const onStage = (e: StageEvent) => {
-        if (live()) patch(tabId, article.url, (a) => ({ ...a, stages: { ...a.stages, [e.stage]: e.status } }));
+        if (live()) patch(tabId, article.url, (a) => ({ ...a, stages: { ...a.stages, [e.stage]: e.status }, ...(e.status === 'failed' && 'error' in e ? { stageErrors: { ...a.stageErrors, [e.stage]: String((e as { error?: unknown }).error ?? '') } } : {}) }));
       };
       const opts = { signal: ac.signal, onStage };
       const r = kind === 'quick' ? await p.runQuickAnalysis(article, opts) : await p.runFullAnalysis(article, opts);

@@ -75,10 +75,10 @@ export function AnalysisTab({ tab }: { tab: TabInfo }) {
   const groupCenter = known.length ? known.reduce((x, y) => x + (y.lean as number), 0) / known.length : null;
   const full = !result.quick;
   const stages: StageItem[] =
-    a?.phase === 'full'
+    a?.phase === 'full' || result.failed.length > 0
       ? FULL_STAGES.map((id) => {
           const status = a?.stages[id] ?? (result.failed.includes(id) ? 'failed' : 'pending');
-          return { id, label: t(`analysis.stage.${id}`), status, statusLabel: t(`analysis.stageStatus.${status}`) };
+          return { id, label: t(`analysis.stage.${id}`), status, statusLabel: t(`analysis.stageStatus.${status}`), ...(status === 'failed' && a?.stageErrors?.[id] ? { detail: a.stageErrors[id] } : {}) };
         })
       : [];
   const notable = detector ? notableAi(page.text, result.aiAuthorship) : null;

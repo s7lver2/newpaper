@@ -45,7 +45,7 @@
 .np-conf-threshold { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--np-ink); }
 
 .np-stages { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; font: 13px var(--np-font-ui); }
-.np-stage { display: flex; align-items: center; gap: 10px; color: var(--np-disabled); transition: color .5s var(--np-ease); }
+.np-stage { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; color: var(--np-disabled); transition: color .5s var(--np-ease); }
 .np-stage--running, .np-stage--done, .np-stage--cached { color: var(--np-ink); }
 .np-stage-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--np-line); transition: background-color .5s var(--np-ease); }
 .np-stage--running .np-stage-dot { background: var(--np-accent); animation: np-pulse 1.2s ease-in-out infinite; }
@@ -58,3 +58,5 @@
   .np-ring-value, .np-axis-me, .np-axis-other, .np-axis-center { transition: none; }
   .np-stage--running .np-stage-dot { animation: none; }
 }
+
+.np-stage-detail { flex-basis: 100%; margin: 2px 0 6px 20px; font: 400 12px/1.4 var(--np-font-mono); color: var(--np-bad); overflow-wrap: anywhere; }

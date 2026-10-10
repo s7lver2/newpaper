@@ -1,4 +1,4 @@
-export interface StageItem { id: string; label: string; status: 'pending' | 'running' | 'done' | 'cached' | 'failed' | 'skipped'; statusLabel: string }
+export interface StageItem { id: string; label: string; status: 'pending' | 'running' | 'done' | 'cached' | 'failed' | 'skipped'; statusLabel: string; detail?: string }
 
 export function StageList({ items, label }: { items: StageItem[]; label: string }) {
   return (
@@ -8,6 +8,7 @@ export function StageList({ items, label }: { items: StageItem[]; label: string 
           <span className="np-stage-dot" aria-hidden="true" />
           <span className="np-stage-label">{s.label}</span>
           <span className="np-stage-status">{s.statusLabel}</span>
+          {s.detail ? <span className="np-stage-detail" role="note">{s.detail}</span> : null}
         </li>
       ))}
     </ol>

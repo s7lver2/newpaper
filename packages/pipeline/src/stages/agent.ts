@@ -1,4 +1,5 @@
 import { stepCountIs, streamText, tool } from 'ai';
+import { describeError } from '../registry/models';
 import { z } from 'zod';
 import { delimit, UNTRUSTED_NOTE } from '../llm/delimit';
 import { languageInstruction } from '../llm/language';
@@ -143,6 +144,7 @@ export async function runAgent(o: {
     `Question: ${o.question}`,
   ].filter(Boolean).join('\n');
 
+  let streamError: unknown;
   const result = streamText({
     model: o.ctx.model,
     system,
@@ -151,6 +153,10 @@ export async function runAgent(o: {
     stopWhen: stepCountIs(6),
     temperature: o.ctx.noTemperature ? undefined : o.ctx.temperature,
     abortSignal: o.ctx.signal,
+    // streamText no lanza los errores del proveedor: sin esto la respuesta quedaba vacía en silencio.
+    onError: ({ error }) => {
+      streamError ??= error;
+    },
   });
   let raw = '';
   try {
@@ -161,6 +167,11 @@ export async function runAgent(o: {
   } catch (e) {
     o.onEvent({ type: 'error', message: e instanceof Error ? e.message : String(e) });
     throw e;
+  }
+  if (streamError || !raw.trim()) {
+    const message = streamError ? describeError(streamError) : 'el modelo no devolvió ninguna respuesta';
+    o.onEvent({ type: 'error', message });
+    throw new Error(message);
   }
   const usage = await result.totalUsage;
   const final = cleanCitations(raw, sources);
