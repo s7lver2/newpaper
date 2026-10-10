@@ -27,10 +27,13 @@ export function createModel(p: ProviderEntry, modelId: string, fetchImpl: typeof
   }
 }
 
+/** Un modelo grande en frío puede tardar; más de esto se da por no disponible. */
+export const TEST_TIMEOUT_MS = 40_000;
+
 export async function testConnection(model: LanguageModel) {
   const t0 = performance.now();
   try {
-    await generateText({ model, prompt: 'Reply with: ok', maxOutputTokens: 8, maxRetries: 0 });
+    await generateText({ model, prompt: 'Reply with: ok', maxOutputTokens: 8, maxRetries: 0, abortSignal: AbortSignal.timeout(TEST_TIMEOUT_MS) });
     return { ok: true as const, latencyMs: Math.round(performance.now() - t0) };
   } catch (e) {
     return { ok: false as const, latencyMs: Math.round(performance.now() - t0), error: describeError(e) };
@@ -46,6 +49,7 @@ export function describeError(e: unknown): string {
   if (msg) parts.push(msg);
   else if (typeof o.responseBody === "string" && o.responseBody.trim()) parts.push(o.responseBody.trim().slice(0, 300));
   else if (o.cause instanceof Error && o.cause.message) parts.push(o.cause.message);
+  if (o.name === "TimeoutError" || o.name === "AbortError") parts.unshift("sin respuesta a tiempo (el modelo tarda demasiado o está saturado)");
   if (!parts.length) parts.push(typeof o.name === "string" ? o.name : "error desconocido");
   return parts.join(": ").slice(0, 400);
 }
