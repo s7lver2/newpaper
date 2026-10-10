@@ -1,0 +1,10 @@
+.np-404, .np-neterr { max-width: 66ch; margin: 0 auto; padding: 56px 20px; font: 17px/1.6 var(--np-font-read); color: var(--np-ink); display: grid; gap: 12px; }
+.np-404 h1, .np-neterr h1 { font: 500 40px/1.1 var(--np-font-read); margin: 0; }
+.np-404-kicker { font: 600 11px var(--np-font-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--np-accent); margin: 0; }
+.np-404-lead { color: var(--np-ink2); }
+.np-404-column { border-top: 3px double var(--np-ink); padding-top: 12px; min-height: 140px; }
+.np-404-column h2 { font: 600 13px var(--np-font-mono); letter-spacing: .08em; text-transform: uppercase; margin: 0 0 6px; }
+.np-404-dots { display: flex; gap: 6px; }
+.np-404-dots button { width: 44px; height: 44px; border: 0; background: none; cursor: pointer; position: relative; }
+.np-404-dots button::after { content: ''; position: absolute; inset: 18px; border-radius: 50%; background: var(--np-line3); }
+.np-404-dots button[aria-current='true']::after { background: var(--np-ink); }

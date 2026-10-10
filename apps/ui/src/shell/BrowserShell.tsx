@@ -1,4 +1,3 @@
-import { useT } from '@newpaper/i18n/react';
 import { useActiveTab, useArticle } from '../state/browser';
 import { ContentSlot } from './ContentSlot';
 import { ContextMenuHost } from './ContextMenu';
@@ -6,12 +5,12 @@ import { PageTransition } from './PageTransition';
 import { ReaderLoading } from './ReaderLoading';
 import { NativeUnderlay } from './underlay';
 import { parseInternalUrl } from './internalUrl';
+import { NotFoundPage } from '../features/pages/NotFoundPage';
 import { overlays, readerView, resolveInternalPage, sidePanel, tabSurface } from './registry';
 import { TabStrip } from './TabStrip';
 import { Toolbar } from './Toolbar';
 
 function ActiveSurface() {
-  const t = useT();
   const tab = useActiveTab();
   const page = useArticle(tab?.id ?? null);
   if (!tab) return null;
@@ -19,7 +18,7 @@ function ActiveSurface() {
     const url = parseInternalUrl(tab.url);
     const Page = url ? resolveInternalPage(url.page) : undefined;
     // `key`: cada pestaña interna tiene su propia instancia (si no, dos pestañas de la misma página compartirían estado y scroll).
-    return <div key={tab.id} className="np-surface">{Page && url ? <Page url={url} tab={tab} /> : <p className="np-fallback">{t('shell.notFound')}</p>}</div>;
+    return <div key={tab.id} className="np-surface">{Page && url ? <Page url={url} tab={tab} /> : <NotFoundPage address={tab.url} />}</div>;
   }
   if (tab.crashed) {
     const Crash = tabSurface('crash');

@@ -39,7 +39,7 @@ describe('BrowserShell surfaces', () => {
   it('shows "not found" for unknown internal pages', () => {
     applySnapshot({ tabs: [tab({ url: 'newpaper://nada', kind: 'internal' })], activeId: 1 });
     renderWithI18n(<BrowserShell />);
-    expect(screen.getByText('Esta página interna no existe.')).toBeInTheDocument();
+    expect(screen.getByText('Esta página no existe')).toBeInTheDocument();
   });
 
   it('renders the reader and switches to the original', async () => {
