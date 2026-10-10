@@ -237,7 +237,7 @@ export function AnalysisTab({ tab }: { tab: TabInfo }) {
       ) : null}
 
       {result.synthesis ? (
-        <button type="button" className="np-cta np-cta--ink" onClick={() => void openInternal('sintesis', [], { url: result.url, hash: result.hash })}>
+        <button type="button" data-tour="neutral" className="np-cta np-cta--ink" onClick={() => void openInternal('sintesis', [], { url: result.url, hash: result.hash })}>
           {t('analysis.actions.synthesis')}
         </button>
       ) : null}

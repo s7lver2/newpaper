@@ -98,7 +98,7 @@ export function AnalysisReader({ tab, page }: ReaderSurfaceProps) {
             </button>
           ) : null}
         </div>
-        <button type="button" role="switch" aria-checked={lensOn} disabled={!result} className="np-lens-switch" onClick={() => panelStore.set({ lens: !lens })}>
+        <button type="button" role="switch" data-tour="lens" aria-checked={lensOn} disabled={!result} className="np-lens-switch" onClick={() => panelStore.set({ lens: !lens })}>
           <span className="np-lens-switch-dot" aria-hidden="true" />
           {t('analysis.lens.toggle')}
         </button>

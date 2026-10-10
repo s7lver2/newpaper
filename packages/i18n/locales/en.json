@@ -1337,7 +1337,8 @@
     "modelProgress": "Downloading: {pct}%",
     "modelDone": "Model ready.",
     "getOllama": "Get Ollama",
-    "continue": "Continue"
+    "continue": "Continue",
+    "ignored": "{n} from other sites are not imported"
   },
   "tour": {
     "count": "{n} of {total}",

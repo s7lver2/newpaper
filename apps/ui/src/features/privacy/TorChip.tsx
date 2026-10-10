@@ -39,7 +39,7 @@ export function TorChip({ tab }: { tab: TabInfo | null }) {
     <div ref={wrap} className="np-torchip-wrap">
       <button
         type="button"
-        className="np-torchip np-hit np-press-spring"
+        data-tour="tor" className="np-torchip np-hit np-press-spring"
         data-open={open}
         data-mode={status.mode}
         data-failed={status.mode === 'tor' && status.tor.state === 'failed'}

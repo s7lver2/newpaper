@@ -1337,7 +1337,8 @@
     "modelProgress": "Descargando: {pct} %",
     "modelDone": "Modelo listo.",
     "getOllama": "Conseguir Ollama",
-    "continue": "Continuar"
+    "continue": "Continuar",
+    "ignored": "{n} de otros sitios no se importan"
   },
   "tour": {
     "count": "{n} de {total}",
