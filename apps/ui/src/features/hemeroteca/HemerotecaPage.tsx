@@ -38,6 +38,9 @@ function DiffView({ diff, side }: { diff: TextDiff; side?: 'a' | 'b' }) {
   );
 }
 
+/** Historial ya calculado por URL: volver a la hemeroteca no repite las descargas. */
+const historyCache = new Map<string, WaybackHistory>();
+
 export function HemerotecaPage({ url: page }: InternalPageProps) {
   const { t, formatDate } = useI18n();
   const url = page.query.get('url') ?? '';
@@ -54,22 +57,40 @@ export function HemerotecaPage({ url: page }: InternalPageProps) {
     void commands.historyRecordSearch(url, 'hemeroteca');
     (async () => {
       try {
-        const rows = await commands.waybackCaptures(url);
-        const captures: CaptureInput[] = [];
-        setProgress({ done: 0, total: rows.length });
-        for (const r of rows) {
-          if (!alive) return;
-          try {
-            const html = await commands.waybackCaptureHtml(url, r.timestamp);
-            const a = extractFromHtml(html, url);
-            if (a) captures.push({ timestamp: r.timestamp, digest: r.digest, text: { headline: a.title, paragraphs: a.text.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean) } });
-          } catch {
-            /* captura ilegible: se omite */
-          }
-          setProgress({ done: captures.length, total: rows.length });
+        const cachedH = historyCache.get(url);
+        if (cachedH) {
+          setHistory(cachedH);
+          setAb([0, Math.max(0, cachedH.captures.length - 1)]);
+          return;
         }
+        const rows = await commands.waybackCaptures(url);
+        setProgress({ done: 0, total: rows.length });
+        // Las capturas se descargan de a 4 a la vez (cada una es un viaje a archive.org, a veces por Tor); el orden se conserva.
+        const slots: (CaptureInput | null)[] = rows.map(() => null);
+        let next = 0;
+        let doneN = 0;
+        const worker = async () => {
+          for (;;) {
+            const i = next++;
+            if (i >= rows.length || !alive) return;
+            const r = rows[i]!;
+            try {
+              const html = await commands.waybackCaptureHtml(url, r.timestamp);
+              const a = extractFromHtml(html, url);
+              if (a) slots[i] = { timestamp: r.timestamp, digest: r.digest, text: { headline: a.title, paragraphs: a.text.split(/\n{2,}/).map((p) => p.trim()).filter(Boolean) } };
+            } catch {
+              /* captura ilegible: se omite */
+            }
+            doneN++;
+            if (alive) setProgress({ done: doneN, total: rows.length });
+          }
+        };
+        await Promise.all([worker(), worker(), worker(), worker()]);
+        if (!alive) return;
+        const captures = slots.filter((c): c is CaptureInput => c !== null);
         const h = await commands.waybackAnalyze(url, captures);
         if (!alive) return;
+        historyCache.set(url, h);
         setHistory(h);
         setAb([0, Math.max(0, h.captures.length - 1)]);
       } catch (e) {
