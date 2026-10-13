@@ -11,7 +11,20 @@ use np_sync::{
 };
 use serde::Serialize;
 use tauri::{App, AppHandle, Emitter, Manager};
-use tokio::{net::TcpStream, sync::Mutex, task::JoinHandle, time::timeout};
+use std::net::{IpAddr, SocketAddr};
+use tokio::{net::TcpStream, sync::Mutex, task::{JoinHandle, JoinSet}, time::timeout};
+
+/// Sesiones simultáneas máximas (más conexiones se cierran sin leerlas).
+const MAX_SESSIONS: usize = 8;
+const SESSION_TIMEOUT: Duration = Duration::from_secs(120);
+
+/// Solo se atienden orígenes de la red local, Tailscale (100.64.0.0/10) o este equipo: la sincronización no es un servicio de Internet.
+fn is_local_source(ip: IpAddr) -> bool {
+    match ip {
+        IpAddr::V4(v4) => v4.is_private() || v4.is_loopback() || v4.is_link_local() || np_sync::discovery::is_tailscale(v4),
+        IpAddr::V6(v6) => v6.is_loopback() || (v6.segments()[0] & 0xfe00) == 0xfc00 || (v6.segments()[0] & 0xffc0) == 0xfe80,
+    }
+}
 
 #[derive(Debug, Clone, Serialize)]
 #[serde(rename_all = "camelCase")]
@@ -59,7 +72,7 @@ impl SyncService {
             enabled: self.enabled(),
             listening: self.discovery.lock().expect("lock").is_some(),
             device_id: self.ctx.identity.device_id.clone(),
-            name: self.ctx.identity.name.clone(),
+            name: self.ctx.identity.name(),
             fingerprint: fingerprint(&self.ctx.identity.public()),
             addresses: local_addresses(DEFAULT_PORT),
             visible: self.discovery.lock().expect("lock").as_ref().map(|d| d.visible()).unwrap_or_default(),
@@ -79,31 +92,55 @@ impl SyncService {
         let listener = tokio::net::TcpListener::bind(("0.0.0.0", DEFAULT_PORT)).await.map_err(|e| e.to_string())?;
         let me = self.clone();
         let handle = tokio::spawn(async move {
-            while let Ok((mut stream, addr)) = listener.accept().await {
-                let me = me.clone();
-                tokio::spawn(async move {
-                    let r = timeout(Duration::from_secs(120), serve(&mut stream, &me.ctx)).await;
-                    match r {
-                        Ok(Ok(rep)) => {
-                            if rep.paired {
-                                let _ = me.app.emit_to("ui", "sync://paired", serde_json::json!({ "peerId": rep.peer_id, "name": rep.peer_name }));
+            // Las sesiones viven en un `JoinSet`: al detener la escucha (abortar esta tarea) se abortan todas.
+            let mut sessions: JoinSet<()> = JoinSet::new();
+            loop {
+                tokio::select! {
+                    accepted = listener.accept() => match accepted {
+                        Ok((mut stream, addr)) => {
+                            // Solo LAN, Tailscale o bucle local, y un máximo de sesiones a la vez.
+                            if !is_local_source(addr.ip()) || sessions.len() >= MAX_SESSIONS {
+                                tracing::debug!(%addr, "sync connection dropped");
+                                continue;
                             }
-                            me.record(&rep, None);
+                            let me = me.clone();
+                            sessions.spawn(async move {
+                                let r = timeout(SESSION_TIMEOUT, serve(&mut stream, &me.ctx)).await;
+                                match r {
+                                    Ok(Ok(rep)) => {
+                                        if rep.paired {
+                                            let _ = me.app.emit_to("ui", "sync://paired", serde_json::json!({ "peerId": rep.peer_id, "name": rep.peer_name }));
+                                        }
+                                        me.record(&rep, None);
+                                    }
+                                    Ok(Err(e)) => tracing::info!(%addr, error = %e, "sync session refused or failed"),
+                                    Err(_) => tracing::info!(%addr, "sync session timed out"),
+                                }
+                            });
                         }
-                        Ok(Err(e)) => tracing::info!(%addr, error = %e, "sync session refused or failed"),
-                        Err(_) => tracing::info!(%addr, "sync session timed out"),
-                    }
-                });
+                        Err(e) => {
+                            tracing::warn!(error = %e, "sync accept failed");
+                            tokio::time::sleep(Duration::from_millis(200)).await;
+                        }
+                    },
+                    Some(_) = sessions.join_next(), if !sessions.is_empty() => {}
+                }
             }
         });
         *self.listener.lock().await = Some(handle);
-        let d = Discovery::start(&self.ctx.identity, DEFAULT_PORT, true).map_err(|e| e.to_string())?;
-        *self.discovery.lock().expect("lock") = Some(d);
+        match Discovery::start(&self.ctx.identity, DEFAULT_PORT, true) {
+            Ok(d) => *self.discovery.lock().expect("lock") = Some(d),
+            Err(e) => {
+                self.stop().await; // sin anuncio no se queda escuchando a medias
+                return Err(e.to_string());
+            }
+        }
         self.emit();
         Ok(())
     }
 
     pub async fn stop(&self) {
+        self.ctx.pairing.cancel(); // sin escucha no hay oferta de emparejamiento vigente
         if let Some(h) = self.listener.lock().await.take() {
             h.abort();
         }
@@ -118,17 +155,20 @@ impl SyncService {
         self.emit();
     }
 
-    fn candidates(&self, peer: &Peer) -> Vec<String> {
+    /// Direcciones a probar: solo literales `ip:puerto` (sin resolución DNS, que saldría fuera de la red local).
+    fn candidates(&self, peer: &Peer) -> Vec<SocketAddr> {
         let mut out = self.discovery.lock().expect("lock").as_ref().map(|d| d.addresses_of(&peer.id)).unwrap_or_default();
         out.extend(peer.addresses.iter().cloned());
-        out.dedup();
-        out
+        let mut parsed: Vec<SocketAddr> = out.iter().filter_map(|a| a.parse().ok()).collect();
+        parsed.dedup();
+        parsed.truncate(8);
+        parsed
     }
 
     pub async fn sync_peer(&self, peer: &Peer) -> Result<SyncReport, String> {
         let mut last_err = "no address".to_string();
         for addr in self.candidates(peer) {
-            match timeout(Duration::from_secs(3), TcpStream::connect(&addr)).await {
+            match timeout(Duration::from_secs(3), TcpStream::connect(addr)).await {
                 Ok(Ok(mut s)) => match timeout(Duration::from_secs(120), sync_with(&mut s, &self.ctx, peer)).await {
                     Ok(Ok(rep)) => {
                         self.record(&rep, None);
@@ -159,7 +199,7 @@ impl SyncService {
     pub async fn pair_with_code(&self, code: &str) -> Result<Peer, String> {
         let offer = PairingOffer::decode(code).map_err(|e| e.to_string())?;
         let mut last_err = "no address".to_string();
-        for addr in &offer.addrs {
+        for addr in offer.socket_addrs() {
             if let Ok(Ok(mut s)) = timeout(Duration::from_secs(3), TcpStream::connect(addr)).await {
                 match timeout(Duration::from_secs(30), pair_with(&mut s, &self.ctx, &offer)).await {
                     Ok(Ok(peer)) => {

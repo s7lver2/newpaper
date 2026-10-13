@@ -53,7 +53,10 @@ pub async fn sync_status(svc: State<'_, Arc<SyncService>>) -> CmdResult<SyncStat
 pub async fn sync_set_enabled(svc: State<'_, Arc<SyncService>>, enabled: bool) -> CmdResult<SyncStatus> {
     svc.ctx.store.set_setting("device.sync.enabled", &enabled)?;
     if enabled {
-        svc.start().await.map_err(e)?;
+        if let Err(err) = svc.start().await {
+            svc.ctx.store.set_setting("device.sync.enabled", &false)?; // no se queda "activada" sin escuchar
+            return Err(e(err));
+        }
         let s = svc.inner().clone();
         tauri::async_runtime::spawn(async move { s.sync_all().await });
     } else {
@@ -65,10 +68,11 @@ pub async fn sync_set_enabled(svc: State<'_, Arc<SyncService>>, enabled: bool) -
 #[tauri::command]
 pub async fn sync_set_name(svc: State<'_, Arc<SyncService>>, name: String) -> CmdResult<()> {
     let name = name.trim();
-    if name.is_empty() || name.chars().count() > 40 {
+    if name.is_empty() || name.chars().count() > 40 || name.chars().any(|c| c.is_control()) {
         return Err(CmdError::new("invalid", "name must have 1-40 characters"));
     }
     svc.ctx.store.set_setting("device.name", &name)?;
+    svc.ctx.identity.set_name(name); // las ofertas y los saludos siguientes ya usan el nombre nuevo
     Ok(())
 }
 
@@ -84,9 +88,9 @@ pub struct PairStart {
 
 #[tauri::command]
 pub async fn sync_pair_start(svc: State<'_, Arc<SyncService>>) -> CmdResult<PairStart> {
-    if !svc.status().enabled {
-        svc.ctx.store.set_setting("device.sync.enabled", &true)?;
-        svc.start().await.map_err(e)?;
+    // Emparejar necesita escuchar; nunca se activa la sincronización por sorpresa: la persona la enciende antes.
+    if !svc.status().enabled || !svc.status().listening {
+        return Err(CmdError::new("sync_disabled", "turn on sync before pairing a device"));
     }
     let offer = svc.ctx.pairing.start(&svc.ctx.identity, local_addresses(DEFAULT_PORT), Duration::from_secs(120));
     let (size, modules) = offer.qr_modules();
@@ -111,7 +115,10 @@ pub async fn sync_peers(svc: State<'_, Arc<SyncService>>) -> CmdResult<Vec<PeerV
 
 #[tauri::command]
 pub async fn sync_peer_update(svc: State<'_, Arc<SyncService>>, peer_id: String, scopes: Vec<Scope>, send_keys: bool, addresses: Vec<String>) -> CmdResult<Vec<PeerView>> {
-    let addresses: Vec<String> = addresses.into_iter().map(|a| a.trim().to_string()).filter(|a| a.parse::<std::net::SocketAddr>().is_ok()).collect();
+    // Solo literales ip:puerto (nunca nombres: no hay resolución DNS) y un máximo razonable.
+    let addresses: Vec<String> = addresses.into_iter().map(|a| a.trim().to_string()).filter(|a| a.parse::<std::net::SocketAddr>().is_ok()).take(8).collect();
+    let mut scopes = scopes;
+    scopes.dedup();
     peers::set_scopes(&svc.ctx.store, &peer_id, &scopes, send_keys && scopes.contains(&Scope::Keys)).map_err(e)?;
     peers::set_addresses(&svc.ctx.store, &peer_id, &addresses).map_err(e)?;
     views(&svc)
@@ -145,6 +152,7 @@ pub async fn sync_now(svc: State<'_, Arc<SyncService>>, peer_id: Option<String>)
 
 #[tauri::command]
 pub async fn sync_export(svc: State<'_, Arc<SyncService>>, path: String, passphrase: String, scopes: Vec<Scope>) -> CmdResult<usize> {
+    let passphrase = np_sync::zeroize::Zeroizing::new(passphrase);
     if passphrase.chars().count() < 8 {
         return Err(CmdError::new("invalid", "passphrase too short"));
     }
@@ -156,10 +164,23 @@ pub async fn sync_export(svc: State<'_, Arc<SyncService>>, path: String, passphr
 
 #[tauri::command]
 pub async fn sync_import(svc: State<'_, Arc<SyncService>>, path: String, passphrase: String) -> CmdResult<usize> {
+    let passphrase = np_sync::zeroize::Zeroizing::new(passphrase);
+    // Un fichero ajeno no debe agotar la memoria: tope de tamaño antes de leerlo.
+    if std::fs::metadata(&path).map_err(e)?.len() > npsync::MAX_FILE_BYTES {
+        return Err(CmdError::new("invalid", "file too large"));
+    }
     let bytes = std::fs::read(&path).map_err(e)?;
     let store = svc.ctx.store.clone();
-    tauri::async_runtime::spawn_blocking(move || npsync::import(&store, &bytes, &passphrase, Scope::DEFAULT)).await.map_err(e)?.map_err(|err| match err {
-        np_sync::SyncError::Crypto => CmdError::new("wrong_passphrase", "wrong passphrase or damaged file"),
-        other => e(other),
-    })
+    let report = tauri::async_runtime::spawn_blocking(move || npsync::import_report(&store, &bytes, &passphrase, Scope::DEFAULT))
+        .await
+        .map_err(e)?
+        .map_err(|err| match err {
+            np_sync::SyncError::Crypto => CmdError::new("wrong_passphrase", "wrong passphrase or damaged file"),
+            other => e(other),
+        })?;
+    // Los ajustes importados se aplican en vivo (tema, idioma, lectura), como si se hubieran cambiado a mano.
+    for key in &report.settings {
+        let _ = svc.ctx.store.notify_setting_changed(key);
+    }
+    Ok(report.applied)
 }

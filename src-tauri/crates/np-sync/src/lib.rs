@@ -11,3 +11,4 @@ pub mod session;
 pub mod wire;
 
 pub use error::{Result, SyncError};
+pub use zeroize;

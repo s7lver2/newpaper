@@ -1,4 +1,5 @@
-//! mDNS `_newpaper._tcp` (§15). Solo anuncia el id y la huella; nunca datos.
+//! mDNS `_newpaper._tcp` (§15). Solo anuncia un id aleatorio de dispositivo, el puerto y la versión del protocolo:
+//! ni nombre, ni huella, ni datos. Solo se anuncia con la sincronización activada.
 use std::{
     collections::HashMap,
     net::{IpAddr, Ipv4Addr},
@@ -8,12 +9,14 @@ use std::{
 use mdns_sd::{ServiceDaemon, ServiceEvent, ServiceInfo};
 
 use crate::{
-    identity::{fingerprint, Identity},
+    identity::{valid_device_id, Identity},
     Result, SyncError,
 };
 
 pub const SERVICE: &str = "_newpaper._tcp.local.";
 pub const DEFAULT_PORT: u16 = 47100;
+/// Tope de dispositivos recordados por mDNS (un anunciante hostil no puede llenar la memoria).
+const MAX_DISCOVERED: usize = 256;
 
 /// Tailscale asigna IPv4 de 100.64.0.0/10 (CGNAT).
 pub fn is_tailscale(ip: Ipv4Addr) -> bool {
@@ -49,8 +52,7 @@ impl Discovery {
     pub fn start(me: &Identity, port: u16, advertise: bool) -> Result<Self> {
         let daemon = ServiceDaemon::new().map_err(|e| SyncError::Protocol(e.to_string()))?;
         if advertise {
-            let fp = fingerprint(&me.public());
-            let props = [("fp", fp.as_str()), ("name", me.name.as_str()), ("v", "1")];
+            let props = [("v", "1")];
             let info = ServiceInfo::new(SERVICE, &me.device_id, &format!("{}.local.", me.device_id), "", port, &props[..])
                 .map_err(|e| SyncError::Protocol(e.to_string()))?
                 .enable_addr_auto();
@@ -65,11 +67,14 @@ impl Discovery {
                 match ev {
                     ServiceEvent::ServiceResolved(r) => {
                         let id = r.fullname.split('.').next().unwrap_or_default().to_string();
-                        if id == my_id || id.is_empty() {
+                        if id == my_id || !valid_device_id(&id) {
                             continue;
                         }
                         let addrs = r.get_addresses().iter().map(|a| a.to_string()).filter(|a| !a.contains(':')).map(|a| format!("{a}:{}", r.port)).collect();
-                        sink.lock().expect("lock").insert(id, addrs);
+                        let mut map = sink.lock().expect("lock");
+                        if map.len() < MAX_DISCOVERED || map.contains_key(&id) {
+                            map.insert(id, addrs);
+                        }
                     }
                     ServiceEvent::ServiceRemoved(_, fullname) => {
                         let id = fullname.split('.').next().unwrap_or_default().to_string();

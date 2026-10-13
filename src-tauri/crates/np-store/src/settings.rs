@@ -74,6 +74,14 @@ impl Store {
         self.observers.lock().expect("observers lock").push((prefix.to_string(), Box::new(f)));
     }
 
+    /// Avisa a los observadores de un ajuste que cambió por una vía que no pasa por `set_setting`
+    /// (p. ej. una fusión de sincronización).
+    pub fn notify_setting_changed(&self, key: &str) -> Result<(), StoreError> {
+        let value = self.get_setting::<Value>(key)?.unwrap_or(Value::Null);
+        self.notify_setting(key, &value);
+        Ok(())
+    }
+
     fn notify_setting(&self, key: &str, value: &Value) {
         let obs = self.observers.lock().expect("observers lock");
         for (prefix, f) in obs.iter() {

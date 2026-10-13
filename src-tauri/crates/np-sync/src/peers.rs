@@ -69,21 +69,24 @@ pub fn list(store: &Store) -> Result<Vec<Peer>> {
 
 pub fn set_scopes(store: &Store, id: &str, scopes: &[Scope], send_keys: bool) -> Result<()> {
     let s = serde_json::to_string(scopes)?;
-    store.with_conn(|c| c.execute("UPDATE sync_peers SET scopes = ?2, send_keys = ?3 WHERE id = ?1", params![id, s, send_keys as i64]))?;
+    store.with_conn(|c| c.execute("UPDATE sync_peers SET scopes = ?2, send_keys = ?3 WHERE id = ?1 AND revoked = 0", params![id, s, send_keys as i64]))?;
     Ok(())
 }
 
 pub fn set_addresses(store: &Store, id: &str, addresses: &[String]) -> Result<()> {
     let a = serde_json::to_string(addresses)?;
-    store.with_conn(|c| c.execute("UPDATE sync_peers SET addresses = ?2 WHERE id = ?1", params![id, a]))?;
+    store.with_conn(|c| c.execute("UPDATE sync_peers SET addresses = ?2 WHERE id = ?1 AND revoked = 0", params![id, a]))?;
     Ok(())
 }
 
-/// Revocar: el par deja de ser aceptado; se olvidan sus direcciones y su marca.
+/// Revocar: el par deja de ser aceptado y se destruye todo lo que permitiría reconocerlo o hablarle de nuevo:
+/// su clave pública (la única "clave" por par que guarda este equipo; los secretos de sesión son efímeros),
+/// sus direcciones, ámbitos, permiso de claves y la marca de envío. Queda la fila (nombre y fecha) como
+/// constancia en la lista; para volver a sincronizar hay que emparejar de nuevo con un QR nuevo.
 pub fn revoke(store: &Store, id: &str) -> Result<()> {
     store.with_tx(|tx| {
-        tx.execute("UPDATE sync_peers SET revoked = 1, addresses = '[]', send_keys = 0 WHERE id = ?1", [id])?;
-        tx.execute("UPDATE sync_log SET sent_seq = 0 WHERE peer_id = ?1", [id])?;
+        tx.execute("UPDATE sync_peers SET revoked = 1, public_key = '', addresses = '[]', scopes = '[]', send_keys = 0 WHERE id = ?1", [id])?;
+        tx.execute("DELETE FROM sync_log WHERE peer_id = ?1", [id])?;
         Ok(())
     })?;
     Ok(())
@@ -134,6 +137,8 @@ mod tests {
         let r = get(&store, "m1").unwrap().unwrap();
         assert!(r.revoked);
         assert!(r.addresses.is_empty());
+        assert!(r.public_key.is_empty() && r.scopes.is_empty() && !r.send_keys, "revoking destroys the stored key and permissions");
+        assert_eq!(sent_seq(&store, "m1").unwrap(), 0);
         assert!(list(&store).unwrap().iter().all(|x| x.id != "m1" || x.revoked));
     }
 }

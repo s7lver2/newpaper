@@ -20,8 +20,9 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }
 rusqlite = { workspace = true }
-tokio = { workspace = true, features = ["net", "io-util"] }
+tokio = { workspace = true, features = ["net", "io-util", "time"] }
 tracing = { workspace = true }
+zeroize = "1"
 
 [dev-dependencies]
 tempfile = { workspace = true }

@@ -6,6 +6,7 @@ use std::{
 
 use base64::Engine;
 use rand_core::{OsRng, RngCore};
+use zeroize::Zeroize;
 use serde::{Deserialize, Serialize};
 
 use crate::{
@@ -55,11 +56,36 @@ impl PairingOffer {
     }
 }
 
-pub struct ActiveOffer {
-    pub offer: PairingOffer,
+
+/// Intentos fallidos (sin conocer el secreto del QR) que tolera una oferta antes de invalidarse.
+pub const MAX_FAILED_ATTEMPTS: u8 = 5;
+
+struct ActiveOffer {
+    epk: String,
+    eph: [u8; 32],
+    secret: Vec<u8>,
+    expires: Instant,
+    fails: u8,
+}
+
+impl Drop for ActiveOffer {
+    fn drop(&mut self) {
+        self.eph.zeroize();
+        self.secret.zeroize();
+    }
+}
+
+/// Lo que necesita un intento de emparejamiento. No consume la oferta: solo `complete` lo hace.
+pub struct Attempt {
     pub eph: StaticSecret,
     pub secret: Vec<u8>,
-    pub expires: Instant,
+    epk: String,
+}
+
+impl Drop for Attempt {
+    fn drop(&mut self) {
+        self.secret.zeroize();
+    }
 }
 
 #[derive(Default)]
@@ -76,8 +102,8 @@ impl PairingManager {
         let (eph, epk) = ephemeral();
         let mut secret = vec![0u8; 16];
         OsRng.fill_bytes(&mut secret);
-        let offer = PairingOffer { v: 1, id: me.device_id.clone(), name: me.name.clone(), pk: me.public_b64(), epk: encode_pk(&epk), secret: B64.encode(&secret), addrs };
-        *self.active.lock().expect("lock") = Some(ActiveOffer { offer: offer.clone(), eph, secret, expires: Instant::now() + ttl });
+        let offer = PairingOffer { v: 1, id: me.device_id.clone(), name: me.name(), pk: me.public_b64(), epk: encode_pk(&epk), secret: B64.encode(&secret), addrs };
+        *self.active.lock().expect("lock") = Some(ActiveOffer { epk: offer.epk.clone(), eph: eph.to_bytes(), secret, expires: Instant::now() + ttl, fails: 0 });
         offer
     }
 
@@ -85,12 +111,109 @@ impl PairingManager {
         *self.active.lock().expect("lock") = None;
     }
 
-    /// Un solo uso: la oferta se consume aunque luego falle el emparejamiento.
-    pub fn take_valid(&self) -> Result<ActiveOffer> {
-        let a = self.active.lock().expect("lock").take().ok_or(SyncError::Unauthorized)?;
+    /// Hay una oferta vigente (no caducada ni agotada).
+    pub fn is_active(&self) -> bool {
+        self.active.lock().expect("lock").as_ref().is_some_and(|a| Instant::now() <= a.expires)
+    }
+
+    /// Empieza un intento. Un desconocido que se conecta sin saber el secreto no puede quemar la oferta:
+    /// solo los intentos fallidos cuentan (máximo `MAX_FAILED_ATTEMPTS`) y la caducidad la invalida.
+    pub fn begin(&self) -> Result<Attempt> {
+        let mut g = self.active.lock().expect("lock");
+        let Some(a) = g.as_ref() else { return Err(SyncError::Unauthorized) };
         if Instant::now() > a.expires {
+            *g = None;
             return Err(SyncError::Expired);
         }
-        Ok(a)
+        Ok(Attempt { eph: StaticSecret::from(a.eph), secret: a.secret.clone(), epk: a.epk.clone() })
+    }
+
+    /// Un intento no demostró conocer el secreto.
+    pub fn fail(&self, attempt: &Attempt) {
+        let mut g = self.active.lock().expect("lock");
+        if let Some(a) = g.as_mut().filter(|a| a.epk == attempt.epk) {
+            a.fails += 1;
+            if a.fails >= MAX_FAILED_ATTEMPTS {
+                *g = None;
+            }
+        }
+    }
+
+    /// Un solo uso: consume la oferta. Falla si otro intento la consumió antes o caducó entre medias.
+    pub fn complete(&self, attempt: &Attempt) -> Result<()> {
+        let mut g = self.active.lock().expect("lock");
+        match g.as_ref() {
+            Some(a) if a.epk == attempt.epk && Instant::now() <= a.expires => {
+                *g = None;
+                Ok(())
+            }
+            Some(a) if a.epk == attempt.epk => {
+                *g = None;
+                Err(SyncError::Expired)
+            }
+            _ => Err(SyncError::Unauthorized),
+        }
+    }
+}
+
+impl PairingOffer {
+    /// Direcciones del código como `SocketAddr` (nunca nombres de dominio: no hay resolución DNS) y solo de redes
+    /// privadas, CGNAT (Tailscale), enlace local o bucle local. Máximo 8.
+    pub fn socket_addrs(&self) -> Vec<std::net::SocketAddr> {
+        self.addrs
+            .iter()
+            .filter_map(|a| a.parse::<std::net::SocketAddr>().ok())
+            .filter(|a| match a.ip() {
+                std::net::IpAddr::V4(v4) => v4.is_private() || v4.is_loopback() || v4.is_link_local() || crate::discovery::is_tailscale(v4),
+                std::net::IpAddr::V6(v6) => v6.is_loopback(),
+            })
+            .take(8)
+            .collect()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn strangers_cannot_burn_an_offer_but_the_winner_consumes_it_once() {
+        let me = Identity::generate("pc");
+        let m = PairingManager::new();
+        assert!(m.begin().is_err(), "no offer yet");
+        m.start(&me, vec![], Duration::from_secs(120));
+        for _ in 0..MAX_FAILED_ATTEMPTS - 1 {
+            let a = m.begin().unwrap();
+            m.fail(&a);
+        }
+        let a = m.begin().unwrap();
+        let b = m.begin().unwrap(); // dos conexiones a la vez
+        m.complete(&a).unwrap();
+        assert!(m.complete(&b).is_err(), "single use, also under a race");
+        assert!(m.begin().is_err());
+        m.start(&me, vec![], Duration::from_secs(120));
+        for _ in 0..MAX_FAILED_ATTEMPTS {
+            let a = m.begin().unwrap_or_else(|_| panic!("still alive"));
+            m.fail(&a);
+        }
+        assert!(m.begin().is_err(), "too many failures invalidate the offer");
+    }
+
+    #[test]
+    fn offers_expire() {
+        let me = Identity::generate("pc");
+        let m = PairingManager::new();
+        m.start(&me, vec![], Duration::from_millis(0));
+        std::thread::sleep(Duration::from_millis(5));
+        assert!(matches!(m.begin(), Err(SyncError::Expired)));
+        assert!(!m.is_active());
+    }
+
+    #[test]
+    fn offer_addresses_are_ip_literals_on_private_networks_only() {
+        let mut o = PairingOffer { v: 1, id: "x".into(), name: "n".into(), pk: String::new(), epk: String::new(), secret: String::new(), addrs: vec![] };
+        o.addrs = ["192.168.1.9:47100", "evil.example.com:80", "8.8.8.8:47100", "100.101.102.103:47100", "127.0.0.1:1", "10.0.0.1"].map(String::from).to_vec();
+        let got: Vec<String> = o.socket_addrs().iter().map(|a| a.to_string()).collect();
+        assert_eq!(got, ["192.168.1.9:47100", "100.101.102.103:47100", "127.0.0.1:1"]);
     }
 }
