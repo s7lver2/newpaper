@@ -1,9 +1,9 @@
 /* Ajustes › Dispositivos. Medidas y tokens del mockup `Sincronizar` (papel); la tinta sale de los tokens. */
-.np-devices { display: grid; grid-template-columns: minmax(300px, 380px) minmax(0, 1fr); gap: 20px; align-items: start; font: 14px/1.5 var(--np-font-ui); color: var(--np-ink); }
+.np-devices { display: grid; grid-template-columns: minmax(300px, 2fr) minmax(0, 3fr); gap: 20px; align-items: start; font: 14px/1.5 var(--np-font-ui); color: var(--np-ink); }
 .np-dev-col { display: grid; gap: 16px; min-width: 0; align-content: start; }
 .np-dev-card { display: grid; gap: 12px; min-width: 0; padding: 20px; background: var(--np-card); border: 1px solid var(--np-line); border-radius: 22px; }
 .np-dev-backup { grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: end; gap: 24px; padding: 22px; }
-@media (max-width: 860px) {
+@media (max-width: 1100px) {
   .np-devices, .np-dev-backup { grid-template-columns: minmax(0, 1fr); }
 }
 .np-dev-label { font: 600 11px/1 var(--np-font-ui); letter-spacing: 0.1em; text-transform: uppercase; color: var(--np-muted); }

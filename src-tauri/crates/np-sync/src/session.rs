@@ -12,7 +12,7 @@ use crate::{
     pairing::{PairingManager, PairingOffer},
     peers::{self, Peer},
     rows::{apply_report, changes_after, Scope},
-    wire::{recv_hello, send_hello, Channel, Hello, Msg, PRE_AUTH_FRAME},
+    wire::{recv_hello, send_hello, Channel, Hello, Msg},
     Result, SyncError,
 };
 
@@ -151,7 +151,7 @@ async fn exchange<S: AsyncRead + AsyncWrite + Unpin>(ch: &mut Channel<'_, S>, ct
     let mut rep = SyncReport { peer_id: peer.id.clone(), peer_name: peer.name.clone(), ..Default::default() };
     ch.send(&Msg::Scopes { scopes: peer.scopes.clone(), send_keys: peer.send_keys }).await?;
     // Primer mensaje cifrado del par: pequeño. Un desconocido que no tiene la clave falla aquí con 64 KiB como mucho.
-    let (theirs, their_keys) = match ch.recv_max(PRE_AUTH_FRAME).await? {
+    let (theirs, their_keys) = match ch.recv_pre_auth().await? {
         Msg::Scopes { scopes, send_keys } => (scopes, send_keys),
         other => return Err(unexpected("scopes", &other)),
     };
@@ -188,7 +188,7 @@ pub async fn serve<S: AsyncRead + AsyncWrite + Unpin>(io: &mut S, ctx: &SyncCont
             };
             let mut ch = Channel::new(io, keys);
             // Quien no conoce el secreto del QR no descifra este mensaje: cuenta como intento fallido, no consume la oferta.
-            let (cid, cname, cpk) = match ch.recv_max(PRE_AUTH_FRAME).await {
+            let (cid, cname, cpk) = match ch.recv_pre_auth().await {
                 Ok(Msg::Who { id: cid, name: cname, pk }) if cid == id && valid_device_id(&cid) && cid != ctx.identity.device_id && decode_pk(&pk).is_ok() => (cid, clean_name(&cname), pk),
                 _ => {
                     ctx.pairing.fail(&attempt);
@@ -242,7 +242,7 @@ pub async fn pair_with<S: AsyncRead + AsyncWrite + Unpin>(io: &mut S, ctx: &Sync
     send_hello(io, &Hello::Pair { id: ctx.identity.device_id.clone(), name: ctx.identity.name(), epk: encode_pk(&ep) }).await?;
     let mut ch = Channel::new(io, keys);
     ch.send(&Msg::Who { id: ctx.identity.device_id.clone(), name: ctx.identity.name(), pk: ctx.identity.public_b64() }).await?;
-    let (id, name, pk) = match ch.recv_max(PRE_AUTH_FRAME).await {
+    let (id, name, pk) = match ch.recv_pre_auth().await {
         Ok(Msg::Who { id, name, pk }) => (id, name, pk),
         _ => return Err(SyncError::Unauthorized),
     };

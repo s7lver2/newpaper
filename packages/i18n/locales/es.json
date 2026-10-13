@@ -1598,7 +1598,8 @@
       "revoke": "Revocar",
       "revokeConfirm": "Dejará de sincronizar contigo y se borra su clave de este equipo. Para volver, habrá que emparejarlo otra vez con el QR.",
       "revokeKeysNote": "Le enviaste claves de API: ya las tiene. Si no te fías de él, cámbialas en tu proveedor.",
-      "revoked": "Revocado"
+      "revoked": "Revocado",
+      "noAddress": "Sin dirección conocida: añádela abajo o acerca los dispositivos a la misma red"
     },
     "backup": {
       "label": "Sin red",

@@ -63,7 +63,7 @@ function PeerCard({ p, lanIds, onChange }: { p: PeerView; lanIds: string[]; onCh
       setMsg(r ? t('sync.peer.done', { sent: r.sent, received: r.received }) : null);
       onChange(await commands.syncPeers());
     } catch (e) {
-      setMsg(t('sync.peer.failed', { message: errorMessage(e) }));
+      setMsg(t('sync.peer.failed', { message: errorMessage(e) === 'no address' ? t('sync.peer.noAddress') : errorMessage(e) }));
     } finally {
       setBusy(false);
     }
@@ -140,6 +140,12 @@ function PeerCard({ p, lanIds, onChange }: { p: PeerView; lanIds: string[]; onCh
   );
 }
 
+/** Avisa al resumen de la entrada de Ajustes (otro componente) de que cambió el número de pares activos. */
+const PEERS_EVENT = 'np:sync-peers';
+function announcePeers(list: PeerView[]) {
+  window.dispatchEvent(new CustomEvent<number>(PEERS_EVENT, { detail: list.filter((p) => !p.revoked).length }));
+}
+
 export function DevicesSection() {
   const { t, formatDate } = useI18n();
   const [status, setStatus] = useState<SyncStatus | null>(null);
@@ -154,7 +160,9 @@ export function DevicesSection() {
 
   const reload = useCallback(async () => {
     setStatus(await commands.syncStatus());
-    setPeers(await commands.syncPeers());
+    const list = await commands.syncPeers();
+    setPeers(list);
+    announcePeers(list);
   }, []);
 
   useEffect(() => {
@@ -213,7 +221,7 @@ export function DevicesSection() {
       setCode('');
       await reload();
     } catch (e) {
-      setPairMsg(t('sync.peer.failed', { message: errorMessage(e) }));
+      setPairMsg(t('sync.peer.failed', { message: errorMessage(e) === 'no address' ? t('sync.peer.noAddress') : errorMessage(e) }));
     }
   };
 
@@ -241,135 +249,141 @@ export function DevicesSection() {
   };
 
   return (
-    <div className="np-devices">
-      <div className="np-dev-col">
-        <section className="np-dev-card">
-          <span className="np-dev-label">{t('sync.thisDevice')}</span>
-          <label className="np-dev-field">
-            <span>{t('sync.name')}</span>
-            <input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} onBlur={() => void commands.syncSetName(name).catch(() => undefined)} />
-          </label>
-          <span className="np-dev-fp-label np-muted">{t('sync.fingerprintLabel')}</span>
-          <Fingerprint value={status.fingerprint} />
-          <Switch checked={status.enabled} onChange={(v) => void commands.syncSetEnabled(v).then(setStatus)} label={t('sync.enable')} description={t('sync.enableHint')} />
-          {status.last ? (
-            <p className="np-muted">
-              {t('sync.last', { when: formatDate(new Date(status.last.at), { timeStyle: 'short' }), name: status.last.peerName, sent: status.last.sent, received: status.last.received })}
+    <section className="np-settings-section np-stagger" aria-labelledby="np-set-devices">
+      <div>
+        <h2 id="np-set-devices" className="np-settings-h2">{t('settings.devices.title')}</h2>
+        <p className="np-settings-hint">{t('settings.devices.description')}</p>
+      </div>
+      <div className="np-devices">
+        <div className="np-dev-col">
+          <section className="np-dev-card">
+            <span className="np-dev-label">{t('sync.thisDevice')}</span>
+            <label className="np-dev-field">
+              <span>{t('sync.name')}</span>
+              <input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} onBlur={() => void commands.syncSetName(name).catch(() => undefined)} />
+            </label>
+            <span className="np-dev-fp-label np-muted">{t('sync.fingerprintLabel')}</span>
+            <Fingerprint value={status.fingerprint} />
+            <Switch checked={status.enabled} onChange={(v) => void commands.syncSetEnabled(v).then(setStatus)} label={t('sync.enable')} description={t('sync.enableHint')} />
+            {status.last ? (
+              <p className="np-muted">
+                {t('sync.last', { when: formatDate(new Date(status.last.at), { timeStyle: 'short' }), name: status.last.peerName, sent: status.last.sent, received: status.last.received })}
+              </p>
+            ) : null}
+            {tailscale ? (
+              <p className="np-dev-tailscale">
+                <span className="np-dev-dot np-dev-dot--tor" aria-hidden="true" />
+                {t('sync.tailscale', { addr: tailscale })}
+              </p>
+            ) : null}
+            <p className="np-dev-e2e">
+              <Icon>
+                <rect x="5" y="11" width="14" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 018 0v4" />
+              </Icon>
+              {t('sync.e2e')}
             </p>
-          ) : null}
-          {tailscale ? (
-            <p className="np-dev-tailscale">
-              <span className="np-dev-dot np-dev-dot--tor" aria-hidden="true" />
-              {t('sync.tailscale', { addr: tailscale })}
-            </p>
-          ) : null}
-          <p className="np-dev-e2e">
-            <Icon>
-              <rect x="5" y="11" width="14" height="10" rx="2" />
-              <path d="M8 11V7a4 4 0 018 0v4" />
-            </Icon>
-            {t('sync.e2e')}
-          </p>
-          <p className="np-muted">{t('sync.never')}</p>
-        </section>
-
-        <section className="np-dev-card np-dev-pairing">
-          {pair ? (
-            <div className="np-dev-qr">
-              <div className="np-dev-qr-frame">
-                <QrCode size={pair.size} modules={pair.modules} label={t('sync.pair.qr')} />
+            <p className="np-muted">{t('sync.never')}</p>
+          </section>
+  
+          <section className="np-dev-card np-dev-pairing">
+            {pair ? (
+              <div className="np-dev-qr">
+                <div className="np-dev-qr-frame">
+                  <QrCode size={pair.size} modules={pair.modules} label={t('sync.pair.qr')} />
+                </div>
+                <span className="np-dev-title">{t('sync.qrTitle')}</span>
+                <span className="np-muted">{t('sync.qrHint')}</span>
+                <span className="np-mono np-muted">{t('sync.pair.expires', { s: left })}</span>
+                <p className="np-muted">{t('sync.pair.scan')}</p>
+                <div className="np-dev-actions">
+                  <Button variant="secondary" onClick={() => void navigator.clipboard.writeText(pair.code).catch(() => undefined)}>
+                    {t('sync.pair.copy')}
+                  </Button>
+                  <Button variant="quiet" onClick={() => void commands.syncPairCancel().then(() => setPair(null))}>
+                    {t('sync.pair.cancel')}
+                  </Button>
+                </div>
               </div>
-              <span className="np-dev-title">{t('sync.qrTitle')}</span>
-              <span className="np-muted">{t('sync.qrHint')}</span>
-              <span className="np-mono np-muted">{t('sync.pair.expires', { s: left })}</span>
-              <p className="np-muted">{t('sync.pair.scan')}</p>
-              <div className="np-dev-actions">
-                <Button variant="secondary" onClick={() => void navigator.clipboard.writeText(pair.code).catch(() => undefined)}>
-                  {t('sync.pair.copy')}
-                </Button>
-                <Button variant="quiet" onClick={() => void commands.syncPairCancel().then(() => setPair(null))}>
-                  {t('sync.pair.cancel')}
+            ) : (
+              <div className="np-dev-idle">
+                <span className="np-dev-avatar np-dev-avatar--accent" aria-hidden="true">
+                  <Icon>
+                    <path d="M5 12.5a10 10 0 0114 0M8.5 15.5a5 5 0 017 0" />
+                    <circle cx="12" cy="19" r="1" />
+                  </Icon>
+                </span>
+                <div>
+                  <div className="np-dev-title">{t('sync.pair.idle')}</div>
+                  <div className="np-muted">{status.enabled ? t('sync.pair.idleSub') : t('sync.pair.needsEnable')}</div>
+                </div>
+                <Button variant="primary" disabled={!status.enabled} onClick={() => void startPairing()}>
+                  {t('sync.pair.start')}
                 </Button>
               </div>
+            )}
+            <div className="np-dev-code">
+              <label className="np-dev-field">
+                <span>{t('sync.pair.haveCode')}</span>
+                <input value={code} spellCheck={false} onChange={(e) => setCode(e.target.value)} />
+              </label>
+              <Button disabled={!code.trim().startsWith('np1:')} onClick={() => void useCode()}>
+                {t('sync.pair.useCode')}
+              </Button>
+              {pairMsg ? <p role="status" className="np-dev-msg">{pairMsg}</p> : null}
             </div>
-          ) : (
-            <div className="np-dev-idle">
-              <span className="np-dev-avatar np-dev-avatar--accent" aria-hidden="true">
-                <Icon>
-                  <path d="M5 12.5a10 10 0 0114 0M8.5 15.5a5 5 0 017 0" />
-                  <circle cx="12" cy="19" r="1" />
-                </Icon>
-              </span>
-              <div>
-                <div className="np-dev-title">{t('sync.pair.idle')}</div>
-                <div className="np-muted">{status.enabled ? t('sync.pair.idleSub') : t('sync.pair.needsEnable')}</div>
+          </section>
+        </div>
+  
+        <div className="np-dev-col np-dev-col--wide">
+          <section className="np-dev-card">
+            <div className="np-dev-head">
+              <span className="np-dev-label">{t('sync.devicesCount', { n: activePeers.length })}</span>
+              <span className="np-muted np-dev-hint">{t('sync.devicesHint')}</span>
+            </div>
+            {activePeers.length === 0 ? <p className="np-muted np-dev-empty">{t('sync.noDevices')}</p> : null}
+            <ul className="np-dev-peers">
+              {activePeers.map((p) => (
+                <PeerCard key={p.id} p={p} lanIds={liveIds} onChange={(list) => { setPeers(list); announcePeers(list); }} />
+              ))}
+            </ul>
+            {revokedPeers.map((p) => (
+              <p key={p.id} className="np-muted np-dev-revoked">
+                {p.name} · {t('sync.peer.revoked')}
+              </p>
+            ))}
+            {activePeers.length > 0 ? (
+              <div className="np-dev-actions">
+                <Button onClick={() => void commands.syncNow().then(reload)}>{t('sync.syncAll')}</Button>
               </div>
-              <Button variant="primary" disabled={!status.enabled} onClick={() => void startPairing()}>
-                {t('sync.pair.start')}
+            ) : null}
+          </section>
+        </div>
+  
+        <section className="np-dev-card np-dev-backup">
+          <div className="np-dev-backup-text">
+            <span className="np-dev-label">{t('sync.backup.label')}</span>
+            <div className="np-dev-serif">{t('sync.backup.headline')}</div>
+            <span className="np-muted">{t('sync.backup.hint')}</span>
+          </div>
+          <div className="np-dev-backup-controls">
+            <label className="np-dev-field">
+              <span>{t('sync.backup.passphrase')}</span>
+              <input type="password" value={pass} autoComplete="new-password" onChange={(e) => setPass(e.target.value)} />
+            </label>
+            <div className="np-dev-actions">
+              <Button variant="primary" disabled={pass.length < 8} onClick={() => void exportFile()}>
+                {t('sync.backup.export')}
+              </Button>
+              <Button disabled={pass.length < 1} onClick={() => void importFile()}>
+                {t('sync.backup.import')}
               </Button>
             </div>
-          )}
-          <div className="np-dev-code">
-            <label className="np-dev-field">
-              <span>{t('sync.pair.haveCode')}</span>
-              <input value={code} spellCheck={false} onChange={(e) => setCode(e.target.value)} />
-            </label>
-            <Button disabled={!code.trim().startsWith('np1:')} onClick={() => void useCode()}>
-              {t('sync.pair.useCode')}
-            </Button>
-            {pairMsg ? <p role="status" className="np-dev-msg">{pairMsg}</p> : null}
+            {fileMsg ? <p role="status" className="np-dev-msg">{fileMsg}</p> : null}
           </div>
         </section>
       </div>
-
-      <div className="np-dev-col np-dev-col--wide">
-        <section className="np-dev-card">
-          <div className="np-dev-head">
-            <span className="np-dev-label">{t('sync.devicesCount', { n: activePeers.length })}</span>
-            <span className="np-muted np-dev-hint">{t('sync.devicesHint')}</span>
-          </div>
-          {activePeers.length === 0 ? <p className="np-muted np-dev-empty">{t('sync.noDevices')}</p> : null}
-          <ul className="np-dev-peers">
-            {activePeers.map((p) => (
-              <PeerCard key={p.id} p={p} lanIds={liveIds} onChange={setPeers} />
-            ))}
-          </ul>
-          {revokedPeers.map((p) => (
-            <p key={p.id} className="np-muted np-dev-revoked">
-              {p.name} · {t('sync.peer.revoked')}
-            </p>
-          ))}
-          {activePeers.length > 0 ? (
-            <div className="np-dev-actions">
-              <Button onClick={() => void commands.syncNow().then(reload)}>{t('sync.syncAll')}</Button>
-            </div>
-          ) : null}
-        </section>
-      </div>
-
-      <section className="np-dev-card np-dev-backup">
-        <div className="np-dev-backup-text">
-          <span className="np-dev-label">{t('sync.backup.label')}</span>
-          <div className="np-dev-serif">{t('sync.backup.headline')}</div>
-          <span className="np-muted">{t('sync.backup.hint')}</span>
-        </div>
-        <div className="np-dev-backup-controls">
-          <label className="np-dev-field">
-            <span>{t('sync.backup.passphrase')}</span>
-            <input type="password" value={pass} autoComplete="new-password" onChange={(e) => setPass(e.target.value)} />
-          </label>
-          <div className="np-dev-actions">
-            <Button variant="primary" disabled={pass.length < 8} onClick={() => void exportFile()}>
-              {t('sync.backup.export')}
-            </Button>
-            <Button disabled={pass.length < 1} onClick={() => void importFile()}>
-              {t('sync.backup.import')}
-            </Button>
-          </div>
-          {fileMsg ? <p role="status" className="np-dev-msg">{fileMsg}</p> : null}
-        </div>
-      </section>
-    </div>
+    </section>
   );
 }
 
@@ -382,6 +396,9 @@ export function DevicesSummary() {
       .syncPeers()
       .then((list) => setN(list.filter((p) => !p.revoked).length))
       .catch(() => setN(0));
+    const on = (e: Event) => setN((e as CustomEvent<number>).detail);
+    window.addEventListener(PEERS_EVENT, on);
+    return () => window.removeEventListener(PEERS_EVENT, on);
   }, []);
   return <>{t('sync.summary', { n: n ?? 0 })}</>;
 }

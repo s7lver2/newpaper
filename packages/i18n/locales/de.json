@@ -1598,7 +1598,8 @@
       "revoke": "Widerrufen",
       "revokeConfirm": "Es wird nicht mehr mit dir synchronisiert und sein Schlüssel wird von diesem Computer gelöscht. Um es wieder zu koppeln, scanne den QR-Code erneut.",
       "revokeKeysNote": "Du hast ihm API-Schlüssel geschickt, er hat sie also schon. Wenn du ihm nicht traust, erneuere sie bei deinem Anbieter.",
-      "revoked": "Widerrufen"
+      "revoked": "Widerrufen",
+      "noAddress": "Keine bekannte Adresse: unten eine hinzufügen oder beide Geräte ins selbe Netz bringen"
     },
     "backup": {
       "label": "Ohne Netz",

@@ -16,6 +16,39 @@ use tokio::{net::TcpStream, sync::Mutex, task::{JoinHandle, JoinSet}, time::time
 
 /// Sesiones simultáneas máximas (más conexiones se cierran sin leerlas).
 const MAX_SESSIONS: usize = 8;
+/// Sesiones simultáneas por dirección de origen: un solo equipo no puede ocupar todas las ranuras.
+const MAX_PER_IP: usize = 2;
+
+/// Cuenta de sesiones por IP; se libera al soltarse (también si la tarea se aborta).
+struct IpSlot {
+    map: Arc<std::sync::Mutex<std::collections::HashMap<IpAddr, usize>>>,
+    ip: IpAddr,
+}
+
+impl IpSlot {
+    fn take(map: &Arc<std::sync::Mutex<std::collections::HashMap<IpAddr, usize>>>, ip: IpAddr) -> Option<Self> {
+        let mut g = map.lock().ok()?;
+        let n = g.entry(ip).or_insert(0);
+        if *n >= MAX_PER_IP {
+            return None;
+        }
+        *n += 1;
+        Some(Self { map: map.clone(), ip })
+    }
+}
+
+impl Drop for IpSlot {
+    fn drop(&mut self) {
+        if let Ok(mut g) = self.map.lock() {
+            if let Some(n) = g.get_mut(&self.ip) {
+                *n = n.saturating_sub(1);
+                if *n == 0 {
+                    g.remove(&self.ip);
+                }
+            }
+        }
+    }
+}
 const SESSION_TIMEOUT: Duration = Duration::from_secs(120);
 
 /// Solo se atienden orígenes de la red local, Tailscale (100.64.0.0/10) o este equipo: la sincronización no es un servicio de Internet.
@@ -68,14 +101,19 @@ impl SyncService {
     }
 
     pub fn status(&self) -> SyncStatus {
+        // Un solo bloqueo del descubrimiento: dos `lock()` en la misma expresión se bloquean a sí mismos.
+        let (listening, visible) = {
+            let d = self.discovery.lock().expect("lock");
+            (d.is_some(), d.as_ref().map(|d| d.visible()).unwrap_or_default())
+        };
         SyncStatus {
             enabled: self.enabled(),
-            listening: self.discovery.lock().expect("lock").is_some(),
+            listening,
             device_id: self.ctx.identity.device_id.clone(),
             name: self.ctx.identity.name(),
             fingerprint: fingerprint(&self.ctx.identity.public()),
             addresses: local_addresses(DEFAULT_PORT),
-            visible: self.discovery.lock().expect("lock").as_ref().map(|d| d.visible()).unwrap_or_default(),
+            visible,
             last: self.last.lock().expect("lock").clone(),
         }
     }
@@ -94,6 +132,7 @@ impl SyncService {
         let handle = tokio::spawn(async move {
             // Las sesiones viven en un `JoinSet`: al detener la escucha (abortar esta tarea) se abortan todas.
             let mut sessions: JoinSet<()> = JoinSet::new();
+            let per_ip: Arc<std::sync::Mutex<std::collections::HashMap<IpAddr, usize>>> = Arc::default();
             loop {
                 tokio::select! {
                     accepted = listener.accept() => match accepted {
@@ -103,15 +142,22 @@ impl SyncService {
                                 tracing::debug!(%addr, "sync connection dropped");
                                 continue;
                             }
+                            let Some(slot) = IpSlot::take(&per_ip, addr.ip()) else {
+                                tracing::debug!(%addr, "sync connection dropped: too many from this address");
+                                continue;
+                            };
                             let me = me.clone();
                             sessions.spawn(async move {
+                                let _slot = slot;
                                 let r = timeout(SESSION_TIMEOUT, serve(&mut stream, &me.ctx)).await;
                                 match r {
                                     Ok(Ok(rep)) => {
                                         if rep.paired {
                                             let _ = me.app.emit_to("ui", "sync://paired", serde_json::json!({ "peerId": rep.peer_id, "name": rep.peer_name }));
                                         }
-                                        me.record(&rep, None);
+                                        if !rep.paired {
+                                            me.record(&rep, None); // un emparejamiento no es una sincronización
+                                        }
                                     }
                                     Ok(Err(e)) => tracing::info!(%addr, error = %e, "sync session refused or failed"),
                                     Err(_) => tracing::info!(%addr, "sync session timed out"),

@@ -1598,7 +1598,8 @@
       "revoke": "Revoke",
       "revokeConfirm": "It will stop syncing with you and its key is deleted from this computer. To pair it again, scan the QR code once more.",
       "revokeKeysNote": "You sent it API keys, so it already has them. If you do not trust it, rotate them with your provider.",
-      "revoked": "Revoked"
+      "revoked": "Revoked",
+      "noAddress": "No known address: add one below or bring the devices onto the same network"
     },
     "backup": {
       "label": "Offline",

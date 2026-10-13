@@ -20,6 +20,8 @@ pub const PRE_AUTH_FRAME: usize = 64 * 1024;
 pub const HELLO_TIMEOUT: Duration = Duration::from_secs(5);
 /// Tiempo máximo entre dos mensajes de una sesión.
 pub const IO_TIMEOUT: Duration = Duration::from_secs(60);
+/// Plazo del primer mensaje cifrado de alguien aún no autenticado (más corto: no se deja a un desconocido ocupando una ranura).
+pub const PRE_AUTH_TIMEOUT: Duration = Duration::from_secs(10);
 
 pub async fn write_frame<W: AsyncWrite + Unpin>(w: &mut W, body: &[u8]) -> Result<()> {
     if body.len() > MAX_FRAME {
@@ -121,11 +123,14 @@ impl<'a, S: AsyncRead + AsyncWrite + Unpin> Channel<'a, S> {
         write_frame(self.io, &sealed).await
     }
     pub async fn recv(&mut self) -> Result<Msg> {
-        self.recv_max(MAX_FRAME).await
+        self.recv_with(MAX_FRAME, IO_TIMEOUT).await
     }
-    /// Recibe con un límite de tamaño (para los mensajes anteriores a conocer al otro lado).
-    pub async fn recv_max(&mut self, max: usize) -> Result<Msg> {
-        let frame = timeout(IO_TIMEOUT, read_frame_max(self.io, max)).await.map_err(|_| SyncError::Protocol("read timeout".into()))??;
+    /// Primer mensaje cifrado de un par todavía no autenticado: trama pequeña y plazo corto.
+    pub async fn recv_pre_auth(&mut self) -> Result<Msg> {
+        self.recv_with(PRE_AUTH_FRAME, PRE_AUTH_TIMEOUT).await
+    }
+    async fn recv_with(&mut self, max: usize, wait: Duration) -> Result<Msg> {
+        let frame = timeout(wait, read_frame_max(self.io, max)).await.map_err(|_| SyncError::Protocol("read timeout".into()))??;
         let plain = open_aad(&self.keys.recv, &frame, &self.received.to_be_bytes())?;
         self.received += 1;
         Ok(serde_json::from_slice(&plain)?)
