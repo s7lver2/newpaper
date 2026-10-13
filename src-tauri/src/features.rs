@@ -4,5 +4,6 @@ pub fn setup_all(app: &mut tauri::App) -> Result<(), Box<dyn std::error::Error>>
     crate::sources::setup(app)?;
     crate::ai::setup(app)?;
     crate::system::setup(app)?;
+    crate::sync::setup(app)?;
     Ok(())
 }

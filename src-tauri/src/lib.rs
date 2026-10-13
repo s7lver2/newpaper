@@ -8,6 +8,7 @@ pub mod privacy;
 pub mod resources;
 pub mod sources;
 mod setup;
+pub mod sync;
 pub mod system;
 
 pub fn run() {
@@ -18,6 +19,7 @@ pub fn run() {
         .plugin(tauri_plugin_single_instance::init(|app, argv, _cwd| crate::system::on_second_instance(app, argv)))
         .plugin(tauri_plugin_updater::Builder::new().build())
         .plugin(tauri_plugin_process::init())
+        .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, None))
         .register_asynchronous_uri_scheme_protocol("npimg", npimg::handle)
         .register_asynchronous_uri_scheme_protocol("npoffline", sources::offline_cmds::protocol)
@@ -130,6 +132,18 @@ pub fn run() {
             system::firstrun::bookmarks_scan,
             system::firstrun::ollama_pull,
             system::firstrun::open_default_apps,
+            sync::commands::sync_status,
+            sync::commands::sync_set_enabled,
+            sync::commands::sync_set_name,
+            sync::commands::sync_pair_start,
+            sync::commands::sync_pair_cancel,
+            sync::commands::sync_pair_with,
+            sync::commands::sync_peers,
+            sync::commands::sync_peer_update,
+            sync::commands::sync_revoke,
+            sync::commands::sync_now,
+            sync::commands::sync_export,
+            sync::commands::sync_import,
         ])
         .build(tauri::generate_context!())
         .expect("error while building newpaper")

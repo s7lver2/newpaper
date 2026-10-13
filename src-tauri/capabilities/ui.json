@@ -25,7 +25,7 @@
     "allow-offline-add-article", "allow-offline-finish", "allow-offline-editions", "allow-offline-edition", "allow-offline-search", "allow-offline-cleanup",
     "allow-ai-fetch", "allow-ai-cancel", "allow-ai-set-endpoints", "allow-source-fetch", "allow-analysis-cache-get", "allow-analysis-cache-put", "allow-usage-record", "allow-usage-month", "allow-ai-local-probe",
     "allow-app-ready", "allow-system-info", "allow-crash-report-save",
-    "allow-update-status", "allow-update-check", "allow-update-install-now", "allow-update-set-channel", "allow-update-ack-notes", "allow-content-status", "allow-content-check-now", "allow-content-revert", "allow-first-run-status", "allow-first-run-apply", "allow-bookmarks-scan", "allow-ollama-pull", "allow-open-default-apps",
+    "allow-update-status", "allow-update-check", "allow-update-install-now", "allow-update-set-channel", "allow-update-ack-notes", "allow-content-status", "allow-content-check-now", "allow-content-revert", "allow-first-run-status", "allow-first-run-apply", "allow-bookmarks-scan", "allow-ollama-pull", "allow-open-default-apps", "allow-sync-status", "allow-sync-set-enabled", "allow-sync-set-name", "allow-sync-pair-start", "allow-sync-pair-cancel", "allow-sync-pair-with", "allow-sync-peers", "allow-sync-peer-update", "allow-sync-revoke", "allow-sync-now", "allow-sync-export", "allow-sync-import", "dialog:allow-open", "dialog:allow-save",
     "updater:default", "process:allow-restart", "autostart:allow-enable", "autostart:allow-disable", "autostart:allow-is-enabled"
   ]
 }

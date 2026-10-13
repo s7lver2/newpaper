@@ -22,6 +22,7 @@ const APP_COMMANDS: &[&str] = &[
     "update_status", "update_check", "update_install_now", "update_set_channel", "update_ack_notes",
     "content_status", "content_check_now", "content_revert",
     "first_run_status", "first_run_apply", "bookmarks_scan", "ollama_pull", "open_default_apps",
+    "sync_status", "sync_set_enabled", "sync_set_name", "sync_pair_start", "sync_pair_cancel", "sync_pair_with", "sync_peers", "sync_peer_update", "sync_revoke", "sync_now", "sync_export", "sync_import",
 ];
 
 fn main() {
