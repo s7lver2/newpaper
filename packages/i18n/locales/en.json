@@ -1550,6 +1550,7 @@
       "useCode": "Pair with this code",
       "idle": "Ready to pair",
       "idleSub": "Shows a code that expires in 2 minutes",
+      "needsEnable": "Turn on sync first to pair a device",
       "searching": "Announcing this device on the local network",
       "searchingSub": "The other device must be on the same network or on Tailscale"
     },
@@ -1569,7 +1570,7 @@
       "title": "What is synced",
       "count": "{n} of {total} on",
       "settings": "Settings",
-      "settingsDesc": "Appearance, network and pipeline",
+      "settingsDesc": "Appearance, language and reading (never privacy, network or AI)",
       "history": "History",
       "historyDesc": "Visits, searches and analyses",
       "saved": "Saved articles",
@@ -1595,7 +1596,8 @@
       "done": "{sent} sent, {received} received",
       "failed": "Could not sync: {message}",
       "revoke": "Revoke",
-      "revokeConfirm": "It will stop syncing with you. To pair it again, scan the QR code once more.",
+      "revokeConfirm": "It will stop syncing with you and its key is deleted from this computer. To pair it again, scan the QR code once more.",
+      "revokeKeysNote": "You sent it API keys, so it already has them. If you do not trust it, rotate them with your provider.",
       "revoked": "Revoked"
     },
     "backup": {

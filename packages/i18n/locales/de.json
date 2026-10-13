@@ -1550,6 +1550,7 @@
       "useCode": "Mit diesem Code koppeln",
       "idle": "Bereit zum Koppeln",
       "idleSub": "Zeigt einen Code, der in 2 Minuten abläuft",
+      "needsEnable": "Aktiviere zuerst die Synchronisierung, um ein Gerät zu koppeln",
       "searching": "Dieses Gerät wird im lokalen Netz angekündigt",
       "searchingSub": "Das andere Gerät muss im selben Netz oder über Tailscale erreichbar sein"
     },
@@ -1569,7 +1570,7 @@
       "title": "Was synchronisiert wird",
       "count": "{n} von {total} aktiv",
       "settings": "Einstellungen",
-      "settingsDesc": "Darstellung, Netz und Pipeline",
+      "settingsDesc": "Darstellung, Sprache und Lesen (nie Datenschutz, Netz oder KI)",
       "history": "Verlauf",
       "historyDesc": "Besuche, Suchen und Analysen",
       "saved": "Gespeicherte Artikel",
@@ -1595,7 +1596,8 @@
       "done": "{sent} gesendet, {received} empfangen",
       "failed": "Synchronisierung fehlgeschlagen: {message}",
       "revoke": "Widerrufen",
-      "revokeConfirm": "Es wird nicht mehr mit dir synchronisiert. Um es wieder zu koppeln, scanne den QR-Code erneut.",
+      "revokeConfirm": "Es wird nicht mehr mit dir synchronisiert und sein Schlüssel wird von diesem Computer gelöscht. Um es wieder zu koppeln, scanne den QR-Code erneut.",
+      "revokeKeysNote": "Du hast ihm API-Schlüssel geschickt, er hat sie also schon. Wenn du ihm nicht traust, erneuere sie bei deinem Anbieter.",
       "revoked": "Widerrufen"
     },
     "backup": {

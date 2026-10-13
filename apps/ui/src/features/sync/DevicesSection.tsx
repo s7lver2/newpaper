@@ -104,7 +104,7 @@ function PeerCard({ p, lanIds, onChange }: { p: PeerView; lanIds: string[]; onCh
       </div>
       {confirming ? (
         <div className="np-dev-confirm" role="alert">
-          <span>{t('sync.peer.revokeConfirm')}</span>
+          <span>{t('sync.peer.revokeConfirm')}{p.sendKeys ? <> {t('sync.peer.revokeKeysNote')}</> : null}</span>
           <Button variant="secondary" onClick={() => setConfirming(false)}>
             {t('sync.pair.cancel')}
           </Button>
@@ -302,9 +302,9 @@ export function DevicesSection() {
               </span>
               <div>
                 <div className="np-dev-title">{t('sync.pair.idle')}</div>
-                <div className="np-muted">{t('sync.pair.idleSub')}</div>
+                <div className="np-muted">{status.enabled ? t('sync.pair.idleSub') : t('sync.pair.needsEnable')}</div>
               </div>
-              <Button variant="primary" onClick={() => void startPairing()}>
+              <Button variant="primary" disabled={!status.enabled} onClick={() => void startPairing()}>
                 {t('sync.pair.start')}
               </Button>
             </div>

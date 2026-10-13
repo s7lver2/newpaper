@@ -1550,6 +1550,7 @@
       "useCode": "Emparejar con este código",
       "idle": "Listo para emparejar",
       "idleSub": "Muestra un código que caduca en 2 minutos",
+      "needsEnable": "Activa antes la sincronización para emparejar un dispositivo",
       "searching": "Anunciando este equipo en la red local",
       "searchingSub": "El otro dispositivo debe estar en la misma red o en Tailscale"
     },
@@ -1569,7 +1570,7 @@
       "title": "Qué se sincroniza",
       "count": "{n} de {total} activos",
       "settings": "Ajustes",
-      "settingsDesc": "Apariencia, red y pipeline",
+      "settingsDesc": "Apariencia, idioma y lectura (nunca privacidad, red ni IA)",
       "history": "Historial",
       "historyDesc": "Visitas, búsquedas y análisis",
       "saved": "Artículos guardados",
@@ -1595,7 +1596,8 @@
       "done": "{sent} enviados, {received} recibidos",
       "failed": "No se ha podido sincronizar: {message}",
       "revoke": "Revocar",
-      "revokeConfirm": "Dejará de sincronizar contigo. Para volver, habrá que emparejarlo otra vez con el QR.",
+      "revokeConfirm": "Dejará de sincronizar contigo y se borra su clave de este equipo. Para volver, habrá que emparejarlo otra vez con el QR.",
+      "revokeKeysNote": "Le enviaste claves de API: ya las tiene. Si no te fías de él, cámbialas en tu proveedor.",
       "revoked": "Revocado"
     },
     "backup": {
