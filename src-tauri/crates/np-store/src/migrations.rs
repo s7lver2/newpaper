@@ -42,6 +42,11 @@ pub const MIGRATIONS: &[Migration] = &[Migration {
         name: "content",
         sql: include_str!("../../np-update/sql/0006_content.sql"),
     },
+    Migration {
+        version: 7,
+        name: "sync",
+        sql: include_str!("../../np-sync/sql/0007_sync.sql"),
+    },
 ];
 
 pub fn migrate(conn: &mut Connection) -> Result<u32, StoreError> {
