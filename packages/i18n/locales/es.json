@@ -1599,6 +1599,8 @@
       "revoked": "Revocado"
     },
     "backup": {
+      "label": "Sin red",
+      "headline": "Pasa los datos con un archivo",
       "title": "Copia sin red",
       "hint": "Un fichero .npsync cifrado con tu frase de paso. Nunca incluye claves de API.",
       "passphrase": "Frase de paso (8 caracteres o más)",

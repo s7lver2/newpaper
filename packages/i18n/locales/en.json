@@ -1599,6 +1599,8 @@
       "revoked": "Revoked"
     },
     "backup": {
+      "label": "Offline",
+      "headline": "Move data with a file",
       "title": "Offline backup",
       "hint": "A .npsync file encrypted with your passphrase. It never includes API keys.",
       "passphrase": "Passphrase (8 characters or more)",

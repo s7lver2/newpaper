@@ -1,6 +1,6 @@
 import type { IngestReport, Watch } from './types';
 import { listen, type UnlistenFn } from '@tauri-apps/api/event';
-import type { OllamaProgress, PrivacyStatus, TabPageEvent, TabShortcutEvent, TabsSnapshot, UpdateStatus as SystemUpdateStatus } from './types';
+import type { OllamaProgress, PrivacyStatus, SyncStatus, TabPageEvent, TabShortcutEvent, TabsSnapshot, UpdateStatus as SystemUpdateStatus } from './types';
 
 export type { UnlistenFn };
 
@@ -51,3 +51,5 @@ export const onContentApplied = (cb: (e: { version: number; resources: string[] 
   listen<{ version: number; resources: string[] }>('content://applied', (e) => cb(e.payload));
 export const onOpenUrl = (cb: (url: string) => void) => listen<string>('app://open-url', (e) => cb(e.payload));
 export const onOllamaProgress = (cb: (p: OllamaProgress) => void) => listen<OllamaProgress>('ollama://progress', (e) => cb(e.payload));
+export const onSyncStatus = (cb: (s: SyncStatus) => void) => listen<SyncStatus>('sync://status', (e) => cb(e.payload));
+export const onSyncPaired = (cb: (p: { peerId: string; name: string }) => void) => listen<{ peerId: string; name: string }>('sync://paired', (e) => cb(e.payload));

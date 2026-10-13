@@ -8,6 +8,7 @@ import type {
   LexiconScore, OfflineArticle, OfflineHit, OfflineSettings, OutletLean, SavedArticle, TextDiff, TopicState, Watch, WaybackHistory,
   CachedStage, CustomEndpoint, LocalProbe, MonthUsage,
   ContentStatus, FirstRunStatus, BookmarkScan, ReadyInfo, SystemInfo, UpdateInfo,
+  PairStart, PeerView, SyncReport, SyncScope, SyncStatus,
 } from './types';
 
 /** Único punto de la UI que conoce los nombres de los comandos Rust. Los subproyectos añaden entradas. */
@@ -126,4 +127,16 @@ export const commands = {
   bookmarksScan: (browser: string) => invoke<BookmarkScan>('bookmarks_scan', { browser }),
   ollamaPull: (model: string) => invoke<void>('ollama_pull', { model }),
   openDefaultApps: () => invoke<void>('open_default_apps'),
+  syncStatus: () => invoke<SyncStatus>('sync_status'),
+  syncSetEnabled: (enabled: boolean) => invoke<SyncStatus>('sync_set_enabled', { enabled }),
+  syncSetName: (name: string) => invoke<void>('sync_set_name', { name }),
+  syncPairStart: () => invoke<PairStart>('sync_pair_start'),
+  syncPairCancel: () => invoke<void>('sync_pair_cancel'),
+  syncPairWith: (code: string) => invoke<PeerView>('sync_pair_with', { code }),
+  syncPeers: () => invoke<PeerView[]>('sync_peers'),
+  syncPeerUpdate: (peerId: string, scopes: SyncScope[], sendKeys: boolean, addresses: string[]) => invoke<PeerView[]>('sync_peer_update', { peerId, scopes, sendKeys, addresses }),
+  syncRevoke: (peerId: string) => invoke<PeerView[]>('sync_revoke', { peerId }),
+  syncNow: (peerId?: string) => invoke<SyncReport[]>('sync_now', { peerId }),
+  syncExport: (path: string, passphrase: string, scopes: SyncScope[]) => invoke<number>('sync_export', { path, passphrase, scopes }),
+  syncImport: (path: string, passphrase: string) => invoke<number>('sync_import', { path, passphrase }),
 };

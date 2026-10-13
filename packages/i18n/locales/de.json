@@ -1599,6 +1599,8 @@
       "revoked": "Widerrufen"
     },
     "backup": {
+      "label": "Ohne Netz",
+      "headline": "Daten mit einer Datei übertragen",
       "title": "Sicherung ohne Netz",
       "hint": "Eine mit deiner Passphrase verschlüsselte .npsync-Datei. Enthält nie API-Schlüssel.",
       "passphrase": "Passphrase (mindestens 8 Zeichen)",

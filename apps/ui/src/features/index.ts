@@ -13,3 +13,4 @@ import './providers/register';
 import './history/register';
 import './pages/register';
 import './system/register';
+import './sync/register';

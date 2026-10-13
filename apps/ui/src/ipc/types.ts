@@ -155,3 +155,13 @@ export interface FirstRunStatus { done: boolean; browsers: ('edge' | 'chrome' | 
 export interface Bookmark { url: string; title: string }
 export interface BookmarkScan { bookmarks: Bookmark[]; ignored: number }
 export interface OllamaProgress { status: string; completed?: number; total?: number }
+
+export type SyncScope = 'settings' | 'history' | 'saved' | 'analyses' | 'topics' | 'sources' | 'keys';
+export interface LastSync { at: number; peerName: string; sent: number; received: number; error: string | null }
+export interface SyncStatus { enabled: boolean; listening: boolean; deviceId: string; name: string; fingerprint: string; addresses: string[]; visible: string[]; last: LastSync | null }
+export interface PairStart { code: string; size: number; modules: boolean[]; expiresInSecs: number; fingerprint: string }
+export interface PeerView {
+  id: string; name: string; publicKey: string; addresses: string[]; scopes: SyncScope[]; sendKeys: boolean;
+  pairedAt: number; lastSyncAt: number | null; revoked: boolean; fingerprint: string; lastError: string | null;
+}
+export interface SyncReport { peerId: string; peerName: string; sent: number; received: number; applied: number; keys: number; paired: boolean }
