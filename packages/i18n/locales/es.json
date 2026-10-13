@@ -318,6 +318,10 @@
     "help": {
       "title": "Ayuda",
       "description": "Recorrido de bienvenida"
+    },
+    "devices": {
+      "title": "Dispositivos",
+      "description": "Sincronizar sin cuenta entre tus equipos"
     }
   },
   "privacy": {
@@ -1520,6 +1524,90 @@
       "scoreYou": "Tú · ×",
       "scoreDraw": "Tablas",
       "scoreHouse": "El Diario · ○"
+    }
+  },
+  "sync": {
+    "thisDevice": "Este dispositivo",
+    "name": "Nombre",
+    "fingerprint": "Huella: {fp}",
+    "enable": "Sincronizar con mis dispositivos",
+    "enableHint": "Solo en tu red local o por Tailscale, cifrado de extremo a extremo.",
+    "never": "Nunca pasa por Tor, ni por servidores de terceros, ni necesita cuenta.",
+    "e2e": "Sin cuenta, sin servidor: cifrado de extremo a extremo",
+    "last": "Última sincronización a las {when} con {name}: {sent} enviados, {received} recibidos",
+    "qrTitle": "Escanéalo con newpaper en tu móvil",
+    "qrHint": "Ajustes → Dispositivos → Emparejar con un PC",
+    "fingerprintLabel": "Huella de este equipo",
+    "pair": {
+      "title": "Emparejar",
+      "start": "Emparejar un dispositivo",
+      "qr": "Código QR para emparejar",
+      "scan": "Escanéalo con newpaper en el móvil o copia el código en otro ordenador.",
+      "expires": "Caduca en {s} s",
+      "copy": "Copiar el código",
+      "cancel": "Cancelar",
+      "haveCode": "¿Tienes un código de otro dispositivo?",
+      "useCode": "Emparejar con este código",
+      "idle": "Listo para emparejar",
+      "idleSub": "Muestra un código que caduca en 2 minutos",
+      "searching": "Anunciando este equipo en la red local",
+      "searchingSub": "El otro dispositivo debe estar en la misma red o en Tailscale"
+    },
+    "devices": "Dispositivos emparejados",
+    "devicesCount": "{n, plural, =0 {Ninguno} one {# emparejado} other {# emparejados}}",
+    "devicesHint": "Se sincroniza al abrir y cada 5 min si os veis",
+    "noDevices": "Aún no hay dispositivos emparejados. Escanea el QR desde el móvil.",
+    "syncAll": "Sincronizar todo ahora",
+    "tailscale": "Fuera de casa: Tailscale detectado en este equipo · {addr}",
+    "summary": "{n, plural, =0 {Sin dispositivos} one {# dispositivo} other {# dispositivos}}",
+    "via": {
+      "lan": "En red local",
+      "tailscale": "Por Tailscale",
+      "manual": "Dirección manual"
+    },
+    "scopes": {
+      "title": "Qué se sincroniza",
+      "count": "{n} de {total} activos",
+      "settings": "Ajustes",
+      "settingsDesc": "Apariencia, red y pipeline",
+      "history": "Historial",
+      "historyDesc": "Visitas, búsquedas y análisis",
+      "saved": "Artículos guardados",
+      "savedDesc": "Con su texto para leer sin conexión",
+      "analyses": "Análisis y síntesis",
+      "analysesDesc": "Para no pagar dos veces",
+      "topics": "Temas seguidos",
+      "topicsDesc": "Los temas que sigues",
+      "sources": "Fuentes personalizadas",
+      "sourcesDesc": "Medios y feeds que añadiste",
+      "keys": "Claves de API",
+      "keysDesc": "Apagado por defecto. Cada dispositivo usa las suyas.",
+      "keysWarning": "Las claves viajan cifradas y se guardan en el llavero del otro dispositivo. Actívalo en los dos."
+    },
+    "peer": {
+      "last": "Última vez: {when}",
+      "never": "Todavía no se ha sincronizado.",
+      "error": "Último error: {message}",
+      "addresses": "Direcciones (Tailscale u otras)",
+      "addressesHint": "IP y puerto separados por comas. En casa basta con el descubrimiento automático.",
+      "now": "Sincronizar ahora",
+      "syncing": "Sincronizando…",
+      "done": "{sent} enviados, {received} recibidos",
+      "failed": "No se ha podido sincronizar: {message}",
+      "revoke": "Revocar",
+      "revokeConfirm": "Dejará de sincronizar contigo. Para volver, habrá que emparejarlo otra vez con el QR.",
+      "revoked": "Revocado"
+    },
+    "backup": {
+      "title": "Copia sin red",
+      "hint": "Un fichero .npsync cifrado con tu frase de paso. Nunca incluye claves de API.",
+      "passphrase": "Frase de paso (8 caracteres o más)",
+      "export": "Exportar .npsync",
+      "import": "Importar",
+      "exported": "Copia guardada.",
+      "imported": "{n, plural, one {# elemento importado} other {# elementos importados}}",
+      "wrongPassphrase": "Frase de paso incorrecta o fichero dañado.",
+      "failed": "No se ha podido completar: {message}"
     }
   }
 }

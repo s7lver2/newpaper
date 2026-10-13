@@ -318,6 +318,10 @@
     "help": {
       "title": "Hilfe",
       "description": "Willkommenstour"
+    },
+    "devices": {
+      "title": "Geräte",
+      "description": "Ohne Konto zwischen deinen Rechnern synchronisieren"
     }
   },
   "privacy": {
@@ -1520,6 +1524,90 @@
       "scoreYou": "Du · ×",
       "scoreDraw": "Remis",
       "scoreHouse": "Die Zeitung · ○"
+    }
+  },
+  "sync": {
+    "thisDevice": "Dieses Gerät",
+    "name": "Name",
+    "fingerprint": "Fingerabdruck: {fp}",
+    "enable": "Mit meinen Geräten synchronisieren",
+    "enableHint": "Nur im lokalen Netz oder über Tailscale, Ende-zu-Ende-verschlüsselt.",
+    "never": "Läuft nie über Tor oder fremde Server und braucht kein Konto.",
+    "e2e": "Ohne Konto, ohne Server: Ende-zu-Ende-verschlüsselt",
+    "last": "Letzte Synchronisierung um {when} mit {name}: {sent} gesendet, {received} empfangen",
+    "qrTitle": "Scanne ihn mit newpaper auf dem Handy",
+    "qrHint": "Einstellungen → Geräte → Mit einem PC koppeln",
+    "fingerprintLabel": "Fingerabdruck dieses Geräts",
+    "pair": {
+      "title": "Koppeln",
+      "start": "Gerät koppeln",
+      "qr": "QR-Code zum Koppeln",
+      "scan": "Scanne ihn mit newpaper auf dem Handy oder kopiere den Code auf einen anderen Rechner.",
+      "expires": "Läuft in {s} s ab",
+      "copy": "Code kopieren",
+      "cancel": "Abbrechen",
+      "haveCode": "Hast du einen Code von einem anderen Gerät?",
+      "useCode": "Mit diesem Code koppeln",
+      "idle": "Bereit zum Koppeln",
+      "idleSub": "Zeigt einen Code, der in 2 Minuten abläuft",
+      "searching": "Dieses Gerät wird im lokalen Netz angekündigt",
+      "searchingSub": "Das andere Gerät muss im selben Netz oder über Tailscale erreichbar sein"
+    },
+    "devices": "Gekoppelte Geräte",
+    "devicesCount": "{n, plural, =0 {Keine} one {# gekoppelt} other {# gekoppelt}}",
+    "devicesHint": "Synchronisiert beim Öffnen und alle 5 Min., wenn ihr beide online seid",
+    "noDevices": "Noch keine gekoppelten Geräte. Scanne den QR-Code vom Handy.",
+    "syncAll": "Jetzt alles synchronisieren",
+    "tailscale": "Unterwegs: Tailscale auf diesem Gerät erkannt · {addr}",
+    "summary": "{n, plural, =0 {Keine Geräte} one {# Gerät} other {# Geräte}}",
+    "via": {
+      "lan": "Im lokalen Netz",
+      "tailscale": "Über Tailscale",
+      "manual": "Manuelle Adresse"
+    },
+    "scopes": {
+      "title": "Was synchronisiert wird",
+      "count": "{n} von {total} aktiv",
+      "settings": "Einstellungen",
+      "settingsDesc": "Darstellung, Netz und Pipeline",
+      "history": "Verlauf",
+      "historyDesc": "Besuche, Suchen und Analysen",
+      "saved": "Gespeicherte Artikel",
+      "savedDesc": "Mit Text, zum Lesen ohne Verbindung",
+      "analyses": "Analysen und Zusammenfassungen",
+      "analysesDesc": "Damit du nicht zweimal zahlst",
+      "topics": "Gefolgte Themen",
+      "topicsDesc": "Die Themen, denen du folgst",
+      "sources": "Eigene Quellen",
+      "sourcesDesc": "Medien und Feeds, die du hinzugefügt hast",
+      "keys": "API-Schlüssel",
+      "keysDesc": "Standardmäßig aus. Jedes Gerät verwendet seine eigenen.",
+      "keysWarning": "Schlüssel werden verschlüsselt übertragen und im Schlüsselbund des anderen Geräts gespeichert. Auf beiden Geräten aktivieren."
+    },
+    "peer": {
+      "last": "Zuletzt: {when}",
+      "never": "Noch nicht synchronisiert.",
+      "error": "Letzter Fehler: {message}",
+      "addresses": "Adressen (Tailscale oder andere)",
+      "addressesHint": "IP und Port, durch Kommas getrennt. Zu Hause reicht die automatische Erkennung.",
+      "now": "Jetzt synchronisieren",
+      "syncing": "Wird synchronisiert…",
+      "done": "{sent} gesendet, {received} empfangen",
+      "failed": "Synchronisierung fehlgeschlagen: {message}",
+      "revoke": "Widerrufen",
+      "revokeConfirm": "Es wird nicht mehr mit dir synchronisiert. Um es wieder zu koppeln, scanne den QR-Code erneut.",
+      "revoked": "Widerrufen"
+    },
+    "backup": {
+      "title": "Sicherung ohne Netz",
+      "hint": "Eine mit deiner Passphrase verschlüsselte .npsync-Datei. Enthält nie API-Schlüssel.",
+      "passphrase": "Passphrase (mindestens 8 Zeichen)",
+      "export": ".npsync exportieren",
+      "import": "Importieren",
+      "exported": "Sicherung gespeichert.",
+      "imported": "{n, plural, one {# Element importiert} other {# Elemente importiert}}",
+      "wrongPassphrase": "Falsche Passphrase oder beschädigte Datei.",
+      "failed": "Konnte nicht abgeschlossen werden: {message}"
     }
   }
 }

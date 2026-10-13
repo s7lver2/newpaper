@@ -318,6 +318,10 @@
     "help": {
       "title": "Help",
       "description": "Welcome tour"
+    },
+    "devices": {
+      "title": "Devices",
+      "description": "Sync between your computers without an account"
     }
   },
   "privacy": {
@@ -1520,6 +1524,90 @@
       "scoreYou": "You · ×",
       "scoreDraw": "Draws",
       "scoreHouse": "The Paper · ○"
+    }
+  },
+  "sync": {
+    "thisDevice": "This device",
+    "name": "Name",
+    "fingerprint": "Fingerprint: {fp}",
+    "enable": "Sync with my devices",
+    "enableHint": "Only on your local network or over Tailscale, end-to-end encrypted.",
+    "never": "It never goes through Tor or third-party servers, and needs no account.",
+    "e2e": "No account, no server: end-to-end encrypted",
+    "last": "Last sync at {when} with {name}: {sent} sent, {received} received",
+    "qrTitle": "Scan it with newpaper on your phone",
+    "qrHint": "Settings → Devices → Pair with a PC",
+    "fingerprintLabel": "This device’s fingerprint",
+    "pair": {
+      "title": "Pair",
+      "start": "Pair a device",
+      "qr": "QR code for pairing",
+      "scan": "Scan it with newpaper on your phone or copy the code to another computer.",
+      "expires": "Expires in {s} s",
+      "copy": "Copy the code",
+      "cancel": "Cancel",
+      "haveCode": "Have a code from another device?",
+      "useCode": "Pair with this code",
+      "idle": "Ready to pair",
+      "idleSub": "Shows a code that expires in 2 minutes",
+      "searching": "Announcing this device on the local network",
+      "searchingSub": "The other device must be on the same network or on Tailscale"
+    },
+    "devices": "Paired devices",
+    "devicesCount": "{n, plural, =0 {None} one {# paired} other {# paired}}",
+    "devicesHint": "Syncs on open and every 5 min while you are both online",
+    "noDevices": "No paired devices yet. Scan the QR from your phone.",
+    "syncAll": "Sync everything now",
+    "tailscale": "Away from home: Tailscale detected on this device · {addr}",
+    "summary": "{n, plural, =0 {No devices} one {# device} other {# devices}}",
+    "via": {
+      "lan": "On local network",
+      "tailscale": "Via Tailscale",
+      "manual": "Manual address"
+    },
+    "scopes": {
+      "title": "What is synced",
+      "count": "{n} of {total} on",
+      "settings": "Settings",
+      "settingsDesc": "Appearance, network and pipeline",
+      "history": "History",
+      "historyDesc": "Visits, searches and analyses",
+      "saved": "Saved articles",
+      "savedDesc": "With their text, to read offline",
+      "analyses": "Analyses and syntheses",
+      "analysesDesc": "So you don’t pay twice",
+      "topics": "Followed topics",
+      "topicsDesc": "The topics you follow",
+      "sources": "Custom sources",
+      "sourcesDesc": "Outlets and feeds you added",
+      "keys": "API keys",
+      "keysDesc": "Off by default. Each device uses its own.",
+      "keysWarning": "Keys travel encrypted and are stored in the other device’s keychain. Turn it on on both."
+    },
+    "peer": {
+      "last": "Last time: {when}",
+      "never": "Not synced yet.",
+      "error": "Last error: {message}",
+      "addresses": "Addresses (Tailscale or others)",
+      "addressesHint": "IP and port separated by commas. At home, automatic discovery is enough.",
+      "now": "Sync now",
+      "syncing": "Syncing…",
+      "done": "{sent} sent, {received} received",
+      "failed": "Could not sync: {message}",
+      "revoke": "Revoke",
+      "revokeConfirm": "It will stop syncing with you. To pair it again, scan the QR code once more.",
+      "revoked": "Revoked"
+    },
+    "backup": {
+      "title": "Offline backup",
+      "hint": "A .npsync file encrypted with your passphrase. It never includes API keys.",
+      "passphrase": "Passphrase (8 characters or more)",
+      "export": "Export .npsync",
+      "import": "Import",
+      "exported": "Backup saved.",
+      "imported": "{n, plural, one {# item imported} other {# items imported}}",
+      "wrongPassphrase": "Wrong passphrase or damaged file.",
+      "failed": "Could not finish: {message}"
     }
   }
 }
