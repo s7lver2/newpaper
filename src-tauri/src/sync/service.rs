@@ -182,7 +182,14 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     let name = store
         .get_setting::<String>("device.name")?
         .unwrap_or_else(|| std::env::var("COMPUTERNAME").unwrap_or_else(|_| "newpaper".into()));
-    let identity = Arc::new(Identity::load_or_create(secrets.as_ref(), &name)?);
+    // Si el llavero no responde, la app arranca igual con una identidad temporal (los pares se pierden al cerrar).
+    let identity = Arc::new(match Identity::load_or_create(secrets.as_ref(), &name) {
+        Ok(id) => id,
+        Err(e) => {
+            tracing::warn!(error = %e, "sync identity unavailable; using a session-only identity");
+            Identity::generate(&name)
+        }
+    });
     let ctx = Arc::new(SyncContext { store, identity, secrets, pairing: Arc::new(PairingManager::new()) });
     let svc = Arc::new(SyncService {
         ctx,
