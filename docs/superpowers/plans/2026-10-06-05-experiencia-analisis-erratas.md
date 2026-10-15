@@ -97,3 +97,89 @@ El usuario señaló que el asistente (`newpaper://ajustes/ia/conectar`) y la pes
 - En tinta el bloque oscuro del resumen no se invierte a una franja clara: usa el negro de la barra de título sobre el fondo.
 - Fuera de alcance, sin hacer: el buscador «Buscar ajuste» y el pie «newpaper 0.1 · Tauri 2 · WebView2» de la barra lateral; en Análisis, «Excepciones por medio» y los tres interruptores del mockup (no existen en el producto).
 - Un fallo de conexión en el asistente solo distingue «ok / no ok» (`testConnection` devuelve un único error): se muestra como fallo del primer paso.
+
+## Revisión de proveedores, login y abiertos/cerrados
+
+Fecha de las comprobaciones: 2026-10-15. Todo lo de abajo sale de las páginas oficiales citadas o del catálogo público de OpenRouter/NVIDIA (`/models`, sin clave); no se hizo ninguna llamada a un modelo ni ningún inicio de sesión real.
+
+### 1. Acceso con inicio de sesión
+
+Capacidad genérica: cada proveedor puede declarar `login: { flow, status, authUrl?, exchangeUrl? }` en `config/providers.json`. `flow` = `oauth-pkce-key` (el proveedor devuelve una clave de API a cambio de un código) u `oauth-device` (reservado). `status` = `available` (verificado con documentación oficial; el único que se ejecuta), `unverified` o `gated` (marco listo, no se ejecuta). `AuthScheme` (cómo se inyecta la clave) no cambia: el login solo decide *cómo se consigue* la clave, que sigue en el llavero como `ai.<id>` y la sigue inyectando el proxy únicamente hacia el host del proveedor (sin redirecciones, sin claves en JS ni en registros).
+
+| Método | Estado | Motivo | Fuente |
+|---|---|---|---|
+| OpenRouter, OAuth PKCE | **Real** (`available`) | Flujo oficial: `https://openrouter.ai/auth?callback_url&code_challenge&code_challenge_method=S256&state`, `POST https://openrouter.ai/api/v1/auth/keys` con `code` + `code_verifier` devuelve `{ key }`; códigos de un solo uso que caducan a los 10 min; callbacks en `localhost` con cualquier puerto permitidos; `state` se devuelve tal cual | openrouter.ai/docs/guides/overview/auth/oauth |
+| Nous Portal, device-code | **Solo marco** (`unverified`; la interfaz muestra «experimental, no disponible» y deja la clave) | La documentación de Hermes (hermesagent.org.cn/en/docs/integrations/nous-portal) describe un login por navegador con callback local y un JWT corto minteado desde un refresh token, pero **no publica** URL de autorización, de token ni de device-code. Solo se confirmó en `hermes_cli/auth_constants.py` (NousResearch/hermes-agent) `DEFAULT_NOUS_CLIENT_ID = "hermes-cli"`, scope `inference:invoke`, portal `https://portal.nousresearch.com` e inferencia `https://inference-api.nousresearch.com/v1`. Ese `client_id` es el de la CLI de Hermes (no nuestro) y los endpoints del flujo no se pudieron confirmar: no se ha codificado nada. La vía con clave de API (portal › API Keys) sigue siendo la válida | páginas citadas |
+| ChatGPT («Sign in with ChatGPT») | **Omitido** | Solo vista previa para integraciones aprobadas (reportes de prensa desde mayo de 2025, sin documentación pública de OAuth para terceros). No se toma prestado el `client_id` ni los tokens de Codex CLI. El marco admite añadirlo cuando OpenAI conceda acceso; mostrar «Próximamente» no aporta valor, así que no hay entrada | techcrunch.com/2025/05/27/openai-may-soon-let-you-sign-in-with-chatgpt-for-other-apps |
+| Suscripción Claude (Pro/Max) | **No se implementa** | Las condiciones de Anthropic lo prohíben para apps de terceros (indicación del usuario). Claude se queda con clave de API; sin entrada `login` en el registro (lo comprueba un test) | - |
+| Gemini | **Solo clave** | No existe un flujo OAuth oficial de facturación para terceros; la clave gratuita de AI Studio es fácil (enlace `aistudio.google.com/apikey`) | ai.google.dev |
+| Hugging Face | **Marco listo, no habilitado** | Existe OAuth con scope `inference-api`, pero exige registrar una app OAuth que no tenemos y devolvería un token de acceso, no un intercambio por clave. Sin entrada `login` | huggingface.co/docs/inference-providers |
+
+**Implementación (Rust, `np-ai-proxy::login` + comandos `ai_login`/`ai_login_cancel`)**
+
+- PKCE S256: verificador de 64 caracteres hexadecimales (dos UUID v4 del SO, 244 bits), `code_challenge = BASE64URL(SHA-256(verifier))` (vector de RFC 7636 en un test) y `state` aleatorio de 128 bits. El verificador, el código y la clave solo existen en Rust; la clave va directa al llavero y no se devuelve a la interfaz.
+- Redirección: oyente de un solo uso en `127.0.0.1` con puerto aleatorio (la URL de callback es `http://localhost:<puerto>/callback`, lo documentado por OpenRouter). Solo vale un `GET /callback` con el `state` correcto (comparación en tiempo constante) y `Host` = `localhost:<puerto>` o `127.0.0.1:<puerto>` (frena DNS rebinding); cualquier otra petición recibe 400 y se ignora (no se puede abortar un inicio de sesión legítimo enviando basura). Cabecera de petición máx. 8 KiB y 3 s por conexión. Caduca a los 5 min (`login_timeout`), se cierra al terminar, al cancelar y al salir del asistente, y un segundo callback con los mismos datos ya no encuentra a nadie escuchando (el código además es de un solo uso en el servidor).
+- Se eligió el navegador del sistema (`rundll32 url.dll,FileProtocolHandler` / `open` / `xdg-open`, sin intérprete de comandos y solo para `https`) en lugar de una pestaña de newpaper: la persona ya suele tener allí la sesión y el gestor de contraseñas, y el callback loopback no depende de que newpaper permita navegar a `localhost`. Si no se puede abrir, la interfaz ofrece «Copiar enlace».
+- Validación en la tabla de proveedores: `authUrl`/`exchangeUrl` deben ser https y del mismo host y puerto que `baseUrl` (si no, el registro no carga); un `login` marcado `available` debe ser un flujo PKCE completo.
+- Intercambio con el cliente estricto del proxy (sin redirecciones; mismo enrutado Tor/directo que las llamadas de IA), tope de 64 KiB de respuesta, clave de 8–512 caracteres ASCII imprimibles; los errores no repiten el cuerpo del proveedor.
+- No hay refresco de tokens: el flujo de OpenRouter entrega una clave de larga duración controlada por el usuario (revocable en openrouter.ai/settings/keys), no un token que caduque.
+- Gancho de pruebas (solo compilaciones con `debug_assertions`): `NP_TEST_OAUTH=http://127.0.0.1:<puerto>` sustituye al proveedor por un servidor falso, guarda la clave como `ai.oauthtest` (nunca `ai.openrouter`), no abre navegador, registra la URL de autorización y bloquea todo `ai_fetch` para que no salga ninguna petición a proveedores reales. En compilaciones de producción no existe.
+
+**Pruebas**: tests nuevos en `np-ai-proxy` (`tests/login_flow.rs`, servidor falso con wiremock que comprueba que `code_verifier` cuadra con el `code_challenge` de la URL; más `table.rs` y `login.rs`): flujo completo con comprobación de `state`, ruido ignorado (otro `state`, sin `state`, otro camino, otro `Host`), puerto cerrado tras el éxito (replay), código rechazado (403) sin guardar clave ni repetir el cuerpo, verificador distinto, caducidad con cierre del oyente, cancelación con cierre y nuevo intento (y `login_busy` si hay uno en curso), acceso denegado, respuesta sin clave, flujo no ejecutable. En la app real (build `target/verify`) contra el servidor falso en el puerto 4577: espera + cancelar, `state` erróneo ignorado, código malo → error y puerto cerrado, reintento → clave `ai.oauthtest` guardada y paso 3 alcanzado (la prueba de conexión falló «bloqueada», como estaba previsto), clave de prueba borrada al final; papel y tinta a 1440×900 y 800×600.
+
+### 2. Revisión de la lista (criterios)
+
+Se queda el proveedor que cumple: (a) salida estructurada JSON y herramientas para el agente, (b) buena comprensión de noticias en ES/DE/EN, (c) contexto ≥ 16k, (d) alcanzable por API compatible con OpenAI o adaptador nativo, (e) sigue existiendo, (f) nivel gratuito o precio razonable, (g) no es redundante.
+
+| Proveedor | Decisión | Motivo | Fuente |
+|---|---|---|---|
+| Perplexity | **Eliminado** | Sonar está orientado a búsqueda con citas; en el catálogo de OpenRouter `sonar`, `sonar-pro` y `sonar-reasoning-pro` no declaran `tools` ni `structured_outputs` (solo `sonar-pro-search` admite salida estructurada); la app ya hace su propia búsqueda de coberturas | openrouter.ai/api/v1/models |
+| OpenAI | Se queda (cerrado) | Ids antiguos (`gpt-5`) desfasados: ahora `gpt-6-sol` 2/10 $ y `gpt-6-luna` 0,10/0,50 $ por millón (en el catálogo con `tools` + `structured_outputs`, contexto 1 M) | developers.openai.com/api/docs/pricing; openrouter.ai/api/v1/models |
+| Anthropic | Se queda (cerrado) | Sin cambios: ids y precios verificados (Opus 5.5 4/20, Sonnet 5.5 2/10, Haiku 5.5 0,10/0,50, 1 M de contexto) | platform.claude.com/docs/en/models/overview |
+| Google Gemini | Se queda (cerrado, recomendado) | Modelos 2.5 desfasados. `gemini-3.8-flash` (0,75/3,75; con nivel gratuito) pasa a ser el «fuerte» por defecto para que una clave gratuita funcione; `gemini-3.5-flash-lite` (0,30/2,50) como ligero; `gemini-4-argon` (2/10, sin nivel gratuito) detrás. Aviso: el precio de 3.8 Flash sube a 1,50/7,50 $ el 1-1-2027 y el de Argon a 4/20 el 1-12-2026 (no se refleja hasta que ocurra) | ai.google.dev/gemini-api/docs/pricing |
+| OpenRouter | Se queda (mixto, recomendado) | Único con login oficial; modelos `:free` con `tools` y `structured_outputs` (`nvidia/nemotron-3-super-120b-a12b:free`, 262k de contexto; `openrouter/free`, 200k). `openrouter/auto` mantiene precio `null` (dinámico) | openrouter.ai/docs; catálogo |
+| Ollama | Se queda (abierto, local, recomendado) | Opción privada y gratuita; las bibliotecas `qwen3` y `llama3.1` existen; la detección usa los modelos instalados por la persona | ollama.com/library |
+| LM Studio | Se queda (abierto, local) | Complemento local sin coste; sin cambios | - |
+| Groq | Se queda (abierto) | `llama-3.3-70b-versatile` sigue en producción; se añaden `openai/gpt-oss-120b` (0,15/0,60) y `gpt-oss-20b` (0,075/0,30), contexto 131k. El precio de Llama pasa a `null` (la tabla de Groq dice «contactar»; los 0,59/0,79 anteriores eran de otro host). Límite gratuito muy bajo (8k tokens/min en gpt-oss-120b según la tabla): puede ahogar el análisis completo | console.groq.com/docs/models, /docs/rate-limits |
+| NVIDIA NIM | Se queda (abierto) | Los ids anteriores siguen en `/v1/models` (`deepseek-ai/deepseek-v4.1-flash`, `nvidia/nemotron-3.5-lightning-30b-a3b`); `meta/llama-3.3-70b-instruct` ya no existe. Se añade `nvidia/nemotron-3-super-120b-a12b`. Precio `null` (créditos de prueba) | integrate.api.nvidia.com/v1/models |
+| DeepSeek | Se queda (abierto) | `deepseek-chat`/`deepseek-reasoner` ya no aparecen en la documentación; ahora `deepseek-flash` y `deepseek-v4-pro` (1 M de contexto, JSON y herramientas). Precios de hora punta (0,3/1,2 y 1,32/3,96); fuera de punta cuestan la mitad | api-docs.deepseek.com/quick_start/pricing |
+| Mistral | Se queda (abierto) | Proveedor europeo; los modelos actuales (Large 3/4, Small 4, Medium 3.5) son de pesos abiertos. **No verificado**: la página de modelos no publica alias de API ni precios; se mantienen `mistral-large-latest`/`mistral-small-latest` con precio `null` (el relevo de `liveModels.ts` cubre un 404) | docs.mistral.ai/getting-started/models/models_overview |
+| Nous Research | Se queda (abierto) | Hermes 4 405B/70B siguen siendo los ids conocidos; precio `null` (los números que circulan son de terceros). Login: experimental, no disponible (ver arriba) | forum.nousresearch.com; docs.cline.bot |
+| Hugging Face | Se queda (abierto) | Router OpenAI-compatible vigente; `meta-llama/Llama-3.3-70B-Instruct` no se pudo verificar y se sustituye por `openai/gpt-oss-120b` (ejemplo oficial). Créditos gratuitos mensuales pequeños; el token «fine-grained» con permiso de Inference Providers es más difícil para quien no es técnico | huggingface.co/docs/inference-providers |
+| xAI | Se queda (cerrado) | `grok-4` → `grok-4.7` (2/6 $ hasta 200k, 500k de contexto; `structured_outputs` + `tools` en OpenRouter). Menos prioritario, pero aporta un cerrado alternativo | docs.x.ai/docs/models |
+| Endpoint propio | Se queda (avanzado, mixto) | Cualquier servidor compatible | - |
+
+El relevo dinámico (`liveModels.ts`, `GET /models`) no se tocó y sigue sirviendo a todos los proveedores `openai`/`openai-compatible`; Gemini y Anthropic usan adaptador nativo y se quedan con la lista del registro.
+
+Límite de lo verificado: los precios de OpenAI y Google salen de las tablas oficiales y se contrastaron con el catálogo de OpenRouter; los de Nous, NVIDIA y Mistral se dejan en `null` en vez de adivinar.
+
+### 3. Abiertos y cerrados
+
+Nuevo campo `openness` (`open` | `closed` | `mixed`) en cada proveedor y `openness` opcional por modelo (`open` | `closed`, solo donde difiere del proveedor); `loadRegistry` expone `opennessOf(proveedor, modelo)` y un test comprueba que ningún modelo contradice a su proveedor.
+
+- **Abiertos**: DeepSeek, Mistral, NVIDIA NIM, Groq, Hugging Face, Nous, Ollama, LM Studio (pesos descargables y ejecutables en casa).
+- **Cerrados**: OpenAI, Anthropic, Google Gemini, xAI.
+- **Mixtos**: OpenRouter (por modelo: Nemotron gratis = abierto, GPT-6 Luna = cerrado, Auto/Gratis = sin clasificar) y el endpoint propio.
+
+Interfaz: el paso 1 del asistente muestra Recomendados, «Pega tu clave», **Abiertos**, **Cerrados**, **En tu equipo** y **Avanzado**; en Ajustes › IA los filtros son Todos / Activos / Abiertos / Cerrados / Local, y en «Todos» las fichas van agrupadas con el mismo criterio. Un proveedor mixto sale una vez (con los abiertos) y aparece con ambos filtros; el panel de OpenRouter marca cada modelo como «abierto/cerrado». Textos nuevos en es/en/de. El esquema de Rust no necesita el campo (solo la interfaz lo usa).
+
+### 4. Recomendados
+
+Se pasa de «categoría recomendada» a un booleano `recommended`; la categoría queda en `cloud | local | advanced`. Los tres elegidos para esta app (análisis de noticias con salida estructurada, ES primero, privacidad, sensibles al coste, sin perfil técnico):
+
+1. **Gemini (cerrado)**: «Gratis para empezar, sin complicaciones». Clave gratuita en AI Studio, contexto de 1 M, salida estructurada y herramientas, buen español. Coste a cambio: en el nivel gratuito Google puede usar lo enviado para mejorar sus productos (términos de la API de Gemini, ai.google.dev/gemini-api/terms; con saldo de pago no); la tarjeta y la nota del paso 2 lo dicen.
+2. **OpenRouter (mixto)**: «Entra con tu cuenta, sin copiar claves». Es el único con inicio de sesión real, ofrece modelos gratuitos con estructura y herramientas y cientos más de pago.
+3. **Ollama (abierto, en tu equipo)**: «Privado: todo se queda en tu ordenador». Para quien prioriza privacidad y gasto cero; necesita un equipo con memoria suficiente.
+
+Descartados como recomendados: OpenAI y Anthropic (clave de pago obligatoria y facturación aparte: no es lo más sencillo para empezar), Groq (límite gratuito demasiado bajo para el análisis completo) y NVIDIA/HF/Nous (claves menos sencillas).
+
+`autoAssign` (`packages/pipeline/src/assign/presets.ts`): el desempate usa `recommended`; las listas están ordenadas para que el primer modelo «fuerte» de cada proveedor sea el que funciona sin saldo (Gemini 3.8 Flash antes que Argon; Nemotron gratis antes que `openrouter/auto`). `presets.test.ts` (nuevo) cubre Gemini solo, Gemini + Anthropic (juez B distinto), OpenRouter solo con el preset barato (todo gratis) y privacidad/respaldo local. Se actualizaron los ids de los tests existentes (`gpt-5` → `gpt-6-sol`, `gpt-5-mini` → `gpt-6-luna`, recomendados, ya sin Perplexity); ningún test se borró.
+
+### Pendiente y no verificado
+
+- Endpoints, `client_id` y uso de tokens del login de Nous (documentación incompleta): no hay login automático.
+- Alias y precios de Mistral; precios de NVIDIA y de Nous (`null`).
+- Que `127.0.0.1` valga como callback de OpenRouter (se usa `localhost`, lo documentado); el flujo real contra openrouter.ai no se ejecutó a propósito (sin logins reales).
+- Que el oyente loopback sea alcanzable con el cortafuegos/antivirus de cada equipo (en Windows el tráfico loopback no suele pedir permiso, pero no se probó en todos).
+- Cuota real de los niveles gratuitos de Gemini, Groq y OpenRouter (cambian a menudo; solo se leyeron las tablas públicas).
+- Linux/macOS: el abridor del navegador (`xdg-open`/`open`) compila pero no se ejecutó.

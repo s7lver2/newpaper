@@ -225,7 +225,7 @@
 @media (max-width: 640px) { .np-wz-closed { box-sizing: border-box; } }
 
 /* Inicio de sesión con el proveedor (paso 2): opción principal sobre «pegar una clave». */
-.np-wz-login { margin-bottom: 4px; }
+.np-wz-login { margin: 18px 0 4px; }
 .np-wz-login-btn { width: 100%; justify-content: center; }
 .np-wz-login-lead { margin: 10px 0 0; font-size: 13px; line-height: 1.5; color: var(--np-muted); }
 .np-wz-login-err { margin-top: 12px; }
@@ -237,5 +237,5 @@
 .np-wz-login-wait-actions .np-wz-btn { height: 36px; padding: 0 14px; }
 .np-wz-or { display: flex; align-items: center; gap: 12px; margin: 22px 0 -6px; font-size: 12px; color: var(--np-faint); }
 .np-wz-or::before, .np-wz-or::after { content: ''; flex: 1; height: 1px; background: var(--np-line); }
-.np-wz-login-exp { margin: 0 0 4px; padding: 10px 12px; border: 1px dashed var(--np-line3); border-radius: 12px; font-size: 13px; line-height: 1.45; color: var(--np-muted); }
+.np-wz-login-exp { margin: 18px 0 4px; padding: 10px 12px; border: 1px dashed var(--np-line3); border-radius: 12px; font-size: 13px; line-height: 1.45; color: var(--np-muted); }
 @media (prefers-reduced-motion: reduce) { .np-wz-login-wait .np-wz-spin { animation-duration: 2.4s; } }

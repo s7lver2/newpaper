@@ -493,7 +493,7 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
                       <p className="np-wz-login-lead">{t('providers.login.lead', { name: name(provider) })}</p>
                       {login.phase === 'error' ? (
                         <div className="np-wz-warn np-wz-login-err np-rise" role="alert">
-                          {login.code === 'login_timeout' ? t('providers.login.timeout') : login.code === 'login_denied' ? t('providers.login.denied', { name: name(provider) }) : t('providers.login.failed', { name: name(provider), message: login.message })}
+                          {login.code === 'login_timeout' ? t('providers.login.timeout') : login.code === 'login_denied' ? t('providers.login.denied', { name: name(provider) }) : t('providers.login.failed', { name: name(provider), message: login.message.replace(/^login failed: /, '') })}
                         </div>
                       ) : null}
                     </>
