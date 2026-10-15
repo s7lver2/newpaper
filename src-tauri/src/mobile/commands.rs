@@ -55,6 +55,7 @@ pub async fn mobile_ollama_probe(url: String) -> CmdResult<OllamaProbe> {
     let ep = classify(&url).map_err(|e| CmdError::new("ollama_address", format!("{e:?}")))?;
     let c = reqwest::Client::builder()
         .no_proxy()
+        .redirect(reqwest::redirect::Policy::none())
         .timeout(std::time::Duration::from_secs(3))
         .build()
         .map_err(|e| CmdError::new("network", e.to_string()))?;

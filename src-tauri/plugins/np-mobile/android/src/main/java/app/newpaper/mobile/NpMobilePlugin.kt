@@ -29,6 +29,8 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
     }
     private var pending: String? = null
     private var lock: WifiManager.MulticastLock? = null
+    /** Falso si Rust pidió un proxy (o el bloqueo) y la webview no pudo aplicarlo: entonces no se abre la webview original. */
+    @Volatile private var proxyOk = true
 
     override fun load(webView: WebView) {
         pending = textOf(activity.intent)
@@ -38,9 +40,10 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
         textOf(intent)?.let { pending = it; trigger("share", JSObject().put("text", it)) }
     }
 
+    /** Entrada no fiable (cualquier app puede lanzar el intent): solo texto corto o un enlace http(s). */
     private fun textOf(intent: Intent?): String? = when (intent?.action) {
-        Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)
-        Intent.ACTION_VIEW -> intent.dataString
+        Intent.ACTION_SEND -> intent.getStringExtra(Intent.EXTRA_TEXT)?.take(MAX_SHARED_CHARS)
+        Intent.ACTION_VIEW -> intent.data?.takeIf { it.scheme == "http" || it.scheme == "https" }?.toString()?.take(MAX_SHARED_CHARS)
         else -> null
     }
 
@@ -68,6 +71,10 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
 
     @Command fun originalOpen(invoke: Invoke) {
         val a = invoke.parseArgs(OpenArgs::class.java)
+        if (!proxyOk) {
+            invoke.reject("proxy not applied")
+            return
+        }
         activity.runOnUiThread {
             original.open(a.url, a.labels.close, a.labels.analyze)
             invoke.resolve()
@@ -85,11 +92,13 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
     @Command fun setProxy(invoke: Invoke) {
         val a = invoke.parseArgs(ProxyArgs::class.java)
         if (!WebViewFeature.isFeatureSupported(WebViewFeature.PROXY_OVERRIDE)) {
+            proxyOk = a.kind == "direct"
             invoke.reject("proxy override not supported")
             return
         }
+        proxyOk = a.kind == "direct"
         val ctl = ProxyController.getInstance()
-        val done = Runnable { invoke.resolve() }
+        val done = Runnable { proxyOk = true; invoke.resolve() }
         when (a.kind) {
             "direct" -> ctl.clearProxyOverride({ it.run() }, done)
             "socks" -> ctl.setProxyOverride(ProxyConfig.Builder().addProxyRule("socks5://127.0.0.1:${a.port}").build(), { it.run() }, done)
@@ -108,5 +117,9 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
             lock = null
         }
         invoke.resolve()
+    }
+
+    private companion object {
+        const val MAX_SHARED_CHARS = 8192
     }
 }
