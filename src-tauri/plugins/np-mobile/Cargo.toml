@@ -1,0 +1,15 @@
+[package]
+name = "tauri-plugin-np-mobile"
+version = "0.1.0"
+edition = "2021"
+publish = false
+links = "tauri-plugin-np-mobile"
+
+[dependencies]
+tauri = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+
+[build-dependencies]
+tauri-plugin = { version = "2", features = ["build"] }
