@@ -3948,6 +3948,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "np-mobile-core"
+version = "0.1.0"
+dependencies = [
+ "np-net",
+ "reqwest",
+ "serde",
+ "thiserror 2.0.21",
+ "url",
+]
+
+[[package]]
 name = "np-net"
 version = "0.1.0"
 dependencies = [

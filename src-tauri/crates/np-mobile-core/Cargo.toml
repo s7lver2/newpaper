@@ -1,0 +1,12 @@
+[package]
+name = "np-mobile-core"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+np-net = { path = "../np-net" }
+reqwest = { workspace = true }
+url = { workspace = true }
+thiserror = { workspace = true }
+serde = { workspace = true }
