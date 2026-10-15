@@ -86,7 +86,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
 
     // --- Red ---
     let net_settings = settings::load_net_settings(&store)?;
-    let net = tauri::async_runtime::block_on(NetController::start(net_settings, tor_backend(app)?))?;
+    let net = tauri::async_runtime::block_on(NetController::start_with(net_settings, tor_backend(app)?, cfg!(mobile)))?;
     let profiles = Arc::new(NetProfiles::new(net.clone()));
     ext.set_profile_provider(profiles.clone());
     ext.set_http_provider(Arc::new(NetHttp(net.clone())));

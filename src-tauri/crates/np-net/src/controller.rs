@@ -15,6 +15,7 @@ use crate::{
     mode::normalize_country,
     route,
     server::{SocksServer, TorBackend},
+    socks::Auth,
     NetError, NetMode, NetSettings, NetStatus, Route, TorState, Traffic,
 };
 
@@ -29,7 +30,7 @@ pub const TOR_RETRY_DELAY: Duration = Duration::from_secs(60);
 /// Dos cambios de red seguidos (WiFi <-> datos) cuentan como uno: evita reiniciar Arti en cada rebote.
 pub const NETWORK_DEBOUNCE: Duration = Duration::from_secs(3);
 
-fn build_client(socks_port: Option<u16>, follow_redirects: bool) -> Result<reqwest::Client, NetError> {
+fn build_client(socks_port: Option<u16>, auth: Option<&Auth>, follow_redirects: bool) -> Result<reqwest::Client, NetError> {
     let mut b = crate::with_roots(reqwest::Client::builder())
         .user_agent(concat!("newpaper/", env!("CARGO_PKG_VERSION")))
         .connect_timeout(Duration::from_secs(45))
@@ -39,7 +40,11 @@ fn build_client(socks_port: Option<u16>, follow_redirects: bool) -> Result<reqwe
     }
     match socks_port {
         Some(p) => {
-            let proxy = reqwest::Proxy::all(format!("socks5h://127.0.0.1:{p}"))?
+            let url = match auth {
+                Some(a) => format!("socks5h://{}:{}@127.0.0.1:{p}", a.user, a.pass),
+                None => format!("socks5h://127.0.0.1:{p}"),
+            };
+            let proxy = reqwest::Proxy::all(url)?
                 .no_proxy(reqwest::NoProxy::from_string("localhost,127.0.0.1,::1"));
             b = b.proxy(proxy);
         }
@@ -66,7 +71,15 @@ pub struct NetController {
 
 impl NetController {
     pub async fn start(settings: NetSettings, tor: Arc<dyn TorBackend>) -> Result<Arc<Self>, NetError> {
-        let server = SocksServer::bind(tor.clone().connector()).await?;
+        Self::start_with(settings, tor, false).await
+    }
+
+    /// `authenticated`: el SOCKS principal exige un secreto aleatorio por arranque que solo conoce el cliente HTTP propio.
+    /// En móvil la webview no usa este puerto (lleva uno de sesión), así que no hace falta que Chromium se autentique.
+    /// En escritorio las pestañas sí lo usan sin credenciales (Chromium no soporta SOCKS5 con usuario), por eso es opcional.
+    pub async fn start_with(settings: NetSettings, tor: Arc<dyn TorBackend>, authenticated: bool) -> Result<Arc<Self>, NetError> {
+        let auth = authenticated.then(|| Auth { user: "np".into(), pass: format!("{}{}", uuid::Uuid::new_v4().simple(), uuid::Uuid::new_v4().simple()) });
+        let server = SocksServer::bind_with_auth(tor.clone().connector(), auth.clone()).await?;
         let port = server.port();
         if let Some(cc) = &settings.exit_country {
             tor.set_exit_country(Some(cc.as_str()))?;
@@ -74,10 +87,10 @@ impl NetController {
         let initial = compose_status(&settings, &tor.subscribe().borrow(), port, tor.circuit());
         let (status, _) = watch::channel(initial);
         let me = Arc::new(Self {
-            direct: build_client(None, true)?,
-            proxied: build_client(Some(port), true)?,
-            direct_strict: build_client(None, false)?,
-            proxied_strict: build_client(Some(port), false)?,
+            direct: build_client(None, None, true)?,
+            proxied: build_client(Some(port), auth.as_ref(), true)?,
+            direct_strict: build_client(None, None, false)?,
+            proxied_strict: build_client(Some(port), auth.as_ref(), false)?,
             tor: tor.clone(),
             server,
             settings: RwLock::new(settings.clone()),
@@ -337,6 +350,29 @@ mod tests {
         drop(session);
         tokio::time::sleep(Duration::from_millis(50)).await;
         assert!(tokio::net::TcpStream::connect(("127.0.0.1", port)).await.is_err(), "closed with the webview");
+    }
+
+    #[tokio::test]
+    async fn authenticated_main_socks_refuses_other_apps_but_serves_our_client() {
+        let (addr, _) = origin().await;
+        let tor = FakeTor::new(true).with_host("origin.test", addr);
+        let net = NetController::start_with(tor_mode(), tor.clone(), true).await.unwrap();
+        assert_eq!(fetch(&net).await.unwrap(), "ok", "our own client carries the secret");
+        // Otra app del dispositivo: saludo sin autenticación -> sin método aceptable.
+        let mut c = tokio::net::TcpStream::connect(("127.0.0.1", net.socks_port())).await.unwrap();
+        c.write_all(&[5, 1, 0]).await.unwrap();
+        let mut g = [0u8; 2];
+        c.read_exact(&mut g).await.unwrap();
+        assert_eq!(g, [5, 0xFF]);
+        // Otra app que ofrece usuario/contraseña pero no conoce el secreto.
+        let mut c = tokio::net::TcpStream::connect(("127.0.0.1", net.socks_port())).await.unwrap();
+        c.write_all(&[5, 1, 2]).await.unwrap();
+        c.read_exact(&mut g).await.unwrap();
+        assert_eq!(g, [5, 2]);
+        c.write_all(&[1, 2, b'n', b'p', 3, b'b', b'a', b'd']).await.unwrap();
+        c.read_exact(&mut g).await.unwrap();
+        assert_eq!(g, [1, 1]);
+        assert!(!tor.seen_targets().iter().any(|t| t.contains("bad")));
     }
 
     #[tokio::test]

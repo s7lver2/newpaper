@@ -88,6 +88,44 @@ pub async fn negotiate<S: AsyncRead + AsyncWrite + Unpin>(s: &mut S) -> Result<(
     }
 }
 
+/// Credenciales de usuario/contraseña (RFC 1929) que exige un servidor SOCKS autenticado.
+#[derive(Clone)]
+pub struct Auth {
+    pub user: String,
+    pub pass: String,
+}
+
+/// Como `negotiate`, pero solo acepta usuario/contraseña. Otras apps del dispositivo no pueden usar el puerto de bucle local
+/// sin conocer el secreto (el cliente HTTP propio sí, porque lo lleva en la URL del proxy).
+pub async fn negotiate_auth<S: AsyncRead + AsyncWrite + Unpin>(s: &mut S, auth: &Auth) -> Result<(), SocksError> {
+    let ver = s.read_u8().await?;
+    if ver != 5 {
+        return Err(SocksError::Version(ver));
+    }
+    let n = s.read_u8().await? as usize;
+    let mut methods = vec![0u8; n];
+    s.read_exact(&mut methods).await?;
+    if !methods.contains(&0x02) {
+        s.write_all(&[5, 0xFF]).await?;
+        return Err(SocksError::NoAcceptableAuth);
+    }
+    s.write_all(&[5, 0x02]).await?;
+    let sub = s.read_u8().await?;
+    let mut user = vec![0u8; s.read_u8().await? as usize];
+    s.read_exact(&mut user).await?;
+    let mut pass = vec![0u8; s.read_u8().await? as usize];
+    s.read_exact(&mut pass).await?;
+    // Comparación sin cortocircuito: el secreto es local y efímero, pero no cuesta nada.
+    let same = |a: &[u8], b: &[u8]| a.len() == b.len() && a.iter().zip(b).fold(0u8, |acc, (x, y)| acc | (x ^ y)) == 0;
+    if sub == 1 && same(&user, auth.user.as_bytes()) & same(&pass, auth.pass.as_bytes()) {
+        s.write_all(&[1, 0]).await?;
+        Ok(())
+    } else {
+        s.write_all(&[1, 1]).await?;
+        Err(SocksError::NoAcceptableAuth)
+    }
+}
+
 pub async fn write_reply<S: AsyncWrite + Unpin>(s: &mut S, code: u8) -> io::Result<()> {
     s.write_all(&[5, code, 0, 1, 0, 0, 0, 0, 0, 0]).await
 }

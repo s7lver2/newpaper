@@ -15,6 +15,7 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 tokio = { workspace = true, features = ["net", "io-util"] }
 tracing = { workspace = true }
+uuid = { workspace = true }
 
 # Tor (Arti) en escritorio y Android. iOS queda fuera (subproyecto 8). Mismo cliente y TLS (rustls) en ambos.
 [target.'cfg(not(target_os = "ios"))'.dependencies]

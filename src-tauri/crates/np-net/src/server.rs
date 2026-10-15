@@ -16,7 +16,7 @@ use tokio::{
 };
 
 use crate::{
-    socks::{negotiate, read_request, reply, write_reply, SocksError, TargetAddr},
+    socks::{negotiate, negotiate_auth, read_request, reply, write_reply, Auth, SocksError, TargetAddr},
     NetError, TorState,
 };
 
@@ -68,6 +68,11 @@ pub struct SocksServer {
 
 impl SocksServer {
     pub async fn bind(connector: Arc<dyn Connector>) -> io::Result<Self> {
+        Self::bind_with_auth(connector, None).await
+    }
+
+    /// Con `auth` el servidor exige usuario/contraseña (SOCKS5 RFC 1929); sin ella acepta cualquier conexión de bucle local.
+    pub async fn bind_with_auth(connector: Arc<dyn Connector>, auth: Option<Auth>) -> io::Result<Self> {
         let listener = TcpListener::bind((Ipv4Addr::LOCALHOST, 0)).await?;
         let port = listener.local_addr()?.port();
         let task = tokio::spawn(async move {
@@ -78,8 +83,9 @@ impl SocksServer {
                             continue;
                         }
                         let c = connector.clone();
+                        let a = auth.clone();
                         tokio::spawn(async move {
-                            if let Err(e) = handle(sock, peer, c).await {
+                            if let Err(e) = handle(sock, peer, c, a).await {
                                 tracing::debug!(error = %e, "socks session ended with error");
                             }
                         });
@@ -105,8 +111,11 @@ impl Drop for SocksServer {
     }
 }
 
-async fn handle(mut sock: TcpStream, _peer: SocketAddr, connector: Arc<dyn Connector>) -> Result<(), SocksError> {
-    negotiate(&mut sock).await?;
+async fn handle(mut sock: TcpStream, _peer: SocketAddr, connector: Arc<dyn Connector>, auth: Option<Auth>) -> Result<(), SocksError> {
+    match &auth {
+        Some(a) => negotiate_auth(&mut sock, a).await?,
+        None => negotiate(&mut sock).await?,
+    }
     let target = read_request(&mut sock).await?;
     match connector.connect(&target).await {
         Ok(mut upstream) => {
