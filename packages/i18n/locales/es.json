@@ -188,19 +188,11 @@
     "ai": {
       "title": "Inteligencia artificial",
       "description": "Proveedores, modelo de cada paso y gasto",
-      "lead": "Conecta proveedores y monta tu pipeline de análisis. Las claves se guardan cifradas en el llavero de Windows.",
+      "lead": "Conecta un proveedor y newpaper elige el modelo de cada paso. Las claves se guardan cifradas en tu equipo.",
       "startPoint": "Punto de partida",
       "perNews": "{cost} por noticia",
       "providers": "Proveedores",
       "providersCount": "{total} compatibles · {active} activos",
-      "filterLabel": "Filtrar proveedores",
-      "filter": {
-        "all": "Todos",
-        "on": "Activos",
-        "local": "Local",
-        "open": "Abiertos",
-        "closed": "Cerrados"
-      },
       "detected": "Detectado",
       "connected": "Conectado",
       "notDetected": "No detectado",
@@ -278,11 +270,15 @@
       "summary": "Pipeline de 8 pasos",
       "summaryNone": "Sin proveedor",
       "emptyTitle": "Conecta un proveedor",
-      "emptyText": "Sin un proveedor conectado no hay modelos que asignar a cada paso. Con uno basta para empezar; un asistente te guía en tres pasos.",
+      "emptyText": "Con uno basta para empezar. Un asistente te guía paso a paso.",
       "budgetLabel": "Límite de gasto mensual",
       "noLimit": "Sin límite",
       "budgetNote": "Al llegar al límite, el análisis completo pasa a modelos locales. 0 desactiva el límite.",
-      "noneShown": "Ningún proveedor coincide con este filtro."
+      "yours": "Tus proveedores",
+      "add": "Añadir proveedor",
+      "advanced": "Avanzado",
+      "advancedHint": "Cada proveedor por separado y el modelo de cada paso",
+      "customAssign": "Has ajustado los pasos a mano, en Avanzado."
     },
     "analysis": {
       "title": "Análisis",
@@ -1029,7 +1025,6 @@
     },
     "connect": "Conectar {name}",
     "pasteKey": "¿Ya tienes una clave? Pégala aquí",
-    "pasteHint": "Reconocemos el proveedor por cómo empieza la clave.",
     "detected": "Es de {name}.",
     "ambiguous": "Esa clave puede ser de varios proveedores. Elige cuál:",
     "unknownPrefix": "No reconocemos este prefijo. Elige el proveedor en la lista de abajo.",
@@ -1102,31 +1097,13 @@
       "testSub": "Conexión y modelos"
     },
     "tag": {
-      "recommended": "Recomendado"
-    },
-    "desc": {
-      "google": "Una clave gratuita de Google AI Studio, con límites diarios. Con el nivel gratuito Google puede usar tus textos para mejorar sus productos; con saldo de pago, no.",
-      "openrouter": "Inicias sesión y newpaper recibe la clave sin que la copies. Incluye modelos gratuitos y cientos más, abiertos y cerrados.",
-      "ollama": "Modelos abiertos que corren en tu equipo: gratis y sin enviar un solo texto fuera. Necesita un ordenador con memoria suficiente."
+      "free": "Gratis",
+      "account": "Con cuenta",
+      "local": "Local"
     },
     "isOf": "Es de",
     "pill": {
       "detected": "detectado"
-    },
-    "sub": {
-      "openai": "GPT-6",
-      "nous": "Hermes",
-      "anthropic": "Claude",
-      "google": "Nivel gratuito",
-      "deepseek": "V4, pesos abiertos",
-      "xai": "Grok 4.7",
-      "mistral": "Large y Small",
-      "nvidia": "build.nvidia.com",
-      "openrouter": "Abiertos y cerrados",
-      "groq": "gpt-oss y Llama",
-      "huggingface": "Modelos abiertos",
-      "ollama": "Ábrelo para detectarlo",
-      "lmstudio": "Ábrelo para detectarlo"
     },
     "subCfg": {
       "anthropic": "Claude",
@@ -1246,6 +1223,36 @@
       "denied": "Has rechazado el acceso en {name}. Puedes volver a intentarlo.",
       "failed": "{name} no completó el inicio de sesión ({message}). Vuelve a intentarlo o pega una clave.",
       "experimental": "Iniciar sesión con {name} es experimental y todavía no está disponible: usa una clave."
+    },
+    "pickTitle": "Empieza con uno de estos",
+    "seeAll": "Ver todos los proveedores ({n})",
+    "all": {
+      "title": "Todos los proveedores",
+      "back": "Volver",
+      "search": "Buscar un proveedor",
+      "segments": "Tipo de proveedor",
+      "count": "{n, plural, one {# resultado} other {# resultados}}",
+      "none": "Ningún proveedor coincide con «{query}».",
+      "custom": "¿Tienes tu propio servidor? Conéctalo"
+    },
+    "soon": {
+      "badge": "Próximamente",
+      "newrouter": "Nuestro propio router: una sola cuenta para todos los modelos, sin claves"
+    },
+    "hint": {
+      "google": "Los modelos de Google",
+      "openrouter": "Muchos modelos con una sola cuenta",
+      "ollama": "Corre en tu ordenador, sin enviar nada",
+      "groq": "Respuestas muy rápidas",
+      "nvidia": "Modelos abiertos en la nube de NVIDIA",
+      "deepseek": "Los modelos de DeepSeek",
+      "mistral": "Modelos europeos",
+      "nous": "Los modelos Hermes",
+      "huggingface": "Comunidad de modelos abiertos",
+      "anthropic": "Los modelos Claude",
+      "openai": "Los modelos GPT",
+      "xai": "Los modelos Grok",
+      "lmstudio": "Un programa para modelos en tu ordenador"
     }
   },
   "history": {

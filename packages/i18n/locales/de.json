@@ -188,19 +188,11 @@
     "ai": {
       "title": "Künstliche Intelligenz",
       "description": "Anbieter, Modell für jeden Schritt und Ausgaben",
-      "lead": "Verbinde Anbieter und baue deine Analyse-Pipeline. Schlüssel werden verschlüsselt im Windows-Anmeldeinformationsspeicher abgelegt.",
+      "lead": "Verbinde einen Anbieter, und newpaper wählt das Modell für jeden Schritt. Schlüssel werden verschlüsselt auf deinem Rechner gespeichert.",
       "startPoint": "Ausgangspunkt",
       "perNews": "{cost} pro Nachricht",
       "providers": "Anbieter",
       "providersCount": "{total} kompatibel · {active} aktiv",
-      "filterLabel": "Anbieter filtern",
-      "filter": {
-        "all": "Alle",
-        "on": "Aktiv",
-        "local": "Lokal",
-        "open": "Offen",
-        "closed": "Geschlossen"
-      },
       "detected": "Erkannt",
       "connected": "Verbunden",
       "notDetected": "Nicht erkannt",
@@ -278,11 +270,15 @@
       "summary": "Pipeline mit 8 Schritten",
       "summaryNone": "Kein Anbieter",
       "emptyTitle": "Verbinde einen Anbieter",
-      "emptyText": "Ohne verbundenen Anbieter gibt es keine Modelle für die einzelnen Schritte. Einer reicht zum Start; ein Assistent führt dich in drei Schritten.",
+      "emptyText": "Einer reicht zum Start. Ein Assistent führt dich Schritt für Schritt.",
       "budgetLabel": "Monatliches Ausgabenlimit",
       "noLimit": "Kein Limit",
       "budgetNote": "Beim Erreichen des Limits wechselt die vollständige Analyse zu lokalen Modellen. 0 schaltet das Limit aus.",
-      "noneShown": "Kein Anbieter passt zu diesem Filter."
+      "yours": "Deine Anbieter",
+      "add": "Anbieter hinzufügen",
+      "advanced": "Erweitert",
+      "advancedHint": "Jeder Anbieter einzeln und das Modell für jeden Schritt",
+      "customAssign": "Du hast die Schritte von Hand eingestellt, unter Erweitert."
     },
     "analysis": {
       "title": "Analyse",
@@ -1029,7 +1025,6 @@
     },
     "connect": "{name} verbinden",
     "pasteKey": "Hast du schon einen Schlüssel? Hier einfügen",
-    "pasteHint": "Wir erkennen den Anbieter am Anfang des Schlüssels.",
     "detected": "Er gehört zu {name}.",
     "ambiguous": "Dieser Schlüssel kann zu mehreren Anbietern gehören. Wähle einen:",
     "unknownPrefix": "Wir erkennen dieses Präfix nicht. Wähle den Anbieter aus der Liste unten.",
@@ -1102,31 +1097,13 @@
       "testSub": "Verbindung und Modelle"
     },
     "tag": {
-      "recommended": "Empfohlen"
-    },
-    "desc": {
-      "google": "Ein kostenloser Google-AI-Studio-Schlüssel mit Tageslimits. Im kostenlosen Kontingent darf Google deine Texte zur Verbesserung seiner Produkte nutzen; mit bezahltem Guthaben nicht.",
-      "openrouter": "Du meldest dich an und newpaper erhält den Schlüssel, ohne dass du ihn kopierst. Enthält kostenlose und Hunderte weitere Modelle, offene und geschlossene.",
-      "ollama": "Offene Modelle, die auf deinem Rechner laufen: kostenlos und ohne dass ein Text nach außen geht. Benötigt einen Rechner mit genug Speicher."
+      "free": "Gratis",
+      "account": "Mit Konto",
+      "local": "Lokal"
     },
     "isOf": "Gehört zu",
     "pill": {
       "detected": "erkannt"
-    },
-    "sub": {
-      "openai": "GPT-6",
-      "nous": "Hermes",
-      "anthropic": "Claude",
-      "google": "Gratis-Kontingent",
-      "deepseek": "V4, offene Gewichte",
-      "xai": "Grok 4.7",
-      "mistral": "Large und Small",
-      "nvidia": "build.nvidia.com",
-      "openrouter": "Offen und geschlossen",
-      "groq": "gpt-oss und Llama",
-      "huggingface": "Offene Modelle",
-      "ollama": "Öffnen, damit es erkannt wird",
-      "lmstudio": "Öffnen, damit es erkannt wird"
     },
     "subCfg": {
       "anthropic": "Claude",
@@ -1246,6 +1223,36 @@
       "denied": "Du hast den Zugriff bei {name} abgelehnt. Du kannst es erneut versuchen.",
       "failed": "{name} hat die Anmeldung nicht abgeschlossen ({message}). Versuche es erneut oder füge einen Schlüssel ein.",
       "experimental": "Die Anmeldung mit {name} ist experimentell und noch nicht verfügbar: Verwende einen Schlüssel."
+    },
+    "pickTitle": "Starte mit einem davon",
+    "seeAll": "Alle Anbieter ansehen ({n})",
+    "all": {
+      "title": "Alle Anbieter",
+      "back": "Zurück",
+      "search": "Anbieter suchen",
+      "segments": "Art des Anbieters",
+      "count": "{n, plural, one {# Treffer} other {# Treffer}}",
+      "none": "Kein Anbieter passt zu „{query}“.",
+      "custom": "Eigener Server? Hier verbinden"
+    },
+    "soon": {
+      "badge": "Demnächst",
+      "newrouter": "Unser eigener Router: ein Konto für alle Modelle, ohne Schlüssel"
+    },
+    "hint": {
+      "google": "Die Modelle von Google",
+      "openrouter": "Viele Modelle mit einem Konto",
+      "ollama": "Läuft auf deinem Rechner, nichts wird gesendet",
+      "groq": "Sehr schnelle Antworten",
+      "nvidia": "Offene Modelle in der NVIDIA-Cloud",
+      "deepseek": "Die Modelle von DeepSeek",
+      "mistral": "Europäische Modelle",
+      "nous": "Die Hermes-Modelle",
+      "huggingface": "Eine Gemeinschaft offener Modelle",
+      "anthropic": "Die Claude-Modelle",
+      "openai": "Die GPT-Modelle",
+      "xai": "Die Grok-Modelle",
+      "lmstudio": "Eine App für Modelle auf deinem Rechner"
     }
   },
   "history": {

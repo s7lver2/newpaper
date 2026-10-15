@@ -4,6 +4,7 @@ import google from './logos/google.svg?raw';
 import huggingface from './logos/huggingface.svg?raw';
 import lmstudio from './logos/lmstudio.svg?raw';
 import mistral from './logos/mistral.svg?raw';
+import newrouter from './logos/newrouter.svg?raw';
 import nvidia from './logos/nvidia.svg?raw';
 import ollama from './logos/ollama.svg?raw';
 import openai from './logos/openai.svg?raw';
@@ -41,6 +42,8 @@ export const PROVIDER_META: Record<string, ProviderMeta> = {
   ollama: { tint: '#EDEDEB', svg: clean(ollama) },
   lmstudio: { tint: '#E6E5FA', svg: clean(lmstudio) },
   custom: { tint: '#EFECE5', mono: '{ }' },
+  /** Idea futura («Próximamente»): no es un proveedor, pero usa la misma ficha de logo. */
+  newrouter: { tint: '#E7EEF0', svg: clean(newrouter) },
 };
 
 export const metaOf = (id: string): ProviderMeta => PROVIDER_META[id] ?? { tint: '#EFECE5', mono: id.slice(0, 2) };

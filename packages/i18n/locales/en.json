@@ -188,19 +188,11 @@
     "ai": {
       "title": "Artificial intelligence",
       "description": "Providers, the model for each step and spending",
-      "lead": "Connect providers and build your analysis pipeline. Keys are stored encrypted in the Windows credential store.",
+      "lead": "Connect a provider and newpaper picks the model for each step. Keys are stored encrypted on your computer.",
       "startPoint": "Starting point",
       "perNews": "{cost} per article",
       "providers": "Providers",
       "providersCount": "{total} supported · {active} active",
-      "filterLabel": "Filter providers",
-      "filter": {
-        "all": "All",
-        "on": "Active",
-        "local": "Local",
-        "open": "Open",
-        "closed": "Closed"
-      },
       "detected": "Detected",
       "connected": "Connected",
       "notDetected": "Not detected",
@@ -278,11 +270,15 @@
       "summary": "8-step pipeline",
       "summaryNone": "No provider",
       "emptyTitle": "Connect a provider",
-      "emptyText": "Without a connected provider there are no models to assign to each step. One is enough to start; a wizard guides you in three steps.",
+      "emptyText": "One is enough to start. A wizard guides you step by step.",
       "budgetLabel": "Monthly spending limit",
       "noLimit": "No limit",
       "budgetNote": "When the limit is reached, the full analysis switches to local models. 0 turns the limit off.",
-      "noneShown": "No provider matches this filter."
+      "yours": "Your providers",
+      "add": "Add a provider",
+      "advanced": "Advanced",
+      "advancedHint": "Each provider on its own and the model for each step",
+      "customAssign": "You have set the steps by hand, under Advanced."
     },
     "analysis": {
       "title": "Analysis",
@@ -1029,7 +1025,6 @@
     },
     "connect": "Connect {name}",
     "pasteKey": "Already have a key? Paste it here",
-    "pasteHint": "We recognise the provider from how the key starts.",
     "detected": "It is from {name}.",
     "ambiguous": "That key could belong to several providers. Choose one:",
     "unknownPrefix": "We do not recognise this prefix. Choose the provider from the list below.",
@@ -1102,31 +1097,13 @@
       "testSub": "Connection and models"
     },
     "tag": {
-      "recommended": "Recommended"
-    },
-    "desc": {
-      "google": "A free Google AI Studio key with daily limits. On the free tier Google may use your texts to improve its products; with paid credit, it does not.",
-      "openrouter": "You sign in and newpaper receives the key without you copying it. Includes free models and hundreds more, open and closed.",
-      "ollama": "Open models running on your machine: free and not a single text sent out. It needs a computer with enough memory."
+      "free": "Free",
+      "account": "With account",
+      "local": "Local"
     },
     "isOf": "It's from",
     "pill": {
       "detected": "detected"
-    },
-    "sub": {
-      "openai": "GPT-6",
-      "nous": "Hermes",
-      "anthropic": "Claude",
-      "google": "Free tier",
-      "deepseek": "V4, open weights",
-      "xai": "Grok 4.7",
-      "mistral": "Large and Small",
-      "nvidia": "build.nvidia.com",
-      "openrouter": "Open and closed",
-      "groq": "gpt-oss and Llama",
-      "huggingface": "Open models",
-      "ollama": "Open it to detect it",
-      "lmstudio": "Open it to detect it"
     },
     "subCfg": {
       "anthropic": "Claude",
@@ -1246,6 +1223,36 @@
       "denied": "You declined access on {name}. You can try again.",
       "failed": "{name} did not complete the sign-in ({message}). Try again or paste a key.",
       "experimental": "Signing in with {name} is experimental and not available yet: use a key."
+    },
+    "pickTitle": "Start with one of these",
+    "seeAll": "See all providers ({n})",
+    "all": {
+      "title": "All providers",
+      "back": "Back",
+      "search": "Search for a provider",
+      "segments": "Type of provider",
+      "count": "{n, plural, one {# result} other {# results}}",
+      "none": "No provider matches “{query}”.",
+      "custom": "Have your own server? Connect it"
+    },
+    "soon": {
+      "badge": "Coming soon",
+      "newrouter": "Our own router: one account for every model, no keys"
+    },
+    "hint": {
+      "google": "Google’s models",
+      "openrouter": "Many models with one account",
+      "ollama": "Runs on your computer, nothing is sent out",
+      "groq": "Very fast answers",
+      "nvidia": "Open models in NVIDIA’s cloud",
+      "deepseek": "DeepSeek’s models",
+      "mistral": "European models",
+      "nous": "The Hermes models",
+      "huggingface": "A community of open models",
+      "anthropic": "The Claude models",
+      "openai": "The GPT models",
+      "xai": "The Grok models",
+      "lmstudio": "An app for models on your computer"
     }
   },
   "history": {

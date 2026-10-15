@@ -7,10 +7,14 @@ import { navigate } from '../../shell/navigate';
 import { getRegistry, resetPipeline, useAiSettings } from '../ai/pipeline';
 import { money, stepCosts, STEPS, useUsd, WIZARD_NAME } from './aiModel';
 import { DEFAULT_CUSTOM, errorText, firstModel, markConnected, runConnectionTest, storeCredentials, type CustomDraft } from './connect';
-import { groupOf, metaOf } from './providerMeta';
+import { listable } from './chooser';
+import { metaOf } from './providerMeta';
+import { ProviderChooser } from './ProviderChooser';
 import { ProviderLogo } from './ProviderLogo';
 
 type Step = 1 | 2 | 3;
+/** Paso 1: lo esencial («home») o la lista completa de proveedores («all»). */
+type View = 'home' | 'all';
 type Closed = null | 'done' | 'cancelled';
 type LoginState = { phase: 'idle' } | { phase: 'waiting'; url: string | null; opened: boolean; copied: boolean } | { phase: 'error'; code: string; message: string };
 interface TestState { phase: number; failed: boolean; ok: boolean; latencyMs: number; error: string | null }
@@ -37,6 +41,10 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
   const [local, setLocal] = useState<LocalProbe>({ ollama: null, lmstudio: null });
   const [step, setStep] = useState<Step>(1);
   const [dir, setDir] = useState<'f' | 'b'>('f');
+  const [view, setView] = useState<View>('home');
+  const seeAll = useRef<HTMLButtonElement>(null);
+  /** Al volver de la lista completa, el foco regresa al enlace que la abrió. */
+  const returning = useRef(false);
   const [closed, setClosed] = useState<Closed>(null);
   const [provider, setProvider] = useState<ProviderEntry | null>(null);
   /** La clave solo vive aquí hasta que se guarda en el llavero (al probar); después se vacía. */
@@ -99,6 +107,14 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
       setBump((b) => b + 1);
     }
   }, [detected, step, provider]);
+
+  useEffect(() => {
+    if (view === 'all') returning.current = true;
+    else if (returning.current && step === 1) {
+      returning.current = false;
+      seeAll.current?.focus({ preventScroll: true });
+    }
+  }, [view, step]);
 
   // Al entrar en el paso 2, el cursor va al primer campo.
   const isCustomNow = provider?.id === 'custom';
@@ -227,13 +243,16 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
     setCustom(DEFAULT_CUSTOM);
     resetTest();
     setOpened(false);
+    setView('home');
     go(1, 'b');
   };
 
   escape.current = () => {
     if (closed) return;
-    if (step === 1) close();
-    else back();
+    if (step === 1) {
+      if (view === 'all') setView('home');
+      else close();
+    } else back();
   };
 
   // ---- Resumen del paso 3 y de la tarjeta final (asignación automática con este proveedor ya incluido).
@@ -315,122 +334,76 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
     </>
   );
 
-  // ---- Paso 1: elegir.
+  // ---- Paso 1: elegir. Solo lo imprescindible: tres recomendados, pegar una clave y un enlace discreto a la lista completa.
   if (step === 1) {
-    const byCat = (c: ProviderEntry['category']) => registry.providers.filter((p) => p.category === c);
     const rec = registry.recommended();
-    // Abiertos = pesos abiertos (y los agregadores, que sirven de ambos); Cerrados = solo propietarios.
-    const openCloud = byCat('cloud').filter((p) => groupOf(p) === 'open');
-    const closedCloud = byCat('cloud').filter((p) => groupOf(p) === 'closed');
-    const locals = byCat('local');
-    const adv1 = byCat('advanced');
+    const total = listable(registry.providers).length;
     const det1 = detected.length === 1 ? detected[0]! : null;
     const prefixOf = (p: ProviderEntry) => [...p.keyPrefixes].filter((x) => key.trim().startsWith(x)).sort((a, b) => b.length - a.length)[0] ?? '';
     return (
       <div className="np-wz">
         {header}
-        <div className={`np-wz-pane np-wz-pane--${dir}`} key="s1">
-          <h2 className="np-wz-eyebrow">{t('providers.cat.recommended')}</h2>
-          <div className="np-wz-recs">
-            {rec.map((p) => (
-              <button key={p.id} type="button" className="np-wz-rec np-lift" onClick={() => choose(p)}>
-                <span className="np-wz-rec-top">
-                  <ProviderLogo id={p.id} size={56} radius={16} mark={30} mono={22} />
-                  <span className="np-wz-tag">{t('providers.tag.recommended')}</span>
-                </span>
-                <span className="np-wz-rec-name">{name(p)}</span>
-                <span className="np-wz-rec-pitch">{t(`providers.pitch.${p.id}`)}</span>
-                <span className="np-wz-rec-desc">{t(`providers.desc.${p.id}`)}</span>
-                <span className="np-wz-rec-go">{t('providers.connect', { name: name(p) })}<Arrow cls="np-wz-arr" /></span>
-              </button>
-            ))}
+        {view === 'all' ? (
+          <div className={`np-wz-pane np-wz-pane--${dir}`} key="s1-all">
+            <ProviderChooser registry={registry} localModels={localModels} onPick={choose} onBack={() => setView('home')} />
           </div>
-
-          <div className="np-wz-paste">
-            <label htmlFor="np-wz-k1" className="np-wz-paste-label">{t('providers.pasteKey')}</label>
-            <div className="np-wz-paste-hint">{t('providers.pasteHint')}</div>
-            <div className="np-wz-paste-row">
-              <input
-                id="np-wz-k1"
-                className="np-wz-input np-wz-input--paste"
-                type="password"
-                autoComplete="off"
-                spellCheck={false}
-                value={key}
-                placeholder={KEY_EXAMPLES}
-                onChange={(e) => setKey(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && det1) choose(det1);
-                }}
-              />
-              {det1 ? (
-                <div className="np-wz-det">
-                  <span key={`${det1.id}${bump % 2}`} className="np-wz-bnc" data-b={bump % 2}><ProviderLogo id={det1.id} size={36} radius={10} mark={20} mono={15} /></span>
-                  <span className="np-wz-det-text">{t('providers.isOf')} <b>{name(det1)}</b></span>
-                  <button type="button" className="np-wz-btn np-wz-btn--solid np-wz-btn--sm" onClick={() => choose(det1)}>{t('providers.continue')}</button>
-                </div>
-              ) : null}
-            </div>
-            {detected.length > 1 ? (
-              <div className="np-wz-ambig np-rise">
-                <span>{t('providers.ambiguous')}</span>
-                {detected.map((p) => (
-                  <button key={p.id} type="button" className="np-wz-chip" onClick={() => choose(p)}>
-                    <ProviderLogo id={p.id} size={22} radius={7} mark={13} mono={10} />{name(p)}<span className="np-wz-chip-pfx">{prefixOf(p)}</span>
-                  </button>
-                ))}
-              </div>
-            ) : null}
-            {key.trim().length >= 4 && detected.length === 0 ? <div className="np-wz-warn np-rise" role="status">{t('providers.unknownPrefix')}</div> : null}
-          </div>
-
-          {[
-            { id: 'open', list: openCloud },
-            { id: 'closed', list: closedCloud },
-          ].map((g, gi) => (
-            <section key={g.id} aria-labelledby={`np-wz-g-${g.id}`}>
-              <div className="np-wz-secthead"><h2 id={`np-wz-g-${g.id}`} className="np-wz-eyebrow">{t(`providers.cat.${g.id}`)}</h2><span className="np-wz-secthint">{t(`providers.cat.${g.id}Hint`)}</span></div>
-              <div className="np-wz-tiles np-wz-tiles--cloud">
-                {g.list.map((p, i) => (
-                  <button key={p.id} type="button" className="np-wz-tile np-lift" style={{ animationDelay: `${120 + (gi * 7 + i) * 35}ms` }} onClick={() => choose(p)}>
-                    <ProviderLogo id={p.id} size={40} radius={11} mark={22} mono={14} />
-                    <span className="np-wz-tile-text"><span className="np-wz-tile-name">{name(p)}</span><span className="np-wz-tile-sub">{t(`providers.sub.${p.id}`)}</span></span>
-                  </button>
-                ))}
-              </div>
-            </section>
-          ))}
-
-          <div className="np-wz-lower">
-            <div className="np-wz-lower-main">
-              <div className="np-wz-secthead"><h2 className="np-wz-eyebrow">{t('providers.cat.local')}</h2><span className="np-wz-secthint">{t('providers.cat.localHint')}</span></div>
-              <div className="np-wz-tiles np-wz-tiles--local">
-                {locals.map((p, i) => {
-                  const found = localModels(p);
-                  return (
-                    <button key={p.id} type="button" className="np-wz-tile np-lift" style={{ animationDelay: `${120 + (openCloud.length + closedCloud.length + i) * 35}ms` }} onClick={() => choose(p)}>
-                      <ProviderLogo id={p.id} size={40} radius={11} mark={22} mono={14} />
-                      <span className="np-wz-tile-text np-wz-tile-text--grow">
-                        <span className="np-wz-tile-name">{name(p)}</span>
-                        <span className="np-wz-tile-sub np-wz-tile-sub--wrap">{found?.length ? found.slice(0, 3).map((m) => registry.model(p.id, m)?.name ?? m).join(' · ') : t(`providers.sub.${p.id}`)}</span>
-                      </span>
-                      {found?.length ? <span className="np-wz-found"><span className="np-pulse np-wz-found-dot" />{t('providers.pill.detected')}</span> : null}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-            <div className="np-wz-lower-side">
-              <div className="np-wz-secthead"><h2 className="np-wz-eyebrow">{t('providers.cat.advanced')}</h2></div>
-              {adv1.map((p) => (
-                <button key={p.id} type="button" className="np-wz-tile np-wz-tile--wide np-lift" onClick={() => choose(p)}>
-                  <ProviderLogo id={p.id} size={40} radius={11} mono={13} />
-                  <span className="np-wz-tile-text"><span className="np-wz-tile-name">{name(p)}</span><span className="np-wz-tile-sub">{t('providers.customHint')}</span></span>
+        ) : (
+          <div className={`np-wz-pane np-wz-pane--${dir}`} key="s1">
+            <h2 className="np-wz-eyebrow">{t('providers.pickTitle')}</h2>
+            <div className="np-wz-recs">
+              {rec.map((p) => (
+                <button key={p.id} type="button" className="np-wz-rec np-lift" onClick={() => choose(p)}>
+                  <ProviderLogo id={p.id} size={52} radius={15} mark={28} mono={20} />
+                  <span className="np-wz-rec-name">{name(p)}</span>
+                  <span className="np-wz-rec-pitch">{t(`providers.pitch.${p.id}`)}</span>
+                  <span className="np-wz-rec-go">{t('providers.connect', { name: name(p) })}<Arrow cls="np-wz-arr" /></span>
                 </button>
               ))}
             </div>
+
+            <div className="np-wz-paste">
+              <label htmlFor="np-wz-k1" className="np-wz-paste-label">{t('providers.pasteKey')}</label>
+              <div className="np-wz-paste-row">
+                <input
+                  id="np-wz-k1"
+                  className="np-wz-input np-wz-input--paste"
+                  type="password"
+                  autoComplete="off"
+                  spellCheck={false}
+                  value={key}
+                  placeholder={KEY_EXAMPLES}
+                  onChange={(e) => setKey(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' && det1) choose(det1);
+                  }}
+                />
+                {det1 ? (
+                  <div className="np-wz-det">
+                    <span key={`${det1.id}${bump % 2}`} className="np-wz-bnc" data-b={bump % 2}><ProviderLogo id={det1.id} size={36} radius={10} mark={20} mono={15} /></span>
+                    <span className="np-wz-det-text">{t('providers.isOf')} <b>{name(det1)}</b></span>
+                    <button type="button" className="np-wz-btn np-wz-btn--solid np-wz-btn--sm" onClick={() => choose(det1)}>{t('providers.continue')}</button>
+                  </div>
+                ) : null}
+              </div>
+              {detected.length > 1 ? (
+                <div className="np-wz-ambig np-rise">
+                  <span>{t('providers.ambiguous')}</span>
+                  {detected.map((p) => (
+                    <button key={p.id} type="button" className="np-wz-chip" onClick={() => choose(p)}>
+                      <ProviderLogo id={p.id} size={22} radius={7} mark={13} mono={10} />{name(p)}<span className="np-wz-chip-pfx">{prefixOf(p)}</span>
+                    </button>
+                  ))}
+                </div>
+              ) : null}
+              {key.trim().length >= 4 && detected.length === 0 ? <div className="np-wz-warn np-rise" role="status">{t('providers.unknownPrefix')}</div> : null}
+            </div>
+
+            <button ref={seeAll} type="button" className="np-wz-seeall" onClick={() => setView('all')}>
+              {t('providers.seeAll', { n: total })}
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+            </button>
           </div>
-        </div>
+        )}
       </div>
     );
   }

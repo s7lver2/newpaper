@@ -27,6 +27,16 @@ export function pipelineTotals(registry: Registry, a: Assignments, detectorOn: b
   return { usd, unknown, costs, steps };
 }
 
+/** Lo que resume la asignación: coste y tiempo por noticia, pasos que se quedan en tu equipo y cuántas noticias caben en el límite. */
+export function pipelineStats(registry: Registry, ai: Ai, effective: Assignments) {
+  const total = pipelineTotals(registry, effective, ai.detector);
+  const active = STEPS.filter((s) => !(s.optional && !ai.detector));
+  const isLocal = (a?: Assignment) => !a || registry.get(a.provider)?.type === 'local';
+  const localSteps = active.filter((s) => !s.stage || isLocal(effective[s.stage])).length;
+  const seconds = 2.2 + total.steps.reduce((n, s) => n + stepSeconds(registry, effective, s), 0) * 0.6;
+  return { total, active, localSteps, seconds };
+}
+
 export function AiPipeline({ registry, ai, localMap, effective }: Props) {
   const { t } = useI18n();
   const fmt = useUsd();
@@ -42,10 +52,7 @@ export function AiPipeline({ registry, ai, localMap, effective }: Props) {
   const stepOff = (s: StepDef) => s.optional && !ai.detector;
   const stepLocal = (s: StepDef) => !s.stage || isLocalA(effective[s.stage]);
 
-  const total = pipelineTotals(registry, effective, ai.detector);
-  const active = STEPS.filter((s) => !stepOff(s));
-  const localSteps = active.filter((s) => stepLocal(s)).length;
-  const seconds = 2.2 + total.steps.reduce((n, s) => n + stepSeconds(registry, effective, s), 0) * 0.6;
+  const { total, active, localSteps, seconds } = pipelineStats(registry, ai, effective);
   const limit = ai.monthlyLimitUsd;
   const perMonth = total.usd === 0 || !limit ? t('settings.ai.unlimited') : `≈ ${Math.floor(limit / total.usd).toLocaleString()} ${t('settings.ai.newsUnit')}`;
 

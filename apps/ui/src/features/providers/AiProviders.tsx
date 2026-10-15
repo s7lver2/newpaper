@@ -1,9 +1,8 @@
 import { useI18n } from '@newpaper/i18n/react';
 import { costOf, type ProviderEntry, type Registry } from '@newpaper/pipeline';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { commands } from '../../ipc/commands';
 import type { CustomEndpoint } from '../../ipc/types';
-import { openInternal } from '../../shell/navigate';
 import type { useAiSettings } from '../ai/pipeline';
 import { money, SETTINGS_NAME, useUsd } from './aiModel';
 import { DEFAULT_CUSTOM, disconnectProvider, errorText, firstModel, markConnected, runConnectionTest, storeCredentials, type CustomDraft } from './connect';
@@ -12,8 +11,6 @@ import { ProviderLogo } from './ProviderLogo';
 
 type Ai = ReturnType<typeof useAiSettings>;
 const MODEL_EXAMPLES = 'llama3, mistral…';
-type Filter = 'all' | 'on' | 'open' | 'closed' | 'local';
-const FILTERS: Filter[] = ['all', 'on', 'open', 'closed', 'local'];
 const GROUPS: ProviderGroup[] = ['open', 'closed', 'local', 'advanced'];
 
 export function providerName(p: ProviderEntry, customTitle: string): string {
@@ -27,34 +24,20 @@ export function isOn(p: ProviderEntry, connected: string[], localMap: Record<str
 
 interface Props { registry: Registry; ai: Ai; localMap: Record<string, string[]> }
 
+/** Todos los proveedores por grupos (dentro de «Avanzado»): permite abrir cualquiera, también uno sin conectar. */
 export function AiProviders({ registry, ai, localMap }: Props) {
   const { t } = useI18n();
-  const [filter, setFilter] = useState<Filter>('all');
   const [selId, setSelId] = useState<string | null>(null);
   const list = registry.providers;
   const activeCount = list.filter((p) => isOn(p, ai.connected, localMap)).length;
-  // Un agregador (abiertos y cerrados) sale con los dos filtros; en «Todos» va una sola vez, con los abiertos.
-  const matches = (p: ProviderEntry) => {
-    if (filter === 'all') return true;
-    if (filter === 'on') return isOn(p, ai.connected, localMap);
-    if (filter === 'local') return groupOf(p) === 'local';
-    return p.category === 'cloud' && (p.openness === 'mixed' || p.openness === filter);
-  };
-  const groups = GROUPS.map((g) => ({ id: g, items: list.filter((p) => matches(p) && (filter === 'open' || filter === 'closed' ? g === filter : groupOf(p) === g)) })).filter((g) => g.items.length > 0);
+  const groups = GROUPS.map((g) => ({ id: g, items: list.filter((p) => groupOf(p) === g) })).filter((g) => g.items.length > 0);
   const sel = selId ? registry.get(selId) : undefined;
   const custom = t('providers.customTitle');
   return (
     <div>
       <div className="np-aip-headrow">
         <span className="np-aip-eyebrow"><span className="np-aip-caps">{t('settings.ai.providers')}</span> · {t('settings.ai.providersCount', { total: list.length, active: activeCount })}</span>
-        <div className="np-aip-filters" role="group" aria-label={t('settings.ai.filterLabel')}>
-          {FILTERS.map((f) => (
-            <button key={f} type="button" className="np-aip-filter" aria-pressed={filter === f} onClick={() => setFilter(f)}>{t(`settings.ai.filter.${f}`)}</button>
-          ))}
-          <button type="button" className="np-aip-wizard" onClick={() => void openInternal('ajustes', ['ia', 'conectar'])}>{t('providers.connectOne')}</button>
-        </div>
       </div>
-      {groups.length === 0 ? <p className="np-aip-muted">{t('settings.ai.noneShown')}</p> : null}
       {groups.map((g, gi) => (
         <section key={g.id} className="np-aip-group" aria-labelledby={`np-aip-g-${g.id}`}>
           <h3 id={`np-aip-g-${g.id}`} className="np-aip-group-h"><span className="np-aip-eyebrow np-aip-caps">{t(`providers.cat.${g.id}`)}</span>{g.id !== 'advanced' ? <span className="np-aip-group-hint">{t(`providers.cat.${g.id}Hint`)}</span> : null}</h3>
@@ -87,7 +70,7 @@ export function AiProviders({ registry, ai, localMap }: Props) {
   );
 }
 
-function ProviderPanel({ p, registry, ai, localModels, onClose }: { p: ProviderEntry; registry: Registry; ai: Ai; localModels: string[] | null; onClose(): void }) {
+export function ProviderPanel({ p, registry, ai, localModels, onClose }: { p: ProviderEntry; registry: Registry; ai: Ai; localModels: string[] | null; onClose(): void }) {
   const { t } = useI18n();
   const fmt = useUsd();
   const isCustom = p.id === 'custom';
@@ -99,6 +82,7 @@ function ProviderPanel({ p, registry, ai, localModels, onClose }: { p: ProviderE
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; text: string } | null>(null);
   const keyRef = useRef<HTMLInputElement>(null);
+  const uid = useId();
 
   useEffect(() => {
     let alive = true;
@@ -200,9 +184,9 @@ function ProviderPanel({ p, registry, ai, localModels, onClose }: { p: ProviderE
       <div className="np-aip-fields">
         {!isLocal ? (
           <div>
-            <label htmlFor="np-aip-pkey" className="np-aip-flabel">{t('settings.ai.apiKey')}</label>
+            <label htmlFor={`np-aip-pkey-${uid}`} className="np-aip-flabel">{t('settings.ai.apiKey')}</label>
             <input
-              id="np-aip-pkey"
+              id={`np-aip-pkey-${uid}`}
               ref={keyRef}
               className="np-aip-input"
               type="password"
@@ -218,9 +202,9 @@ function ProviderPanel({ p, registry, ai, localModels, onClose }: { p: ProviderE
           </div>
         ) : null}
         <div>
-          <label htmlFor="np-aip-pend" className="np-aip-flabel">{t('settings.ai.address')}</label>
+          <label htmlFor={`np-aip-pend-${uid}`} className="np-aip-flabel">{t('settings.ai.address')}</label>
           <input
-            id="np-aip-pend"
+            id={`np-aip-pend-${uid}`}
             className="np-aip-input np-aip-input--ro"
             value={isLocal ? p.baseUrl.replace(/^https?:\/\//, '') : endpoint}
             readOnly={!isCustom}
@@ -230,8 +214,8 @@ function ProviderPanel({ p, registry, ai, localModels, onClose }: { p: ProviderE
         </div>
         {isCustom ? (
           <div>
-            <label htmlFor="np-aip-pmodels" className="np-aip-flabel">{t('providers.customModels')}</label>
-            <input id="np-aip-pmodels" className="np-aip-input" value={custom.models} placeholder={MODEL_EXAMPLES} spellCheck={false} onChange={(e) => setCustom({ ...custom, models: e.target.value })} />
+            <label htmlFor={`np-aip-pmodels-${uid}`} className="np-aip-flabel">{t('providers.customModels')}</label>
+            <input id={`np-aip-pmodels-${uid}`} className="np-aip-input" value={custom.models} placeholder={MODEL_EXAMPLES} spellCheck={false} onChange={(e) => setCustom({ ...custom, models: e.target.value })} />
           </div>
         ) : null}
       </div>
