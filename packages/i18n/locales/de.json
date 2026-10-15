@@ -1653,7 +1653,8 @@
       "today": "Heute",
       "reading": "Lesen",
       "agent": "Agent",
-      "settings": "Einstellungen"
+      "settings": "Einstellungen",
+      "back": "Zurück"
     },
     "welcome": {
       "count": "{n} von {total}",
@@ -1663,11 +1664,56 @@
       "pairTitle": "Hast du newpaper auf dem Rechner?",
       "pairBody": "Kopple dein Handy, um Einstellungen, Gespeichertes und Verlauf zu teilen und das lokale Modell deines PCs zu nutzen.",
       "pairNow": "Jetzt koppeln",
-      "pairLater": "Später"
+      "pairLater": "Später",
+      "label": "Einführung",
+      "skip": "Überspringen",
+      "back": "Zurück",
+      "finish": "Fertig",
+      "start": "Zu Heute",
+      "doneTitle": "Fertig.",
+      "doneBody": "Dein newpaper ist bereit. Alles lässt sich in den Einstellungen ändern.",
+      "p1": {
+        "title": "Lesen. Vergleichen. Selbst entscheiden.",
+        "body": "newpaper vergleicht, wie mehrere Medien eine Nachricht behandeln, und gibt dir eine neutrale Fassung mit Quellen."
+      },
+      "p2": {
+        "title": "Eine Nachricht, sechs Medien",
+        "body": "Wir bündeln die Berichte derselben Geschichte, damit du siehst, wie jedes Medium sie rahmt."
+      },
+      "p3": {
+        "title": "Die Linse",
+        "body": "Tippe auf das Auge, um im Text zu sehen, was Tatsache, Meinung oder eine Zahl ohne Quelle ist.",
+        "sample": "Die Regierung hat eine Erhöhung des Mindestlohns beschlossen, die ihn auf das höchste Niveau Europas bringt."
+      },
+      "p4": {
+        "title": "Frag den Agenten",
+        "body": "Antwortet mit nummerierten Zitaten aus den Quellen des Artikels, ohne etwas zu erfinden.",
+        "question": "Ist diese Zahl amtlich?",
+        "answer": "Das Statistikamt veröffentlicht sie als vorläufig [1]; die endgültige Zahl kommt im Frühjahr."
+      },
+      "p5": {
+        "title": "Deine Themen",
+        "body": "Wähle die Themen, die dir wichtig sind; sie erscheinen zuerst in Heute.",
+        "sample": "Wirtschaft · Klima · Gesundheit · Wohnen"
+      },
+      "p6": {
+        "title": "KI-Analyse",
+        "body": "Wähle, wie du analysieren willst. Du kannst es jederzeit ändern.",
+        "local": "Auf meinem PC",
+        "localHint": "Nutzt das Ollama deines gekoppelten Computers",
+        "cloud": "Mit meinem Schlüssel",
+        "cloudHint": "Ein Cloud-Anbieter mit deinem eigenen Schlüssel",
+        "later": "Später",
+        "laterHint": "Einrichten in den Einstellungen"
+      }
     },
     "today": {
       "search": "Thema suchen oder Link einfügen",
-      "empty": "Noch keine Nachrichten. Schau in ein paar Minuten wieder vorbei."
+      "empty": "Noch keine Nachrichten. Schau in ein paar Minuten wieder vorbei.",
+      "refresh": "Aktualisieren",
+      "loading": "Briefing wird geladen",
+      "emptyTitle": "Noch nichts anzuzeigen",
+      "featured": "Hervorgehoben"
     },
     "reading": {
       "empty": "Teile einen Artikel mit newpaper oder wähle einen unter Heute.",
@@ -1678,13 +1724,51 @@
       "original": "Original ansehen",
       "close": "Schließen",
       "analyzeOriginal": "Analysieren",
-      "askAgent": "Den Agenten fragen"
+      "askAgent": "Den Agenten fragen",
+      "index": {
+        "title": "Lesen",
+        "subtitle": "Was du geöffnet und gespeichert hast",
+        "saved": "Zum späteren Lesen",
+        "recent": "Zuletzt",
+        "emptyTitle": "Du hast noch nichts geöffnet",
+        "empty": "Füge in Heute einen Link ein oder teile einen Artikel aus einer anderen App."
+      },
+      "bannerReady": "Analyse fertig · tippen, um die Neutralität zu sehen",
+      "bannerEmpty": "Analyse ausstehend · tippen zum Analysieren"
     },
     "settings": {
       "network": "Verbindung",
       "direct": "Direkte Verbindung",
       "synced": "Synchronisiert.",
-      "noDevices": "Noch keine gekoppelten Geräte. Koppele dein Handy mit der Desktop-App."
+      "noDevices": "Noch keine gekoppelten Geräte. Koppele dein Handy mit der Desktop-App.",
+      "search": "Eine Einstellung suchen",
+      "noResults": "Keine Einstellung passt",
+      "soon": "Demnächst",
+      "summary": {
+        "title": "Deine Analyse",
+        "none": "Anbieter einrichten",
+        "sub": "Wähle, welche KI jede Nachricht analysiert und wie viel du ausgibst"
+      },
+      "g": {
+        "ai": "Künstliche Intelligenz",
+        "privacy": "Datenschutz und Netz",
+        "content": "Inhalte",
+        "devices": "Geräte",
+        "appearance": "Darstellung",
+        "about": "Über",
+        "danger": "Gefahrenzone"
+      },
+      "r": {
+        "providers": "KI-Anbieter",
+        "providersSub": "Schlüssel und Modelle",
+        "pipeline": "Analyse-Pipeline",
+        "tor": "Tor",
+        "clearHistory": "Verlauf löschen",
+        "forget": "Geräte vergessen",
+        "clearKeys": "Schlüssel löschen"
+      },
+      "aboutSub": "Mobile Version · Android",
+      "dangerNote": "Die Aktionen der Gefahrenzone sind auf dem Handy noch nicht verfügbar."
     },
     "provider": {
       "pasteHint": "Füge hier den Schlüssel deines KI-Anbieters ein."
@@ -1706,6 +1790,37 @@
       "hint": "Was du auf einem beliebigen Gerät speicherst, kannst du hier ohne Netz lesen.",
       "empty": "Noch nichts gespeichert.",
       "back": "Zurück"
+    },
+    "connection": {
+      "title": "Verbindung",
+      "direct": "Direkt",
+      "tor": "Tor",
+      "directHint": "Ohne Proxy: Anfragen gehen mit deiner IP-Adresse raus.",
+      "torHint": "Artikel, Quellen und Originalseiten laufen über Tor. Ist Tor nicht bereit, geht nichts unverschlüsselt raus.",
+      "aiDirect": "KI-Anfragen laufen direkt, wie am Desktop.",
+      "ready": "Tor bereit.",
+      "bootstrapping": "Verbinde mit Tor… {percent} %",
+      "off": "Tor pausiert: Es wird fortgesetzt, wenn du zur App zurückkehrst.",
+      "failed": "Tor ist nicht bereit. Neuer Versuch läuft; bis dahin geht nichts raus.",
+      "torUnavailable": "Tor ist auf diesem Gerät nicht verfügbar."
+    },
+    "splash": {
+      "label": "newpaper wird geladen",
+      "tagline": "Lesen. Vergleichen. Selbst entscheiden."
+    },
+    "agent": {
+      "index": {
+        "title": "Agent",
+        "subtitle": "Fragen mit Quellen, pro Artikel",
+        "emptyTitle": "Keine Unterhaltungen",
+        "empty": "Öffne einen Artikel und frage den Agenten: jeder Artikel bekommt seinen Verlauf.",
+        "recent": "Zuletzt",
+        "openReading": "Lesen öffnen"
+      },
+      "chat": {
+        "emptyTitle": "Frag, was du willst",
+        "empty": "Antworten zitieren die Quellen des Artikels."
+      }
     }
   }
 }

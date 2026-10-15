@@ -1653,7 +1653,8 @@
       "today": "Today",
       "reading": "Reading",
       "agent": "Agent",
-      "settings": "Settings"
+      "settings": "Settings",
+      "back": "Back"
     },
     "welcome": {
       "count": "{n} of {total}",
@@ -1663,11 +1664,56 @@
       "pairTitle": "Do you have newpaper on your computer?",
       "pairBody": "Pair your phone to share settings, saved articles and history, and to use your PC’s local model.",
       "pairNow": "Pair now",
-      "pairLater": "Later"
+      "pairLater": "Later",
+      "label": "Welcome tour",
+      "skip": "Skip",
+      "back": "Back",
+      "finish": "Finish",
+      "start": "Go to Today",
+      "doneTitle": "Done.",
+      "doneBody": "Your newpaper is ready. You can change all of this in Settings.",
+      "p1": {
+        "title": "Read. Compare. Decide for yourself.",
+        "body": "newpaper compares how several outlets cover a story and gives you a neutral version with sources."
+      },
+      "p2": {
+        "title": "One story, six outlets",
+        "body": "We group the coverage of the same story so you can see how each outlet frames it."
+      },
+      "p3": {
+        "title": "The lens",
+        "body": "Tap the eye to see in the text what is fact, opinion or an unsourced figure.",
+        "sample": "The government has approved a minimum wage rise that puts it at the highest level in Europe."
+      },
+      "p4": {
+        "title": "Ask the agent",
+        "body": "Answers with numbered citations to the article sources, without making things up.",
+        "question": "Is that figure official?",
+        "answer": "The statistics office publishes it as provisional [1]; the final figure comes in spring."
+      },
+      "p5": {
+        "title": "Your topics",
+        "body": "Pick the topics you care about and they come first in Today.",
+        "sample": "Economy · Climate · Health · Housing"
+      },
+      "p6": {
+        "title": "AI analysis",
+        "body": "Choose how you want to analyse. You can change it any time.",
+        "local": "On my PC",
+        "localHint": "Uses the Ollama of your paired computer",
+        "cloud": "With my key",
+        "cloudHint": "A cloud provider, with your own key",
+        "later": "Later",
+        "laterHint": "Set it up in Settings"
+      }
     },
     "today": {
       "search": "Search a topic or paste a link",
-      "empty": "No news yet. Come back in a few minutes."
+      "empty": "No news yet. Come back in a few minutes.",
+      "refresh": "Refresh",
+      "loading": "Loading the briefing",
+      "emptyTitle": "Nothing to show yet",
+      "featured": "Featured"
     },
     "reading": {
       "empty": "Share a news article with newpaper or pick one in Today.",
@@ -1678,13 +1724,51 @@
       "original": "View original",
       "close": "Close",
       "analyzeOriginal": "Analyse",
-      "askAgent": "Ask the agent"
+      "askAgent": "Ask the agent",
+      "index": {
+        "title": "Reading",
+        "subtitle": "What you have open and saved",
+        "saved": "To read later",
+        "recent": "Recent",
+        "emptyTitle": "You haven't opened anything yet",
+        "empty": "Paste a link in Today or share an article from another app."
+      },
+      "bannerReady": "Analysis ready · tap to see the neutrality",
+      "bannerEmpty": "Analysis pending · tap to analyse"
     },
     "settings": {
       "network": "Connection",
       "direct": "Direct connection",
       "synced": "Synced.",
-      "noDevices": "No paired devices yet. Pair this phone with the desktop app."
+      "noDevices": "No paired devices yet. Pair this phone with the desktop app.",
+      "search": "Search a setting",
+      "noResults": "No setting matches",
+      "soon": "Coming soon",
+      "summary": {
+        "title": "Your analysis",
+        "none": "Set up a provider",
+        "sub": "Choose which AI analyses each article and what you spend"
+      },
+      "g": {
+        "ai": "Artificial intelligence",
+        "privacy": "Privacy and network",
+        "content": "Content",
+        "devices": "Devices",
+        "appearance": "Appearance",
+        "about": "About",
+        "danger": "Danger zone"
+      },
+      "r": {
+        "providers": "AI providers",
+        "providersSub": "Keys and models",
+        "pipeline": "Analysis pipeline",
+        "tor": "Tor",
+        "clearHistory": "Clear history",
+        "forget": "Forget devices",
+        "clearKeys": "Clear keys"
+      },
+      "aboutSub": "Mobile version · Android",
+      "dangerNote": "Danger zone actions are not available on mobile yet."
     },
     "provider": {
       "pasteHint": "Paste your AI provider key here."
@@ -1706,6 +1790,37 @@
       "hint": "Whatever you save on any device can be read here without a network.",
       "empty": "Nothing saved yet.",
       "back": "Back"
+    },
+    "connection": {
+      "title": "Connection",
+      "direct": "Direct",
+      "tor": "Tor",
+      "directHint": "No proxy: requests leave with your IP address.",
+      "torHint": "Articles, feeds and original pages go through Tor. If Tor is not ready, nothing leaves in the clear.",
+      "aiDirect": "AI requests go direct, as on desktop.",
+      "ready": "Tor ready.",
+      "bootstrapping": "Connecting to Tor… {percent}%",
+      "off": "Tor paused: it resumes when you return to the app.",
+      "failed": "Tor is not ready. Retrying; nothing leaves in the meantime.",
+      "torUnavailable": "Tor is not available on this device."
+    },
+    "splash": {
+      "label": "Loading newpaper",
+      "tagline": "Read. Compare. Decide for yourself."
+    },
+    "agent": {
+      "index": {
+        "title": "Agent",
+        "subtitle": "Questions with sources, per article",
+        "emptyTitle": "No conversations",
+        "empty": "Open an article and ask the agent: each article gets its own thread.",
+        "recent": "Recent",
+        "openReading": "Open Reading"
+      },
+      "chat": {
+        "emptyTitle": "Ask anything",
+        "empty": "Answers cite the sources of the article."
+      }
     }
   }
 }

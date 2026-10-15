@@ -1653,7 +1653,8 @@
       "today": "Hoy",
       "reading": "Leyendo",
       "agent": "Agente",
-      "settings": "Ajustes"
+      "settings": "Ajustes",
+      "back": "Atrás"
     },
     "welcome": {
       "count": "{n} de {total}",
@@ -1663,11 +1664,56 @@
       "pairTitle": "¿Tienes newpaper en el ordenador?",
       "pairBody": "Empareja el móvil para compartir ajustes, guardados e historial, y usar el modelo local de tu PC.",
       "pairNow": "Emparejar ahora",
-      "pairLater": "Más tarde"
+      "pairLater": "Más tarde",
+      "label": "Recorrido de bienvenida",
+      "skip": "Saltar",
+      "back": "Atrás",
+      "finish": "Terminar",
+      "start": "Ir a Hoy",
+      "doneTitle": "Listo.",
+      "doneBody": "Tu newpaper está preparado. Puedes cambiar todo esto en Ajustes.",
+      "p1": {
+        "title": "Lee. Contrasta. Decide tú.",
+        "body": "newpaper compara cómo cubren una noticia varios medios y te da una versión neutral con fuentes."
+      },
+      "p2": {
+        "title": "Una noticia, seis medios",
+        "body": "Juntamos las coberturas de la misma historia y ves cómo cada medio la encuadra."
+      },
+      "p3": {
+        "title": "La lente",
+        "body": "Pulsa el ojo para ver en el texto qué es hecho, qué opinión y qué cifra sin fuente.",
+        "sample": "El Gobierno ha aprobado una subida del SMI que lo sitúa en el nivel más alto de toda Europa."
+      },
+      "p4": {
+        "title": "Pregunta al agente",
+        "body": "Responde con citas numeradas a las fuentes del artículo, sin inventar.",
+        "question": "¿Esa cifra es oficial?",
+        "answer": "La oficina estadística la publica como provisional [1]; la versión definitiva llega en primavera."
+      },
+      "p5": {
+        "title": "Tus temas",
+        "body": "Elige los temas que te importan y los verás primero en Hoy.",
+        "sample": "Economía · Clima · Sanidad · Vivienda"
+      },
+      "p6": {
+        "title": "Análisis con IA",
+        "body": "Elige cómo quieres analizar. Puedes cambiarlo cuando quieras.",
+        "local": "En mi PC",
+        "localHint": "Usa el Ollama de tu ordenador emparejado",
+        "cloud": "Con mi clave",
+        "cloudHint": "Un proveedor en la nube, con tu clave",
+        "later": "Más tarde",
+        "laterHint": "Lo configuras en Ajustes"
+      }
     },
     "today": {
       "search": "Busca un tema o pega un enlace",
-      "empty": "Todavía no hay noticias. Vuelve en unos minutos."
+      "empty": "Todavía no hay noticias. Vuelve en unos minutos.",
+      "refresh": "Actualizar",
+      "loading": "Cargando el briefing",
+      "emptyTitle": "Nada que mostrar todavía",
+      "featured": "Destacada"
     },
     "reading": {
       "empty": "Comparte una noticia con newpaper o elige una en Hoy.",
@@ -1678,13 +1724,51 @@
       "original": "Ver original",
       "close": "Cerrar",
       "analyzeOriginal": "Analizar",
-      "askAgent": "Preguntar al agente"
+      "askAgent": "Preguntar al agente",
+      "index": {
+        "title": "Leyendo",
+        "subtitle": "Lo que tienes abierto y guardado",
+        "saved": "Para leer más tarde",
+        "recent": "Recientes",
+        "emptyTitle": "Aún no has abierto nada",
+        "empty": "Pega un enlace en Hoy o comparte una noticia desde otra app."
+      },
+      "bannerReady": "Análisis listo · toca para ver la neutralidad",
+      "bannerEmpty": "Análisis pendiente · toca para analizar"
     },
     "settings": {
       "network": "Conexión",
       "direct": "Conexión directa",
       "synced": "Sincronizado.",
-      "noDevices": "Aún no hay dispositivos emparejados. Empareja este móvil con la app de escritorio."
+      "noDevices": "Aún no hay dispositivos emparejados. Empareja este móvil con la app de escritorio.",
+      "search": "Buscar un ajuste",
+      "noResults": "Ningún ajuste coincide",
+      "soon": "Próximamente",
+      "summary": {
+        "title": "Tu análisis",
+        "none": "Configura un proveedor",
+        "sub": "Elige qué IA analiza cada noticia y cuánto gastas"
+      },
+      "g": {
+        "ai": "Inteligencia artificial",
+        "privacy": "Privacidad y red",
+        "content": "Contenido",
+        "devices": "Dispositivos",
+        "appearance": "Apariencia",
+        "about": "Acerca de",
+        "danger": "Zona de peligro"
+      },
+      "r": {
+        "providers": "Proveedores de IA",
+        "providersSub": "Claves y modelos",
+        "pipeline": "Pipeline de análisis",
+        "tor": "Tor",
+        "clearHistory": "Borrar el historial",
+        "forget": "Olvidar dispositivos",
+        "clearKeys": "Borrar las claves"
+      },
+      "aboutSub": "Versión móvil · Android",
+      "dangerNote": "Las acciones de la zona de peligro todavía no están disponibles en el móvil."
     },
     "provider": {
       "pasteHint": "Pega aquí la clave de tu proveedor de IA."
@@ -1706,6 +1790,37 @@
       "hint": "Lo que guardas en cualquier dispositivo se puede leer aquí sin red.",
       "empty": "No hay nada guardado todavía.",
       "back": "Volver"
+    },
+    "connection": {
+      "title": "Conexión",
+      "direct": "Directa",
+      "tor": "Tor",
+      "directHint": "Sin proxy: las peticiones salen con tu IP.",
+      "torHint": "Artículos, fuentes y webs originales pasan por Tor. Si Tor no está listo, no sale nada en directo.",
+      "aiDirect": "La IA sale directa, igual que en el escritorio.",
+      "ready": "Tor listo.",
+      "bootstrapping": "Conectando a Tor… {percent} %",
+      "off": "Tor en pausa: se reanuda al volver a la app.",
+      "failed": "Tor no está listo. Reintentando; mientras tanto no sale nada.",
+      "torUnavailable": "Tor no está disponible en este dispositivo."
+    },
+    "splash": {
+      "label": "Cargando newpaper",
+      "tagline": "Lee. Contrasta. Decide tú."
+    },
+    "agent": {
+      "index": {
+        "title": "Agente",
+        "subtitle": "Preguntas con fuentes, por noticia",
+        "emptyTitle": "Sin conversaciones",
+        "empty": "Abre una noticia y pregunta al agente: cada noticia tendrá su hilo.",
+        "recent": "Recientes",
+        "openReading": "Abrir Leyendo"
+      },
+      "chat": {
+        "emptyTitle": "Pregunta lo que quieras",
+        "empty": "Las respuestas citan las fuentes del artículo."
+      }
     }
   }
 }
