@@ -214,3 +214,27 @@ Revisión crítica de e9c1b36..ccf94c9 con emulador real (AVD `np34`, Android 14
 - Dispositivo físico, arm64 en ejecución (el APK arm64 compila pero solo se ejecutó x86_64), iOS, release firmado.
 - Gesto atrás predictivo, linterna, claves de IA reales (análisis completo, agente), efecto real del bloqueo de anuncios.
 - Al salir con Atrás desde la raíz el proceso muere con un `SIGABRT` en `eglDestroyContext` del emulador (`libEGL_emulation`) durante el cierre; es del driver gráfico del emulador cuando Tauri llama a `exit()`, no de la app.
+
+## Implementación v3
+
+Estado al cerrar esta tanda (checklist del lote v3 de `design/mockups/MOVIL-DISENO.md`).
+
+Hecho:
+- **Bienvenida (ítems 1, 10, 21)**: carrusel de seis páginas con arrastre, paralaje (ilustración 0,65×, texto 1,25×), indicador de seis segmentos con contador «n / 6», micro-animaciones por paso (espectro, carril, palabras de la lente, respuesta con citas, chips de temas, tarjetas de IA) y pantalla final «Listo.» con anillo y fragmentos del espectro. Movimiento reducido (sistema o ajuste de la app): sin desplazamientos ni fragmentos. Commit `ebfe6c9`.
+- **Motor de la intro (ítem 20, parcial)**: copia de `design/mockups/tools/intro-engine.js` (commit `2768af8`) en `apps/mobile/src/splash/intro-engine.js`. Todavía no hay componente `Splash` que lo use.
+
+Verificado: `pnpm --filter @newpaper/mobile typecheck`; `packages/i18n` (paridad es/en/de y texto escrito a mano en `apps/mobile/src`); capturas en navegador de escritorio a 390×844 con IPC simulado (harness temporal, no versionado) de las seis páginas.
+
+Desviaciones:
+- La página 1 no vuela la marca desde el splash nativo (ítem 21); la marca aparece en su sitio.
+- En la página 6 la línea de coste no se despliega; los textos de cada opción se ven siempre.
+- Los temas de la página 5 se marcan de verdad (estado local) y no se guardan.
+
+No verificado en dispositivo: rendimiento de paralaje y fragmentos en gama baja, gesto de arrastre con el dedo, reducción de animaciones del sistema Android.
+
+Pendiente (no implementado en esta tanda):
+- Emparejar (ítem 22): escáner con marco que se transforma en círculo, apretón de manos, huella que se revela, alcance con enlace PC↔móvil. Se mantiene el plugin de código de barras real.
+- Asistente de proveedor (ítems 16, 23, 24, 25) y pantalla IA y proveedores (ítems 17, 26): requieren extraer la lógica de `apps/ui/src/features/providers` a `@newpaper/ui-kit/logic` (pura) y un adaptador móvil para `connect`/`testConnection`.
+- Splash nativo (ítem 19): `ic_splash_icon` sigue en la paleta clara; hay que pasarlo a la n fantasma `#34343B` sobre `#17171A`, fijar el fondo del tema y `setKeepOnScreenCondition` hasta el primer fotograma (requiere un comando de plugin `intro_ready`).
+- Conexión (ítem 18) y `ConnectionCard.tsx`: lo lleva el agente de Tor, fuera de este alcance.
+- Ítem 27 (degradación de la intro por rendimiento) pendiente de la integración del componente.
