@@ -36,6 +36,11 @@ pub async fn ai_fetch(
     request: ProxyRequest,
     on_event: Channel<ProxyEvent>,
 ) -> CmdResult<()> {
+    // Con el servidor OAuth falso (solo desarrollo) no sale ninguna petición a proveedores reales.
+    if test_oauth().is_some() {
+        let _ = on_event.send(ProxyEvent::Error { code: "network".into(), message: "blocked: NP_TEST_OAUTH is set".into() });
+        return Ok(());
+    }
     let c = client(&ext, HttpPurpose::Ai)?;
     // Los errores ya viajan como `ProxyEvent::Error` por el canal; el comando termina bien.
     // Si la webview cierra el canal, la descarga se corta (no se sigue consumiendo red y memoria).
@@ -187,6 +192,9 @@ pub async fn ai_login(
     let run = LoginRun { provider: &provider, spec: &spec, secret_id, client, secrets: secrets.inner().as_ref(), timeout: LOGIN_TIMEOUT };
     logins
         .run(run, |url| {
+            if is_test {
+                tracing::info!(url = %url, "test oauth: authorization url");
+            }
             let opened = !is_test && open_system_browser(url);
             let _ = on_event.send(LoginEvent::Url { url: url.to_string(), opened });
         })
