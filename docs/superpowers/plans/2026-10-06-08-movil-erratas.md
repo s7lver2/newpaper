@@ -87,3 +87,85 @@ Escáner QR y emparejamiento real, Ollama del PC, claves de IA reales (análisis
 - La webview de Tauri en Android carga `base-uri 'none'` y bloquea imágenes `http://` del artículo (solo ruido de consola; las imágenes no se cargan por diseño).
 - Atrás no cierra la hoja de análisis y retrocede en el historial de rutas.
 - Redirecciones del cliente de contenido siguen sin revalidar destino privado (el cliente es compartido con el escritorio).
+
+## Tor en móvil (2026-10-15)
+
+Sustituye a la decisión 1 (Tor fuera de la primera versión). Mismo modelo que en escritorio: Arti dentro de la app, kill switch en Rust, proxy de la webview decidido en Rust.
+
+### Diseño
+
+- **Arti en Android.** `np-net` compila `arti-client` 0.47 (rustls, `geoip`) en todo lo que no sea iOS (`cfg(not(target_os = "ios"))`). `np-app` usa `ArtiTor` también en móvil; el motor simulado queda solo para iOS y para `NP_FAKE_TOR`. El TLS es rustls con el proveedor criptográfico de reqwest; Arti no usa el verificador de la plataforma (los relays se validan por identidad), así que no hace falta el `rustls-platform-verifier` que da problemas en Android. Compila para `aarch64-linux-android` y `x86_64-linux-android`.
+- **Datos de Arti.** `app_local_data_dir()/tor` (almacenamiento privado; el respaldo de Android sigue desactivado).
+- **Kill switch (solo Rust).** Con modo Tor y Tor no listo: `SocksServer` responde error a cada conexión (nada sale en claro) y `mobile::proxy` pone el proxy de la webview a `127.0.0.1:9`. `mobile_original_open` comprueba `proxy::decide` antes de abrir y devuelve `tor_not_ready`. El plugin Kotlin no abre la webview si el proxy no se aplicó; ahora un proxy `block` nunca deja `proxyOk` a true (antes sí).
+- **Proxy de la webview.** `ProxyController.setProxyOverride` con `socks5://127.0.0.1:<puerto aleatorio>`. Sin `PROXY_OVERRIDE` la webview original se niega a abrirse. Arti escucha solo en loopback con puerto efímero por arranque.
+- **Ciclo de vida.** `RunEvent::WindowEvent { Suspended }` -> `NetController::pause_tor` (para Arti, el modo no cambia, el proxy queda cerrado). `RunEvent::Resumed` -> `resume_tor` (arranca si el modo es Tor). En Tauri 2.12 `Suspended` es un `WindowEvent`, no un `RunEvent`.
+- **Cambio de red.** `ConnectivityManager.registerDefaultNetworkCallback` en el plugin -> JNI `NpNative.networkChanged` -> `NetController::network_changed`, que reinicia Arti. Debounce de 3 s en Rust (WiFi <-> datos genera dos avisos).
+- **Reintento.** Si Arti falla y el modo es Tor y la app está en primer plano, se reintenta a los 60 s (`TOR_RETRY_DELAY`); no hay bucle más rápido.
+- **Modo Direct.** Arti no arranca nunca: `NetController::start` solo arranca Tor en modo Tor, `set_mode(Direct)` lo para y `set_mode(Tor)` no lo arranca mientras la app está en pausa.
+- **Modo en móvil.** `net_set_mode` ya no rechaza Tor: guarda el modo como en escritorio (sin recrear pestañas, que no existen en móvil). El arranque respeta el modo guardado (antes se forzaba Direct).
+- **Política de tráfico (igual que escritorio).** `route()` no cambia: Web (páginas, lector, hemeroteca, búsquedas) y Updates por Tor en modo Tor; RSS por Tor por defecto; **IA directa** salvo `ai_via_tor` (por defecto false, y la UI móvil no lo expone). LAN/Ollama: siempre directo (ya era así en `mobile_ollama_probe`).
+- **UI.** `apps/mobile/src/screens/ConnectionCard.tsx` (Directa / Tor, estado y progreso; sondea `privacy_status` solo mientras Tor conecta). Ver "Archivos tocados" más abajo.
+
+### Desviaciones del plan y de la decisión 1
+
+- `RunEvent::Suspended` no existe en tauri 2.12; se usa `RunEvent::WindowEvent` con `WindowEvent::Suspended`.
+- **Guardia del SOCKS (riesgo residual).** Chromium no soporta autenticación SOCKS5 en la configuración de proxy de la webview, así que no hay usuario/contraseña. Mitigaciones: loopback únicamente, puerto efímero distinto en cada arranque, conexiones solo cuando Tor está listo. **Lo que no se puede impedir:** en Android cualquier app del dispositivo puede conectarse a `127.0.0.1:<puerto>` y usar la salida Tor (no ve tu tráfico, pero sí puede usar el circuito). Cerrarlo del todo exigiría un canal que la webview pueda autenticar; queda abierto.
+- `np-net` sigue sin `onion-service-client` (igual que escritorio).
+
+### Verificado
+
+- `cargo test -p np-net` (escritorio, `E:/newpaper/target/check-tor`): 17 unitarios (4 nuevos en `controller::tests`: Tor no listo cierra la salida sin tráfico en claro; Tor listo transporta la petición; pausa cierra y reanuda; cambio de red reinicia una vez con debounce y nunca en Direct), 5 de `http_routing`, 4 de `socks_server`. Los tests de Tor real (`tests/tor_live.rs`) siguen ignorados: no se ejecutaron (hacen conexiones reales a la red de Tor).
+- `FakeTor::connect` ahora exige estado `Ready` (antes `stop()` no cerraba el paso: hallazgo de los tests nuevos).
+- `cargo check -p np-app` escritorio, y `cargo check -p np-app --target aarch64-linux-android` y `x86_64-linux-android` (ver el resultado en el informe final).
+- `tsc` de `apps/mobile`: `ConnectionCard.tsx` y el cambio en `Settings.tsx` no dan errores; el error que queda (`applyThemeChoice` en `main.tsx`) viene del trabajo de rediseño en curso, no de esta entrega.
+
+### No verificado
+
+- **`socks5://` en el WebView de Android.** El AAR de `androidx.webkit` 1.14 (`ProxyConfig`) solo expone `MATCH_HTTP`, `MATCH_HTTPS` y `direct://`; el esquema lo interpreta el WebView nativo (Chromium) y no hay fuente en el AAR que lo confirme. Chromium acepta `socks5://` (con resolución de nombres remota), pero **no está probado en dispositivo**. Prueba necesaria: con Tor listo, la webview original debe cargar y `check.torproject.org` (o un servicio equivalente) debe responder `IsTor=true`; con Tor apagado, no debe cargar nada.
+- **DNS.** En escritorio se fuerza la resolución remota con `--host-resolver-rules`; en Android no hay ese control. Con proxy SOCKS5 Chromium no debería resolver localmente las peticiones proxyficadas, pero no está comprobado (incluido el prefetch de DNS de WebView).
+- **Bootstrap real de Arti en Android.** No ejecutado: el emulador y el equipo están ocupados con las compilaciones de APK del otro agente, así que no se intentó (instrucción de la tarea).
+- **Eventos de ciclo de vida y de red en un dispositivo** (suspender, volver, WiFi <-> datos): no probados. Los `ConnectivityManager` callbacks y el JNI `networkChanged` solo se han comprobado compilando el lado Rust.
+- **Kotlin del plugin** (`NpMobilePlugin.kt`, `NpNative.kt`) no compilado: no se ejecuta Gradle (instrucción de la tarea). Revisar en el siguiente build de APK.
+- **Tamaño del APK.** No medido: no se ha generado ningún APK nuevo. Arti + `geoip` añade código y datos por ABI; la medición queda para el siguiente build.
+- **Batería.** No medida. La medida real es que Arti no corre en Direct ni en segundo plano.
+- **Guardia del SOCKS**: ver el riesgo residual arriba.
+
+## Rediseño (2026-10-15)
+
+Implementación del diseño v2 (`design/mockups/MOVIL-DISENO.md`). Lo que no está en la app o difiere del diseño, con su motivo.
+
+### Hecho
+- Ojo de la lente abierto/cerrado con morfado: mockup (`Movil-Analisis`, clases `.m-lens` en `motion-base.css`, re-inyectado en los 20 artboards) y app (`IconLens`, `mobile.css`).
+- Tokens `--m-*` y clases base en `apps/mobile/src/mobile.css`; tema papel/tinta/sistema desde `packages/ui-kit` (`tokens.css`, `applyTheme`, `watchSystemTheme`), elegido en Ajustes (`device.theme`).
+- Barra de pestañas con los cuatro iconos de trazo y píldora activa; se oculta en pantallas apiladas; tocar la pestaña activa sube al inicio.
+- Raíces montadas: cada pestaña conserva scroll y estado. Transición entre pestañas por fundido; push/pop según `go()` y el historial de hash (`router.ts`).
+- Splash: nativo con `Theme.np_splash` (`core-splashscreen`), fondo papel o tinta, icono adaptativo de la n. Dentro de la app, primer arranque 2,2 s y después 0,8 s (`device.splashSeen`). Temporizado, no espera a datos.
+- Icono: adaptativo (`drawable/ic_launcher_foreground.xml`, `ic_launcher_monochrome.xml`, fondo `#17171A`) y PNG de 48 a 192 px para API 24-25; `ic_stat_newpaper`.
+- Hoy: esqueleto con shimmer al cargar, filas en cascada (45 ms), destacada en grande.
+- Leyendo y Agente: raíces nuevas (`ReadingIndex`: recientes del historial y guardados; `AgentIndex`: hilos por noticia), con estados vacíos.
+- Bienvenida: carrusel de 6 páginas con arrastre (umbral 60 px), saltar, pantalla final «Listo.» con check que se dibuja.
+- Ajustes: buscador, resumen «Tu análisis», grupos con cabecera, zona de peligro separada, selector de tema e idioma.
+- Barra superior unificada (`Bar`) en Proveedor, Emparejar, Edición, Historial y Sin conexión.
+- Textos: 75 claves nuevas `mobile.*` en es/en/de; tests de i18n en verde.
+
+### No hecho o distinto del diseño
+- Pipeline (8 pasos), Conexión, Bloqueo y Fuentes como subpantallas de Ajustes: no implementadas. Las filas aparecen deshabilitadas con «Próximamente». Tor queda como fila futura, no activa.
+- Zona de peligro: las acciones aparecen deshabilitadas. No hay comando IPC móvil para borrar historial, olvidar dispositivos ni borrar claves.
+- Escáner QR a pantalla completa con velo, esquinas y línea: no rediseñado. Se mantiene el escaneo nativo del plugin `barcode-scanner` (pantalla completa del sistema) y las pantallas de intro y emparejamiento con la clase nueva. El estado «permiso denegado» de la maqueta no está.
+- Hoja de análisis: la fase de progreso por pasos no existe. El pipeline no emite eventos de paso, así que se muestra una barra indeterminada. No se inventan pasos.
+- Gesto atrás predictivo (`--back-progress`): no implementado. El atrás usa el historial de hash.
+- Pull-to-refresh: no implementado; hay botón de actualizar (48 px) en Hoy.
+- Ajuste propio de «reducir animaciones»: no existe en el spec; se respeta `prefers-reduced-motion` del sistema por CSS. No verificado que Android lo exponga en la WebView con «Eliminar animaciones».
+- Segundo toque en una pestaña activa: solo sube al inicio (la maqueta dice «recarga»).
+- Página 6 de bienvenida: la elección solo navega (PC, proveedor, más tarde); no guarda ninguna configuración de IA.
+- Conversaciones del Agente: el índice de hilos va en localStorage (best-effort); el texto de las respuestas no se persiste y se pierde al cerrar la app.
+- Hemeroteca, «Sin cobertura» y errores 404/Tor como pantallas móviles: no hay pantalla móvil propia. Se mantienen las existentes con la barra nueva.
+- Barra de estado: los iconos claro/oscuro los decide Android (edge-to-edge del sistema), no la pantalla. En tinta puede quedar contraste bajo en algunos fabricantes.
+- Snackbar «Compartido desde Telegram» de Hoy: no implementado.
+- Hoy: el punto rojo de edición nueva no está (no hay dato de «sin leer»).
+
+### No verificado
+- Visual contra los mockups: ver capturas (si se han tomado) y la lista de diferencias en el informe.
+- Splash en el dispositivo y arranque en frío con `Theme.SplashScreen`: no comprobado en emulador.
+- Que `TauriActivity` no sobrescriba el fondo de ventana después de `installSplashScreen()`.
+- Edge-to-edge con safe areas reales (gesto y recorte de cámara) en el emulador.
