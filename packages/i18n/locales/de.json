@@ -138,6 +138,7 @@
   "settings": {
     "title": "Einstellungen",
     "nav": "Bereiche der Einstellungen",
+    "crash": { "title": "Dieser Bereich ist fehlgeschlagen", "body": "Die übrigen Einstellungen und Tabs funktionieren weiter.", "retry": "Erneut versuchen" },
     "general": {
       "title": "Allgemein",
       "language": "Sprache der Oberfläche",

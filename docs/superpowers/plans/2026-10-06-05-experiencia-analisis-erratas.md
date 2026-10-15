@@ -236,3 +236,28 @@ Ver `2026-10-15-new-router-idea.md`. Va en una lista `roadmap` de `config/provid
 - Revisión humana de las frases nuevas en alemán e inglés.
 - «Gratis» se basa en lo documentado en la revisión anterior (las cuotas gratuitas cambian a menudo).
 - La fila «Próximamente» está al principio de la lista completa; si se prefiere al final o en la primera vista, es un cambio de una línea.
+
+## Congelación en Ajustes
+
+Informe: dentro de Ajustes los controles de la sección actual respondían, pero no se podía cambiar de sección ni de pestaña; la segunda vez ocurrió nada más entrar en Ajustes.
+
+### Qué se comprobó (instancia propia, `np-app.exe` de `target/verify`, CDP en 9333, `NP_FAKE_TOR=1`)
+
+- **No se pudo reproducir.** Se abrió Ajustes con clics reales (`Input.dispatchMouseEvent`) desde Inicio, desde una pestaña web y desde una noticia en lector; se recorrieron las 11 secciones y las pestañas; fuzz de 150 acciones aleatorias (secciones, pestañas, botón Ajustes) sin un solo bloqueo (`tabs_snapshot` siempre < 1 s); 30 s en reposo sin tareas largas ni llamadas IPC; ventanas de 1280×820 a 420×700 y 1280×300.
+- En todo momento: nada cubría el nav ni la tira de pestañas (`elementFromPoint`), sin `[inert]` ni `aria-modal`, sin capa `.np-underlay`, sin excepciones en consola. Las webviews nativas de contenido quedan ocultas al activar Ajustes (comprobado con `EnumChildWindows`).
+- Descartados por lectura: `scrollIntoView` del nav (se probó a alturas bajas: no desplaza la shell), `PageTransition`/`useUnderlay` (`pointer-events: none`, cuenta de adquisiciones correcta), trampas de foco (solo Tab dentro de su diálogo), mutex de `TabManager` (ningún guard cruza un `await` ni una llamada a webview).
+
+### Hipótesis mejor apoyada
+
+Cambiar de sección y de pestaña dependen **ambos** de `browserStore` (instantánea de pestañas que llega por `tabs://changed`), mientras que los controles de una sección usan estado propio u otros stores. `createStore.set` recorría los suscriptores con `forEach` sin protección: si un suscriptor lanzaba (hay tres no-React: poda de análisis, grabador de historial, menú contextual), los suscriptores siguientes —el nav de Ajustes y la tira de pestañas— dejaban de enterarse de los cambios, y la UI quedaba exactamente como se describe. Una excepción de render en una sección, además, desmontaba toda la shell (no había ningún error boundary). Ninguna de las dos cosas se observó en vivo; son endurecimientos del único mecanismo local que explica los síntomas. Un bloqueo del lado Rust (comandos de pestañas esperando a una webview) no se pudo descartar del todo.
+
+### Cambios
+
+- `createStore.set` aísla cada suscriptor con `try/catch` (el error se registra y los demás siguen).
+- `ErrorBoundary` nuevo en la shell; cada sección de Ajustes y cada resumen del nav van dentro de uno, con una tarjeta de recuperación («Esta sección ha fallado» / Reintentar) que se limpia al cambiar de sección. Cadenas `settings.crash.*` en es/en/de.
+- El nav ya no usa `scrollIntoView` (movía también los ancestros recortados): desplaza solo su propio contenedor.
+- Prueba ligera: `shell/ErrorBoundary.test.tsx` (fallback sin desmontar al resto; suscriptor que lanza no deja sin aviso a los siguientes).
+
+### Pendiente
+
+- Si vuelve a ocurrir, lanzar la app con `WEBVIEW2_ADDITIONAL_BROWSER_ARGUMENTS=--remote-debugging-port=9333` y, con la UI bloqueada, ejecutar `__TAURI_INTERNALS__.invoke('tabs_snapshot')` y comparar `activeId` con `aria-current` del nav: si la llamada se cuelga, el fallo está en Rust; si responde pero la UI no cambia, es el store.

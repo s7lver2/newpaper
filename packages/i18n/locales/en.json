@@ -138,6 +138,7 @@
   "settings": {
     "title": "Settings",
     "nav": "Settings sections",
+    "crash": { "title": "This section failed", "body": "The rest of Settings and your tabs keep working.", "retry": "Try again" },
     "general": {
       "title": "General",
       "language": "Interface language",

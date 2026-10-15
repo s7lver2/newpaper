@@ -14,7 +14,14 @@ export function createStore<T extends object>(initial: T): Store<T> {
     get: () => state,
     set(next) {
       state = typeof next === 'function' ? (next as (p: T) => T)(state) : { ...state, ...next };
-      listeners.forEach((l) => l());
+      // A throwing subscriber must not starve the ones after it (a dead tab strip while the rest of the UI works).
+      for (const l of [...listeners]) {
+        try {
+          l();
+        } catch (e) {
+          console.error('store listener failed', e);
+        }
+      }
     },
     subscribe(l) {
       listeners.add(l);

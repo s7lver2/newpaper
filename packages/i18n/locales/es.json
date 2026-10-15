@@ -138,6 +138,7 @@
   "settings": {
     "title": "Ajustes",
     "nav": "Secciones de ajustes",
+    "crash": { "title": "Esta sección ha fallado", "body": "El resto de los ajustes y las pestañas siguen funcionando.", "retry": "Reintentar" },
     "general": {
       "title": "General",
       "language": "Idioma de la interfaz",
