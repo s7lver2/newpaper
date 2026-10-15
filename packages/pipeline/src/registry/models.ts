@@ -33,7 +33,7 @@ export const TEST_TIMEOUT_MS = 40_000;
 export async function testConnection(model: LanguageModel, timeoutMs = TEST_TIMEOUT_MS) {
   const t0 = performance.now();
   try {
-    await generateText({ model, prompt: 'Reply with: ok', maxOutputTokens: 8, maxRetries: 0, abortSignal: AbortSignal.timeout(timeoutMs) });
+    await generateText({ model, prompt: 'Reply with: ok', maxOutputTokens: 16, maxRetries: 0, abortSignal: AbortSignal.timeout(timeoutMs) });
     return { ok: true as const, latencyMs: Math.round(performance.now() - t0) };
   } catch (e) {
     return { ok: false as const, latencyMs: Math.round(performance.now() - t0), error: describeError(e) };
