@@ -61,16 +61,18 @@ pub async fn net_set_mode(
     Ok(status(&net, &profiles))
 }
 
-/// Móvil: sin Tor en la primera versión. Solo se admite la conexión directa.
+/// Móvil: mismo modo que en escritorio (Directa / Tor). No hay pestañas que recrear: la webview original
+/// recibe el proxy por `mobile::proxy::follow` al cambiar el estado de red.
 #[cfg(mobile)]
 #[tauri::command]
 pub async fn net_set_mode(
     net: State<'_, Arc<NetController>>,
     profiles: State<'_, Arc<NetProfiles>>,
+    store: State<'_, Arc<Store>>,
     mode: NetMode,
 ) -> CmdResult<PrivacyStatus> {
-    if mode == NetMode::Tor {
-        return Err(CmdError::new("tor_unavailable", "Tor no está disponible en la versión móvil"));
+    if net.set_mode(mode) {
+        settings::save_net_settings(&store, &net.settings())?;
     }
     Ok(status(&net, &profiles))
 }

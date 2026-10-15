@@ -1,7 +1,8 @@
 use std::sync::Arc;
 
 use np_ai_proxy::{AuthScheme, CustomEndpoint, proxy::AiProxy};
-use np_mobile_core::{fetch::fetch_page, ollama::classify, share::extract_url};
+use np_mobile_core::{fetch::fetch_page, ollama::classify, proxy::{decide, ProxyDecision}, share::extract_url};
+use np_net::NetController;
 use np_shell::extensions::{HttpPurpose, ShellExtensions};
 use np_store::Store;
 use serde::{Deserialize, Serialize};
@@ -29,9 +30,14 @@ pub struct Labels {
 }
 
 #[tauri::command]
-pub async fn mobile_original_open(app: AppHandle<Wry>, url: String, labels: Labels) -> CmdResult<()> {
+pub async fn mobile_original_open(app: AppHandle<Wry>, net: State<'_, Arc<NetController>>, url: String, labels: Labels) -> CmdResult<()> {
     if !(url.starts_with("https://") || url.starts_with("http://")) {
         return Err(CmdError::new("invalid", "only http(s) urls"));
+    }
+    // Kill switch (decisión 5): con Tor pedido y no listo, la webview original no se abre.
+    let s = net.status();
+    if decide(s.mode, &s.tor, s.socks_port) == ProxyDecision::Block {
+        return Err(CmdError::new("tor_not_ready", "Tor no está listo: la webview original no se abre"));
     }
     app.np_mobile()
         .original_open(&url, OriginalLabels { close: labels.close, analyze: labels.analyze })

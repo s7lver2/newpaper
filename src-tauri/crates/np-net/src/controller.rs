@@ -1,8 +1,11 @@
 //! Orquesta modo de red, Tor, proxy SOCKS y clientes HTTP por tipo de tráfico.
 
 use std::{
-    sync::{Arc, RwLock},
-    time::Duration,
+    sync::{
+        atomic::{AtomicBool, Ordering},
+        Arc, Mutex, RwLock,
+    },
+    time::{Duration, Instant},
 };
 
 use tokio::sync::watch;
@@ -12,7 +15,7 @@ use crate::{
     mode::normalize_country,
     route,
     server::{SocksServer, TorBackend},
-    NetError, NetMode, NetSettings, NetStatus, Route, Traffic,
+    NetError, NetMode, NetSettings, NetStatus, Route, TorState, Traffic,
 };
 
 pub fn tor_browser_args(port: u16) -> String {
@@ -20,6 +23,11 @@ pub fn tor_browser_args(port: u16) -> String {
         "--proxy-server=socks5://127.0.0.1:{port} --host-resolver-rules=\"MAP * ~NOTFOUND , EXCLUDE 127.0.0.1\" --force-webrtc-ip-handling-policy=disable_non_proxied_udp"
     )
 }
+
+/// Espera antes de reintentar Tor tras un fallo de arranque (red caída, consenso no descargado...).
+pub const TOR_RETRY_DELAY: Duration = Duration::from_secs(60);
+/// Dos cambios de red seguidos (WiFi <-> datos) cuentan como uno: evita reiniciar Arti en cada rebote.
+pub const NETWORK_DEBOUNCE: Duration = Duration::from_secs(3);
 
 fn build_client(socks_port: Option<u16>, follow_redirects: bool) -> Result<reqwest::Client, NetError> {
     let mut b = crate::with_roots(reqwest::Client::builder())
@@ -50,6 +58,10 @@ pub struct NetController {
     /// Sin seguir redirecciones: para tráfico con credenciales (IA) o validado salto a salto (fuentes).
     direct_strict: reqwest::Client,
     proxied_strict: reqwest::Client,
+    /// Móvil: la app está en segundo plano. Tor no corre y el kill switch deja todo cerrado.
+    paused: AtomicBool,
+    retry_pending: AtomicBool,
+    last_restart: Mutex<Option<Instant>>,
 }
 
 impl NetController {
@@ -70,6 +82,9 @@ impl NetController {
             server,
             settings: RwLock::new(settings.clone()),
             status,
+            paused: AtomicBool::new(false),
+            retry_pending: AtomicBool::new(false),
+            last_restart: Mutex::new(None),
         });
         if settings.mode == NetMode::Tor {
             tor.start();
@@ -79,7 +94,10 @@ impl NetController {
         tokio::spawn(async move {
             while rx.changed().await.is_ok() {
                 match weak.upgrade() {
-                    Some(me) => me.refresh(),
+                    Some(me) => {
+                        me.refresh();
+                        me.schedule_retry(&weak);
+                    }
                     None => break,
                 }
             }
@@ -92,6 +110,65 @@ impl NetController {
         let s = self.settings.read().expect("settings lock").clone();
         let tor = self.tor.subscribe().borrow().clone();
         self.status.send_replace(compose_status(&s, &tor, self.server.port(), self.tor.circuit()));
+    }
+
+    /// Tor deseado (modo Tor, app en primer plano) pero caído: reintento diferido, uno cada vez.
+    fn wants_tor(&self) -> bool {
+        self.settings.read().expect("settings lock").mode == NetMode::Tor && !self.paused.load(Ordering::SeqCst)
+    }
+
+    fn schedule_retry(self: &Arc<Self>, weak: &std::sync::Weak<Self>) {
+        let failed = matches!(*self.tor.subscribe().borrow(), TorState::Failed { .. });
+        if !failed || !self.wants_tor() || self.retry_pending.swap(true, Ordering::SeqCst) {
+            return;
+        }
+        let weak = weak.clone();
+        tokio::spawn(async move {
+            tokio::time::sleep(TOR_RETRY_DELAY).await;
+            if let Some(me) = weak.upgrade() {
+                me.retry_pending.store(false, Ordering::SeqCst);
+                if me.wants_tor() {
+                    me.tor.start();
+                }
+            }
+        });
+    }
+
+    /// Móvil, app a segundo plano: para Arti (batería). El modo no cambia; el proxy de la webview queda cerrado.
+    pub fn pause_tor(&self) {
+        self.paused.store(true, Ordering::SeqCst);
+        if self.settings().mode == NetMode::Tor {
+            self.tor.stop();
+        }
+        self.refresh();
+    }
+
+    /// Móvil, app en primer plano: vuelve a arrancar Tor si el modo lo pide.
+    pub fn resume_tor(&self) {
+        self.paused.store(false, Ordering::SeqCst);
+        if self.wants_tor() {
+            self.tor.start();
+        }
+        self.refresh();
+    }
+
+    /// Cambio de red: reconecta (reinicia Arti) si Tor está en uso. Devuelve si lo reinició.
+    pub fn network_changed(&self) -> bool {
+        if !self.wants_tor() {
+            return false;
+        }
+        {
+            let mut last = self.last_restart.lock().expect("restart lock");
+            if last.is_some_and(|t| t.elapsed() < NETWORK_DEBOUNCE) {
+                return false;
+            }
+            *last = Some(Instant::now());
+        }
+        tracing::info!("network changed: rebootstrapping tor");
+        self.tor.stop();
+        self.tor.start();
+        self.refresh();
+        true
     }
 
     pub fn status(&self) -> NetStatus {
@@ -119,7 +196,8 @@ impl NetController {
             s.mode = mode;
         }
         match mode {
-            NetMode::Tor => self.tor.start(),
+            NetMode::Tor if !self.paused.load(Ordering::SeqCst) => self.tor.start(),
+            NetMode::Tor => {}
             NetMode::Direct => self.tor.stop(),
         }
         self.refresh();
@@ -173,5 +251,89 @@ impl NetController {
             Route::Tor => self.proxied.clone(),
             Route::Direct => self.direct.clone(),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::fake::FakeTor;
+    use std::net::SocketAddr;
+    use tokio::{
+        io::{AsyncReadExt, AsyncWriteExt},
+        net::TcpListener,
+    };
+
+    /// Origen HTTP mínimo que cuenta las conexiones que recibe.
+    async fn origin() -> (SocketAddr, Arc<std::sync::atomic::AtomicUsize>) {
+        let l = TcpListener::bind("127.0.0.1:0").await.unwrap();
+        let addr = l.local_addr().unwrap();
+        let hits = Arc::new(std::sync::atomic::AtomicUsize::new(0));
+        let h = hits.clone();
+        tokio::spawn(async move {
+            while let Ok((mut s, _)) = l.accept().await {
+                h.fetch_add(1, Ordering::SeqCst);
+                tokio::spawn(async move {
+                    let mut buf = [0u8; 1024];
+                    let _ = s.read(&mut buf).await;
+                    let _ = s.write_all(b"HTTP/1.1 200 OK\r\nContent-Length: 2\r\nConnection: close\r\n\r\nok").await;
+                });
+            }
+        });
+        (addr, hits)
+    }
+
+    fn tor_mode() -> NetSettings {
+        NetSettings { mode: NetMode::Tor, ..Default::default() }
+    }
+
+    async fn fetch(net: &NetController) -> Result<String, reqwest::Error> {
+        net.http_client(Traffic::Web).get("http://origin.test/").send().await?.text().await
+    }
+
+    #[tokio::test]
+    async fn tor_not_ready_fails_closed() {
+        let (addr, hits) = origin().await;
+        let tor = FakeTor::new(false).with_host("origin.test", addr);
+        let net = NetController::start(tor_mode(), tor.clone()).await.unwrap();
+        assert!(net.status().kill_switch_active);
+        assert!(fetch(&net).await.is_err());
+        assert_eq!(hits.load(Ordering::SeqCst), 0, "nothing may leave in clear");
+        assert!(tor.seen_targets().is_empty());
+    }
+
+    #[tokio::test]
+    async fn tor_ready_carries_the_request() {
+        let (addr, _) = origin().await;
+        let tor = FakeTor::new(true).with_host("origin.test", addr);
+        let net = NetController::start(tor_mode(), tor.clone()).await.unwrap();
+        assert_eq!(fetch(&net).await.unwrap(), "ok");
+        assert!(tor.seen_targets().iter().any(|t| t.starts_with("origin.test")));
+    }
+
+    #[tokio::test]
+    async fn pause_closes_the_path_and_resume_reopens_it() {
+        let (addr, hits) = origin().await;
+        let tor = FakeTor::new(true).with_host("origin.test", addr);
+        let net = NetController::start(tor_mode(), tor.clone()).await.unwrap();
+        net.pause_tor();
+        assert_eq!(tor.stops(), 1);
+        assert!(fetch(&net).await.is_err());
+        assert_eq!(hits.load(Ordering::SeqCst), 0);
+        net.resume_tor();
+        assert_eq!(fetch(&net).await.unwrap(), "ok");
+    }
+
+    #[tokio::test]
+    async fn network_change_rebootstraps_once_and_never_in_direct() {
+        let tor = FakeTor::new(true);
+        let net = NetController::start(tor_mode(), tor.clone()).await.unwrap();
+        assert!(net.network_changed());
+        assert!(!net.network_changed(), "debounced");
+        assert_eq!(tor.stops(), 1);
+        assert_eq!(tor.starts(), 2);
+        net.set_mode(NetMode::Direct);
+        assert!(!net.network_changed());
+        assert_eq!(tor.starts(), 2, "direct mode never starts tor");
     }
 }

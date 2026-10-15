@@ -72,7 +72,8 @@ impl FakeTor {
 #[async_trait]
 impl Connector for FakeTor {
     async fn connect(&self, target: &TargetAddr) -> Result<BoxStream, ConnectError> {
-        if !self.ready.load(Ordering::SeqCst) {
+        // Como Arti: solo conecta con el estado Ready (`stop` lo apaga aunque `ready` siga activo).
+        if *self.state.borrow() != TorState::Ready {
             return Err(ConnectError::NotReady);
         }
         self.seen.lock().unwrap().push(target.to_string());

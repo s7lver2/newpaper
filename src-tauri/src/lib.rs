@@ -226,10 +226,17 @@ pub fn run() {
     builder
         .build(tauri::generate_context!())
         .expect("error while building newpaper")
-        .run(|_app, _event| {
+        .run(|app, event| {
             #[cfg(desktop)]
-            if let tauri::RunEvent::ExitRequested { .. } = _event {
-                crate::system::updater::on_exit(_app);
+            if let tauri::RunEvent::ExitRequested { .. } = event {
+                crate::system::updater::on_exit(app);
+            }
+            // Móvil: Tor no corre en segundo plano (batería); al volver a primer plano arranca si el modo lo pide.
+            #[cfg(mobile)]
+            match event {
+                tauri::RunEvent::WindowEvent { event: tauri::WindowEvent::Suspended, .. } => mobile::lifecycle(app, true),
+                tauri::RunEvent::Resumed => mobile::lifecycle(app, false),
+                _ => {}
             }
         });
 }

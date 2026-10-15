@@ -9,7 +9,7 @@ pub use socks::TargetAddr;
 pub mod fake;
 pub mod server;
 pub use server::{BoxStream, ConnectError, Connector, SocksServer, TorBackend};
-#[cfg(not(any(target_os = "android", target_os = "ios")))]
+#[cfg(not(target_os = "ios"))]
 pub mod tor;
 pub mod controller;
 pub use controller::NetController;

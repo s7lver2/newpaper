@@ -3,6 +3,8 @@ package app.newpaper.mobile
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.Network
 import android.net.wifi.WifiManager
 import android.webkit.WebView
 import androidx.webkit.ProxyConfig
@@ -34,6 +36,30 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
 
     override fun load(webView: WebView) {
         pending = textOf(activity.intent)
+        watchNetwork()
+    }
+
+    /** Cambio de la red activa (Wi-Fi <-> datos, pérdida de red): Rust reinicia Tor. La decisión la toma Rust (debounce). */
+    private fun watchNetwork() {
+        val cm = activity.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return
+        var current: Network? = null
+        val cb = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                if (current != null && current != network) NpNative.networkChanged()
+                current = network
+            }
+            override fun onLost(network: Network) {
+                if (current == network) {
+                    current = null
+                    NpNative.networkChanged()
+                }
+            }
+        }
+        try {
+            cm.registerDefaultNetworkCallback(cb)
+        } catch (e: SecurityException) {
+            // Sin ACCESS_NETWORK_STATE no hay avisos: Tor se reinicia al reanudar la app.
+        }
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -98,7 +124,8 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
         }
         proxyOk = a.kind == "direct"
         val ctl = ProxyController.getInstance()
-        val done = Runnable { proxyOk = true; invoke.resolve() }
+        // "block" nunca deja la webview abierta: su proxy apunta a un puerto cerrado.
+        val done = Runnable { proxyOk = a.kind != "block"; invoke.resolve() }
         when (a.kind) {
             "direct" -> ctl.clearProxyOverride({ it.run() }, done)
             "socks" -> ctl.setProxyOverride(ProxyConfig.Builder().addProxyRule("socks5://127.0.0.1:${a.port}").build(), { it.run() }, done)

@@ -13,7 +13,7 @@ use np_adblock::{
     stats::today_local,
     updater::{refresh_lists, ListFetcher},
 };
-#[cfg(not(mobile))]
+#[cfg(not(target_os = "ios"))]
 use np_net::tor::ArtiTor;
 use np_net::{fake::FakeTor, server::TorBackend, NetController};
 use np_shell::extensions::{HttpPurpose, ShellExtensions};
@@ -60,13 +60,14 @@ fn tor_backend(app: &App) -> Result<Arc<dyn TorBackend>, Box<dyn std::error::Err
         tracing::warn!("using simulated Tor (NP_FAKE_TOR)");
         return Ok(FakeTor::new(true));
     }
-    #[cfg(mobile)]
+    // Escritorio y Android: Arti con datos en el almacenamiento privado de la app (`app_local_data_dir`).
+    // iOS no compila Arti todavía: se usa el motor simulado apagado (la red queda en directo y Tor no se ofrece).
+    #[cfg(target_os = "ios")]
     {
-        // Tor no está en la primera versión móvil (errata del subproyecto 8): siempre apagado.
         let _ = app;
-        return Ok(FakeTor::new(false));
+        Ok(FakeTor::new(false))
     }
-    #[cfg(not(mobile))]
+    #[cfg(not(target_os = "ios"))]
     {
         let base = app.path().app_local_data_dir()?.join("tor");
         Ok(ArtiTor::new(base.join("state"), base.join("cache")))
@@ -84,13 +85,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     rebuild_blocker(svc.clone(), cache.clone());
 
     // --- Red ---
-    #[cfg_attr(not(mobile), allow(unused_mut))]
-    let mut net_settings = settings::load_net_settings(&store)?;
-    #[cfg(mobile)]
-    {
-        // Móvil: sin Tor, la red es siempre directa (la preferencia guardada de escritorio no se aplica).
-        net_settings.mode = np_net::NetMode::Direct;
-    }
+    let net_settings = settings::load_net_settings(&store)?;
     let net = tauri::async_runtime::block_on(NetController::start(net_settings, tor_backend(app)?))?;
     let profiles = Arc::new(NetProfiles::new(net.clone()));
     ext.set_profile_provider(profiles.clone());
