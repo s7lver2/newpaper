@@ -17,6 +17,7 @@ pub static NET: OnceLock<Arc<NetController>> = OnceLock::new();
 
 /// Suspender / reanudar la app. Arti necesita runtime de Tauri, por eso el trabajo va en `async_runtime`.
 pub fn lifecycle(app: &AppHandle<Wry>, suspended: bool) {
+    tracing::info!(suspended, "app lifecycle");
     let net = app.state::<Arc<NetController>>().inner().clone();
     tauri::async_runtime::spawn(async move {
         if suspended {

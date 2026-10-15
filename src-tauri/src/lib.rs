@@ -222,6 +222,7 @@ pub fn run() {
         mobile::commands::mobile_original_close,
         mobile::commands::mobile_ollama_probe,
         mobile::commands::mobile_use_pc_ollama,
+        mobile::commands::mobile_set_system_bars,
     ]);
     builder
         .build(tauri::generate_context!())
@@ -235,7 +236,9 @@ pub fn run() {
             #[cfg(mobile)]
             match event {
                 tauri::RunEvent::WindowEvent { event: tauri::WindowEvent::Suspended, .. } => mobile::lifecycle(app, true),
-                tauri::RunEvent::Resumed => mobile::lifecycle(app, false),
+                // `RunEvent::Resumed` no sirve aquí: tao lo emite en cada vuelta del bucle de eventos (StartCause::Poll), también en
+                // segundo plano. La reanudación real de la actividad es `WindowEvent::Resumed`.
+                tauri::RunEvent::WindowEvent { event: tauri::WindowEvent::Resumed, .. } => mobile::lifecycle(app, false),
                 _ => {}
             }
         });
