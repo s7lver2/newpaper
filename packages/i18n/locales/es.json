@@ -1713,7 +1713,9 @@
       "refresh": "Actualizar",
       "loading": "Cargando el briefing",
       "emptyTitle": "Nada que mostrar todavía",
-      "featured": "Destacada"
+      "featured": "Destacada",
+      "pull": "Suelta para actualizar",
+      "pullHint": "Desliza hacia abajo para actualizar"
     },
     "reading": {
       "empty": "Comparte una noticia con newpaper o elige una en Hoy.",
@@ -1765,10 +1767,26 @@
         "tor": "Tor",
         "clearHistory": "Borrar el historial",
         "forget": "Olvidar dispositivos",
-        "clearKeys": "Borrar las claves"
+        "clearKeys": "Borrar las claves",
+        "blocking": "Bloqueo de anuncios",
+        "blockingSub": "Anuncios y rastreadores",
+        "sources": "Fuentes y temas",
+        "sourcesSub": "Qué sigues en Hoy",
+        "reduceMotion": "Reducir animaciones",
+        "reduceMotionSub": "Sin desplazamientos: solo fundidos cortos."
       },
       "aboutSub": "Versión móvil · Android",
-      "dangerNote": "Las acciones de la zona de peligro todavía no están disponibles en el móvil."
+      "dangerNote": "Las acciones de la zona de peligro todavía no están disponibles en el móvil.",
+      "reduceMotionSystem": "Tu sistema ya pide menos animación.",
+      "confirmCancel": "Cancelar",
+      "confirmDo": "Borrar",
+      "done": "Hecho",
+      "historyTitle": "¿Borrar el historial?",
+      "historyBody": "Se borran las visitas y las búsquedas de este móvil. No se puede deshacer.",
+      "forgetTitle": "¿Olvidar los dispositivos?",
+      "forgetBody": "Dejarán de sincronizar con este móvil y se borra su clave de aquí.",
+      "keysTitle": "¿Borrar las claves de IA?",
+      "keysBody": "Se borran del llavero del móvil las claves de los proveedores. Tendrás que pegarlas otra vez."
     },
     "provider": {
       "pasteHint": "Pega aquí la clave de tu proveedor de IA."
@@ -1783,7 +1801,34 @@
       "ollamaTitle": "Usar el Ollama de {name}",
       "ollamaBody": "{n, plural, one {Tiene # modelo instalado} other {Tiene # modelos instalados}}. Los análisis rápidos irán a tu PC y no saldrán de tu red.",
       "ollamaUse": "Usarlo",
-      "ollamaHint": "Si tu PC tiene Ollama, arráncalo con OLLAMA_HOST=0.0.0.0 para que el móvil lo vea. Hazlo solo en redes de confianza: Ollama no pide contraseña."
+      "ollamaHint": "Si tu PC tiene Ollama, arráncalo con OLLAMA_HOST=0.0.0.0 para que el móvil lo vea. Hazlo solo en redes de confianza: Ollama no pide contraseña.",
+      "scanTitle": "Escanear QR",
+      "searching": "Buscando código",
+      "scanHint": "Apunta al código QR que ves en tu PC. Caduca a los 2 minutos y solo sirve una vez.",
+      "manual": "Introducir código a mano",
+      "torch": "Linterna",
+      "closeScan": "Cerrar el escáner",
+      "introTitle": "Sin cuenta: escanea el QR de tu PC",
+      "introBody": "En el PC abre Ajustes › Dispositivos › Emparejar un dispositivo. Verás un código QR de un solo uso.",
+      "b1": "Cifrado de extremo a extremo",
+      "b1s": "Cada par crea su propia clave.",
+      "b2": "Por tu red local",
+      "b2s": "Fuera de casa, por Tailscale si lo tienes.",
+      "b3": "Sin servidores ni cuentas",
+      "b3s": "Directo del PC al móvil.",
+      "manualTitle": "Introduce el código del PC",
+      "manualHint": "Está debajo del QR y empieza por np1:.",
+      "cancel": "Cancelar",
+      "pairAction": "Emparejar",
+      "deniedTitle": "Falta el permiso de cámara",
+      "deniedBody": "newpaper solo usa la cámara para leer el QR del emparejamiento. La imagen no se guarda ni sale del móvil.",
+      "deniedHow": "Ajustes de Android › Aplicaciones › newpaper › Permisos › Cámara › «Solo mientras se usa la app». Mientras tanto puedes introducir el código a mano.",
+      "unavailable": "No se ha podido abrir la cámara. Puedes introducir el código a mano.",
+      "retry": "Reintentar",
+      "success": "Emparejado con {name}",
+      "successSub": "Huella {fp}",
+      "done": "Listo",
+      "openSettings": "Abrir los ajustes de Android"
     },
     "edition": {
       "title": "Para leer sin conexión",
@@ -1820,6 +1865,27 @@
       "chat": {
         "emptyTitle": "Pregunta lo que quieras",
         "empty": "Las respuestas citan las fuentes del artículo."
+      }
+    },
+    "pipeline": {
+      "title": "Pipeline de análisis",
+      "lead": "Qué calidad quieres y cuánto puedes gastar al mes.",
+      "quickOnOpen": "Análisis rápido al abrir",
+      "quickOnOpenSub": "Se lanza al abrir una noticia, con tu proveedor.",
+      "saved": "Guardado"
+    },
+    "sources": {
+      "title": "Fuentes y temas",
+      "lead": "Los temas que sigues salen primero en Hoy.",
+      "none": "Aún no hay temas: aparecerán tras la primera descarga de noticias."
+    },
+    "analysis": {
+      "step": {
+        "running": "En curso",
+        "done": "Listo",
+        "cached": "Ya estaba",
+        "failed": "Falló",
+        "skipped": "Omitido"
       }
     }
   }

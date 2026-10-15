@@ -1713,7 +1713,9 @@
       "refresh": "Refresh",
       "loading": "Loading the briefing",
       "emptyTitle": "Nothing to show yet",
-      "featured": "Featured"
+      "featured": "Featured",
+      "pull": "Release to refresh",
+      "pullHint": "Pull down to refresh"
     },
     "reading": {
       "empty": "Share a news article with newpaper or pick one in Today.",
@@ -1765,10 +1767,26 @@
         "tor": "Tor",
         "clearHistory": "Clear history",
         "forget": "Forget devices",
-        "clearKeys": "Clear keys"
+        "clearKeys": "Clear keys",
+        "blocking": "Ad blocking",
+        "blockingSub": "Ads and trackers",
+        "sources": "Sources and topics",
+        "sourcesSub": "What you follow in Today",
+        "reduceMotion": "Reduce motion",
+        "reduceMotionSub": "No sliding: only short fades."
       },
       "aboutSub": "Mobile version · Android",
-      "dangerNote": "Danger zone actions are not available on mobile yet."
+      "dangerNote": "Danger zone actions are not available on mobile yet.",
+      "reduceMotionSystem": "Your system already asks for less motion.",
+      "confirmCancel": "Cancel",
+      "confirmDo": "Delete",
+      "done": "Done",
+      "historyTitle": "Delete the history?",
+      "historyBody": "Visits and searches on this phone are deleted. This cannot be undone.",
+      "forgetTitle": "Forget the devices?",
+      "forgetBody": "They stop syncing with this phone and their key is removed from here.",
+      "keysTitle": "Delete the AI keys?",
+      "keysBody": "Provider keys are removed from this phone’s keystore. You will have to paste them again."
     },
     "provider": {
       "pasteHint": "Paste your AI provider key here."
@@ -1783,7 +1801,34 @@
       "ollamaTitle": "Use {name}’s Ollama",
       "ollamaBody": "{n, plural, one {It has # model installed} other {It has # models installed}}. Quick analyses will go to your PC and stay on your network.",
       "ollamaUse": "Use it",
-      "ollamaHint": "If your PC has Ollama, start it with OLLAMA_HOST=0.0.0.0 so the phone can see it. Only do this on trusted networks: Ollama has no password."
+      "ollamaHint": "If your PC has Ollama, start it with OLLAMA_HOST=0.0.0.0 so the phone can see it. Only do this on trusted networks: Ollama has no password.",
+      "scanTitle": "Scan QR",
+      "searching": "Looking for a code",
+      "scanHint": "Point at the QR code on your PC. It expires after 2 minutes and works once.",
+      "manual": "Enter the code by hand",
+      "torch": "Torch",
+      "closeScan": "Close the scanner",
+      "introTitle": "No account: scan your PC’s QR",
+      "introBody": "On the PC open Settings › Devices › Pair a device. You will see a one-time QR code.",
+      "b1": "End-to-end encrypted",
+      "b1s": "Each pair makes its own key.",
+      "b2": "Over your local network",
+      "b2s": "Away from home, through Tailscale if you have it.",
+      "b3": "No servers, no accounts",
+      "b3s": "Straight from the PC to the phone.",
+      "manualTitle": "Enter the code from your PC",
+      "manualHint": "It is under the QR and starts with np1:.",
+      "cancel": "Cancel",
+      "pairAction": "Pair",
+      "deniedTitle": "Camera permission is off",
+      "deniedBody": "newpaper only uses the camera to read the pairing QR. The image is never saved or sent anywhere.",
+      "deniedHow": "Android Settings › Apps › newpaper › Permissions › Camera › “While using the app”. Meanwhile you can enter the code by hand.",
+      "unavailable": "The camera could not be opened. You can enter the code by hand.",
+      "retry": "Try again",
+      "success": "Paired with {name}",
+      "successSub": "Fingerprint {fp}",
+      "done": "Done",
+      "openSettings": "Open Android settings"
     },
     "edition": {
       "title": "To read offline",
@@ -1820,6 +1865,27 @@
       "chat": {
         "emptyTitle": "Ask anything",
         "empty": "Answers cite the sources of the article."
+      }
+    },
+    "pipeline": {
+      "title": "Analysis pipeline",
+      "lead": "How much quality you want and how much you can spend each month.",
+      "quickOnOpen": "Quick analysis on open",
+      "quickOnOpenSub": "Runs when you open a story, with your provider.",
+      "saved": "Saved"
+    },
+    "sources": {
+      "title": "Sources and topics",
+      "lead": "Topics you follow come first in Today.",
+      "none": "No topics yet: they appear after the first news download."
+    },
+    "analysis": {
+      "step": {
+        "running": "Running",
+        "done": "Done",
+        "cached": "Cached",
+        "failed": "Failed",
+        "skipped": "Skipped"
       }
     }
   }

@@ -1713,7 +1713,9 @@
       "refresh": "Aktualisieren",
       "loading": "Briefing wird geladen",
       "emptyTitle": "Noch nichts anzuzeigen",
-      "featured": "Hervorgehoben"
+      "featured": "Hervorgehoben",
+      "pull": "Loslassen zum Aktualisieren",
+      "pullHint": "Zum Aktualisieren nach unten ziehen"
     },
     "reading": {
       "empty": "Teile einen Artikel mit newpaper oder wähle einen unter Heute.",
@@ -1765,10 +1767,26 @@
         "tor": "Tor",
         "clearHistory": "Verlauf löschen",
         "forget": "Geräte vergessen",
-        "clearKeys": "Schlüssel löschen"
+        "clearKeys": "Schlüssel löschen",
+        "blocking": "Werbeblocker",
+        "blockingSub": "Werbung und Tracker",
+        "sources": "Quellen und Themen",
+        "sourcesSub": "Was du in Heute verfolgst",
+        "reduceMotion": "Animationen reduzieren",
+        "reduceMotionSub": "Kein Verschieben: nur kurze Überblendungen."
       },
       "aboutSub": "Mobile Version · Android",
-      "dangerNote": "Die Aktionen der Gefahrenzone sind auf dem Handy noch nicht verfügbar."
+      "dangerNote": "Die Aktionen der Gefahrenzone sind auf dem Handy noch nicht verfügbar.",
+      "reduceMotionSystem": "Dein System verlangt bereits weniger Animation.",
+      "confirmCancel": "Abbrechen",
+      "confirmDo": "Löschen",
+      "done": "Erledigt",
+      "historyTitle": "Verlauf löschen?",
+      "historyBody": "Besuche und Suchen auf diesem Handy werden gelöscht. Das lässt sich nicht rückgängig machen.",
+      "forgetTitle": "Geräte vergessen?",
+      "forgetBody": "Sie synchronisieren nicht mehr mit diesem Handy, ihr Schlüssel wird hier entfernt.",
+      "keysTitle": "KI-Schlüssel löschen?",
+      "keysBody": "Die Anbieter-Schlüssel werden aus dem Schlüsselspeicher des Handys entfernt. Du musst sie erneut einfügen."
     },
     "provider": {
       "pasteHint": "Füge hier den Schlüssel deines KI-Anbieters ein."
@@ -1783,7 +1801,34 @@
       "ollamaTitle": "Ollama von {name} nutzen",
       "ollamaBody": "{n, plural, one {Es ist # Modell installiert} other {Es sind # Modelle installiert}}. Schnellanalysen laufen auf deinem PC und bleiben in deinem Netz.",
       "ollamaUse": "Nutzen",
-      "ollamaHint": "Wenn dein PC Ollama hat, starte es mit OLLAMA_HOST=0.0.0.0, damit das Handy es sieht. Nur in vertrauenswürdigen Netzen: Ollama hat kein Passwort."
+      "ollamaHint": "Wenn dein PC Ollama hat, starte es mit OLLAMA_HOST=0.0.0.0, damit das Handy es sieht. Nur in vertrauenswürdigen Netzen: Ollama hat kein Passwort.",
+      "scanTitle": "QR scannen",
+      "searching": "Suche nach Code",
+      "scanHint": "Richte die Kamera auf den QR-Code an deinem PC. Er läuft nach 2 Minuten ab und gilt nur einmal.",
+      "manual": "Code von Hand eingeben",
+      "torch": "Taschenlampe",
+      "closeScan": "Scanner schließen",
+      "introTitle": "Kein Konto: scanne den QR deines PCs",
+      "introBody": "Am PC öffne Einstellungen › Geräte › Gerät koppeln. Du siehst einen einmaligen QR-Code.",
+      "b1": "Ende-zu-Ende-verschlüsselt",
+      "b1s": "Jedes Paar erzeugt seinen eigenen Schlüssel.",
+      "b2": "Über dein lokales Netz",
+      "b2s": "Unterwegs über Tailscale, falls vorhanden.",
+      "b3": "Keine Server, keine Konten",
+      "b3s": "Direkt vom PC zum Handy.",
+      "manualTitle": "Code von deinem PC eingeben",
+      "manualHint": "Er steht unter dem QR und beginnt mit np1:.",
+      "cancel": "Abbrechen",
+      "pairAction": "Koppeln",
+      "deniedTitle": "Kamerazugriff fehlt",
+      "deniedBody": "newpaper nutzt die Kamera nur, um den Kopplungs-QR zu lesen. Das Bild wird nicht gespeichert und verlässt das Handy nicht.",
+      "deniedHow": "Android-Einstellungen › Apps › newpaper › Berechtigungen › Kamera › „Nur während der Nutzung“. Bis dahin kannst du den Code von Hand eingeben.",
+      "unavailable": "Die Kamera konnte nicht geöffnet werden. Du kannst den Code von Hand eingeben.",
+      "retry": "Erneut versuchen",
+      "success": "Gekoppelt mit {name}",
+      "successSub": "Fingerabdruck {fp}",
+      "done": "Fertig",
+      "openSettings": "Android-Einstellungen öffnen"
     },
     "edition": {
       "title": "Zum Offline-Lesen",
@@ -1820,6 +1865,27 @@
       "chat": {
         "emptyTitle": "Frag, was du willst",
         "empty": "Antworten zitieren die Quellen des Artikels."
+      }
+    },
+    "pipeline": {
+      "title": "Analyse-Pipeline",
+      "lead": "Wie viel Qualität du willst und wie viel du pro Monat ausgeben kannst.",
+      "quickOnOpen": "Schnellanalyse beim Öffnen",
+      "quickOnOpenSub": "Startet beim Öffnen einer Meldung mit deinem Anbieter.",
+      "saved": "Gespeichert"
+    },
+    "sources": {
+      "title": "Quellen und Themen",
+      "lead": "Themen, die du verfolgst, stehen in Heute zuerst.",
+      "none": "Noch keine Themen: sie erscheinen nach dem ersten Nachrichten-Download."
+    },
+    "analysis": {
+      "step": {
+        "running": "Läuft",
+        "done": "Fertig",
+        "cached": "Aus Cache",
+        "failed": "Fehlgeschlagen",
+        "skipped": "Übersprungen"
       }
     }
   }
