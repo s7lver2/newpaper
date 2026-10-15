@@ -138,7 +138,11 @@
   "settings": {
     "title": "Einstellungen",
     "nav": "Bereiche der Einstellungen",
-    "crash": { "title": "Dieser Bereich ist fehlgeschlagen", "body": "Die übrigen Einstellungen und Tabs funktionieren weiter.", "retry": "Erneut versuchen" },
+    "crash": {
+      "title": "Dieser Bereich ist fehlgeschlagen",
+      "body": "Die übrigen Einstellungen und Tabs funktionieren weiter.",
+      "retry": "Erneut versuchen"
+    },
     "general": {
       "title": "Allgemein",
       "language": "Sprache der Oberfläche",
@@ -1679,7 +1683,14 @@
       },
       "p2": {
         "title": "Eine Nachricht, sechs Medien",
-        "body": "Wir bündeln die Berichte derselben Geschichte, damit du siehst, wie jedes Medium sie rahmt."
+        "body": "Wir bündeln die Berichte derselben Geschichte, damit du siehst, wie jedes Medium sie rahmt.",
+        "kicker": "Eine Meldung",
+        "sample": "Die Regierung beschließt eine Erhöhung des Mindestlohns",
+        "left": "Links",
+        "center": "Mitte",
+        "right": "Rechts",
+        "verdict": "Mit 6 Medien geprüft",
+        "discrepancies": "{n, plural, one {# Abweichung markiert} other {# Abweichungen markiert}}"
       },
       "p3": {
         "title": "Die Linse",
@@ -1695,7 +1706,12 @@
       "p5": {
         "title": "Deine Themen",
         "body": "Wähle die Themen, die dir wichtig sind; sie erscheinen zuerst in Heute.",
-        "sample": "Wirtschaft · Klima · Gesundheit · Wohnen"
+        "sample": "Wirtschaft · Klima · Gesundheit · Wohnen",
+        "t1": "Wirtschaft",
+        "t2": "Klima",
+        "t3": "Gesundheit",
+        "t4": "Wohnen",
+        "count": "{n, plural, =0 {Noch kein Thema gewählt} one {# Thema gewählt} other {# Themen gewählt}}"
       },
       "p6": {
         "title": "KI-Analyse",
@@ -1706,7 +1722,8 @@
         "cloudHint": "Ein Cloud-Anbieter mit deinem eigenen Schlüssel",
         "later": "Später",
         "laterHint": "Einrichten in den Einstellungen"
-      }
+      },
+      "begin": "Starten"
     },
     "today": {
       "search": "Thema suchen oder Link einfügen",

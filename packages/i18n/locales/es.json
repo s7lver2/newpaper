@@ -138,7 +138,11 @@
   "settings": {
     "title": "Ajustes",
     "nav": "Secciones de ajustes",
-    "crash": { "title": "Esta sección ha fallado", "body": "El resto de los ajustes y las pestañas siguen funcionando.", "retry": "Reintentar" },
+    "crash": {
+      "title": "Esta sección ha fallado",
+      "body": "El resto de los ajustes y las pestañas siguen funcionando.",
+      "retry": "Reintentar"
+    },
     "general": {
       "title": "General",
       "language": "Idioma de la interfaz",
@@ -1679,7 +1683,14 @@
       },
       "p2": {
         "title": "Una noticia, seis medios",
-        "body": "Juntamos las coberturas de la misma historia y ves cómo cada medio la encuadra."
+        "body": "Juntamos las coberturas de la misma historia y ves cómo cada medio la encuadra.",
+        "kicker": "Una noticia",
+        "sample": "El Gobierno aprueba una subida del salario mínimo",
+        "left": "Izquierda",
+        "center": "Centro",
+        "right": "Derecha",
+        "verdict": "Contrastada con 6 medios",
+        "discrepancies": "{n, plural, one {# discrepancia señalada} other {# discrepancias señaladas}}"
       },
       "p3": {
         "title": "La lente",
@@ -1695,7 +1706,12 @@
       "p5": {
         "title": "Tus temas",
         "body": "Elige los temas que te importan y los verás primero en Hoy.",
-        "sample": "Economía · Clima · Sanidad · Vivienda"
+        "sample": "Economía · Clima · Sanidad · Vivienda",
+        "t1": "Economía",
+        "t2": "Clima",
+        "t3": "Sanidad",
+        "t4": "Vivienda",
+        "count": "{n, plural, =0 {Ningún tema elegido todavía} one {# tema elegido} other {# temas elegidos}}"
       },
       "p6": {
         "title": "Análisis con IA",
@@ -1706,7 +1722,8 @@
         "cloudHint": "Un proveedor en la nube, con tu clave",
         "later": "Más tarde",
         "laterHint": "Lo configuras en Ajustes"
-      }
+      },
+      "begin": "Empezar"
     },
     "today": {
       "search": "Busca un tema o pega un enlace",
