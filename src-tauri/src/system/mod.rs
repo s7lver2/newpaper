@@ -1,17 +1,24 @@
 //! Subproyecto 6: arranque, actualizaciones de app y contenido, primer arranque y páginas del sistema.
+#[cfg(desktop)]
 pub mod commands;
 pub mod content;
+#[cfg(desktop)]
 pub mod firstrun;
+#[cfg(desktop)]
 pub mod updater;
 
+#[cfg(desktop)]
 use std::{
     path::PathBuf,
     sync::{Arc, Mutex},
 };
 
+#[cfg(desktop)]
 use np_update::boot::{BootDecision, BootGuard};
+#[cfg(desktop)]
 use tauri::{App, AppHandle, Emitter, Manager};
 
+#[cfg(desktop)]
 pub struct SystemState {
     pub boot: Mutex<BootGuard>,
     pub pending_urls: Mutex<Vec<String>>,
@@ -19,14 +26,17 @@ pub struct SystemState {
     pub data_dir: PathBuf,
 }
 
+#[cfg(desktop)]
 fn http_urls<'a>(args: impl Iterator<Item = &'a String>) -> Vec<String> {
     args.filter(|a| a.starts_with("http://") || a.starts_with("https://")).cloned().collect()
 }
 
+#[cfg(desktop)]
 pub fn rollback_installer(data_dir: &std::path::Path, version: &str) -> PathBuf {
     data_dir.join("updates").join("rollback").join(format!("newpaper_{version}_x64-setup.exe"))
 }
 
+#[cfg(desktop)]
 /// Primera llamada de `setup` (antes de crear ventanas): cuenta el arranque y, si procede, vuelve atrás.
 pub fn boot_check(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     let data_dir = app.path().app_local_data_dir()?;
@@ -49,6 +59,7 @@ pub fn boot_check(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
+#[cfg(desktop)]
 pub fn on_second_instance(app: &AppHandle, argv: Vec<String>) {
     for url in http_urls(argv.iter().skip(1)) {
         let _ = app.emit_to("ui", "app://open-url", url);
@@ -60,6 +71,7 @@ pub fn on_second_instance(app: &AppHandle, argv: Vec<String>) {
 }
 
 /// Tareas de fondo del sistema (actualizaciones de app y contenido).
+#[cfg(desktop)]
 pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     updater::setup(app)?;
     content::setup(app)?;

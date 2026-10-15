@@ -13,5 +13,8 @@ pub mod sysmem;
 pub mod transition;
 pub mod news;
 pub mod extensions;
+/// Pestañas y ventana de escritorio: no existen en Android ni iOS (subproyecto 8).
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub mod host;
+#[cfg(not(any(target_os = "android", target_os = "ios")))]
 pub use host::{Rect, ShellError, TabManager};

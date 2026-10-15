@@ -5,8 +5,6 @@ edition = "2021"
 publish = false
 
 [dependencies]
-arti-client = { version = "=0.47.0", default-features = false, features = ["tokio", "rustls", "geoip"] }
-tor-rtcompat = { version = "=0.47.0", default-features = false, features = ["tokio", "rustls"] }
 async-trait = { workspace = true }
 futures = { workspace = true }
 reqwest = { workspace = true }
@@ -17,6 +15,11 @@ serde_json = { workspace = true }
 thiserror = { workspace = true }
 tokio = { workspace = true, features = ["net", "io-util"] }
 tracing = { workspace = true }
+
+# Tor (Arti) no se compila en móvil: el subproyecto 8 deja Tor fuera de la primera versión.
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+arti-client = { version = "=0.47.0", default-features = false, features = ["tokio", "rustls", "geoip"] }
+tor-rtcompat = { version = "=0.47.0", default-features = false, features = ["tokio", "rustls"] }
 
 [dev-dependencies]
 tempfile = { workspace = true }

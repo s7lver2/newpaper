@@ -1,6 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "ui",
+  "platforms": ["windows", "macOS", "linux"],
   "description": "Permisos de la webview de interfaz. Las webviews de contenido no reciben ninguno.",
   "webviews": ["ui"],
   "permissions": [

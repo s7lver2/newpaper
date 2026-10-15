@@ -19,6 +19,7 @@ impl From<np_store::StoreError> for CmdError {
     }
 }
 
+#[cfg(desktop)]
 impl From<np_shell::ShellError> for CmdError {
     fn from(e: np_shell::ShellError) -> Self {
         CmdError::new("shell", e.to_string())

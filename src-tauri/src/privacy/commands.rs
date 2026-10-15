@@ -7,7 +7,9 @@ use np_adblock::{
     updater::{refresh_lists, RefreshReport},
 };
 use np_net::{NetController, NetMode, NetStatus};
-use np_shell::{extensions::ShellExtensions, TabId, TabManager};
+use np_shell::{extensions::ShellExtensions, TabId};
+#[cfg(desktop)]
+use np_shell::TabManager;
 use np_store::Store;
 use serde::Serialize;
 use tauri::State;
@@ -33,6 +35,7 @@ fn status(net: &NetController, profiles: &NetProfiles) -> PrivacyStatus {
     PrivacyStatus::new(net.status(), profiles.without_tor())
 }
 
+#[cfg(desktop)]
 fn net_err(e: np_net::NetError) -> CmdError {
     CmdError::new("net", e.to_string())
 }
@@ -42,6 +45,7 @@ pub async fn privacy_status(net: State<'_, Arc<NetController>>, profiles: State<
     Ok(status(&net, &profiles))
 }
 
+#[cfg(desktop)]
 #[tauri::command]
 pub async fn net_set_mode(
     net: State<'_, Arc<NetController>>,
@@ -57,6 +61,21 @@ pub async fn net_set_mode(
     Ok(status(&net, &profiles))
 }
 
+/// Móvil: sin Tor en la primera versión. Solo se admite la conexión directa.
+#[cfg(mobile)]
+#[tauri::command]
+pub async fn net_set_mode(
+    net: State<'_, Arc<NetController>>,
+    profiles: State<'_, Arc<NetProfiles>>,
+    mode: NetMode,
+) -> CmdResult<PrivacyStatus> {
+    if mode == NetMode::Tor {
+        return Err(CmdError::new("tor_unavailable", "Tor no está disponible en la versión móvil"));
+    }
+    Ok(status(&net, &profiles))
+}
+
+#[cfg(desktop)]
 #[tauri::command]
 pub async fn tor_set_exit_country(
     net: State<'_, Arc<NetController>>,
@@ -74,6 +93,7 @@ pub async fn tor_set_exit_country(
     Ok(status(&net, &profiles))
 }
 
+#[cfg(desktop)]
 #[tauri::command]
 pub async fn tor_new_circuit(
     net: State<'_, Arc<NetController>>,
@@ -103,6 +123,7 @@ pub async fn privacy_set_routing(
 }
 
 /// Acción explícita del usuario (la UI muestra antes un aviso): la pestaña sale por conexión directa.
+#[cfg(desktop)]
 #[tauri::command]
 pub async fn tab_without_tor(
     net: State<'_, Arc<NetController>>,

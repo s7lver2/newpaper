@@ -13,7 +13,9 @@ use np_adblock::{
     stats::today_local,
     updater::{refresh_lists, ListFetcher},
 };
-use np_net::{fake::FakeTor, server::TorBackend, tor::ArtiTor, NetController};
+#[cfg(not(mobile))]
+use np_net::tor::ArtiTor;
+use np_net::{fake::FakeTor, server::TorBackend, NetController};
 use np_shell::extensions::{HttpPurpose, ShellExtensions};
 use np_store::Store;
 use tauri::{App, AppHandle, Emitter, Manager};
@@ -58,8 +60,17 @@ fn tor_backend(app: &App) -> Result<Arc<dyn TorBackend>, Box<dyn std::error::Err
         tracing::warn!("using simulated Tor (NP_FAKE_TOR)");
         return Ok(FakeTor::new(true));
     }
-    let base = app.path().app_local_data_dir()?.join("tor");
-    Ok(ArtiTor::new(base.join("state"), base.join("cache")))
+    #[cfg(mobile)]
+    {
+        // Tor no está en la primera versión móvil (errata del subproyecto 8): siempre apagado.
+        let _ = app;
+        return Ok(FakeTor::new(false));
+    }
+    #[cfg(not(mobile))]
+    {
+        let base = app.path().app_local_data_dir()?.join("tor");
+        Ok(ArtiTor::new(base.join("state"), base.join("cache")))
+    }
 }
 
 pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
@@ -73,7 +84,14 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     rebuild_blocker(svc.clone(), cache.clone());
 
     // --- Red ---
-    let net = tauri::async_runtime::block_on(NetController::start(settings::load_net_settings(&store)?, tor_backend(app)?))?;
+    #[cfg_attr(not(mobile), allow(unused_mut))]
+    let mut net_settings = settings::load_net_settings(&store)?;
+    #[cfg(mobile)]
+    {
+        // Móvil: sin Tor, la red es siempre directa (la preferencia guardada de escritorio no se aplica).
+        net_settings.mode = np_net::NetMode::Direct;
+    }
+    let net = tauri::async_runtime::block_on(NetController::start(net_settings, tor_backend(app)?))?;
     let profiles = Arc::new(NetProfiles::new(net.clone()));
     ext.set_profile_provider(profiles.clone());
     ext.set_http_provider(Arc::new(NetHttp(net.clone())));

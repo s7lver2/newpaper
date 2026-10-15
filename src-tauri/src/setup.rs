@@ -1,24 +1,30 @@
 use std::{sync::Arc, time::Duration};
 
+#[cfg(desktop)]
 use np_shell::{
-    extensions::ShellExtensions,
     host::{INK_BG, PAPER_BG},
     TabManager,
 };
+use np_shell::extensions::ShellExtensions;
 use np_store::{history::HistoryRepo, secrets::SecretStore, Store};
-use tauri::{webview::WebviewBuilder, window::WindowBuilder, App, Emitter, LogicalPosition, LogicalSize, Manager, WebviewUrl};
+#[cfg(desktop)]
+use tauri::{webview::WebviewBuilder, window::WindowBuilder, LogicalPosition, LogicalSize, WebviewUrl};
+use tauri::{App, Emitter, Manager};
 
 use crate::config::OutletIndex;
 
 pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
+    #[cfg(desktop)]
     crate::system::boot_check(app)?;
     let data = app.path().app_local_data_dir()?;
     let store = Arc::new(Store::open(data.join("newpaper.sqlite"))?);
 
     #[cfg(windows)]
     let secrets: Arc<dyn SecretStore> = Arc::new(np_store::secrets::KeyringSecrets::new("newpaper"));
-    #[cfg(not(windows))]
+    #[cfg(all(desktop, not(windows)))]
     let secrets: Arc<dyn SecretStore> = Arc::new(np_store::secrets::MemorySecrets::default());
+    #[cfg(mobile)]
+    let secrets: Arc<dyn SecretStore> = Arc::new(crate::mobile::secrets::MobileSecrets(app.handle().clone()));
 
     let outlets = Arc::new(OutletIndex::load(app.handle()));
     let ext = Arc::new(ShellExtensions::new());
@@ -34,6 +40,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
         }
         if key == "appearance.pageTransition" {
             ext_for_obs.set_page_transition(value.as_bool().unwrap_or(true));
+            #[cfg(desktop)]
             if let Some(tabs) = handle.try_state::<Arc<TabManager>>() {
                 tabs.sync_transition_flag();
             }
@@ -41,17 +48,22 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
         let _ = handle.emit_to("ui", "settings://changed", serde_json::json!({ "key": key, "value": value }));
     });
 
-    let tabs = Arc::new(TabManager::new(app.handle().clone(), ext.clone(), data.join("webview")));
     app.manage(store.clone());
     app.manage(secrets);
-    app.manage(ext);
-    app.manage(tabs);
+    app.manage(ext.clone());
+    #[cfg(desktop)]
+    {
+        let tabs = Arc::new(TabManager::new(app.handle().clone(), ext.clone(), data.join("webview")));
+        app.manage(tabs);
+    }
     app.manage(outlets);
 
     crate::features::setup_all(app)?;
+    #[cfg(desktop)]
     crate::resources::setup(app);
 
     spawn_history_retention(store);
+    #[cfg(desktop)]
     create_main_window(app)?;
     Ok(())
 }
@@ -71,6 +83,7 @@ fn spawn_history_retention(store: Arc<Store>) {
 }
 
 /// Fondo inicial según el ajuste de tema (o el tema del sistema): evita el destello blanco de WebView2.
+#[cfg(desktop)]
 fn initial_background(app: &App, store: &Store) -> (u8, u8, u8) {
     let choice = store.get_setting::<String>("appearance.theme").ok().flatten().unwrap_or_else(|| "system".into());
     let ink = match choice.as_str() {
@@ -81,6 +94,7 @@ fn initial_background(app: &App, store: &Store) -> (u8, u8, u8) {
     if ink { INK_BG } else { PAPER_BG }
 }
 
+#[cfg(desktop)]
 fn create_main_window(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     let tabs = app.state::<Arc<TabManager>>().inner().clone();
     let store = app.state::<Arc<Store>>().inner().clone();

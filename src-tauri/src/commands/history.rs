@@ -1,7 +1,9 @@
 //! Comandos de historial y sugerencias de la barra de direcciones (spec §16).
 use std::sync::Arc;
 
-use np_shell::{input::{is_internal, parse_input, search_url, Target}, TabId, TabManager};
+use np_shell::input::{is_internal, parse_input, search_url, Target};
+#[cfg(desktop)]
+use np_shell::{TabId, TabManager};
 use np_store::{
     history::{DeleteScope, HistoryEntry, HistoryFilter, HistoryRepo, SearchSource},
     Store,
@@ -73,10 +75,18 @@ pub fn build_suggestions(input: &str, visits: Vec<HistoryEntry>, recent: Vec<Str
     out
 }
 
+#[cfg(desktop)]
 #[tauri::command]
 pub async fn history_record_visit(store: State<'_, Arc<Store>>, tabs: State<'_, Arc<TabManager>>, tab_id: TabId, url: String, title: String) -> CmdResult<Option<String>> {
     let private = tabs.tab(tab_id).map(|t| t.private).unwrap_or(true);
     record_visit_impl(&store, private, &url, &title, now_ms())
+}
+
+/// Móvil: sin pestañas ni navegación privada; cada visita se registra.
+#[cfg(mobile)]
+#[tauri::command]
+pub async fn history_record_visit(store: State<'_, Arc<Store>>, url: String, title: String) -> CmdResult<Option<String>> {
+    record_visit_impl(&store, false, &url, &title, now_ms())
 }
 
 #[tauri::command]

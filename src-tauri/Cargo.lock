@@ -3881,10 +3881,12 @@ dependencies = [
  "base64 0.23.1",
  "chrono",
  "futures",
+ "jni 0.21.1",
  "np-adblock",
  "np-ai-proxy",
  "np-feeds",
  "np-lexicon",
+ "np-mobile-core",
  "np-net",
  "np-shell",
  "np-store",
@@ -3900,7 +3902,9 @@ dependencies = [
  "tauri",
  "tauri-build",
  "tauri-plugin-autostart",
+ "tauri-plugin-barcode-scanner",
  "tauri-plugin-dialog",
+ "tauri-plugin-np-mobile",
  "tauri-plugin-process",
  "tauri-plugin-single-instance",
  "tauri-plugin-updater",
@@ -6765,6 +6769,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "tauri-plugin-barcode-scanner"
+version = "2.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "85252806c040742d74fc511a6bf89ae70c9c362393320056c3374af338c82e51"
+dependencies = [
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-plugin",
+ "thiserror 2.0.21",
+]
+
+[[package]]
 name = "tauri-plugin-dialog"
 version = "2.8.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6804,6 +6822,17 @@ dependencies = [
  "thiserror 2.0.21",
  "toml 1.1.7+spec-1.1.0",
  "url",
+]
+
+[[package]]
+name = "tauri-plugin-np-mobile"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-plugin",
+ "thiserror 2.0.21",
 ]
 
 [[package]]
