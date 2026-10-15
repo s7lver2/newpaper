@@ -73,7 +73,7 @@ export function Settings() {
       key: 'ai',
       title: t('mobile.settings.g.ai'),
       rows: [
-        { id: 'providers', label: t('mobile.settings.r.providers'), sub: t('mobile.settings.r.providersSub'), icon: 'ai', tone: 'ai', onPress: () => go('proveedor') },
+        { id: 'providers', label: t('mobile.settings.r.providers'), sub: t('mobile.settings.r.providersSub'), icon: 'ai', tone: 'ai', onPress: () => go('ia') },
         { id: 'pipeline', label: t('mobile.settings.r.pipeline'), sub: t('mobile.pipeline.lead'), icon: 'pipe', tone: 'acc', onPress: () => go('pipeline') },
       ],
     },
@@ -132,7 +132,7 @@ export function Settings() {
         <button
           type="button"
           className="m-tap"
-          onClick={() => go('proveedor')}
+          onClick={() => go('ia')}
           style={{ display: 'grid', gap: 8, margin: '16px 16px 0', padding: 18, width: 'calc(100% - 32px)', borderRadius: 20, background: 'var(--np-ink)', color: 'var(--np-on-ink)', textAlign: 'left' }}
         >
           <span className="m-kicker" style={{ color: 'var(--np-on-ink)', opacity: 0.7 }}>{t('mobile.settings.summary.title')}</span>

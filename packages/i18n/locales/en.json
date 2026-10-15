@@ -1807,7 +1807,29 @@
       "keysBody": "Provider keys are removed from this phone’s keystore. You will have to paste them again."
     },
     "provider": {
-      "pasteHint": "Paste your AI provider key here."
+      "pasteHint": "Paste your AI provider key here.",
+      "localNote": "Uses the model on your computer. Nothing goes to the internet.",
+      "pcDetected": "Found through pairing",
+      "pcModels": "Paired computer · {n} models · {base}",
+      "pcUse": "Use this computer",
+      "pcMissing": "We didn't find Ollama on your paired PC. Pair it, or start Ollama with OLLAMA_HOST=0.0.0.0.",
+      "pairPc": "Pair the PC",
+      "slow": "Taking longer than usual. You can keep waiting.",
+      "continue": "Continue",
+      "changeKey": "Change the key",
+      "noLimit": "No limit",
+      "backToIa": "Back to AI",
+      "seg": {
+        "open": "Open",
+        "closed": "Closed",
+        "local": "On your computer"
+      },
+      "segHint": {
+        "open": "Open-weight models and aggregators.",
+        "closed": "Proprietary models from AI companies.",
+        "local": "Run on your computer; nothing is sent."
+      },
+      "newRouter": "New Router"
     },
     "pair": {
       "body": "On your computer, open Settings › Devices › Pair a device and scan the QR code.",
@@ -1905,6 +1927,20 @@
         "failed": "Failed",
         "skipped": "Skipped"
       }
+    },
+    "ia": {
+      "title": "AI and providers",
+      "lead": "Which AI analyses each story, how much you spend, and when it stops.",
+      "summaryKicker": "Your analysis",
+      "connectedCount": "{n, plural, one {# provider connected} other {# providers connected}}",
+      "none": "No provider connected",
+      "statusLocal": "On your computer · ready",
+      "statusConnected": "Connected · key stored in the keychain",
+      "confirmTitle": "Disconnect {name}?",
+      "confirmBody": "Its steps move to another connected provider. You have a few seconds to undo it.",
+      "disconnected": "{name} disconnected",
+      "undo": "Undo",
+      "add": "Add provider"
     }
   }
 }

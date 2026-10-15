@@ -19,7 +19,7 @@ async function readJson<T>(name: string, fallback: T): Promise<T> {
   }
 }
 
-function getRegistry(): Promise<Registry> {
+export function getRegistry(): Promise<Registry> {
   registryP ??= (async () => loadRegistry(await readJson('providers.json', { version: 1, providers: [] }), await readJson('prices.json', {})))();
   return registryP;
 }

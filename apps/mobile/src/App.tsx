@@ -6,6 +6,7 @@ import { go, TAB_ROOTS, useNavDir, useRoute, type RouteName } from './router';
 import { IconAgent, IconReading, IconSettings, IconToday } from './icons';
 import { Splash } from './Splash';
 import { Agent, AgentIndex } from './screens/Agent';
+import { AiSettings } from './screens/AiSettings';
 import { Edition } from './screens/Edition';
 import { History } from './screens/History';
 import { Offline } from './screens/Offline';
@@ -99,6 +100,8 @@ export function App() {
         return <Agent url={route.params.get('u')} />;
       case 'proveedor':
         return <Provider />;
+      case 'ia':
+        return <AiSettings />;
       case 'emparejar':
         return <Pair />;
       case 'historial':

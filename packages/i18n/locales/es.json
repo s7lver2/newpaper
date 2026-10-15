@@ -1807,7 +1807,29 @@
       "keysBody": "Se borran del llavero del móvil las claves de los proveedores. Tendrás que pegarlas otra vez."
     },
     "provider": {
-      "pasteHint": "Pega aquí la clave de tu proveedor de IA."
+      "pasteHint": "Pega aquí la clave de tu proveedor de IA.",
+      "localNote": "Usa el modelo de tu equipo. Nada sale a internet.",
+      "pcDetected": "Detectado vía emparejamiento",
+      "pcModels": "Equipo emparejado · {n} modelos · {base}",
+      "pcUse": "Usar este equipo",
+      "pcMissing": "No encontramos Ollama en tu PC emparejado. Empareja el PC o arranca Ollama con OLLAMA_HOST=0.0.0.0.",
+      "pairPc": "Emparejar el PC",
+      "slow": "Tarda más de lo normal. Puedes seguir esperando.",
+      "continue": "Continuar",
+      "changeKey": "Cambiar la clave",
+      "noLimit": "Sin límite",
+      "backToIa": "Volver a IA",
+      "seg": {
+        "open": "Abiertos",
+        "closed": "Cerrados",
+        "local": "En tu equipo"
+      },
+      "segHint": {
+        "open": "Modelos de pesos abiertos y agregadores.",
+        "closed": "Modelos propietarios de empresas de IA.",
+        "local": "Corren en tu equipo, sin enviar nada."
+      },
+      "newRouter": "New Router"
     },
     "pair": {
       "body": "En el ordenador, abre Ajustes › Dispositivos › Emparejar un dispositivo y escanea el QR.",
@@ -1905,6 +1927,20 @@
         "failed": "Falló",
         "skipped": "Omitido"
       }
+    },
+    "ia": {
+      "title": "IA y proveedores",
+      "lead": "Qué IA analiza cada noticia, cuánto gastas y cuándo se detiene.",
+      "summaryKicker": "Tu análisis",
+      "connectedCount": "{n, plural, one {# proveedor conectado} other {# proveedores conectados}}",
+      "none": "Ningún proveedor conectado",
+      "statusLocal": "En tu equipo · listo",
+      "statusConnected": "Conectado · la clave está en el llavero",
+      "confirmTitle": "¿Desconectar {name}?",
+      "confirmBody": "Sus pasos pasan a otro proveedor conectado. Tienes unos segundos para deshacerlo.",
+      "disconnected": "{name} desconectado",
+      "undo": "Deshacer",
+      "add": "Añadir proveedor"
     }
   }
 }

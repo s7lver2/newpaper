@@ -1807,7 +1807,29 @@
       "keysBody": "Die Anbieter-Schlüssel werden aus dem Schlüsselspeicher des Handys entfernt. Du musst sie erneut einfügen."
     },
     "provider": {
-      "pasteHint": "Füge hier den Schlüssel deines KI-Anbieters ein."
+      "pasteHint": "Füge hier den Schlüssel deines KI-Anbieters ein.",
+      "localNote": "Nutzt das Modell auf deinem Gerät. Nichts geht ins Internet.",
+      "pcDetected": "Über Kopplung gefunden",
+      "pcModels": "Gekoppelter Rechner · {n} Modelle · {base}",
+      "pcUse": "Diesen Rechner verwenden",
+      "pcMissing": "Auf deinem gekoppelten PC wurde kein Ollama gefunden. Koppel den PC oder starte Ollama mit OLLAMA_HOST=0.0.0.0.",
+      "pairPc": "PC koppeln",
+      "slow": "Dauert länger als üblich. Du kannst weiter warten.",
+      "continue": "Weiter",
+      "changeKey": "Schlüssel ändern",
+      "noLimit": "Kein Limit",
+      "backToIa": "Zurück zur KI",
+      "seg": {
+        "open": "Offen",
+        "closed": "Geschlossen",
+        "local": "Auf deinem Gerät"
+      },
+      "segHint": {
+        "open": "Modelle mit offenen Gewichten und Aggregatoren.",
+        "closed": "Proprietäre Modelle von KI-Unternehmen.",
+        "local": "Laufen auf deinem Gerät, es wird nichts gesendet."
+      },
+      "newRouter": "New Router"
     },
     "pair": {
       "body": "Öffne auf dem Rechner Einstellungen › Geräte › Gerät koppeln und scanne den QR-Code.",
@@ -1905,6 +1927,20 @@
         "failed": "Fehlgeschlagen",
         "skipped": "Übersprungen"
       }
+    },
+    "ia": {
+      "title": "KI und Anbieter",
+      "lead": "Welche KI jede Meldung analysiert, wie viel du ausgibst und wann sie stoppt.",
+      "summaryKicker": "Deine Analyse",
+      "connectedCount": "{n, plural, one {# Anbieter verbunden} other {# Anbieter verbunden}}",
+      "none": "Kein Anbieter verbunden",
+      "statusLocal": "Auf deinem Gerät · bereit",
+      "statusConnected": "Verbunden · Schlüssel im Schlüsselbund",
+      "confirmTitle": "{name} trennen?",
+      "confirmBody": "Seine Schritte wechseln zu einem anderen verbundenen Anbieter. Du hast ein paar Sekunden zum Rückgängigmachen.",
+      "disconnected": "{name} getrennt",
+      "undo": "Rückgängig",
+      "add": "Anbieter hinzufügen"
     }
   }
 }

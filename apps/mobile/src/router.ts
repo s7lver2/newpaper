@@ -7,6 +7,7 @@ export type RouteName =
   | 'agente'
   | 'ajustes'
   | 'proveedor'
+  | 'ia'
   | 'emparejar'
   | 'historial'
   | 'edicion'
