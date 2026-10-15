@@ -1,3 +1,4 @@
+import { Bar } from './Bar';
 import { useI18n } from '@newpaper/i18n/react';
 import { Button } from '@newpaper/ui-kit';
 import { Format, scan } from '@tauri-apps/plugin-barcode-scanner';
@@ -50,8 +51,8 @@ export function Pair() {
   };
 
   return (
-    <section>
-      <h1 className="m-title">{t('sync.pair.title')}</h1>
+    <section className="m-body">
+      <Bar title={t('sync.pair.title')} />
       <p>{t('mobile.pair.body')}</p>
       <Button variant="primary" disabled={state === 'pairing'} onClick={() => void scanQr()}>{t('mobile.pair.scan')}</Button>
       <label className="np-field">

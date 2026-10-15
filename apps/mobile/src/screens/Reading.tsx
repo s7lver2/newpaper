@@ -1,11 +1,71 @@
 import { useI18n } from '@newpaper/i18n/react';
-import { AnnotatedText, Button, markTone, ReaderView, type LensMark } from '@newpaper/ui-kit';
+import { AnnotatedText, markTone, ReaderView, type LensMark } from '@newpaper/ui-kit';
 import { addPluginListener } from '@tauri-apps/api/core';
-import { useEffect, useMemo, useState } from 'react';
-import { ipc } from '../ipc';
-import { go } from '../router';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { ipc, type HistoryEntry, type SavedArticle } from '../ipc';
+import { go, back } from '../router';
 import { loadArticle, showHtml, useReading } from '../readingStore';
 import { AnalysisSheet } from './AnalysisSheet';
+import { IconBack, IconChevron, IconLens } from '../icons';
+
+/** Raíz de "Leyendo": lo abierto y lo guardado para leer más tarde. Sin contenido: estado vacío. */
+export function ReadingIndex() {
+  const { t, formatDate } = useI18n();
+  const [recent, setRecent] = useState<HistoryEntry[] | null>(null);
+  const [saved, setSaved] = useState<SavedArticle[]>([]);
+  useEffect(() => {
+    void ipc.historySearch({ kind: 'visit', limit: 30 }).then(setRecent).catch(() => setRecent([]));
+    void ipc.savedList().then(setSaved).catch(() => {});
+  }, []);
+  const items = (recent ?? []).filter((x) => x.url);
+  return (
+    <div>
+      <h1 className="m-large">{t('mobile.reading.index.title')}</h1>
+      <p className="m-sub">{t('mobile.reading.index.subtitle')}</p>
+      {saved.length > 0 ? (
+        <>
+          <h2 className="m-sec">{t('mobile.reading.index.saved')}</h2>
+          <div className="m-group" style={{ margin: '0 var(--m-gutter)' }}>
+            {saved.map((s) => (
+              <button key={s.url} type="button" className="m-row" onClick={() => go('leer', { u: s.url })}>
+                <span className="m-row-body">
+                  <b>{s.title}</b>
+                  {s.outlet ? <span>{s.outlet}</span> : null}
+                </span>
+                <IconChevron />
+              </button>
+            ))}
+          </div>
+        </>
+      ) : null}
+      <h2 className="m-sec">{t('mobile.reading.index.recent')}</h2>
+      {recent === null ? (
+        <div aria-busy="true" style={{ padding: '0 var(--m-gutter)', display: 'grid', gap: 14 }}>
+          {[0, 1, 2].map((i) => <span key={i} className="m-skel" style={{ height: 52 }} />)}
+        </div>
+      ) : items.length === 0 ? (
+        <p className="m-empty"><b>{t('mobile.reading.index.emptyTitle')}</b>{t('mobile.reading.index.empty')}</p>
+      ) : (
+        <div className="m-group m-stagger" style={{ margin: '0 var(--m-gutter)' }}>
+          {items.map((h, i) => (
+            <button key={h.id} type="button" className="m-row" style={{ ['--i' as string]: Math.min(i, 8) } as CSSProperties} onClick={() => go('leer', { u: h.url! })}>
+              <span className="m-row-body">
+                <b>{h.title || h.url}</b>
+                <span className="np-mono">
+                  {h.outlet ?? ''}
+                  {h.outlet ? ' · ' : ''}
+                  {formatDate(new Date(h.at), { timeStyle: 'short' })}
+                  {h.analyzed ? ` · ${t('history.analyzed')}` : ''}
+                </span>
+              </span>
+              <IconChevron />
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 /** Lector con la lente. Las imagenes no se cargan en movil: "Ver original" las muestra por la webview nativa. */
 export function Reading({ url }: { url: string | null }) {
@@ -35,38 +95,70 @@ export function Reading({ url }: { url: string | null }) {
   }, [result]);
   const labels = { close: t('mobile.reading.close'), analyze: t('mobile.reading.analyzeOriginal') };
 
-  if (!url && !s.article) return <p className="np-muted">{t('mobile.reading.empty')}</p>;
-  if (s.busy === 'loading') return <p aria-busy="true">{t('mobile.reading.loading')}</p>;
+  const bar = (
+    <header className="m-appbar">
+      <button type="button" className="m-back" aria-label={t('mobile.nav.back')} onClick={() => back()}>
+        <IconBack />
+      </button>
+      <div className="m-bar-title" style={{ font: '500 14px/1.2 var(--np-font-ui)' }}>
+        <span className="m-bar-sub">{s.article?.siteName ?? ''}</span>
+      </div>
+      <button
+        type="button"
+        className="m-lens"
+        aria-pressed={lens}
+        aria-label={t('analysis.lens.toggle')}
+        disabled={!result}
+        onClick={() => setLens(!lens)}
+      >
+        <IconLens />
+      </button>
+    </header>
+  );
+
+  if (!url && !s.article) return <div>{bar}<p className="m-empty">{t('mobile.reading.empty')}</p></div>;
+  if (s.busy === 'loading') return <div>{bar}<div aria-busy="true" style={{ padding: 'var(--m-gutter)', display: 'grid', gap: 12 }}><span className="m-skel" style={{ height: 34 }} /><span className="m-skel" style={{ height: 200 }} /></div></div>;
   if (!s.article) {
     return (
       <div>
-        <p role="alert">{s.error === 'not-article' ? t('mobile.reading.notArticle') : t('mobile.reading.failed')}</p>
-        {url ? <Button onClick={() => void ipc.originalOpen(url, labels)}>{t('mobile.reading.original')}</Button> : null}
+        {bar}
+        <p role="alert" className="m-empty">{s.error === 'not-article' ? t('mobile.reading.notArticle') : t('mobile.reading.failed')}</p>
+        {url ? (
+          <div className="m-btn-row">
+            <button type="button" className="m-btn sec" onClick={() => void ipc.originalOpen(url, labels)}>{t('mobile.reading.original')}</button>
+          </div>
+        ) : null}
       </div>
     );
   }
   const a = s.article;
   return (
     <article className="m-reader" lang={a.lang ?? undefined}>
-      <div className="m-row">
-        <Button variant="primary" onClick={() => setSheet(true)}>{t('mobile.reading.analysis')}</Button>
-        <Button variant="quiet" aria-pressed={lens} disabled={!result} onClick={() => setLens(!lens)}>{t('analysis.lens.toggle')}</Button>
-        <Button variant="quiet" onClick={() => void ipc.originalOpen(a.url, labels)}>{t('mobile.reading.original')}</Button>
-        <Button variant="quiet" onClick={() => void ipc.savedAdd({ url: a.url, title: a.title, outlet: a.siteName, articleJson: JSON.stringify(a), savedAt: Date.now() })}>{t('sources.save.add')}</Button>
+      {bar}
+      <div style={{ padding: '0 var(--m-gutter)' }}>
+        <h1 style={{ font: '500 31px/1.14 var(--np-font-read)', letterSpacing: '-.02em', margin: '6px 0 14px' }}>{a.title}</h1>
+        <button type="button" className="m-card" style={{ margin: '0 0 18px', width: '100%' }} onClick={() => setSheet(true)}>
+          <span className="m-kicker">{t('mobile.reading.analysis')}</span>
+          <span style={{ font: '400 15px/1.4 var(--np-font-ui)' }}>{result ? t('mobile.reading.bannerReady') : t('mobile.reading.bannerEmpty')}</span>
+        </button>
+        {lens && result ? (
+          <AnnotatedText
+            text={a.text}
+            lang={a.lang}
+            marks={marks}
+            classOf={(m) => `np-mark--${markTone(m.kind)}`}
+            describe={(m) => (m.kind === 'cargada' ? t('analysis.lens.loaded') : t(`analysis.verdict.${m.kind}`))}
+            onActivate={() => setSheet(true)}
+          />
+        ) : (
+          <ReaderView article={a} rewriteImage={() => null} onOpenLink={(u) => go('leer', { u })} />
+        )}
+        <div className="m-btn-row" style={{ padding: 0, margin: '22px 0 8px', flexWrap: 'wrap' }}>
+          <button type="button" className="m-btn sec sm" onClick={() => void ipc.originalOpen(a.url, labels)}>{t('mobile.reading.original')}</button>
+          <button type="button" className="m-btn sec sm" onClick={() => void ipc.savedAdd({ url: a.url, title: a.title, outlet: a.siteName, articleJson: JSON.stringify(a), savedAt: Date.now() })}>{t('sources.save.add')}</button>
+          <button type="button" className="m-btn sec sm" onClick={() => go('agente', { u: a.url })}>{t('mobile.reading.askAgent')}</button>
+        </div>
       </div>
-      <h1 className="m-title">{a.title}</h1>
-      {lens && result ? (
-        <AnnotatedText
-          text={a.text}
-          lang={a.lang}
-          marks={marks}
-          classOf={(m) => `np-mark--${markTone(m.kind)}`}
-          describe={(m) => (m.kind === 'cargada' ? t('analysis.lens.loaded') : t(`analysis.verdict.${m.kind}`))}
-          onActivate={() => setSheet(true)}
-        />
-      ) : (
-        <ReaderView article={a} rewriteImage={() => null} onOpenLink={(u) => go('leer', { u })} />
-      )}
       {sheet ? <AnalysisSheet onClose={() => setSheet(false)} /> : null}
     </article>
   );

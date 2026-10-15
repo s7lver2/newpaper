@@ -1,3 +1,4 @@
+import { Bar } from './Bar';
 import { useT } from '@newpaper/i18n/react';
 import { Button } from '@newpaper/ui-kit';
 import { bestMove, winner, type Board, type Cell } from '@newpaper/ui-kit/logic';
@@ -16,8 +17,8 @@ export function Offline() {
     setB(n);
   };
   return (
-    <section>
-      <h1 className="m-title">{t('pages.offline.title')}</h1>
+    <section className="m-body">
+      <Bar title={t('pages.offline.title')} />
       <p>{t('pages.offline.body')}</p>
       <Button variant="primary" onClick={() => go('edicion')}>{t('mobile.edition.title')}</Button>
       <h2 className="np-mono np-muted">{t('pages.game.title')}</h2>

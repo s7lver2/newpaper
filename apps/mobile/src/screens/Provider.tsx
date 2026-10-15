@@ -1,3 +1,4 @@
+import { Bar } from './Bar';
 import { useI18n } from '@newpaper/i18n/react';
 import { detectProviders, loadRegistry, type ProviderEntry, type Registry } from '@newpaper/pipeline';
 import { Button } from '@newpaper/ui-kit';
@@ -40,8 +41,8 @@ export function Provider() {
   };
 
   return (
-    <section>
-      <h1 className="m-title">{t('providers.title')}</h1>
+    <section className="m-body">
+      <Bar title={t('providers.title')} />
       <p className="np-muted">{t('mobile.provider.pasteHint')}</p>
       <label className="np-field">
         <span>{t('providers.pasteKey')}</span>

@@ -1,3 +1,4 @@
+import { Bar } from './Bar';
 import type { Article } from '@newpaper/extract';
 import { useI18n } from '@newpaper/i18n/react';
 import { Button, ReaderView } from '@newpaper/ui-kit';
@@ -21,8 +22,8 @@ export function Edition() {
     );
   }
   return (
-    <section>
-      <h1 className="m-title">{t('mobile.edition.title')}</h1>
+    <section className="m-body">
+      <Bar title={t('mobile.edition.title')} />
       <p className="np-muted">{t('mobile.edition.hint')}</p>
       {saved.length === 0 ? <p className="np-muted">{t('mobile.edition.empty')}</p> : null}
       {saved.map((s) => (

@@ -1,3 +1,4 @@
+import { Bar } from './Bar';
 import { useI18n } from '@newpaper/i18n/react';
 import { groupByDay } from '@newpaper/ui-kit/logic';
 import { useEffect, useMemo, useState } from 'react';
@@ -15,8 +16,8 @@ export function History() {
   }, [text]);
   const groups = useMemo(() => groupByDay(items, new Date()), [items]);
   return (
-    <section>
-      <h1 className="m-title">{t('history.title')}</h1>
+    <section className="m-body">
+      <Bar title={t('history.title')} />
       <input className="m-input" type="search" aria-label={t('history.search')} placeholder={t('history.search')} value={text} onChange={(e) => setText(e.target.value)} />
       {groups.length === 0 ? <p className="np-muted">{t('history.empty')}</p> : null}
       {groups.map((g) => (
