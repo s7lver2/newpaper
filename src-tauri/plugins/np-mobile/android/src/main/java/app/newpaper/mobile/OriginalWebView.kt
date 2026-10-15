@@ -20,7 +20,7 @@ import androidx.core.view.WindowInsetsCompat
 import java.io.ByteArrayInputStream
 
 /** WebView "original" superpuesta: sin puente JS hacia Tauri, con bloqueo de anuncios por Rust. */
-class OriginalWebView(private val activity: Activity, private val onHtml: (String, String) -> Unit) {
+class OriginalWebView(private val activity: Activity, private val onHtml: (String, String) -> Unit, private val onClosed: () -> Unit = {}) {
     private var root: LinearLayout? = null
     private var web: WebView? = null
     private val back = object : OnBackPressedCallback(false) {
@@ -94,9 +94,12 @@ class OriginalWebView(private val activity: Activity, private val onHtml: (Strin
 
     fun close() {
         back.isEnabled = false
+        // Rust cierra el SOCKS de sesión cuando la webview se cierra (botón Cerrar, Atrás): se le avisa solo si estaba abierta.
+        val wasOpen = root != null
         root?.let { (it.parent as? ViewGroup)?.removeView(it) }
         root = null
         web?.destroy()
         web = null
+        if (wasOpen) onClosed()
     }
 }

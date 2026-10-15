@@ -27,7 +27,7 @@ import app.tauri.plugin.Plugin
 class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
     private val store by lazy { SecureStore(activity) }
     private val original by lazy {
-        OriginalWebView(activity) { url, html -> trigger("original-html", JSObject().put("url", url).put("html", html)) }
+        OriginalWebView(activity, { url, html -> trigger("original-html", JSObject().put("url", url).put("html", html)) }, { trigger("original-closed", JSObject()) })
     }
     private var pending: String? = null
     private var lock: WifiManager.MulticastLock? = null

@@ -39,14 +39,23 @@ pub async fn mobile_original_open(app: AppHandle<Wry>, net: State<'_, Arc<NetCon
     if decide(s.mode, &s.tor, s.socks_port) == ProxyDecision::Block {
         return Err(CmdError::new("tor_not_ready", "Tor no está listo: la webview original no se abre"));
     }
-    app.np_mobile()
+    // En modo Tor la webview recibe un SOCKS de sesión propio (puerto efímero, cerrado al cerrar la webview).
+    super::proxy::begin_session(&app, &net).await.map_err(|e| CmdError::new("mobile", e))?;
+    let opened = app
+        .np_mobile()
         .original_open(&url, OriginalLabels { close: labels.close, analyze: labels.analyze })
-        .map_err(|e| CmdError::new("mobile", e.0))
+        .map_err(|e| CmdError::new("mobile", e.0));
+    if opened.is_err() {
+        super::proxy::end_session(&app, &net);
+    }
+    opened
 }
 
 #[tauri::command]
-pub async fn mobile_original_close(app: AppHandle<Wry>) -> CmdResult<()> {
-    app.np_mobile().original_close().map_err(|e| CmdError::new("mobile", e.0))
+pub async fn mobile_original_close(app: AppHandle<Wry>, net: State<'_, Arc<NetController>>) -> CmdResult<()> {
+    let closed = app.np_mobile().original_close().map_err(|e| CmdError::new("mobile", e.0));
+    super::proxy::end_session(&app, &net);
+    closed
 }
 
 #[derive(Serialize)]

@@ -187,6 +187,13 @@ impl NetController {
         self.server.port()
     }
 
+    /// Servidor SOCKS de sesión (móvil): un puerto efímero propio para la webview original que vive solo mientras
+    /// ella está abierta. Mismo conector que el servidor principal, así que el kill switch es el mismo (Tor no listo
+    /// => error). Reduce la ventana en la que otra app del dispositivo puede usar `127.0.0.1:<puerto>`.
+    pub async fn session_socks(&self) -> Result<SocksServer, NetError> {
+        Ok(SocksServer::bind(self.tor.clone().connector()).await?)
+    }
+
     pub fn set_mode(&self, mode: NetMode) -> bool {
         {
             let mut s = self.settings.write().expect("settings lock");
@@ -300,6 +307,36 @@ mod tests {
         assert!(fetch(&net).await.is_err());
         assert_eq!(hits.load(Ordering::SeqCst), 0, "nothing may leave in clear");
         assert!(tor.seen_targets().is_empty());
+    }
+
+    /// SOCKS5 mínimo: saludo + CONNECT a un dominio. Devuelve el código de respuesta.
+    async fn socks_connect(port: u16, host: &str) -> u8 {
+        let mut c = tokio::net::TcpStream::connect(("127.0.0.1", port)).await.unwrap();
+        c.write_all(&[5, 1, 0]).await.unwrap();
+        let mut g = [0u8; 2];
+        c.read_exact(&mut g).await.unwrap();
+        let mut req = vec![5, 1, 0, 3, host.len() as u8];
+        req.extend_from_slice(host.as_bytes());
+        req.extend_from_slice(&80u16.to_be_bytes());
+        c.write_all(&req).await.unwrap();
+        let mut r = [0u8; 10];
+        c.read_exact(&mut r).await.unwrap();
+        r[1]
+    }
+
+    #[tokio::test]
+    async fn session_socks_shares_the_kill_switch_and_closes_on_drop() {
+        let (addr, hits) = origin().await;
+        let tor = FakeTor::new(false).with_host("origin.test", addr);
+        let net = NetController::start(tor_mode(), tor.clone()).await.unwrap();
+        let session = net.session_socks().await.unwrap();
+        let port = session.port();
+        assert_ne!(port, net.socks_port(), "the webview session gets its own ephemeral port");
+        assert_ne!(socks_connect(port, "origin.test").await, 0, "Tor not ready: refused");
+        assert_eq!(hits.load(Ordering::SeqCst), 0);
+        drop(session);
+        tokio::time::sleep(Duration::from_millis(50)).await;
+        assert!(tokio::net::TcpStream::connect(("127.0.0.1", port)).await.is_err(), "closed with the webview");
     }
 
     #[tokio::test]
