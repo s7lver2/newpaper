@@ -130,6 +130,34 @@ Sustituye a la decisión 1 (Tor fuera de la primera versión). Mismo modelo que 
 - **Batería.** No medida. La medida real es que Arti no corre en Direct ni en segundo plano.
 - **Guardia del SOCKS**: ver el riesgo residual arriba.
 
+### Atasco al 44 %
+
+Síntoma (dispositivo real): el progreso se queda en torno al 44 % y acaba terminando, pero tarda mucho. No es un fallo duro ni un bucle de reinicios.
+
+**Qué es el 44 %.** Arti calcula `0,15 * conexión + 0,85 * directorio`. Con la conexión hecha y el consenso con sus certificados validados pero 0 microdescriptores recibidos, el directorio vale 0,35 y el total es 0,15 + 0,2975 = 44 %. Confirmado en el emulador: el registro salta de `authority certificates (9/9)` / `microdescriptors (0/9180)` (44 %) a `(9180/9180)` (99 %) sin pasos intermedios. Es decir, el 44 % es toda la fase de descargar, verificar e indexar ~9000 microdescriptores, y Arti solo informa de progreso cuando termina un lote.
+
+**Causa raíz (confirmada en el emulador, extrapolada al teléfono).**
+1. **Dependencias a `opt-level = 0`.** El workspace no tenía `[profile]`, así que el APK de depuración llevaba Arti, sus crates criptográficas y SQLite empaquetado sin optimizar. Medido en el emulador x86_64 (CPU del PC): arranque *tibio* (caché reutilizada, sin red) 26 s a opt 0 contra 7 s con las dependencias a opt 2; arranque en frío 46 s (medido en la revisión anterior) contra 13-16 s. Esa fase es de CPU, no de red; en un teléfono arm64 de gama media la CPU es varias veces más lenta que la del PC, así que el factor se traduce en minutos. Es la explicación coherente con «se queda en el 44 % y termina»; **no se pudo medir en el teléfono**, el factor en el dispositivo real es una extrapolación.
+2. **Progreso sin señal intermedia.** Aunque la descarga siga viva, la UI mostraba un porcentaje fijo sin tiempo ni fase, así que parecía congelada.
+3. **Red lenta (hipótesis, no probada).** Los plazos de lectura de `tor-dirclient` (10 s, 5 s de apertura) están fijados en la crate y no son configurables. No se pudo estrangular la red del emulador (`network speed edge` no afectó al tráfico Wi-Fi del AVD: 13 s igual), así que el efecto de un enlace lento no está medido.
+
+**Descartado.** Tormenta de reinicios por `ConnectivityManager`: el código antiguo solo escuchaba `onAvailable`/`onLost`, no churn de capacidades, y el único reinicio posible era el del debounce de 3 s; el fallo conocido era que con avisos separados más de 3 s cada uno reiniciaba Arti desde cero (hipótesis de riesgo, no observada). Caché que no persiste: se comprobó que se reutiliza tras reiniciar la app (`cache="warm"`) y tras pausa/reanudación.
+
+**Cambios.**
+- `Cargo.toml`: `[profile.dev.package."*"] opt-level = 2, debug = false` (las crates propias siguen sin optimizar). Efecto en los APK de depuración; el release ya optimiza.
+- Reinicios conservadores: el plugin solo avisa cuando cambia la red validada (manejador + transporte) con `onCapabilitiesChanged` (el churn de capacidades y `onLost` no avisan); `NetController::network_changed(id)` ignora la misma red, el primer aviso solo la registra y el reinicio espera 8 s de silencio (antes 3 s de debounce que dejaba pasar un reinicio por aviso). Cuatro apagados/encendidos de Wi-Fi (7 cambios de red) dieron un único reinicio, con caché tibia y listo en 6 s.
+- Reintento tras fallo con espera exponencial (20 s, 40 s... hasta 5 min) en vez de 60 s fijos; un reinicio manual o un cambio de red lo reinician.
+- `ArtiTor` espera (hasta 10 s) a que el cliente anterior suelte la caché y el estado antes de crear otro (Arti bloquea ambos por cliente; con dos vivos el nuevo queda en solo lectura y no descarga). Vigilante: sin ningún cambio de progreso durante 240 s el intento se da por fallido y se reintenta desde la caché.
+- Descargas de directorio más tolerantes: 8 intentos para certificados y 10 para microdescriptores (por defecto 3), 3 descargas paralelas en lugar de 4.
+- Diagnóstico a la UI (`privacy_status`, `tor.detail`): fase (`connecting`, `directory`, `certificates`, `descriptors`), texto de Arti, motivo de bloqueo aproximado (`offline`, `filtering`, `cant_reach_tor`, `clock_skewed`, `cant_bootstrap`), segundos transcurridos y sin cambios, estado de la caché (`cold`, `warm`, `reset`, con antigüedad) y motivo del reinicio (`network_change`, `retry`, `reset`).
+- `ConnectionCard`: porcentaje de Arti, fase en lenguaje llano y tiempo, barra, «sin cambios desde hace N s · sigue activo» a partir de 6 s, aviso «Tarda más de lo normal» a partir de 35 s con un único botón «Usar conexión directa»; en fallo o bloqueo diagnosticado, «Reintentar», «Usar conexión directa» y «Restablecer Tor». Comandos nuevos `tor_retry` y `tor_reset` (este borra la caché del directorio y el estado de Arti en el siguiente arranque, tras soltar el cliente anterior).
+- Cache dañada: si el error de arranque parece de SQLite/base de datos, se borra la caché una vez por sesión en el siguiente intento. Matar el proceso a mitad de escritura lo gestiona SQLite (transacciones por lote); no se observó corrupción.
+- Registro: líneas `np_net::tor` con marca de tiempo (cambio de progreso y latido de 15 s) y `np_net::controller` en `logcat` con la etiqueta `RustStdoutStderr`; el plugin escribe `NpMobile`.
+
+**Seguimiento documentado, no implementado.** Puentes y transportes enchufables (obfs4/snowflake) para redes que filtran Tor; fuente de directorio alternativa (instantánea de consenso empaquetada en la app para que el primer arranque no descargue el directorio completo); progreso por bytes durante la descarga de microdescriptores; `DormantMode::Soft` en lugar de parar Arti al pasar a segundo plano; `wait_for_stop` (característica `experimental-api` de arti-client) en lugar del sondeo del cliente anterior; arranque tibio perezoso: construir circuitos antes de terminar de indexar.
+
+**Cómo enviar un registro.** Con el teléfono por USB y depuración activada: `adb logcat -v time -s RustStdoutStderr:I NpMobile:I | findstr /i "np_net tor_dirmgr tor_guardmgr tor_chanmgr NpMobile"` (Windows) mientras se reproduce el atasco; cada 15 s sale una línea `tor bootstrap: ...% ... elapsed_s=... stalled_s=...` con la fase y el texto de Arti.
+
 ## Rediseño (2026-10-15)
 
 Implementación del diseño v2 (`design/mockups/MOVIL-DISENO.md`). Lo que no está en la app o difiere del diseño, con su motivo.
@@ -238,3 +266,40 @@ Pendiente (no implementado en esta tanda):
 - Splash nativo (ítem 19): `ic_splash_icon` sigue en la paleta clara; hay que pasarlo a la n fantasma `#34343B` sobre `#17171A`, fijar el fondo del tema y `setKeepOnScreenCondition` hasta el primer fotograma (requiere un comando de plugin `intro_ready`).
 - Conexión (ítem 18) y `ConnectionCard.tsx`: lo lleva el agente de Tor, fuera de este alcance.
 - Ítem 27 (degradación de la intro por rendimiento) pendiente de la integración del componente.
+
+### Implementación v3 · segunda tanda (estado final)
+
+Commits: `cb3f28f` (extracción a ui-kit), `a9768ea` (asistente y pantalla IA), `5e290fa` (emparejamiento), `d3b96eb` (intro en canvas y traspaso), `bee680f` (splash nativo y espera al primer fotograma).
+
+Hecho:
+- **Ítem 16, 23, 24, 25 (asistente, punto de partida, lista completa, PC por emparejamiento)**: `apps/mobile/src/screens/Provider.tsx`. Pasos: inicio con los tres recomendados, clave pegada con detección de prefijo, lista completa con buscador y segmentos Abiertos/Cerrados/En tu equipo (New Router «Próximamente» al principio de Abiertos, no pulsable), Ollama del PC detectado por emparejamiento, prueba real con modelo de la lista viva y errores tal cual, punto de partida con `autoAssign`, preset y límite mensual, y pantalla final con coste estimado.
+- **Ítem 17, 26 (IA y proveedores, deshacer)**: `apps/mobile/src/screens/AiSettings.tsx` (ruta `ia`; Ajustes enlaza ahí). Estado real de cada proveedor, prueba desde su hoja, desconexión con confirmación. La clave sale del llavero solo al cerrarse la ventana de «Deshacer» (4,5 s); al deshacer se restaura sin tocar la clave.
+- **Extracción compartida**: lógica pura de proveedores en `@newpaper/ui-kit/logic` (`providers/`: chooser, aiModel constantes, providerMeta con logos, connect helpers, rankLive). Escritorio conserva sus rutas como re-exportaciones; `useUsd` queda en escritorio. Adaptador móvil en `apps/mobile/src/providers/connect.ts` (secretos e IPC del móvil, `aiInvoker`).
+- **Ítem 22 (emparejamiento)**: `apps/mobile/src/screens/Pair.tsx`. Escáner con esquinas que respiran en secuencia; apretón de manos de 3,6 s como mínimo mientras corre el `syncPairWith` real (la X descarta el resultado y revoca); huella con los valores reales que se revelan en tres grupos y se confirman (no coincide: `syncRevoke`); alcance con las secciones reales del peer y «Sincronizar ahora» con el `syncNow` real. Se mantiene el plugin de código de barras real.
+- **Ítem 20, 27 (intro en canvas)**: `apps/mobile/src/Splash.tsx` con el motor copiado sin tocar (`src/splash/intro-engine.js`). Vite añade `export default NPIntro` al cargarlo (`vite.config.ts`, plugin `np-intro-export`); tipos en `intro-engine.d.ts`. Tiempo basado en `requestAnimationFrame`; calidad: promedio >14 ms → `setQuality(1)`, >20 ms → `setQuality(2)`, solo baja. Primer fotograma: `draw(0)` y `window.NP_INTRO_READY = true`. Iris con máscara sobre el canvas. Tocar salta al iris en 200 ms si Hoy está listo y la intro lleva 600 ms. Movimiento reducido (sistema o ajuste): modo `reduce`.
+- **Ítem 19 (splash nativo)**: `ic_splash_icon.xml` (ambos temas) con la n y el rombo en `#34343B` sobre `#17171A`; `Theme.np_splash` con fondo `@color/np_splash_ink` (también en el tema nocturno, que tenía `#131315`) y `windowBackground` para Android anterior a 12. `MainActivity.kt`: `setKeepOnScreenCondition { !introReady }`; la actividad busca la `WebView` en la jerarquía de vistas y consulta `window.NP_INTRO_READY` con `evaluateJavascript` cada 16 ms. Sin tiempo máximo de 6 s el splash podría quedarse para siempre, así que a los 6 s se retira.
+
+Verificado:
+- `pnpm --filter @newpaper/mobile typecheck` y `build` (web) pasan.
+- `pnpm --filter @newpaper/ui-kit test` (35/35) y `typecheck`; `pnpm --filter @newpaper/ui typecheck`; `pnpm --filter @newpaper/ui test` (un fallo por tiempo de jsdom en la primera ejecución, pasa en la segunda).
+- `packages/i18n` `repo.test.ts` (paridad es/en/de, ICU, placeholders, texto escrito a mano en `apps/mobile/src`, `apps/ui/src`, `packages/ui-kit/src`): 4/4.
+- Capturas en navegador de escritorio a 390×844 con IPC simulado (arnés temporal, fuera del repo): Bienvenida páginas 1–6, asistente (inicio), IA y proveedores (vacío), emparejar (intro), intro en canvas a 1,2 s y 2,4 s.
+
+Desviaciones:
+- Inicio de sesión con OAuth (OpenRouter) y servidor propio: no implementados en el móvil. El asistente pega claves y usa el Ollama del PC.
+- Huella: se revela con los valores reales en tres grupos, sin la barajada escalonada del mockup a 480/680/880 ms por grupo.
+- Alcance: solo lectura (se muestran los `scopes` reales del peer). No hay comando IPC para cambiarlos desde el móvil, así que no se simula un interruptor.
+- Intro: el primer fotograma es `draw(0)` del motor, no una comparación píxel a píxel con `drawNative()`. La comparación queda para el emulador.
+- Intro: el vuelo de la marca desde el splash no está hecho; la reducción de hojas a la mitad por hardware la decide el propio motor.
+- Bienvenida: la línea de coste de la página 6 no se despliega.
+
+No verificado (queda para el revisor con emulador):
+- Compilación Kotlin de `MainActivity.kt` y del splash (no se ejecutó gradle, como se pidió). El comportamiento real de `setKeepOnScreenCondition` en Android 12+ y en versiones anteriores.
+- Escáner, apretón de manos y huella en un dispositivo (la cámara no está en el navegador). El emparejamiento real con un PC.
+- Asistente con claves y pruebas reales (no se hicieron llamadas a proveedores). Desconexión con «Deshacer» contra el llavero real.
+- Rendimiento de la intro en gama baja y la degradación en el dispositivo.
+- Movimiento reducido con el ajuste de Android «Eliminar animaciones».
+
+Pendiente:
+- Conexión (ítem 18) y `ConnectionCard.tsx`: lo lleva el agente de Tor.
+- `apps/mobile/harness.html` (arnés de navegador, excluido de git) se elimina al cerrar esta tanda.
