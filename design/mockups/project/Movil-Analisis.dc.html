@@ -138,6 +138,14 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 .m-reduce .m-skel{animation:none!important;background:var(--np-chrome)}
 .m-btn.paper{background:var(--np-on-ink);color:var(--np-ink)!important}
 .m-app>.m-tabbar{margin-top:auto}
+/* ojo de la lente (Analisis): abierto = lente activa; cerrado = inactiva. Morfa el contorno con d (CSS) y apaga la pupila. */
+.m-lens .lid{d:path("M2.5 12C5 7.5 8.3 5.5 12 5.5C15.7 5.5 19 7.5 21.5 12C19 16.5 15.7 18.5 12 18.5C8.3 18.5 5 16.5 2.5 12Z");transition:d var(--m-dur-base) var(--m-ease-inout)}
+.m-lens[aria-pressed=false] .lid{d:path("M2.5 9.5C5 14.5 8.3 16.5 12 16.5C15.7 16.5 19 14.5 21.5 9.5C19 12.5 15.7 13.5 12 13.5C8.3 13.5 5 12.5 2.5 9.5Z")}
+.m-lens .pupil{transform-box:fill-box;transform-origin:center;transform:scale(1);opacity:1;transition:transform var(--m-dur-base) var(--m-spring),opacity var(--m-dur-fast) var(--m-ease)}
+.m-lens[aria-pressed=false] .pupil{transform:scale(.2);opacity:0}
+.m-lens .lash{opacity:0;transition:opacity var(--m-dur-fast) var(--m-ease) 0ms}
+.m-lens[aria-pressed=false] .lash{opacity:1;transition-delay:var(--m-dur-fast)}
+@media (prefers-reduced-motion:reduce){.m-lens .lid,.m-lens .pupil,.m-lens .lash{transition:none}}
 /*@m-base-end*/
 
 </style>
@@ -147,7 +155,7 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 <div class="m-appbar" style="border-bottom:1px solid var(--np-line2);height:calc(var(--m-appbar) + var(--m-top) - 4px)">
 <a class="m-back" href="Movil-Inicio.dc.html" aria-label="Volver"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a>
 <div class="m-bar-title" style="font-size:19px">El Diario Rojo<span class="m-bar-sub" style="font-family:var(--np-font-mono);font-size:12px">izquierda · 47 bloqueados</span></div>
-<button class="m-back" onClick="{{toggleLens}}" aria-label="Lente de sesgo" aria-pressed="{{lensAria}}" style="{{lensBtn}}"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.500 12S6 5.500 12 5.500 21.500 12 21.500 12 18 18.500 12 18.500 2.500 12 2.500 12z"/><path d="M12 9.300a2.700 2.700 0 100 5.400 2.700 2.700 0 000-5.400z"/></svg></button>
+<button class="m-back m-lens" onClick="{{toggleLens}}" aria-label="Lente de sesgo" aria-pressed="{{lensAria}}" style="{{lensBtn}}"><svg class="m-lens-ico" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="lid" d="M2.5 12C5 7.5 8.3 5.5 12 5.5C15.7 5.5 19 7.5 21.5 12C19 16.5 15.7 18.5 12 18.5C8.3 18.5 5 16.5 2.5 12Z"/><circle class="pupil" cx="12" cy="12" r="2.7"/><path class="lash" d="M6 15.2l-1 2.6M12 16.7v3M18 15.2l1 2.6"/></svg></button>
 </div>
 <div class="m-scroll" style="padding:16px 20px 220px">
 <button onClick="{{toggleAi}}" style="width:100%;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;background:var(--np-ai-bg);border-radius:16px;text-align:left;color:#72243E;margin-bottom:18px;min-height:48px"><span style="font:600 11px var(--np-font-mono);background:#F4C0D1;padding:3px 6px;border-radius:5px;margin-top:1px">IA</span><span style="flex:1;font:400 13px/1.45 var(--np-font-ui)">{{aiText}}</span></button>

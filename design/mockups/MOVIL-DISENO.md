@@ -128,6 +128,10 @@ La implementación actual (`apps/mobile/src/mobile.css`, `screens/*`) usa una ba
 9. **Tor (M5)**: se conserva como **diseño futuro**, sin cambios: Tor no se implementa en Android por ahora (nota en el canvas). La hoja «Salida de Tor» sigue la hoja estándar (spring).
 10. **Tab bar y movimiento** (`App.tsx`, `mobile.css`): ver arriba.
 
+## Cambio aprobado: ojo de la lente (rediseño)
+
+La lente de la barra de Leer (M2, `Movil-Analisis.dc.html`) es un ojo: **abierto** cuando el análisis está activo (fondo tinta) y **cerrado** cuando no (fondo transparente, pupila encogida y pestañas visibles). Morfa el contorno con `d` (CSS, 280 ms `--m-ease-inout`), la pupila hace `scale` con resorte y las pestañas aparecen tras el cierre. Clases en `motion-base.css` (`.m-lens`, `.lid`, `.pupil`, `.lash`); en la app, `IconLens` de `apps/mobile/src/icons.tsx` y las mismas clases en `mobile.css`. El icono `eye` de `Movil-Ajustes` (objeto `IC`) no se usa en ningún artboard y no se ha cambiado.
+
 ## Lista de implementación priorizada
 
 P0 (la app deja de verse cruda)

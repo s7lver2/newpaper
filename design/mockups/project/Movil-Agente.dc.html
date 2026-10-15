@@ -138,6 +138,14 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 .m-reduce .m-skel{animation:none!important;background:var(--np-chrome)}
 .m-btn.paper{background:var(--np-on-ink);color:var(--np-ink)!important}
 .m-app>.m-tabbar{margin-top:auto}
+/* ojo de la lente (Analisis): abierto = lente activa; cerrado = inactiva. Morfa el contorno con d (CSS) y apaga la pupila. */
+.m-lens .lid{d:path("M2.5 12C5 7.5 8.3 5.5 12 5.5C15.7 5.5 19 7.5 21.5 12C19 16.5 15.7 18.5 12 18.5C8.3 18.5 5 16.5 2.5 12Z");transition:d var(--m-dur-base) var(--m-ease-inout)}
+.m-lens[aria-pressed=false] .lid{d:path("M2.5 9.5C5 14.5 8.3 16.5 12 16.5C15.7 16.5 19 14.5 21.5 9.5C19 12.5 15.7 13.5 12 13.5C8.3 13.5 5 12.5 2.5 9.5Z")}
+.m-lens .pupil{transform-box:fill-box;transform-origin:center;transform:scale(1);opacity:1;transition:transform var(--m-dur-base) var(--m-spring),opacity var(--m-dur-fast) var(--m-ease)}
+.m-lens[aria-pressed=false] .pupil{transform:scale(.2);opacity:0}
+.m-lens .lash{opacity:0;transition:opacity var(--m-dur-fast) var(--m-ease) 0ms}
+.m-lens[aria-pressed=false] .lash{opacity:1;transition-delay:var(--m-dur-fast)}
+@media (prefers-reduced-motion:reduce){.m-lens .lid,.m-lens .pupil,.m-lens .lash{transition:none}}
 /*@m-base-end*/
 .scr{scrollbar-width:none}.scr::-webkit-scrollbar{display:none}
 input:focus{outline:none;border-color:#2340B8!important}
