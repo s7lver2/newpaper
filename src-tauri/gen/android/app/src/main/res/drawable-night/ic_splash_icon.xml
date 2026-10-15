@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Splash nativo: la n y el rombo en fantasma (#34343B) sobre tinta (#17171A). Es la misma marca que el primer fotograma
+     del motor de la intro (drawNative), para que el traspaso no tenga salto. Estático: sin AnimatedVectorDrawable. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
@@ -6,35 +8,35 @@
     android:viewportHeight="108">
     <path
         android:pathData="M33,40.5V71"
-        android:strokeColor="#F6F4EF"
+        android:strokeColor="#34343B"
         android:strokeWidth="7.5"
         android:strokeLineJoin="miter"
         android:strokeLineCap="butt" />
     <path
         android:pathData="M33,54C33,45 39,40 46.5,40C54,40 58,44.5 58,51.5V71"
-        android:strokeColor="#F6F4EF"
+        android:strokeColor="#34343B"
         android:strokeWidth="6"
         android:strokeLineJoin="miter"
         android:strokeLineCap="butt" />
     <path
         android:pathData="M26.5,71H39.5M51.5,71H64.5"
-        android:strokeColor="#F6F4EF"
+        android:strokeColor="#34343B"
         android:strokeWidth="3"
         android:strokeLineJoin="miter"
         android:strokeLineCap="butt" />
     <path
         android:pathData="M26.5,43.5L33,40"
-        android:strokeColor="#F6F4EF"
+        android:strokeColor="#34343B"
         android:strokeWidth="3"
         android:strokeLineJoin="miter"
         android:strokeLineCap="butt" />
     <path
-        android:fillColor="#E8705A"
+        android:fillColor="#34343B"
         android:pathData="M67.5,66L71.83,61.67L71.83,70.33Z" />
     <path
-        android:fillColor="#D8D3C8"
+        android:fillColor="#34343B"
         android:pathData="M71.83,61.67L74,59.5L76.17,61.67L76.17,70.33L74,72.5L71.83,70.33Z" />
     <path
-        android:fillColor="#7C9AF2"
+        android:fillColor="#34343B"
         android:pathData="M76.17,61.67L80.5,66L76.17,70.33Z" />
 </vector>

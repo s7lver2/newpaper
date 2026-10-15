@@ -1,14 +1,17 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources xmlns:tools="http://schemas.android.com/apk/res/android">
     <!-- Base application theme. -->
     <style name="Theme.np_app" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
     </style>
 
-    <!-- Arranque: splash nativo (Android 12+, Theme.SplashScreen de core-splashscreen). Tras el splash pasa a Theme.np_app. -->
+    <!-- Arranque: splash nativo (Android 12+, Theme.SplashScreen de core-splashscreen). Fondo tinta y la n y el rombo en
+         fantasma: es el primer fotograma de la intro (MOVIL-DISENO, «Empalme con el splash nativo»). El splash se retira
+         cuando la webview marca window.NP_INTRO_READY (MainActivity). Después pasa a Theme.np_app. -->
     <style name="Theme.np_splash" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenBackground">#F6F4EF</item>
+        <item name="windowSplashScreenBackground">@color/np_splash_ink</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_splash_icon</item>
-        <item name="windowSplashScreenAnimationDuration">600</item>
+        <!-- Android anterior a 12: fondo con la misma marca fantasma (ic_splash_background). -->
+        <item name="android:windowBackground">@drawable/ic_splash_background</item>
         <item name="postSplashScreenTheme">@style/Theme.np_app</item>
     </style>
 </resources>
