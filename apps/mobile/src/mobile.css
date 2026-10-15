@@ -484,3 +484,7 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 .m-scope-row { animation: m-rise var(--m-dur-slow) var(--m-ease) both; }
 .m-scope-check { flex: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--np-ok-bg); color: var(--np-ok); }
 .m-scope-check path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: m-draw var(--m-dur-slow) var(--m-ease-inout) 200ms forwards; }
+
+/* intro de arranque (canvas del motor v4): cubre la pantalla con tinta; el iris se aplica desde Splash.tsx */
+.m-intro { position: fixed; inset: 0; z-index: 50; background: #17171A; overflow: hidden; touch-action: manipulation; }
+.m-intro-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }

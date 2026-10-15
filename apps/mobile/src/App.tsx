@@ -5,6 +5,7 @@ import { ipc } from './ipc';
 import { go, TAB_ROOTS, useNavDir, useRoute, type RouteName } from './router';
 import { IconAgent, IconReading, IconSettings, IconToday } from './icons';
 import { Splash } from './Splash';
+import type { IntroMode } from './splash/intro-engine';
 import { Agent, AgentIndex } from './screens/Agent';
 import { AiSettings } from './screens/AiSettings';
 import { Edition } from './screens/Edition';
@@ -31,9 +32,6 @@ const TABS: { name: (typeof TAB_ROOTS)[number]; key: string; icon: () => ReactNo
   { name: 'ajustes', key: 'mobile.nav.settings', icon: IconSettings },
 ];
 
-const SPLASH_FIRST_MS = 2200;
-const SPLASH_LATER_MS = 800;
-
 /** Una raíz de pestaña sin parámetros de pantalla apilada (leer?u=..., agente?u=...). */
 function rootOf(route: { name: RouteName; params: URLSearchParams }): (typeof TAB_ROOTS)[number] | null {
   if (!(TAB_ROOTS as readonly string[]).includes(route.name)) return null;
@@ -46,7 +44,8 @@ export function App() {
   const route = useRoute();
   const dir = useNavDir();
   const root = rootOf(route);
-  const [splash, setSplash] = useState<{ short: boolean; leaving: boolean } | null>(null);
+  const [splash, setSplash] = useState<IntroMode | null>(null);
+  const [dataReady, setDataReady] = useState(false);
   const pageRefs = useRef<Partial<Record<(typeof TAB_ROOTS)[number], HTMLDivElement | null>>>({});
 
   useEffect(() => {
@@ -55,13 +54,13 @@ export function App() {
     const welcome = ipc.settingsGet<boolean>('device.mobileWelcomeDone').catch(() => null);
     void Promise.all([seen, welcome]).then(([seenFlag, done]) => {
       if (cancelled) return;
-      const short = !!seenFlag;
       if (!done) go('bienvenida');
       else void takeShare();
-      setSplash({ short, leaving: false });
+      // Primera vez: intro completa; después, corta; con movimiento reducido, solo fundidos.
+      const reduce = document.documentElement.dataset.motion === 'reduce' || window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      setSplash(reduce ? 'reduce' : seenFlag ? 'short' : 'first');
+      setDataReady(true);
       void ipc.settingsSet('device.splashSeen', true).catch(() => {});
-      window.setTimeout(() => !cancelled && setSplash((s) => (s ? { ...s, leaving: true } : s)), short ? SPLASH_LATER_MS : SPLASH_FIRST_MS);
-      window.setTimeout(() => !cancelled && setSplash(null), (short ? SPLASH_LATER_MS : SPLASH_FIRST_MS) + 280);
     });
     const onVisible = () => document.visibilityState === 'visible' && void takeShare();
     document.addEventListener('visibilitychange', onVisible);
@@ -164,7 +163,7 @@ export function App() {
           })}
         </nav>
       ) : null}
-      {splash ? <Splash short={splash.short} leaving={splash.leaving} /> : null}
+      {splash ? <Splash mode={splash} ready={dataReady} onDone={() => setSplash(null)} /> : null}
     </div>
   );
 }
