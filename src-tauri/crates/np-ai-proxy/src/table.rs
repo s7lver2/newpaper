@@ -15,12 +15,55 @@ pub enum AuthScheme {
     None,
 }
 
+/// Cómo se obtiene la clave sin pegarla a mano. Solo `PkceKey` se puede ejecutar hoy; `Device` está en el
+/// esquema para cuando un proveedor publique y confirme sus puntos de acceso.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+pub enum LoginFlow {
+    #[serde(rename = "oauth-pkce-key")]
+    PkceKey,
+    #[serde(rename = "oauth-device")]
+    Device,
+}
+
+/// `available`: verificado con la documentación oficial. `unverified`/`gated`: el marco está listo pero no se ejecuta.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum LoginStatus {
+    Available,
+    Unverified,
+    Gated,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct LoginSpec {
+    pub flow: LoginFlow,
+    pub status: LoginStatus,
+    pub auth_url: Option<Url>,
+    pub exchange_url: Option<Url>,
+}
+
+impl LoginSpec {
+    pub fn runnable(&self) -> bool {
+        self.flow == LoginFlow::PkceKey && self.status == LoginStatus::Available && self.auth_url.is_some() && self.exchange_url.is_some()
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ProviderSpec {
     pub id: String,
     pub base_url: Url,
     pub auth: AuthScheme,
     pub local: bool,
+    pub login: Option<LoginSpec>,
+}
+
+#[derive(Deserialize)]
+#[serde(rename_all = "camelCase")]
+struct LoginEntry {
+    flow: LoginFlow,
+    status: LoginStatus,
+    auth_url: Option<String>,
+    exchange_url: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
@@ -40,6 +83,7 @@ struct RegistryEntry {
     auth: AuthScheme,
     #[serde(rename = "type")]
     kind: String,
+    login: Option<LoginEntry>,
 }
 
 #[derive(Deserialize)]
@@ -60,13 +104,34 @@ fn with_trailing_slash(mut u: Url) -> Url {
     u
 }
 
+/// Las direcciones del inicio de sesión deben ser https y del mismo host que la API del proveedor: así la clave
+/// (y el código de intercambio) solo viajan a quien ya recibe esa clave.
+fn parse_login(id: &str, base: &Url, l: LoginEntry) -> Result<LoginSpec, ProxyError> {
+    let cfg = |m: &str| ProxyError::Config(format!("{id}: login {m}"));
+    let parse = |u: Option<String>| -> Result<Option<Url>, ProxyError> {
+        u.map(|u| {
+            let url = Url::parse(&u).map_err(|_| cfg("url is not valid"))?;
+            let same_host = url.scheme() == "https" && url.host_str() == base.host_str() && url.port_or_known_default() == base.port_or_known_default();
+            if same_host && url.username().is_empty() && url.password().is_none() { Ok(url) } else { Err(cfg("url must be https on the provider host")) }
+        })
+        .transpose()
+    };
+    let spec = LoginSpec { flow: l.flow, status: l.status, auth_url: parse(l.auth_url)?, exchange_url: parse(l.exchange_url)? };
+    if spec.status == LoginStatus::Available && !spec.runnable() {
+        return Err(cfg("is marked available but is not a complete pkce flow"));
+    }
+    Ok(spec)
+}
+
 impl ProviderTable {
     pub fn from_registry_json(json: &str) -> Result<Self, ProxyError> {
         let reg: Registry = serde_json::from_str(json).map_err(|e| ProxyError::Config(e.to_string()))?;
         let mut t = ProviderTable::default();
         for p in reg.providers {
             let base = Url::parse(&p.base_url).map_err(|e| ProxyError::Config(format!("{}: {e}", p.id)))?;
-            t.specs.insert(p.id.clone(), ProviderSpec { id: p.id, base_url: with_trailing_slash(base), auth: p.auth, local: p.kind == "local" });
+            let base = with_trailing_slash(base);
+            let login = p.login.map(|l| parse_login(&p.id, &base, l)).transpose()?;
+            t.specs.insert(p.id.clone(), ProviderSpec { id: p.id, base_url: base, auth: p.auth, local: p.kind == "local", login });
         }
         Ok(t)
     }
@@ -84,7 +149,7 @@ impl ProviderTable {
         if !scheme_ok || !base.username().is_empty() || base.password().is_some() || (!ep.local && crate::guard::is_private_host(&base)) {
             return Err(deny());
         }
-        self.specs.insert(ep.id.clone(), ProviderSpec { id: ep.id.clone(), base_url: base, auth: ep.auth, local: ep.local });
+        self.specs.insert(ep.id.clone(), ProviderSpec { id: ep.id.clone(), base_url: base, auth: ep.auth, local: ep.local, login: None });
         Ok(())
     }
 
@@ -135,6 +200,25 @@ mod tests {
         assert_eq!(t.get("anthropic").unwrap().auth, AuthScheme::XApiKey);
         assert!(t.get("ollama").unwrap().local);
         assert_eq!(t.get("nvidia").unwrap().base_url.as_str(), "https://integrate.api.nvidia.com/v1/");
+    }
+
+    #[test]
+    fn login_specs_are_validated_against_the_provider_host() {
+        let ok = r#"{"providers":[{"id":"openrouter","baseUrl":"https://openrouter.ai/api/v1","auth":"bearer","type":"cloud",
+          "login":{"flow":"oauth-pkce-key","status":"available","authUrl":"https://openrouter.ai/auth","exchangeUrl":"https://openrouter.ai/api/v1/auth/keys"}},
+          {"id":"nous","baseUrl":"https://inference-api.nousresearch.com/v1","auth":"bearer","type":"cloud","login":{"flow":"oauth-device","status":"unverified"}}]}"#;
+        let t = ProviderTable::from_registry_json(ok).unwrap();
+        assert!(t.get("openrouter").unwrap().login.as_ref().unwrap().runnable());
+        assert!(!t.get("nous").unwrap().login.as_ref().unwrap().runnable());
+        assert!(t.get("anthropic").is_none());
+        for bad in [
+            r#""authUrl":"https://evil.example/auth","exchangeUrl":"https://openrouter.ai/api/v1/auth/keys""#,
+            r#""authUrl":"http://openrouter.ai/auth","exchangeUrl":"https://openrouter.ai/api/v1/auth/keys""#,
+            r#""authUrl":"https://openrouter.ai/auth""#,
+        ] {
+            let j = format!(r#"{{"providers":[{{"id":"openrouter","baseUrl":"https://openrouter.ai/api/v1","auth":"bearer","type":"cloud","login":{{"flow":"oauth-pkce-key","status":"available",{bad}}}}}]}}"#);
+            assert!(ProviderTable::from_registry_json(&j).is_err(), "{bad}");
+        }
     }
 
     #[test]

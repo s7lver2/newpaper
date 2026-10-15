@@ -22,6 +22,16 @@ pub enum ProxyError {
     UnsupportedContent(String),
     #[error("cancelled")]
     Cancelled,
+    #[error("login is not available for {0}")]
+    LoginUnavailable(String),
+    #[error("login timed out")]
+    LoginTimeout,
+    #[error("login was denied")]
+    LoginDenied,
+    #[error("login failed: {0}")]
+    LoginFailed(String),
+    #[error("a login for {0} is already in progress")]
+    LoginBusy(String),
     #[error("config: {0}")]
     Config(String),
 }
@@ -40,6 +50,11 @@ impl ProxyError {
             ProxyError::SourceNotAllowed(_) => "source_not_allowed",
             ProxyError::UnsupportedContent(_) => "unsupported_content",
             ProxyError::Cancelled => "cancelled",
+            ProxyError::LoginUnavailable(_) => "login_unavailable",
+            ProxyError::LoginTimeout => "login_timeout",
+            ProxyError::LoginDenied => "login_denied",
+            ProxyError::LoginFailed(_) => "login_failed",
+            ProxyError::LoginBusy(_) => "login_busy",
             ProxyError::Config(_) => "config",
         }
     }

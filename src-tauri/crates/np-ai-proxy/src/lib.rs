@@ -5,10 +5,11 @@ pub mod cache;
 pub mod error;
 pub mod guard;
 pub mod headers;
+pub mod login;
 pub mod proxy;
 pub mod sources;
 pub mod table;
 pub mod usage;
 
 pub use error::ProxyError;
-pub use table::{AuthScheme, CustomEndpoint, ProviderSpec, ProviderTable};
+pub use table::{AuthScheme, CustomEndpoint, LoginFlow, LoginSpec, LoginStatus, ProviderSpec, ProviderTable};
