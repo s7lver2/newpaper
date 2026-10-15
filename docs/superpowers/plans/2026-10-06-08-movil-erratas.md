@@ -173,3 +173,44 @@ Implementación del diseño v2 (`design/mockups/MOVIL-DISENO.md`). Lo que no est
 ### Emulador (2026-10-15)
 - Se instaló el APK x86_64 en el AVD np34 con su propio servidor adb (puerto 5591). La app arrancó (proceso vivo), pero la interfaz del sistema quedó en un diálogo «No responde» (systemui) que no se cerró ni con Esperar ni con Atrás. Sin capturas válidas de la app: no hay comparación visual con los mockups.
 - Emulador y adb propios detenidos al terminar. Capturas sin utilidad guardadas en target/shots (01 a 04).
+
+## Revisión del rediseño y Tor (2026-10-15)
+
+Revisión crítica de e9c1b36..ccf94c9 con emulador real (AVD `np34`, Android 14 x86_64, WHPX, 4 GB, `-gpu host`, arranque en frío, sin Google Play Services: se desactivaron `gms`, `vending`, búsqueda, etc. con `pm disable-user` porque saturaban `system_server` y provocaban el aviso «System UI isn't responding» de la sesión anterior). Capturas y comparación con las maquetas en el scratchpad de la sesión (`final/`, `sh/`).
+
+### Hallazgos del rediseño (corregidos)
+- **Crítico: botones sin fondo.** `.m-app button { background: none }` tenía más especificidad que `.m-btn`, `.m-chip`, `.m-switch`, `.m-lens`...: «Siguiente», «Terminar», «Probar conexión», los interruptores y los chips salían sin fondo. El reset ahora es `:where(.m-app button)`. Los iconos de la barra de pestañas sí se veían.
+- Leyendo y Agente: la pantalla apilada de lectura/agente (sin noticia) tapaba la raíz de la pestaña (flecha atrás, ojo, texto superpuesto). Ahora solo se apila si hay `?u=`.
+- Titulares con entidades HTML (`&#039;`) en Hoy: se decodifican como texto (`textarea`, sin interpretar HTML).
+- Lector: título duplicado y tamaños de escritorio; con la lente abierta y 0 marcas todo el texto salía atenuado.
+- Atrás cerraba la app con la hoja de análisis abierta (error ya conocido): `useBackClose` (entrada de historial propia por capa) cierra hojas, confirmaciones y el escáner. Probado con toques reales (un `click()` sin gesto del usuario hace que Chromium marque la entrada como saltable y Atrás sale de la app; es un artefacto de la prueba, no de la app).
+- Portada de bienvenida alineada a la maqueta (marca arriba, titular en tres líneas con la última en cursiva azul, barras de los tres campos, botón crema).
+- Barra de estado: el contenido se leía por debajo de la hora (tapa `m-statusscrim`); los iconos eran oscuros sobre tinta (comando nuevo `mobile_set_system_bars`, también sobre la portada oscura y la cámara).
+- Los botones de acción de la lectura partían «Guardar para leer más tarde» en cuatro líneas; la barra nativa de la webview original tenía botones grises de Material: ahora planos.
+
+### Lo que antes figuraba como «No hecho» y ya está
+- Escáner QR a pantalla completa (ventana de cámara real del plugin, velo, esquinas, línea de barrido, código a mano, permiso denegado con «abrir ajustes», pantalla de éxito). **Linterna: no** (el plugin `barcode-scanner` no la expone; haría falta código nativo propio).
+- Subpantallas de Ajustes: Pipeline (preset, límite mensual, análisis rápido; los modelos por paso siguen automáticos), Bloqueo (interruptor y listas) y Fuentes y temas (seguir temas). Conexión es la tarjeta de Tor.
+- Zona de peligro con hojas de confirmación sobre IPC ya existente (`history_delete`, `sync_revoke`, `secret_delete`). No hizo falta IPC nuevo.
+- Pull-to-refresh en Hoy; interruptor «Reducir animaciones» (`device.reduceMotion`, `data-motion`). Con «Quitar animaciones» de Android (`animator_duration_scale=0`) el WebView expone `prefers-reduced-motion: reduce` tras reiniciar la app (comprobado).
+- Progreso por pasos en la hoja de análisis: los eventos `onStage` del pipeline sí existen (la errata anterior decía que no); se muestran en la hoja.
+- Sigue sin hacerse el gesto atrás predictivo con animación (`--back-progress`); solo el cierre correcto de capas.
+
+### Revisión de seguridad de Tor (60df33b)
+- **Kill switch (bien, verificado en emulador).** Con modo Tor y Tor sin listo: `mobile_original_open` devuelve `tor_not_ready`; el SOCKS responde error; `mobile_fetch_page` a un host nuevo falla. Con el proxy `block` la interfaz propia sigue funcionando (el esquema `tauri.localhost` no pasa por red).
+- **Hallazgo medio: el puerto SOCKS de bucle local estaba abierto a cualquier app mientras Tor estuviera listo** (el de la webview y el del cliente HTTP propio). Mitigado: (1) el SOCKS principal del móvil exige usuario/contraseña SOCKS5 (secreto aleatorio por arranque) que solo llevan los clientes `reqwest` propios; otra app recibe `05 FF` (comprobado con `nc` desde el shell). (2) La webview original ya no usa el puerto principal: recibe un SOCKS de **sesión** (puerto efímero, sin credenciales porque Chromium no autentica SOCKS5) que existe solo mientras la webview está abierta y se cierra con Cerrar, Atrás o Analizar (comprobado: el puerto desaparece de `/proc/net/tcp`). **Riesgo residual:** durante esa ventana otra app podría usar el puerto de sesión (puede salir por Tor, pero no ve el tráfico de la webview). No se puede cerrar sin un canal que Chromium sepa autenticar.
+- **Hallazgo alto: Tor no volvía tras pasar a segundo plano.** `RunEvent::Resumed` se emite en cada vuelta del bucle (`StartCause::Poll`), también en segundo plano; la reanudación real es `WindowEvent::Resumed`. Tras Inicio y volver, Tor se quedaba `off` y todo fallaba en cerrado hasta cambiar de modo. Corregido y verificado (Suspended: off; Resumed: bootstrapping y ready).
+- **DNS (verificado).** `socks5://` en `ProxyController` resuelve los nombres en remoto. Con el DNS local bloqueado con iptables (UDP/TCP 53 y 853; `ping` falla con «unknown host») la webview cargó `eff.org` por Tor; los dos únicos paquetes UDP 53 descartados fueron los del propio `ping`.
+- **IsTor (verificado).** `check.torproject.org` en la webview original en modo Tor: «Congratulations. This browser is configured to use Tor.» (IP de salida distinta). En modo Directa: «Sorry. You are not using Tor.» con la IP directa.
+- **Ciclo de vida.** El cambio de red (apagar y encender Wi-Fi) reinicia Arti con el debounce, también tras Inicio y volver (el callback llegó a Rust; en una primera ejecución no se vio el aviso y no se pudo reproducir después). Hallazgo menor que queda: pausar o cambiar de modo no cierra los túneles ya establecidos (una conexión keep-alive previa sigue viva por su circuito de Tor; no es una fuga en claro, pero el kill switch no corta streams abiertos).
+- **Bootstrap.** Arranque en frío (sin consenso en caché) en el emulador: 46 s hasta «ready»; con caché y tras reanudar, de pocos segundos a ~1 min. Descarga de un artículo por Tor (Wikipedia, 1,2 MB) sin errores. No se probó en dispositivo físico ni la batería.
+- **Pruebas:** `cargo test -p np-net --lib` 19 (2 nuevos: SOCKS de sesión y SOCKS autenticado); `http_routing` y `socks_server` en verde; `tor_live` sigue ignorado (la prueba real se hizo en el emulador).
+
+### Tamaño del APK (depuración)
+- `target/apk/newpaper-arm64-debug.apk` 450,5 MB; `target/apk/newpaper-x86_64-debug.apk` 454,0 MB. `libnp_app_lib.so` pesa ~440 MB por la información de depuración y `opt-level` 0; sin símbolos queda en ~74 MB. No se midió un APK de release, así que el coste de Arti optimizado no se puede aislar con esa cifra.
+
+### No verificado
+- Escaneo real de un QR (la cámara virtual del emulador no enseña un QR; el flujo hasta la cámara abierta, Atrás, cerrar, denegado y código a mano sí). Emparejado real con un PC.
+- Dispositivo físico, arm64 en ejecución (el APK arm64 compila pero solo se ejecutó x86_64), iOS, release firmado.
+- Gesto atrás predictivo, linterna, claves de IA reales (análisis completo, agente), efecto real del bloqueo de anuncios.
+- Al salir con Atrás desde la raíz el proceso muere con un `SIGABRT` en `eglDestroyContext` del emulador (`libEGL_emulation`) durante el cierre; es del driver gráfico del emulador cuando Tauri llama a `exit()`, no de la app.
