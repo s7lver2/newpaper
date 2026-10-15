@@ -53,3 +53,37 @@ Registro de desviaciones del plan `2026-10-06-08-movil.md`, de lo que no se pudo
 ## Avisos de pnpm
 
 - `pnpm ignored-builds` lista `esbuild`, `edgedriver` y `geckodriver` como scripts de instalación ignorados. No se ha tocado la configuración de aprobación. El build de `apps/mobile` ha funcionado sin esos scripts.
+
+## Review (2026-10-15)
+
+Revision crítica del plan 08 con verificación en emulador (Android 14 google_apis x86_64, WHPX, AVD en `E:\android-sdk\.android\avd\np34`; APK `x86_64` de depuración, ya que el APK anterior era solo `arm64`).
+
+### Hallazgos y correcciones
+
+Críticos (la app no funcionaba):
+- `tauri.android.conf.json` / `tauri.ios.conf.json` no activaban la capability `mobile` (el `tauri.conf.json` fija `capabilities: ["ui"]`): todo IPC fallaba con "settings_get not allowed". Corregido con `app.security.capabilities = ["mobile"]`. Al activarla, el plugin `np-mobile` no declaraba `register_listener` / `remove_listener` y la ACL no compilaba: añadidos a `COMMANDS` de `build.rs`. (162ae58 y siguiente)
+- `config/*.json` no se puede leer con `std::fs` desde el APK (providers.json ausente, IA desactivada). En móvil la configuración base va embebida con `include_str!` (`src/config.rs`).
+- `rustls-platform-verifier` entra en pánico en Android (no inicializado) en la primera conexión TLS. Los clientes compartidos (`np-net` y la sonda de Ollama) usan ahora las raíces Mozilla embebidas (`np_net::with_roots`). Verificado: descarga de artículos por HTTPS.
+- "Ver original" cerraba la app: `WebView.getUrl()` se llamaba desde `shouldInterceptRequest` (hilo de fondo). Corregido.
+
+Seguridad:
+- `allowBackup` estaba activo por defecto (base de datos y prefs cifradas copiables por `adb backup` o nube): `allowBackup=false`, `fullBackupContent=false` y reglas de extracción vacías. Verificado con `dumpsys package` (sin `ALLOW_BACKUP`).
+- `mobile_fetch_page` aceptaba cualquier host: una app maliciosa podía compartir `http://192.168.x.x/...` o `http://169.254.169.254/` y la respuesta acababa en el análisis. Ahora rechaza loopback, red local, link-local, `.local`, nombres sin punto y credenciales en la URL (con tests), y corta la descarga al superar 5 MB aunque no haya `Content-Length`.
+- Sonda de Ollama: ya no sigue redirecciones.
+- Plugin Kotlin: `VIEW` solo acepta esquemas http(s); el texto compartido se limita a 8192 caracteres; la webview original no se abre si Rust pidió un proxy que no se pudo aplicar (antes solo había un aviso y quedaba en directo).
+- Webview original: sin acceso a ficheros ni contenido local, sin contenido mixto, destruida al cerrar, botón Atrás navega o cierra, respeta los insets de la barra de estado, objetivos táctiles en dp.
+
+Menores: el texto "No hay dispositivos... escanea el QR desde el móvil" de Ajustes se reutilizaba del escritorio (nueva clave `mobile.settings.noDevices` es/en/de); margen inferior de la barra de pestañas.
+
+Revisado sin cambios: la decisión de proxy y el kill switch solo en Rust (`proxy::decide`, la UI no puede cambiarlo; en móvil la red se fuerza a Directa y `net_set_mode('tor')` falla); JS solo recibe `secret_set/has/delete` (no hay `secret_get`); sin `console.*` ni logs de secretos en `apps/mobile`; JNI de adblock (firma coincide con `app.newpaper.mobile.NpNative`); claves `mobile.*` presentes en es/en/de y test de textos fijos en verde; el escritorio sigue compilando (`cargo check -p np-app`) y conserva todos sus comandos.
+
+### Verificado en emulador
+Instalación y arranque; bienvenida (2 pasos); Pair (pantalla, sin emparejar); lectura de URL por intent `VIEW` (Wikipedia) y por `SEND` con texto y parámetros de seguimiento (theguardian.com/world); hoja de Análisis; "Ver original" con barra, sin fallo; Ajustes; pantalla sin conexión (modo avión); `newpaper_secure.xml` cifrado (EncryptedSharedPreferences); sin crashes en logcat tras las correcciones. Capturas en el directorio scratchpad de la sesión de revisión (`01-launch.png` a `11-offline.png`).
+
+### No verificado
+Escáner QR y emparejamiento real, Ollama del PC, claves de IA reales (análisis completo, agente), proxy `socks5://` (Tor no existe en móvil), efecto real del bloqueo de anuncios, dispositivo físico ni arm64, iOS, firma de release. La pantalla Today sale vacía (sin feeds descargados durante la prueba); Hoy con datos no se vio. El "Daemon compilation failed" de Kotlin persiste. El emulador es lento con swiftshader: el diálogo "System UI isn't responding" apareció una vez y es del emulador, no de la app.
+
+### Pendiente detectado
+- La webview de Tauri en Android carga `base-uri 'none'` y bloquea imágenes `http://` del artículo (solo ruido de consola; las imágenes no se cargan por diseño).
+- Atrás no cierra la hoja de análisis y retrocede en el historial de rutas.
+- Redirecciones del cliente de contenido siguen sin revalidar destino privado (el cliente es compartido con el escritorio).
