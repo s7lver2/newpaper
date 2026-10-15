@@ -53,7 +53,7 @@ pub struct OllamaProbe {
 #[tauri::command]
 pub async fn mobile_ollama_probe(url: String) -> CmdResult<OllamaProbe> {
     let ep = classify(&url).map_err(|e| CmdError::new("ollama_address", format!("{e:?}")))?;
-    let c = reqwest::Client::builder()
+    let c = np_net::with_roots(reqwest::Client::builder())
         .no_proxy()
         .redirect(reqwest::redirect::Policy::none())
         .timeout(std::time::Duration::from_secs(3))

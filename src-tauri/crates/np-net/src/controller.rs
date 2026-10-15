@@ -22,7 +22,7 @@ pub fn tor_browser_args(port: u16) -> String {
 }
 
 fn build_client(socks_port: Option<u16>, follow_redirects: bool) -> Result<reqwest::Client, NetError> {
-    let mut b = reqwest::Client::builder()
+    let mut b = crate::with_roots(reqwest::Client::builder())
         .user_agent(concat!("newpaper/", env!("CARGO_PKG_VERSION")))
         .connect_timeout(Duration::from_secs(45))
         .read_timeout(Duration::from_secs(90));

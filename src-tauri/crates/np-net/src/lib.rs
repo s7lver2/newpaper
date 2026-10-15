@@ -13,3 +13,15 @@ pub use server::{BoxStream, ConnectError, Connector, SocksServer, TorBackend};
 pub mod tor;
 pub mod controller;
 pub use controller::NetController;
+
+/// Raíces de confianza de los clientes HTTP. En Android el verificador de plataforma de rustls no está
+/// inicializado (panic en la primera conexión TLS), así que se usan las raíces Mozilla embebidas.
+pub fn with_roots(b: reqwest::ClientBuilder) -> reqwest::ClientBuilder {
+    #[cfg(target_os = "android")]
+    {
+        let certs = webpki_root_certs::TLS_SERVER_ROOT_CERTS.iter().filter_map(|c| reqwest::Certificate::from_der(c.as_ref()).ok());
+        return b.tls_certs_only(certs);
+    }
+    #[cfg(not(target_os = "android"))]
+    b
+}

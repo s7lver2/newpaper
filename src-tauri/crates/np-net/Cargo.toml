@@ -21,5 +21,9 @@ tracing = { workspace = true }
 arti-client = { version = "=0.47.0", default-features = false, features = ["tokio", "rustls", "geoip"] }
 tor-rtcompat = { version = "=0.47.0", default-features = false, features = ["tokio", "rustls"] }
 
+# Android: el verificador de la plataforma de rustls exige inicializar la JVM y un componente Kotlin; se usan las raíces Mozilla.
+[target.'cfg(target_os = "android")'.dependencies]
+webpki-root-certs = "=1.0.9"
+
 [dev-dependencies]
 tempfile = { workspace = true }

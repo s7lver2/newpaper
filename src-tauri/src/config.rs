@@ -2,7 +2,9 @@
 use std::path::PathBuf;
 
 use serde::Deserialize;
-use tauri::{path::BaseDirectory, AppHandle, Manager};
+#[cfg(desktop)]
+use tauri::path::BaseDirectory;
+use tauri::{AppHandle, Manager};
 
 use crate::error::CmdError;
 
@@ -31,6 +33,32 @@ pub fn content_current_dir(app: &AppHandle) -> Option<PathBuf> {
     app.path().app_local_data_dir().ok().map(|d| d.join("content").join("current"))
 }
 
+/// Android no deja leer `resources` con `std::fs` (viven dentro del APK): en móvil la configuración base va embebida.
+#[cfg(mobile)]
+fn bundled(name: &str) -> Option<&'static str> {
+    match name {
+        "framing-weights.json" => Some(include_str!("../../config/framing-weights.json")),
+        "lexicon-de.json" => Some(include_str!("../../config/lexicon-de.json")),
+        "lexicon-en.json" => Some(include_str!("../../config/lexicon-en.json")),
+        "lexicon-es.json" => Some(include_str!("../../config/lexicon-es.json")),
+        "mirror-swaps-es.json" => Some(include_str!("../../config/mirror-swaps-es.json")),
+        "outlet-priors.json" => Some(include_str!("../../config/outlet-priors.json")),
+        "parties-de.json" => Some(include_str!("../../config/parties-de.json")),
+        "parties-en.json" => Some(include_str!("../../config/parties-en.json")),
+        "parties-es.json" => Some(include_str!("../../config/parties-es.json")),
+        "prices.json" => Some(include_str!("../../config/prices.json")),
+        "primary-sources.json" => Some(include_str!("../../config/primary-sources.json")),
+        "providers.json" => Some(include_str!("../../config/providers.json")),
+        "sources-de.json" => Some(include_str!("../../config/sources-de.json")),
+        "sources-en.json" => Some(include_str!("../../config/sources-en.json")),
+        "sources-es.json" => Some(include_str!("../../config/sources-es.json")),
+        "topics-de.json" => Some(include_str!("../../config/topics-de.json")),
+        "topics-en.json" => Some(include_str!("../../config/topics-en.json")),
+        "topics-es.json" => Some(include_str!("../../config/topics-es.json")),
+        _ => None,
+    }
+}
+
 pub fn read_config_text(app: &AppHandle, name: &str) -> Result<String, CmdError> {
     if !is_config_name(name) {
         return Err(CmdError::new("config_name", name));
@@ -39,10 +67,14 @@ pub fn read_config_text(app: &AppHandle, name: &str) -> Result<String, CmdError>
     if let Some(d) = content_current_dir(app) {
         dirs.push(d);
     }
+    #[cfg(desktop)]
     if let Ok(d) = app.path().resolve("config", BaseDirectory::Resource) {
         dirs.push(d);
     }
-    read_from_dirs(&dirs, name).map_err(|e| CmdError::new("config_missing", format!("{name}: {e}")))
+    let found = read_from_dirs(&dirs, name);
+    #[cfg(mobile)]
+    let found = found.or_else(|e| bundled(name).map(str::to_owned).ok_or(e));
+    found.map_err(|e| CmdError::new("config_missing", format!("{name}: {e}")))
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]

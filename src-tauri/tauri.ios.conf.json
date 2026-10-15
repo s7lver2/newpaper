@@ -1,6 +1,6 @@
 {
   "identifier": "app.newpaper",
   "build": { "frontendDist": "../apps/mobile/dist", "devUrl": "http://localhost:1421", "beforeDevCommand": "pnpm --filter @newpaper/mobile dev", "beforeBuildCommand": "pnpm --filter @newpaper/mobile build" },
-  "app": { "windows": [{ "label": "main", "title": "newpaper" }] },
+  "app": { "windows": [{ "label": "main", "title": "newpaper" }], "security": { "capabilities": ["mobile"] } },
   "bundle": { "iOS": { "minimumSystemVersion": "17.0" } }
 }
