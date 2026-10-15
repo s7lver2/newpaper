@@ -7,11 +7,12 @@ import { navigate } from '../../shell/navigate';
 import { getRegistry, resetPipeline, useAiSettings } from '../ai/pipeline';
 import { money, stepCosts, STEPS, useUsd, WIZARD_NAME } from './aiModel';
 import { DEFAULT_CUSTOM, errorText, firstModel, markConnected, runConnectionTest, storeCredentials, type CustomDraft } from './connect';
-import { CLOUD_ORDER, metaOf } from './providerMeta';
+import { groupOf, metaOf } from './providerMeta';
 import { ProviderLogo } from './ProviderLogo';
 
 type Step = 1 | 2 | 3;
 type Closed = null | 'done' | 'cancelled';
+type LoginState = { phase: 'idle' } | { phase: 'waiting'; url: string | null; opened: boolean; copied: boolean } | { phase: 'error'; code: string; message: string };
 interface TestState { phase: number; failed: boolean; ok: boolean; latencyMs: number; error: string | null }
 const IDLE: TestState = { phase: 0, failed: false, ok: false, latencyMs: 0, error: null };
 /** Las seis filas del resumen del paso 3 (el mockup las numera 01–06). */
@@ -47,9 +48,12 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
   const [opened, setOpened] = useState(false);
   const [adv, setAdv] = useState(false);
   const [test, setTest] = useState<TestState>(IDLE);
+  const [login, setLogin] = useState<LoginState>({ phase: 'idle' });
   const timers = useRef<number[]>([]);
   /** Proveedor cuya clave está en el llavero sin que el asistente haya terminado: se borra si se abandona. */
   const pending = useRef<string | null>(null);
+  /** Proveedor con un inicio de sesión en curso (para cancelarlo al salir del paso). */
+  const loginFor = useRef<string | null>(null);
   const keyInput = useRef<HTMLInputElement>(null);
   /** Escape: un paso atrás (o cerrar en el primero). Se renueva en cada render para ver el estado actual. */
   const escape = useRef<() => void>(() => {});
@@ -78,6 +82,7 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
       document.removeEventListener('keydown', onKey);
       clearTimers();
       dropPending();
+      if (loginFor.current) void commands.aiLoginCancel(loginFor.current).catch(() => {});
     };
   }, []);
 
@@ -146,7 +151,35 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
     at(wait + 2200, 4);
   };
 
+  /** «Iniciar sesión con X»: Rust abre el navegador, espera y guarda la clave en el llavero. Aquí solo hay estados. */
+  const startLogin = async (p: ProviderEntry) => {
+    if (login.phase === 'waiting') return;
+    loginFor.current = p.id;
+    setLogin({ phase: 'waiting', url: null, opened: false, copied: false });
+    try {
+      await commands.aiLogin(p.id, (url, opened) => setLogin((l) => (l.phase === 'waiting' ? { ...l, url, opened } : l)));
+    } catch (e) {
+      loginFor.current = null;
+      const err = e as { code?: string; message?: string };
+      // Cancelar no es un error: se vuelve a la elección.
+      setLogin(err?.code === 'cancelled' ? { phase: 'idle' } : { phase: 'error', code: err?.code ?? 'login_failed', message: errorText(e) });
+      return;
+    }
+    loginFor.current = null;
+    setLogin({ phase: 'idle' });
+    // La clave ya está en el llavero: se prueba y, si el asistente se abandona, se borra como una clave pegada.
+    pending.current = ai.connected.includes(p.id) ? null : p.id;
+    setKeySaved(true);
+    void startTest(p);
+  };
+  const abortLogin = () => {
+    if (loginFor.current) void commands.aiLoginCancel(loginFor.current).catch(() => {});
+    loginFor.current = null;
+    setLogin({ phase: 'idle' });
+  };
+
   const choose = (p: ProviderEntry) => {
+    abortLogin();
     if (pending.current && pending.current !== p.id) dropPending();
     setProvider(p);
     resetTest();
@@ -164,12 +197,14 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
   };
 
   const back = () => {
+    abortLogin();
     resetTest();
     if (step === 3 && provider && isLocalP(provider)) go(1, 'b');
     else go((step - 1) as Step, 'b');
   };
 
   const close = () => {
+    abortLogin();
     clearTimers();
     dropPending();
     setKey('');
@@ -283,8 +318,10 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
   // ---- Paso 1: elegir.
   if (step === 1) {
     const byCat = (c: ProviderEntry['category']) => registry.providers.filter((p) => p.category === c);
-    const rec = byCat('recommended');
-    const cloud = CLOUD_ORDER.map((id) => registry.get(id)).filter((p): p is ProviderEntry => !!p);
+    const rec = registry.recommended();
+    // Abiertos = pesos abiertos (y los agregadores, que sirven de ambos); Cerrados = solo propietarios.
+    const openCloud = byCat('cloud').filter((p) => groupOf(p) === 'open');
+    const closedCloud = byCat('cloud').filter((p) => groupOf(p) === 'closed');
     const locals = byCat('local');
     const adv1 = byCat('advanced');
     const det1 = detected.length === 1 ? detected[0]! : null;
@@ -347,15 +384,22 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
             {key.trim().length >= 4 && detected.length === 0 ? <div className="np-wz-warn np-rise" role="status">{t('providers.unknownPrefix')}</div> : null}
           </div>
 
-          <div className="np-wz-secthead"><h2 className="np-wz-eyebrow">{t('providers.cat.cloud')}</h2><span className="np-wz-secthint">{t('providers.cat.cloudHint')}</span></div>
-          <div className="np-wz-tiles np-wz-tiles--cloud">
-            {cloud.map((p, i) => (
-              <button key={p.id} type="button" className="np-wz-tile np-lift" style={{ animationDelay: `${120 + i * 35}ms` }} onClick={() => choose(p)}>
-                <ProviderLogo id={p.id} size={40} radius={11} mark={22} mono={14} />
-                <span className="np-wz-tile-text"><span className="np-wz-tile-name">{name(p)}</span><span className="np-wz-tile-sub">{t(`providers.sub.${p.id}`)}</span></span>
-              </button>
-            ))}
-          </div>
+          {[
+            { id: 'open', list: openCloud },
+            { id: 'closed', list: closedCloud },
+          ].map((g, gi) => (
+            <section key={g.id} aria-labelledby={`np-wz-g-${g.id}`}>
+              <div className="np-wz-secthead"><h2 id={`np-wz-g-${g.id}`} className="np-wz-eyebrow">{t(`providers.cat.${g.id}`)}</h2><span className="np-wz-secthint">{t(`providers.cat.${g.id}Hint`)}</span></div>
+              <div className="np-wz-tiles np-wz-tiles--cloud">
+                {g.list.map((p, i) => (
+                  <button key={p.id} type="button" className="np-wz-tile np-lift" style={{ animationDelay: `${120 + (gi * 7 + i) * 35}ms` }} onClick={() => choose(p)}>
+                    <ProviderLogo id={p.id} size={40} radius={11} mark={22} mono={14} />
+                    <span className="np-wz-tile-text"><span className="np-wz-tile-name">{name(p)}</span><span className="np-wz-tile-sub">{t(`providers.sub.${p.id}`)}</span></span>
+                  </button>
+                ))}
+              </div>
+            </section>
+          ))}
 
           <div className="np-wz-lower">
             <div className="np-wz-lower-main">
@@ -364,7 +408,7 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
                 {locals.map((p, i) => {
                   const found = localModels(p);
                   return (
-                    <button key={p.id} type="button" className="np-wz-tile np-lift" style={{ animationDelay: `${120 + (cloud.length + i) * 35}ms` }} onClick={() => choose(p)}>
+                    <button key={p.id} type="button" className="np-wz-tile np-lift" style={{ animationDelay: `${120 + (openCloud.length + closedCloud.length + i) * 35}ms` }} onClick={() => choose(p)}>
                       <ProviderLogo id={p.id} size={40} radius={11} mark={22} mono={14} />
                       <span className="np-wz-tile-text np-wz-tile-text--grow">
                         <span className="np-wz-tile-name">{name(p)}</span>
@@ -417,6 +461,48 @@ export function ConnectWizard({ onDone }: { onDone(): void }) {
                   <div className="np-wz-keykind">{isCustom ? t('providers.kind.custom') : t('providers.kind.cloud')}</div>
                 </div>
               </div>
+              {provider.login?.status === 'available' ? (
+                <div className="np-wz-login" data-phase={login.phase}>
+                  {login.phase === 'waiting' ? (
+                    <div className="np-wz-login-wait" role="status" aria-live="polite">
+                      <span className="np-wz-spin" aria-hidden="true" />
+                      <div className="np-wz-login-wait-text">
+                        <div className="np-wz-login-wait-title">{t('providers.login.waiting', { name: name(provider) })}</div>
+                        <div className="np-wz-login-wait-hint">{login.url && !login.opened ? t('providers.login.notOpened') : t('providers.login.waitingHint')}</div>
+                      </div>
+                      <div className="np-wz-login-wait-actions">
+                        {login.url ? (
+                          <button
+                            type="button"
+                            className="np-wz-btn np-wz-btn--ghost np-wz-btn--sm"
+                            onClick={() => {
+                              void navigator.clipboard?.writeText(login.url!).then(() => setLogin((l) => (l.phase === 'waiting' ? { ...l, copied: true } : l))).catch(() => {});
+                            }}
+                          >
+                            {login.copied ? t('providers.login.copied') : t('providers.login.copy')}
+                          </button>
+                        ) : null}
+                        <button type="button" className="np-wz-btn np-wz-btn--ghost np-wz-btn--sm" onClick={abortLogin}>{t('providers.login.cancel')}</button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <button type="button" className="np-wz-btn np-wz-btn--solid np-wz-login-btn" onClick={() => void startLogin(provider)}>
+                        {login.phase === 'error' ? t('providers.login.retry') : t('providers.login.button', { name: name(provider) })}
+                      </button>
+                      <p className="np-wz-login-lead">{t('providers.login.lead', { name: name(provider) })}</p>
+                      {login.phase === 'error' ? (
+                        <div className="np-wz-warn np-wz-login-err np-rise" role="alert">
+                          {login.code === 'login_timeout' ? t('providers.login.timeout') : login.code === 'login_denied' ? t('providers.login.denied', { name: name(provider) }) : t('providers.login.failed', { name: name(provider), message: login.message })}
+                        </div>
+                      ) : null}
+                    </>
+                  )}
+                  <div className="np-wz-or" aria-hidden="true"><span>{t('providers.login.or')}</span></div>
+                </div>
+              ) : provider.login?.status === 'unverified' ? (
+                <p className="np-wz-login-exp">{t('providers.login.experimental', { name: name(provider) })}</p>
+              ) : null}
               {isCustom ? (
                 <>
                   <label htmlFor="np-wz-url" className="np-wz-label">{t('providers.baseUrl')}</label>

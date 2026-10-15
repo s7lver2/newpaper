@@ -66,6 +66,6 @@ export function money(v: number | null | undefined, fmt: (n: number) => string, 
 /** Nombre visible de cada proveedor en el asistente y en Ajustes (el mockup los nombra distinto: «ChatGPT / OpenAI», «Gemini / Google»). */
 export const WIZARD_NAME: Record<string, string> = {
   openai: 'ChatGPT', nous: 'Nous Research', anthropic: 'Anthropic', google: 'Gemini', deepseek: 'DeepSeek', xai: 'xAI', mistral: 'Mistral',
-  nvidia: 'NVIDIA NIM', perplexity: 'Perplexity', openrouter: 'OpenRouter', groq: 'Groq', huggingface: 'Hugging Face', ollama: 'Ollama', lmstudio: 'LM Studio',
+  nvidia: 'NVIDIA NIM', openrouter: 'OpenRouter', groq: 'Groq', huggingface: 'Hugging Face', ollama: 'Ollama', lmstudio: 'LM Studio',
 };
 export const SETTINGS_NAME: Record<string, string> = { ...WIZARD_NAME, openai: 'OpenAI', google: 'Google' };

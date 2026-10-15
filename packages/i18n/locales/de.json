@@ -197,8 +197,9 @@
       "filter": {
         "all": "Alle",
         "on": "Aktiv",
-        "cloud": "Cloud",
-        "local": "Lokal"
+        "local": "Lokal",
+        "open": "Offen",
+        "closed": "Geschlossen"
       },
       "detected": "Erkannt",
       "connected": "Verbunden",
@@ -280,7 +281,8 @@
       "emptyText": "Ohne verbundenen Anbieter gibt es keine Modelle für die einzelnen Schritte. Einer reicht zum Start; ein Assistent führt dich in drei Schritten.",
       "budgetLabel": "Monatliches Ausgabenlimit",
       "noLimit": "Kein Limit",
-      "budgetNote": "Beim Erreichen des Limits wechselt die vollständige Analyse zu lokalen Modellen. 0 schaltet das Limit aus."
+      "budgetNote": "Beim Erreichen des Limits wechselt die vollständige Analyse zu lokalen Modellen. 0 schaltet das Limit aus.",
+      "noneShown": "Kein Anbieter passt zu diesem Filter."
     },
     "analysis": {
       "title": "Analyse",
@@ -1012,15 +1014,18 @@
     "subtitle": "Drei Schritte, fertig. KI-Kenntnisse sind nicht nötig.",
     "cat": {
       "recommended": "Empfohlen",
-      "cloud": "Cloud",
-      "cloudHint": "Bezahlung nach Nutzung mit deinem eigenen Schlüssel",
       "local": "Auf deinem Rechner",
       "localHint": "Kostenlos und ohne Daten zu senden",
-      "advanced": "Erweitert"
+      "advanced": "Erweitert",
+      "open": "Offen",
+      "openHint": "Modelle, die jeder herunterladen und prüfen kann",
+      "closed": "Geschlossen",
+      "closedHint": "Proprietäre Modelle: Sie laufen nur in der Cloud ihres Unternehmens"
     },
     "pitch": {
-      "openai": "Der einfachste Einstieg",
-      "nous": "Offene Hermes-Modelle ohne redaktionelle Zensur"
+      "google": "Gratis zum Start, ohne Umstände",
+      "openrouter": "Mit deinem Konto anmelden, ohne Schlüssel zu kopieren",
+      "ollama": "Privat: alles bleibt auf deinem Rechner"
     },
     "connect": "{name} verbinden",
     "pasteKey": "Hast du schon einen Schlüssel? Hier einfügen",
@@ -1100,40 +1105,39 @@
       "recommended": "Empfohlen"
     },
     "desc": {
-      "openai": "Die Modelle von OpenAI mit deinem eigenen Schlüssel. Du zahlst nur, was du nutzt: Eine Analyse kostet Cent-Beträge.",
-      "nous": "Offene Gewichte, die jeder prüfen kann, bereitgestellt über Nous Portal mit einer OpenAI-kompatiblen API."
+      "google": "Ein kostenloser Google-AI-Studio-Schlüssel mit Tageslimits. Im kostenlosen Kontingent darf Google deine Texte zur Verbesserung seiner Produkte nutzen; mit bezahltem Guthaben nicht.",
+      "openrouter": "Du meldest dich an und newpaper erhält den Schlüssel, ohne dass du ihn kopierst. Enthält kostenlose und Hunderte weitere Modelle, offene und geschlossene.",
+      "ollama": "Offene Modelle, die auf deinem Rechner laufen: kostenlos und ohne dass ein Text nach außen geht. Benötigt einen Rechner mit genug Speicher."
     },
     "isOf": "Gehört zu",
     "pill": {
       "detected": "erkannt"
     },
     "sub": {
-      "openai": "OpenAI",
+      "openai": "GPT-6",
       "nous": "Hermes, offene Gewichte",
       "anthropic": "Claude",
-      "google": "Google",
-      "deepseek": "V3 und R1",
-      "xai": "Grok",
+      "google": "Gemini, mit Gratis-Kontingent",
+      "deepseek": "V4, offene Gewichte",
+      "xai": "Grok 4.7",
       "mistral": "Large und Small",
       "nvidia": "build.nvidia.com",
-      "perplexity": "Sonar, mit Suche",
-      "openrouter": "Hunderte Modelle",
-      "groq": "Ultraschnell",
+      "openrouter": "Offen und geschlossen, mit Anmeldung",
+      "groq": "gpt-oss und Llama, sehr schnell",
       "huggingface": "Offene Modelle",
       "ollama": "Öffnen, damit es erkannt wird",
       "lmstudio": "Öffnen, damit es erkannt wird"
     },
     "subCfg": {
       "anthropic": "Claude",
-      "openai": "GPT",
+      "openai": "GPT-6",
       "google": "Gemini",
       "nous": "Hermes, offene Gewichte",
-      "deepseek": "V3 und R1",
-      "xai": "Grok",
+      "deepseek": "V4, offene Gewichte",
+      "xai": "Grok 4.7",
       "mistral": "Large und Small",
       "nvidia": "build.nvidia.com",
-      "perplexity": "Sonar, mit Suche",
-      "openrouter": "Hunderte Modelle",
+      "openrouter": "Offen und geschlossen",
       "groq": "Ultraschnelle Inferenz",
       "huggingface": "Offene Modelle",
       "ollama": "Auf deinem Rechner",
@@ -1168,7 +1172,7 @@
     },
     "tip": {
       "openai": "Die API wird getrennt von ChatGPT Plus abgerechnet: Lade unter Billing Guthaben auf, ab 5 $.",
-      "google": "Es gibt ein kostenloses Kontingent mit Tageslimits: genug zum Ausprobieren."
+      "google": "Es gibt ein kostenloses Kontingent mit Tageslimits, genug zum Ausprobieren. Dafür darf Google das Gesendete zur Verbesserung seiner Produkte nutzen: Wenn dir das wichtig ist, nimm bezahltes Guthaben oder ein lokales Modell."
     },
     "chk": {
       "connect": "Mit dem Server verbinden",
@@ -1221,7 +1225,28 @@
       "cheap": "Schnelle, günstige Modelle."
     },
     "spentShort": "Diesen Monat ausgegeben: {amount}.",
-    "failCustom": "Prüfe Adresse, Modelle und Schlüssel deines Endpunkts und ob der Server läuft; du kannst zurückgehen und sie ändern."
+    "failCustom": "Prüfe Adresse, Modelle und Schlüssel deines Endpunkts und ob der Server läuft; du kannst zurückgehen und sie ändern.",
+    "openness": {
+      "open": "Offen",
+      "closed": "Geschlossen",
+      "mixed": "Offen und geschlossen"
+    },
+    "login": {
+      "button": "Mit {name} anmelden",
+      "retry": "Erneut versuchen",
+      "or": "oder Schlüssel einfügen",
+      "lead": "Die Website von {name} öffnet sich in deinem Browser. Du genehmigst den Zugriff dort und newpaper erhält den Schlüssel, ohne dass du ihn siehst oder kopierst. Dein Passwort läuft nie über newpaper.",
+      "waiting": "Warte darauf, dass du den Zugriff bei {name} genehmigst…",
+      "waitingHint": "Dein Browser wurde geöffnet. Du hast 5 Minuten.",
+      "notOpened": "Der Browser konnte nicht geöffnet werden. Kopiere den Link und öffne ihn selbst.",
+      "copy": "Link kopieren",
+      "copied": "Link kopiert",
+      "cancel": "Abbrechen",
+      "timeout": "Die Zeit ist abgelaufen, ohne dass der Zugriff genehmigt wurde. Du kannst es erneut versuchen.",
+      "denied": "Du hast den Zugriff bei {name} abgelehnt. Du kannst es erneut versuchen.",
+      "failed": "{name} hat die Anmeldung nicht abgeschlossen ({message}). Versuche es erneut oder füge einen Schlüssel ein.",
+      "experimental": "Die Anmeldung mit {name} ist experimentell und noch nicht verfügbar: Verwende einen Schlüssel."
+    }
   },
   "history": {
     "title": "Verlauf",

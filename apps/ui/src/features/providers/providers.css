@@ -147,3 +147,10 @@
 [data-theme='ink'] .np-aip-summary { background: var(--np-chrome); border: 1px solid var(--np-line); color: var(--np-ink); }
 [data-theme='ink'] .np-aip-sumlabel { color: var(--np-muted); }
 [data-theme='ink'] .np-aip-bars { background: var(--np-line); }
+
+/* Grupos de proveedores: abiertos, cerrados, en tu equipo, avanzado. */
+.np-aip-group + .np-aip-group { margin-top: 22px; }
+.np-aip-group-h { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin: 0 0 10px; font-weight: 400; }
+.np-aip-group-hint { font-size: 12px; color: var(--np-faint); }
+.np-aip-model-open { font: 500 10px var(--np-font-mono); text-transform: uppercase; letter-spacing: .06em; color: var(--np-muted); }
+.np-aip-model-open[data-open='true'] { color: var(--np-ok); }

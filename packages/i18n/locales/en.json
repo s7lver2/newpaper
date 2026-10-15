@@ -197,8 +197,9 @@
       "filter": {
         "all": "All",
         "on": "Active",
-        "cloud": "Cloud",
-        "local": "Local"
+        "local": "Local",
+        "open": "Open",
+        "closed": "Closed"
       },
       "detected": "Detected",
       "connected": "Connected",
@@ -280,7 +281,8 @@
       "emptyText": "Without a connected provider there are no models to assign to each step. One is enough to start; a wizard guides you in three steps.",
       "budgetLabel": "Monthly spending limit",
       "noLimit": "No limit",
-      "budgetNote": "When the limit is reached, the full analysis switches to local models. 0 turns the limit off."
+      "budgetNote": "When the limit is reached, the full analysis switches to local models. 0 turns the limit off.",
+      "noneShown": "No provider matches this filter."
     },
     "analysis": {
       "title": "Analysis",
@@ -1012,15 +1014,18 @@
     "subtitle": "Three steps and you are done. No AI knowledge needed.",
     "cat": {
       "recommended": "Recommended",
-      "cloud": "Cloud",
-      "cloudHint": "Pay per use with your own key",
       "local": "On your computer",
       "localHint": "Free and nothing leaves your machine",
-      "advanced": "Advanced"
+      "advanced": "Advanced",
+      "open": "Open",
+      "openHint": "Models anyone can download and audit",
+      "closed": "Closed",
+      "closedHint": "Proprietary models: they only run in their company’s cloud"
     },
     "pitch": {
-      "openai": "The easiest way to start",
-      "nous": "Open Hermes models without editorial censorship"
+      "google": "Free to start, no fuss",
+      "openrouter": "Sign in with your account, no keys to copy",
+      "ollama": "Private: everything stays on your computer"
     },
     "connect": "Connect {name}",
     "pasteKey": "Already have a key? Paste it here",
@@ -1100,40 +1105,39 @@
       "recommended": "Recommended"
     },
     "desc": {
-      "openai": "OpenAI's models with your own key. You only pay for what you use: an analysis costs cents.",
-      "nous": "Open weights anyone can audit, served from Nous Portal with an OpenAI-compatible API."
+      "google": "A free Google AI Studio key with daily limits. On the free tier Google may use your texts to improve its products; with paid credit, it does not.",
+      "openrouter": "You sign in and newpaper receives the key without you copying it. Includes free models and hundreds more, open and closed.",
+      "ollama": "Open models running on your machine: free and not a single text sent out. It needs a computer with enough memory."
     },
     "isOf": "It's from",
     "pill": {
       "detected": "detected"
     },
     "sub": {
-      "openai": "OpenAI",
+      "openai": "GPT-6",
       "nous": "Hermes, open weights",
       "anthropic": "Claude",
-      "google": "Google",
-      "deepseek": "V3 and R1",
-      "xai": "Grok",
+      "google": "Gemini, with a free tier",
+      "deepseek": "V4, open weights",
+      "xai": "Grok 4.7",
       "mistral": "Large and Small",
       "nvidia": "build.nvidia.com",
-      "perplexity": "Sonar, with search",
-      "openrouter": "Hundreds of models",
-      "groq": "Ultra-fast",
+      "openrouter": "Open and closed, with sign-in",
+      "groq": "gpt-oss and Llama, very fast",
       "huggingface": "Open models",
       "ollama": "Open it to detect it",
       "lmstudio": "Open it to detect it"
     },
     "subCfg": {
       "anthropic": "Claude",
-      "openai": "GPT",
+      "openai": "GPT-6",
       "google": "Gemini",
       "nous": "Hermes, open weights",
-      "deepseek": "V3 and R1",
-      "xai": "Grok",
+      "deepseek": "V4, open weights",
+      "xai": "Grok 4.7",
       "mistral": "Large and Small",
       "nvidia": "build.nvidia.com",
-      "perplexity": "Sonar, with search",
-      "openrouter": "Hundreds of models",
+      "openrouter": "Open and closed",
       "groq": "Ultra-fast inference",
       "huggingface": "Open models",
       "ollama": "On your computer",
@@ -1168,7 +1172,7 @@
     },
     "tip": {
       "openai": "The API is billed separately from ChatGPT Plus: add credit under Billing, from $5.",
-      "google": "It has a free tier with daily limits: enough to try it out."
+      "google": "It has a free tier with daily limits, enough to try it out. In return Google may use what you send to improve its products: if that matters to you, use paid credit or a local model."
     },
     "chk": {
       "connect": "Connect to the server",
@@ -1221,7 +1225,28 @@
       "cheap": "Fast, inexpensive models."
     },
     "spentShort": "Spent this month: {amount}.",
-    "failCustom": "Check the address, models and key of your endpoint, and that the server is running; you can go back to change them."
+    "failCustom": "Check the address, models and key of your endpoint, and that the server is running; you can go back to change them.",
+    "openness": {
+      "open": "Open",
+      "closed": "Closed",
+      "mixed": "Open and closed"
+    },
+    "login": {
+      "button": "Sign in with {name}",
+      "retry": "Try again",
+      "or": "or paste a key",
+      "lead": "{name}’s website opens in your browser. You approve access there and newpaper receives the key without you seeing or copying it. Your password never goes through newpaper.",
+      "waiting": "Waiting for you to approve access on {name}…",
+      "waitingHint": "Your browser has opened. You have 5 minutes.",
+      "notOpened": "The browser could not be opened. Copy the link and open it yourself.",
+      "copy": "Copy link",
+      "copied": "Link copied",
+      "cancel": "Cancel",
+      "timeout": "Time ran out before access was approved. You can try again.",
+      "denied": "You declined access on {name}. You can try again.",
+      "failed": "{name} did not complete the sign-in ({message}). Try again or paste a key.",
+      "experimental": "Signing in with {name} is experimental and not available yet: use a key."
+    }
   },
   "history": {
     "title": "History",

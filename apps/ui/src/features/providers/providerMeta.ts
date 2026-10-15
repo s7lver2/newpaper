@@ -8,7 +8,6 @@ import nvidia from './logos/nvidia.svg?raw';
 import ollama from './logos/ollama.svg?raw';
 import openai from './logos/openai.svg?raw';
 import openrouter from './logos/openrouter.svg?raw';
-import perplexity from './logos/perplexity.svg?raw';
 import xai from './logos/xai.svg?raw';
 
 /** Los SVG son marcas de un solo trazo y 24 px; se pintan con `currentColor`, así sirven en papel y en tinta. */
@@ -36,7 +35,6 @@ export const PROVIDER_META: Record<string, ProviderMeta> = {
   xai: { tint: '#EAEAEA', svg: clean(xai), site: 'console.x.ai', section: 'API Keys', button: 'Create API key' },
   mistral: { tint: '#FCE9D6', svg: clean(mistral), site: 'console.mistral.ai', section: 'API Keys', button: 'Create new key' },
   nvidia: { tint: '#E8F3DA', svg: clean(nvidia), site: 'build.nvidia.com', section: 'tu perfil → API Keys', button: 'Generate API Key' },
-  perplexity: { tint: '#DFF0F0', svg: clean(perplexity), site: 'perplexity.ai/settings/api', section: 'API Keys', button: 'Generate' },
   openrouter: { tint: '#EAE8F6', svg: clean(openrouter), site: 'openrouter.ai/keys', section: 'Keys', button: 'Create Key' },
   groq: { tint: '#FBE4DC', mono: 'gq', site: 'console.groq.com/keys', section: 'API Keys', button: 'Create API Key' },
   huggingface: { tint: '#FFF1CC', svg: clean(huggingface), site: 'huggingface.co/settings/tokens', section: 'Settings → Access Tokens', button: 'Create new token' },
@@ -47,10 +45,14 @@ export const PROVIDER_META: Record<string, ProviderMeta> = {
 
 export const metaOf = (id: string): ProviderMeta => PROVIDER_META[id] ?? { tint: '#EFECE5', mono: id.slice(0, 2) };
 
-/** Orden de las fichas de proveedores en Ajustes › IA (el del mockup; los que él no dibuja, junto a su categoría). */
-export const SETTINGS_ORDER = ['anthropic', 'openai', 'google', 'nous', 'deepseek', 'xai', 'mistral', 'nvidia', 'perplexity', 'openrouter', 'groq', 'huggingface', 'ollama', 'lmstudio', 'custom'];
-/** Orden de la cuadrícula «Nube» del asistente. */
-export const CLOUD_ORDER = ['anthropic', 'google', 'deepseek', 'xai', 'mistral', 'nvidia', 'perplexity', 'openrouter', 'groq', 'huggingface'];
+/** Grupo de un proveedor en el asistente y en Ajustes: abiertos, cerrados, en tu equipo o avanzado.
+ *  Los agregadores (`mixed`) van con los abiertos: sirven modelos de pesos abiertos y de los otros. */
+export type ProviderGroup = 'open' | 'closed' | 'local' | 'advanced';
+export function groupOf(p: { category: 'cloud' | 'local' | 'advanced'; openness: 'open' | 'closed' | 'mixed' }): ProviderGroup {
+  if (p.category === 'local') return 'local';
+  if (p.category === 'advanced') return 'advanced';
+  return p.openness === 'closed' ? 'closed' : 'open';
+}
 
 /** Un paso típico (6.000 caracteres de artículo, 5 coberturas): sirve para poner un precio por modelo y por paso. */
 export const TYPICAL_STEP = { input: 4000, output: 1500 };

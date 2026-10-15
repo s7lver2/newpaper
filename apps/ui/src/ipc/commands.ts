@@ -1,4 +1,4 @@
-import { invoke } from '@tauri-apps/api/core';
+import { Channel, invoke } from '@tauri-apps/api/core';
 import type {
   AdblockStatus, BlockedCounts, DeleteScope, HistoryEntry, HistoryFilter, NetMode, PrivacyStatus, Rect, RefreshReport,
   SearchSource, Suggestion, TabId, TabInfo, TabsSnapshot, TabView,
@@ -103,6 +103,13 @@ export const commands = {
   offlineCleanup: () => invoke<string[]>('offline_cleanup'),
   aiCancel: (requestId: string) => invoke<boolean>('ai_cancel', { requestId }),
   aiSetEndpoints: (endpoints: CustomEndpoint[]) => invoke<void>('ai_set_endpoints', { endpoints }),
+  /** Inicio de sesión del proveedor: Rust abre el navegador, espera la aprobación y guarda la clave (nunca llega aquí). */
+  aiLogin: (provider: string, onUrl: (url: string, opened: boolean) => void) => {
+    const ch = new Channel<{ event: 'url'; data: { url: string; opened: boolean } }>();
+    ch.onmessage = (m) => m.event === 'url' && onUrl(m.data.url, m.data.opened);
+    return invoke<void>('ai_login', { provider, onEvent: ch });
+  },
+  aiLoginCancel: (provider: string) => invoke<boolean>('ai_login_cancel', { provider }),
   sourceFetch: (url: string, allowExtra: string[]) => invoke<string>('source_fetch', { url, allowExtra }),
   analysisCacheGet: (url: string, textHash: string, stage: string) => invoke<CachedStage | null>('analysis_cache_get', { url, textHash, stage }),
   analysisCachePut: (url: string, textHash: string, stage: string, json: string, model: string | null, cost: number) =>

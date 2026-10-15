@@ -197,8 +197,9 @@
       "filter": {
         "all": "Todos",
         "on": "Activos",
-        "cloud": "Nube",
-        "local": "Local"
+        "local": "Local",
+        "open": "Abiertos",
+        "closed": "Cerrados"
       },
       "detected": "Detectado",
       "connected": "Conectado",
@@ -280,7 +281,8 @@
       "emptyText": "Sin un proveedor conectado no hay modelos que asignar a cada paso. Con uno basta para empezar; un asistente te guía en tres pasos.",
       "budgetLabel": "Límite de gasto mensual",
       "noLimit": "Sin límite",
-      "budgetNote": "Al llegar al límite, el análisis completo pasa a modelos locales. 0 desactiva el límite."
+      "budgetNote": "Al llegar al límite, el análisis completo pasa a modelos locales. 0 desactiva el límite.",
+      "noneShown": "Ningún proveedor coincide con este filtro."
     },
     "analysis": {
       "title": "Análisis",
@@ -1012,15 +1014,18 @@
     "subtitle": "Tres pasos y listo. No hace falta saber nada de inteligencia artificial.",
     "cat": {
       "recommended": "Recomendados",
-      "cloud": "Nube",
-      "cloudHint": "Pagas por uso con tu propia clave",
       "local": "En tu equipo",
       "localHint": "Gratis y sin enviar datos",
-      "advanced": "Avanzado"
+      "advanced": "Avanzado",
+      "open": "Abiertos",
+      "openHint": "Modelos que cualquiera puede descargar y auditar",
+      "closed": "Cerrados",
+      "closedHint": "Modelos propietarios: solo funcionan en la nube de su empresa"
     },
     "pitch": {
-      "openai": "El más fácil para empezar",
-      "nous": "Modelos Hermes abiertos y sin censura editorial"
+      "google": "Gratis para empezar, sin complicaciones",
+      "openrouter": "Entra con tu cuenta, sin copiar claves",
+      "ollama": "Privado: todo se queda en tu ordenador"
     },
     "connect": "Conectar {name}",
     "pasteKey": "¿Ya tienes una clave? Pégala aquí",
@@ -1100,40 +1105,39 @@
       "recommended": "Recomendado"
     },
     "desc": {
-      "openai": "Los modelos de OpenAI con tu propia clave. Pagas solo lo que usas: un análisis cuesta céntimos.",
-      "nous": "Pesos abiertos que cualquiera puede auditar, servidos desde Nous Portal con una API compatible con OpenAI."
+      "google": "Una clave gratuita de Google AI Studio, con límites diarios. Con el nivel gratuito Google puede usar tus textos para mejorar sus productos; con saldo de pago, no.",
+      "openrouter": "Inicias sesión y newpaper recibe la clave sin que la copies. Incluye modelos gratuitos y cientos más, abiertos y cerrados.",
+      "ollama": "Modelos abiertos que corren en tu equipo: gratis y sin enviar un solo texto fuera. Necesita un ordenador con memoria suficiente."
     },
     "isOf": "Es de",
     "pill": {
       "detected": "detectado"
     },
     "sub": {
-      "openai": "OpenAI",
+      "openai": "GPT-6",
       "nous": "Hermes, pesos abiertos",
       "anthropic": "Claude",
-      "google": "Google",
-      "deepseek": "V3 y R1",
-      "xai": "Grok",
+      "google": "Gemini, con nivel gratuito",
+      "deepseek": "V4, pesos abiertos",
+      "xai": "Grok 4.7",
       "mistral": "Large y Small",
       "nvidia": "build.nvidia.com",
-      "perplexity": "Sonar, con búsqueda",
-      "openrouter": "Cientos de modelos",
-      "groq": "Ultrarrápido",
+      "openrouter": "Abiertos y cerrados, con sesión",
+      "groq": "gpt-oss y Llama, muy rápido",
       "huggingface": "Modelos abiertos",
       "ollama": "Ábrelo para detectarlo",
       "lmstudio": "Ábrelo para detectarlo"
     },
     "subCfg": {
       "anthropic": "Claude",
-      "openai": "GPT",
+      "openai": "GPT-6",
       "google": "Gemini",
       "nous": "Hermes, pesos abiertos",
-      "deepseek": "V3 y R1",
-      "xai": "Grok",
+      "deepseek": "V4, pesos abiertos",
+      "xai": "Grok 4.7",
       "mistral": "Large y Small",
       "nvidia": "build.nvidia.com",
-      "perplexity": "Sonar, con búsqueda",
-      "openrouter": "Cientos de modelos",
+      "openrouter": "Abiertos y cerrados",
       "groq": "Inferencia ultrarrápida",
       "huggingface": "Modelos abiertos",
       "ollama": "En tu equipo",
@@ -1168,7 +1172,7 @@
     },
     "tip": {
       "openai": "La API se paga aparte de ChatGPT Plus: añade saldo en Billing, desde 5 $.",
-      "google": "Tiene un nivel gratuito con límites diarios: suficiente para probar."
+      "google": "Tiene un nivel gratuito con límites diarios, suficiente para probar. A cambio, Google puede usar lo que envías para mejorar sus productos: si te importa, usa saldo de pago o un modelo local."
     },
     "chk": {
       "connect": "Conectar con el servidor",
@@ -1221,7 +1225,28 @@
       "cheap": "Modelos rápidos y económicos."
     },
     "spentShort": "Gastado este mes: {amount}.",
-    "failCustom": "Revisa la dirección, los modelos y la clave de tu endpoint, y que el servidor esté en marcha; puedes volver atrás para cambiarlos."
+    "failCustom": "Revisa la dirección, los modelos y la clave de tu endpoint, y que el servidor esté en marcha; puedes volver atrás para cambiarlos.",
+    "openness": {
+      "open": "Abierto",
+      "closed": "Cerrado",
+      "mixed": "Abiertos y cerrados"
+    },
+    "login": {
+      "button": "Iniciar sesión con {name}",
+      "retry": "Reintentar",
+      "or": "o pega una clave",
+      "lead": "Se abre la web de {name} en tu navegador. Apruebas el acceso allí y newpaper recibe la clave sin que la veas ni la copies. Tu contraseña nunca pasa por newpaper.",
+      "waiting": "Esperando a que apruebes el acceso en {name}…",
+      "waitingHint": "Se ha abierto tu navegador. Tienes 5 minutos.",
+      "notOpened": "No se pudo abrir el navegador. Copia el enlace y ábrelo tú.",
+      "copy": "Copiar enlace",
+      "copied": "Enlace copiado",
+      "cancel": "Cancelar",
+      "timeout": "Se acabó el tiempo sin que se aprobara el acceso. Puedes volver a intentarlo.",
+      "denied": "Has rechazado el acceso en {name}. Puedes volver a intentarlo.",
+      "failed": "{name} no completó el inicio de sesión ({message}). Vuelve a intentarlo o pega una clave.",
+      "experimental": "Iniciar sesión con {name} es experimental y todavía no está disponible: usa una clave."
+    }
   },
   "history": {
     "title": "Historial",
