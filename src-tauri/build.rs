@@ -17,7 +17,7 @@ const APP_COMMANDS: &[&str] = &[
     "wayback_captures", "wayback_capture_html", "wayback_analyze", "wayback_diff",
     "saved_add", "saved_remove", "saved_list", "saved_get", "offline_begin", "offline_fetch_html", "offline_save_image",
     "offline_add_article", "offline_finish", "offline_editions", "offline_edition", "offline_search", "offline_cleanup",
-    "ai_fetch", "ai_cancel", "ai_set_endpoints", "source_fetch", "analysis_cache_get", "analysis_cache_put", "usage_record", "usage_month", "ai_local_probe",
+    "ai_fetch", "ai_cancel", "ai_set_endpoints", "ai_login", "ai_login_cancel", "source_fetch", "analysis_cache_get", "analysis_cache_put", "usage_record", "usage_month", "ai_local_probe",
     "app_ready", "system_info", "crash_report_save",
     "update_status", "update_check", "update_install_now", "update_set_channel", "update_ack_notes",
     "content_status", "content_check_now", "content_revert",

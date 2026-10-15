@@ -109,6 +109,8 @@ pub fn run() {
             ai::commands::ai_fetch,
             ai::commands::ai_cancel,
             ai::commands::ai_set_endpoints,
+            ai::commands::ai_login,
+            ai::commands::ai_login_cancel,
             ai::commands::source_fetch,
             ai::commands::analysis_cache_get,
             ai::commands::analysis_cache_put,

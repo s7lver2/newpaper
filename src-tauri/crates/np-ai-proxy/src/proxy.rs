@@ -74,6 +74,11 @@ impl AiProxy {
         Ok(())
     }
 
+    /// Especificación del proveedor tal como está en la tabla (para el inicio de sesión).
+    pub fn spec(&self, provider: &str) -> Option<crate::table::ProviderSpec> {
+        self.table.read().expect("lock").get(provider).cloned()
+    }
+
     pub fn cancel(&self, request_id: &str) -> bool {
         self.inflight.lock().expect("lock").remove(request_id).map(|h| h.abort()).is_some()
     }

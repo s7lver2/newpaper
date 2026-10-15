@@ -66,6 +66,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     }
     let primary = read_config_text(&handle, "primary-sources.json").ok().and_then(|t| parse_primary_sources(&t).ok()).unwrap_or_default();
     app.manage(proxy);
+    app.manage(Arc::new(np_ai_proxy::login::LoginRegistry::default()));
     app.manage(Arc::new(AiConfig { primary_sources: RwLock::new(primary) }));
 
     let store_purge = store.clone();

@@ -2,13 +2,14 @@ use std::sync::Arc;
 
 use np_ai_proxy::{
     cache::{self, CachedStage},
+    login::{LoginRegistry, LoginRun, LOGIN_TIMEOUT},
     proxy::{AiProxy, ProxyEvent, ProxyRequest},
     sources::{fetch_source, is_allowed},
     usage::{self, MonthUsage},
-    CustomEndpoint,
+    CustomEndpoint, LoginFlow, LoginSpec, LoginStatus,
 };
 use np_shell::extensions::{HttpPurpose, ShellExtensions};
-use np_store::Store;
+use np_store::{secrets::SecretStore, Store};
 use serde::Serialize;
 use tauri::{ipc::Channel, State};
 
@@ -111,4 +112,89 @@ pub async fn ai_local_probe() -> CmdResult<LocalProbe> {
     };
     let (o, l) = tokio::join!(get("http://127.0.0.1:11434/api/tags"), get("http://127.0.0.1:1234/v1/models"));
     Ok(LocalProbe { ollama: o.as_deref().and_then(ollama_models), lmstudio: l.as_deref().and_then(openai_models) })
+}
+
+#[derive(Serialize, Clone)]
+#[serde(rename_all = "camelCase", tag = "event", content = "data")]
+pub enum LoginEvent {
+    /// Dirección de autorización del proveedor; `opened` dice si ya se abrió en el navegador del sistema.
+    Url { url: String, opened: bool },
+}
+
+/// Solo en compilaciones de desarrollo: `NP_TEST_OAUTH=http://127.0.0.1:<puerto>` sustituye al proveedor por un
+/// servidor local falso, guarda la clave con otro nombre (`ai.oauthtest`) y no abre ningún navegador.
+fn test_oauth() -> Option<(LoginSpec, reqwest::Client)> {
+    if !cfg!(debug_assertions) {
+        return None;
+    }
+    let base = url::Url::parse(&std::env::var("NP_TEST_OAUTH").ok()?).ok()?;
+    if base.scheme() != "http" || !matches!(base.host_str(), Some("127.0.0.1" | "localhost")) {
+        return None;
+    }
+    let spec = LoginSpec { flow: LoginFlow::PkceKey, status: LoginStatus::Available, auth_url: base.join("/auth").ok(), exchange_url: base.join("/api/v1/auth/keys").ok() };
+    let client = reqwest::Client::builder().no_proxy().redirect(reqwest::redirect::Policy::none()).build().ok()?;
+    Some((spec, client))
+}
+
+/// Abre una dirección https en el navegador predeterminado del sistema sin pasar por ningún intérprete de comandos.
+fn open_system_browser(url: &url::Url) -> bool {
+    if url.scheme() != "https" {
+        return false;
+    }
+    let u = url.as_str();
+    #[cfg(windows)]
+    let mut cmd = {
+        use std::os::windows::process::CommandExt;
+        let mut c = std::process::Command::new("rundll32.exe");
+        c.args(["url.dll,FileProtocolHandler", u]).creation_flags(0x0800_0000);
+        c
+    };
+    #[cfg(target_os = "macos")]
+    let mut cmd = {
+        let mut c = std::process::Command::new("open");
+        c.arg(u);
+        c
+    };
+    #[cfg(all(not(windows), not(target_os = "macos")))]
+    let mut cmd = {
+        let mut c = std::process::Command::new("xdg-open");
+        c.arg(u);
+        c
+    };
+    cmd.spawn().is_ok()
+}
+
+/// "Iniciar sesión con <proveedor>": abre la página del proveedor, espera la aprobación y guarda la clave en el
+/// llavero (`ai.<id>`). Ni la clave ni el verificador PKCE salen de Rust.
+#[tauri::command]
+pub async fn ai_login(
+    proxy: State<'_, Arc<AiProxy>>,
+    logins: State<'_, Arc<LoginRegistry>>,
+    secrets: State<'_, Arc<dyn SecretStore>>,
+    ext: State<'_, Arc<ShellExtensions>>,
+    provider: String,
+    on_event: Channel<LoginEvent>,
+) -> CmdResult<()> {
+    let test = test_oauth().filter(|_| provider == "openrouter");
+    let (spec, client, secret_id) = match test {
+        Some((spec, client)) => (spec, client, "ai.oauthtest".to_string()),
+        None => {
+            let spec = proxy.spec(&provider).and_then(|s| s.login).ok_or_else(|| pe(np_ai_proxy::ProxyError::LoginUnavailable(provider.clone())))?;
+            (spec, client(&ext, HttpPurpose::Ai)?, np_ai_proxy::proxy::secret_key(&provider))
+        }
+    };
+    let is_test = secret_id == "ai.oauthtest";
+    let run = LoginRun { provider: &provider, spec: &spec, secret_id, client, secrets: secrets.inner().as_ref(), timeout: LOGIN_TIMEOUT };
+    logins
+        .run(run, |url| {
+            let opened = !is_test && open_system_browser(url);
+            let _ = on_event.send(LoginEvent::Url { url: url.to_string(), opened });
+        })
+        .await
+        .map_err(pe)
+}
+
+#[tauri::command]
+pub async fn ai_login_cancel(logins: State<'_, Arc<LoginRegistry>>, provider: String) -> CmdResult<bool> {
+    Ok(logins.cancel(&provider))
 }
