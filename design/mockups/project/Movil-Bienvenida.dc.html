@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Móvil · bienvenida</title>
+<title>Móvil · bienvenida y recorrido</title>
 <script src="./support.js"></script>
 </head>
 <body>
@@ -21,7 +21,7 @@
   --np-tor:#4A2FB8;--np-tor-soft:#ECE8FB;--np-ai:#993556;--np-ai-bg:#FBEAF0;--np-on-ink:#F6F4EF;
   --np-font-read:'Newsreader',Georgia,serif;--np-font-ui:'IBM Plex Sans',system-ui,sans-serif;--np-font-mono:'IBM Plex Mono',ui-monospace,monospace;
   /* movimiento: duraciones */
-  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;
+  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;--m-dur-intro:2920ms;--m-dur-intro-short:1080ms;--m-dur-intro-reduce:800ms;--m-dur-iris:360ms;--m-dur-packet:1500ms;--m-par-art:.65;--m-par-text:1.25;
   /* movimiento: curvas */
   --m-ease:cubic-bezier(.22,1,.36,1);--m-ease-emph:cubic-bezier(.05,.7,.1,1);--m-ease-exit:cubic-bezier(.3,0,.8,.15);--m-ease-inout:cubic-bezier(.65,0,.35,1);--m-spring:cubic-bezier(.34,1.56,.64,1);
   /* medidas */
@@ -147,103 +147,181 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 .m-lens[aria-pressed=false] .lash{opacity:1;transition-delay:var(--m-dur-fast)}
 @media (prefers-reduced-motion:reduce){.m-lens .lid,.m-lens .pupil,.m-lens .lash{transition:none}}
 /*@m-base-end*/
-
 .ob-s{position:absolute;top:0;bottom:0;width:390px;padding-top:calc(var(--m-top) + 56px);padding-bottom:150px}
 .ob-panel{height:470px;margin:0 0 30px;display:flex;align-items:center;justify-content:center;background:var(--np-soft);border-radius:0 0 40px 40px;margin-top:calc(-1 * (var(--m-top) + 56px));padding-top:calc(var(--m-top) + 56px)}
 .ob-card{background:var(--np-card);border-radius:22px;box-shadow:0 1px 0 var(--np-line),0 14px 36px rgba(23,23,26,.1)}
 .ob-h{font:500 32px/1.1 var(--np-font-read);letter-spacing:-.02em;margin:8px 0 0}
 .ob-p{font:400 16px/1.5 var(--np-font-ui);color:var(--np-muted);margin:10px 0 0}
+/* paralaje: --p = posición de la página respecto al centro (-1 izquierda, 0 en pantalla, 1 derecha), --ap = |p| */
+.px-a,.px-b,.px-c{transition:transform var(--m-dur-slow) var(--m-ease-emph),opacity var(--m-dur-slow) var(--m-ease-emph)}
+.px-a{transform:translateX(calc(var(--p,0) * -136px)) scale(calc(1 - var(--ap,0) * .06));opacity:calc(1 - var(--ap,0) * .35)}
+.px-b{transform:translateX(calc(var(--p,0) * 96px));opacity:calc(1 - var(--ap,0) * .95)}
+.px-c{transform:translateX(calc(var(--p,0) * 60px));opacity:calc(1 - var(--ap,0) * .9)}
+.drag .px-a,.drag .px-b,.drag .px-c{transition:none}
 .ob-a{opacity:0}
 .on .ob-a{animation:m-rise var(--m-dur-slow) var(--m-ease) both}
-.on span.ob-a[style*=m-pop]{animation:m-pop var(--m-dur-slow) var(--m-spring) both}
+.on .ob-pop{animation:m-pop var(--m-dur-slow) var(--m-spring) both}
 .ob-lit{border-radius:3px;padding:0 2px;color:transparent;transition:none}
 .on .ob-lit{animation:ob-lit 600ms var(--m-ease) both}
 @keyframes ob-lit{from{color:#ABA79E;background-color:transparent}to{color:var(--np-ink)}}
 .ob-dot{display:block;width:7px;height:7px;border-radius:50%;background:var(--np-faint);opacity:0}
 .on .ob-dot{animation:m-pulse 700ms ease-in-out 2}
 @keyframes ob-dots{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0;height:0;padding:0}}
-.ob-opt{display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border-radius:20px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line)}
-.ob-opt[aria-pressed=true]{box-shadow:inset 0 0 0 2px var(--np-ink)}
+/* marca que llega desde el splash: la n del logo grande del centro vuela a su sitio */
+.on .ob-fly{animation:ob-fly 760ms var(--m-ease-emph) both;transform-origin:43.6px 45.8px}
+@keyframes ob-fly{from{transform:translate(123.4px,272.2px) scale(5.15)}to{transform:none}}
+/* paso 2: barras de espectro, carril que se dibuja, anillo */
+.ob-bars{display:flex;align-items:flex-end;gap:7px;height:30px;margin-top:14px}
+.ob-bars i{display:block;flex:1;border-radius:3px 3px 0 0;transform-origin:bottom;transform:scaleY(0)}
+.on .ob-bars i{animation:ob-grow 640ms var(--m-ease) both}
+@keyframes ob-grow{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+.ob-lane{transform-origin:left;transform:scaleX(0)}
+.on .ob-lane{animation:m-bar 620ms var(--m-ease-inout) 380ms both}
+/* paso 3: la lente recorre el texto */
+.ob-lens{position:absolute;left:0;top:0;width:46px;height:46px;margin:-23px 0 0 -23px;border-radius:50%;box-shadow:0 0 0 2px var(--np-ink),0 6px 16px rgba(23,23,26,.25);background:rgba(255,255,255,.35);backdrop-filter:blur(.4px);opacity:0;pointer-events:none}
+.on .ob-lens{animation:ob-lens 2000ms var(--m-ease-inout) 380ms both}
+@keyframes ob-lens{0%{opacity:0;transform:translate(34px,66px) scale(.5)}12%{opacity:1;transform:translate(112px,40px) scale(1)}30%{transform:translate(236px,40px)}42%{transform:translate(70px,97px)}58%{transform:translate(208px,97px)}78%{transform:translate(120px,129px)}92%{opacity:1;transform:translate(236px,157px)}100%{opacity:0;transform:translate(262px,166px) scale(.6)}}
+/* paso 4: el agente */
+.ob-cite{animation:none}
+.on .ob-cite{animation:m-pop var(--m-dur-base) var(--m-spring) both}
+/* paso 5: temas */
+.m-chip .tk{display:block;width:0;margin-right:-6px;overflow:hidden;transition:width var(--m-dur-base) var(--m-spring),margin var(--m-dur-base) var(--m-spring)}
+.m-chip[aria-pressed=true] .tk{width:16px;margin-right:0}
+.m-chip[aria-pressed=true] .tk svg{animation:ob-tap 420ms var(--m-spring)}
+@keyframes ob-tap{0%{transform:scale(.92)}60%{transform:scale(1.06)}100%{transform:none}}
+.ob-n0{animation:ob-bump0 360ms var(--m-spring)}.ob-n1{animation:ob-bump1 360ms var(--m-spring)}
+@keyframes ob-bump0{0%{transform:translateY(8px);opacity:0}100%{transform:none;opacity:1}}
+@keyframes ob-bump1{0%{transform:translateY(8px);opacity:0}100%{transform:none;opacity:1}}
+/* paso 6: elección de IA */
+.ob-opt{position:relative;display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border-radius:20px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line);transition:box-shadow var(--m-dur-base) var(--m-ease),transform var(--m-dur-press) var(--m-ease)}
+.ob-opt[aria-pressed=true]{box-shadow:inset 0 0 0 2px var(--np-ink),0 10px 26px rgba(23,23,26,.12)}
+.ob-opt[aria-pressed=true] .ob-ico{animation:ob-sel 460ms var(--m-spring)}
+@keyframes ob-sel{0%{transform:scale(.975)}60%{transform:scale(1.015)}100%{transform:none}}
 .ob-radio{flex:none;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--np-faint);display:flex;align-items:center;justify-content:center}
 .ob-opt[aria-pressed=true] .ob-radio{box-shadow:inset 0 0 0 2px var(--np-ink)}
 .ob-radio-dot{width:12px;height:12px;border-radius:50%;background:var(--np-ink);transform:scale(0);transition:transform var(--m-dur-base) var(--m-spring)}
 .ob-opt[aria-pressed=true] .ob-radio-dot{transform:none}
-
+.ob-ico{flex:none;width:44px;height:44px;border-radius:14px;background:var(--np-soft);display:flex;align-items:center;justify-content:center;color:var(--np-ink);transition:background-color var(--m-dur-base) var(--m-ease),color var(--m-dur-base) var(--m-ease)}
+.ob-opt[aria-pressed=true] .ob-ico{background:var(--np-ink);color:var(--np-on-ink)}
+.ob-ico .mv{transform-box:fill-box;transform-origin:center;transition:transform var(--m-dur-slow) var(--m-spring)}
+.ob-opt[aria-pressed=true] .ob-ico .mv{transform:rotate(14deg) scale(1.08)}
+.ob-more{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--m-dur-base) var(--m-ease)}
+.ob-opt[aria-pressed=true] .ob-more{grid-template-rows:1fr}
+.ob-more>div{overflow:hidden;font:500 12px/1.4 var(--np-font-mono);color:var(--np-ok)}
+/* indicador de pasos */
+.ob-seg{position:relative;flex:none;width:30px;height:4px;border-radius:2px;background:var(--seg-bg,#CFCAC0);overflow:hidden}
+.ob-seg>i{position:absolute;inset:0;border-radius:2px;background:var(--seg-fg,#17171A);transform-origin:left;transition:transform var(--m-dur-slow) var(--m-ease)}
+.ob-cnt0{animation:ob-cnt0 360ms var(--m-ease)}.ob-cnt1{animation:ob-cnt1 360ms var(--m-ease)}
+@keyframes ob-cnt0{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes ob-cnt1{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+/* final: celebración */
+.ob-ring{position:absolute;left:0;top:0;width:72px;height:72px;border-radius:50%;box-shadow:0 0 0 3px #0B6B50;opacity:0;animation:ob-burst 900ms var(--m-ease) 280ms both}
+@keyframes ob-burst{0%{opacity:.7;transform:scale(1)}100%{opacity:0;transform:scale(3)}}
+.ob-conf{position:absolute;left:36px;top:36px;width:9px;height:13px;margin:-6px 0 0 -4px;border-radius:1.5px;opacity:0;animation:ob-conf 1100ms var(--m-ease) var(--d,300ms) both}
+@keyframes ob-conf{0%{opacity:0;transform:translate(0,0) rotate(0) scale(.4)}12%{opacity:1}100%{opacity:0;transform:translate(var(--dx),calc(var(--dy) + 36px)) rotate(var(--r)) scale(1)}}
+@media (prefers-reduced-motion:reduce){.ob-conf,.ob-ring,.ob-lens{display:none}.px-a,.px-b,.px-c{transform:none!important}}
+.m-reduce .ob-conf,.m-reduce .ob-ring,.m-reduce .ob-lens{display:none}.m-reduce .px-a,.m-reduce .px-b,.m-reduce .px-c{transform:none!important}
 </style>
 </helmet>
-<div class="m-app">
+<div class="{{rootCls}}">
 
 <sc-if value="{{inFlow}}" hint-placeholder-val="{{ true }}">
 <div style="position:absolute;inset:0;overflow:hidden;background:{{bg}};transition:background-color var(--m-dur-slow) var(--m-ease)">
-<div style="{{trackStyle}}" onPointerDown="{{pdown}}" onPointerMove="{{pmove}}" onPointerUp="{{pup}}" onPointerCancel="{{pup}}">
+<div class="{{trackCls}}" style="{{trackStyle}}" onPointerDown="{{pdown}}" onPointerMove="{{pmove}}" onPointerUp="{{pup}}" onPointerCancel="{{pup}}">
+
 <div class="ob-s {{s0.cls}}" style="{{s0.style}}"><div style="position:absolute;inset:0;background:#17171A;color:#F6F4EF;padding:calc(var(--m-top) + 72px) 28px 0">
-<div class="ob-a" style="width:88px;height:88px;border-radius:0;overflow:visible;animation-name:m-pop;animation-timing-function:var(--m-spring)"><svg viewBox="0 0 108 108" width="88" height="88" aria-hidden="true"><g fill="none" stroke="#F6F4EF" stroke-linejoin="miter" stroke-linecap="butt"><path d="M33 40.500V71" stroke-width="7.500"/><path d="M33 54C33 45 39 40 46.500 40 54 40 58 44.500 58 51.500V71" stroke-width="6"/><path d="M26.500 71H39.500M51.500 71H64.500" stroke-width="3"/><path d="M26.500 43.500L33 40" stroke-width="3"/></g><polygon points="67.500,66 71.830,61.670 71.830,70.330" fill="#E8705A"/><polygon points="71.830,61.670 74,59.500 76.170,61.670 76.170,70.330 74,72.500 71.830,70.330" fill="#D8D3C8"/><polygon points="76.170,61.670 80.500,66 76.170,70.330" fill="#7C9AF2"/>
-</svg></div>
-<div style="font:500 60px/1.0 var(--np-font-read);letter-spacing:-.035em;margin-top:48px"><div class="ob-a" style="animation-delay:150ms">Lee.</div><div class="ob-a" style="animation-delay:350ms">Contrasta.</div><div class="ob-a" style="animation-delay:550ms;font-style:italic;color:#9DB1F7">Decide tú.</div></div>
-<p class="ob-a" style="font:400 18px/1.5 var(--np-font-read);color:#CBC7BE;margin:26px 0 0;max-width:300px;animation-delay:800ms">Un navegador solo de noticias que las contrasta con todo el espectro y te enseña de dónde sale cada dato.</p>
-<div class="ob-a" style="display:flex;gap:2px;width:96px;margin-top:32px;animation-delay:1000ms"><span style="flex:1;height:3px;border-radius:2px;background:#E8705A"></span><span style="flex:1;height:3px;border-radius:2px;background:#D8D3C8"></span><span style="flex:1;height:3px;border-radius:2px;background:#7C9AF2"></span></div>
+<div class="px-a" style="{{s0.pa}}"><div class="{{flyCls}}" style="width:88px;height:88px;overflow:visible"><svg viewBox="0 0 108 108" width="88" height="88" aria-hidden="true" style="overflow:visible"><g fill="none" stroke="#F6F4EF" stroke-linejoin="miter" stroke-linecap="butt"><path d="M33 40.500V71" stroke-width="7.500"/><path d="M33 54C33 45 39 40 46.500 40 54 40 58 44.500 58 51.500V71" stroke-width="6"/><path d="M26.500 71H39.500M51.500 71H64.500" stroke-width="3"/><path d="M26.500 43.500L33 40" stroke-width="3"/></g><polygon points="67.500,66 71.830,61.670 71.830,70.330" fill="#E8705A"/><polygon points="71.830,61.670 74,59.500 76.170,61.670 76.170,70.330 74,72.500 71.830,70.330" fill="#D8D3C8"/><polygon points="76.170,61.670 80.500,66 76.170,70.330" fill="#7C9AF2"/></svg></div></div>
+<div class="px-b" style="{{s0.pb}}"><div style="font:500 60px/1.0 var(--np-font-read);letter-spacing:-.035em;margin-top:48px"><div class="ob-a" style="animation-delay:{{d0a}}ms">Lee.</div><div class="ob-a" style="animation-delay:{{d0b}}ms">Contrasta.</div><div class="ob-a" style="animation-delay:{{d0c}}ms;font-style:italic;color:#9DB1F7">Decide tú.</div></div>
+<p class="ob-a" style="font:400 18px/1.5 var(--np-font-read);color:#CBC7BE;margin:26px 0 0;max-width:300px;animation-delay:{{d0d}}ms">Un navegador solo de noticias que las contrasta con todo el espectro y te enseña de dónde sale cada dato.</p>
+<div class="ob-a" style="display:flex;gap:2px;width:96px;margin-top:32px;animation-delay:{{d0e}}ms"><span style="flex:1;height:3px;border-radius:2px;background:#E8705A"></span><span style="flex:1;height:3px;border-radius:2px;background:#D8D3C8"></span><span style="flex:1;height:3px;border-radius:2px;background:#7C9AF2"></span></div></div>
 </div></div>
-<div class="ob-s {{s1.cls}}" style="{{s1.style}}"><div class="ob-panel"><div class="ob-card ob-a" style="animation-delay:80ms;width:320px;padding:18px 18px 16px">
+
+<div class="ob-s {{s1.cls}}" style="{{s1.style}}"><div class="px-a" style="{{s1.pa}}"><div class="ob-panel"><div class="ob-card ob-a" style="animation-delay:80ms;width:320px;padding:18px 18px 16px">
 <div class="m-kicker">Una noticia</div>
 <div style="font:500 19px/1.25 var(--np-font-read);margin-top:6px">El Gobierno aprueba una subida del salario mínimo</div>
-<div style="position:relative;margin:34px 6px 8px;height:8px;border-radius:4px;background:linear-gradient(90deg,#C2412F,#E3DFD6 45%,#E3DFD6 55%,#2F5BD3)">
-<span class="ob-a" style="position:absolute;left:7%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #C2412F,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:420ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">DR</span><span class="ob-a" style="position:absolute;left:24%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #C2412F,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:550ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">EP</span><span class="ob-a" style="position:absolute;left:47%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #8D8981,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:680ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">EF</span><span class="ob-a" style="position:absolute;left:58%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #8D8981,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:810ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">AB</span><span class="ob-a" style="position:absolute;left:79%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #2F5BD3,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:940ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">LV</span><span class="ob-a" style="position:absolute;left:93%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #2F5BD3,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:1070ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">CO</span>
+<div class="ob-bars" aria-hidden="true"><i style="height:62%;background:#C2412F;animation-delay:200ms"></i><i style="height:100%;background:#C2412F;animation-delay:260ms"></i><i style="height:48%;background:#B9B4A9;animation-delay:320ms"></i><i style="height:78%;background:#B9B4A9;animation-delay:380ms"></i><i style="height:92%;background:#2F5BD3;animation-delay:440ms"></i><i style="height:40%;background:#2F5BD3;animation-delay:500ms"></i></div>
+<div class="ob-lane" style="position:relative;margin:10px 6px 8px;height:8px;border-radius:4px;background:linear-gradient(90deg,#C2412F,#E3DFD6 45%,#E3DFD6 55%,#2F5BD3)">
+<span class="ob-a ob-pop" style="position:absolute;left:7%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #C2412F,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:700ms">DR</span><span class="ob-a ob-pop" style="position:absolute;left:24%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #C2412F,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:810ms">EP</span><span class="ob-a ob-pop" style="position:absolute;left:47%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #8D8981,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:920ms">EF</span><span class="ob-a ob-pop" style="position:absolute;left:58%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #8D8981,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:1030ms">AB</span><span class="ob-a ob-pop" style="position:absolute;left:79%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #2F5BD3,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:1140ms">LV</span><span class="ob-a ob-pop" style="position:absolute;left:93%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #2F5BD3,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:1250ms">CO</span>
 </div>
 <div style="display:flex;justify-content:space-between;font:400 11px var(--np-font-ui);color:var(--np-muted)"><span>Izquierda</span><span>Centro</span><span>Derecha</span></div>
-<div class="ob-a" style="display:flex;align-items:center;gap:14px;margin-top:16px;padding-top:14px;border-top:1px solid var(--np-line);animation-delay:1300ms"><svg viewBox="0 0 44 44" width="44" height="44" style="transform:rotate(-90deg)" aria-hidden="true"><circle cx="22" cy="22" r="17" fill="none" stroke="var(--np-line2)" stroke-width="5"/><circle cx="22" cy="22" r="17" fill="none" stroke="var(--np-ok)" stroke-width="5" stroke-linecap="round" stroke-dasharray="106.8" style="--len:106.8;--to:27.8;animation:m-ring 900ms var(--m-ease-inout) 1400ms both"/></svg><div><div style="font:500 15px var(--np-font-ui)">Contrastada con 6 medios</div><div style="font:400 12px var(--np-font-ui);color:var(--np-muted)">2 discrepancias señaladas</div></div></div>
-</div></div><div style="padding:0 28px"><div class="m-kicker ob-a" style="animation-delay:120ms">Cómo funciona · 1</div><h2 class="ob-h ob-a" style="animation-delay:200ms">Una noticia, seis medios</h2><p class="ob-p ob-a" style="animation-delay:300ms">Cada hecho se contrasta con coberturas de izquierda a derecha. Ves quién lo cuenta y cómo.</p></div></div>
-<div class="ob-s {{s2.cls}}" style="{{s2.style}}"><div class="ob-panel"><div class="ob-card ob-a" style="animation-delay:80ms;width:320px;padding:20px;font:400 17px/1.7 var(--np-font-read);color:#ABA79E">
-La subida lo sitúa en <span class="ob-lit" style="background:#F7DFB0;animation-delay:500ms">el nivel más alto de Europa</span><sup style="font:600 9px var(--np-font-ui);color:#8A5300;margin-left:3px;letter-spacing:.04em" class="ob-a"><span style="animation-delay:900ms">ENGAÑOSO</span></sup>, y <span class="ob-lit" style="background:#F6CFC9;animation-delay:1000ms">la patronal, fiel a su costumbre,</span> la rechaza. Desde 2018 ha crecido un 61 % <span class="ob-lit" style="background:#CFE9DE;animation-delay:1500ms">sin que se haya destruido empleo</span><sup style="font:600 9px var(--np-font-ui);color:#0B6B50;margin-left:3px;letter-spacing:.04em">EN DISPUTA</sup>.
-</div></div><div style="padding:0 28px"><div class="m-kicker ob-a" style="animation-delay:120ms">Cómo funciona · 2</div><h2 class="ob-h ob-a" style="animation-delay:200ms">Lo que importa, encendido</h2><p class="ob-p ob-a" style="animation-delay:300ms">La lente apaga el texto neutro y marca cada afirmación con su veredicto.</p></div></div>
-<div class="ob-s {{s3.cls}}" style="{{s3.style}}"><div class="ob-panel"><div class="ob-card ob-a" style="animation-delay:80ms;width:320px;padding:18px;display:flex;flex-direction:column;gap:10px">
+<div class="ob-a" style="display:flex;align-items:center;gap:14px;margin-top:14px;padding-top:12px;border-top:1px solid var(--np-line);animation-delay:1350ms"><svg viewBox="0 0 44 44" width="44" height="44" style="transform:rotate(-90deg)" aria-hidden="true"><circle cx="22" cy="22" r="17" fill="none" stroke="var(--np-line2)" stroke-width="5"/><circle cx="22" cy="22" r="17" fill="none" stroke="var(--np-ok)" stroke-width="5" stroke-linecap="round" stroke-dasharray="106.8" style="--len:106.8;--to:27.8;stroke-dashoffset:106.8;animation:m-ring 900ms var(--m-ease-inout) 1450ms both"/></svg><div><div style="font:500 15px var(--np-font-ui)">Contrastada con 6 medios</div><div style="font:400 12px var(--np-font-ui);color:var(--np-muted)">2 discrepancias señaladas</div></div></div>
+</div></div></div><div class="px-b" style="padding:0 28px;{{s1.pbs}}"><div class="m-kicker ob-a" style="animation-delay:120ms">Cómo funciona · 1</div><h2 class="ob-h ob-a" style="animation-delay:200ms">Una noticia, seis medios</h2><p class="ob-p ob-a" style="animation-delay:300ms">Cada hecho se contrasta con coberturas de izquierda a derecha. Ves quién lo cuenta y cómo.</p></div></div>
+
+<div class="ob-s {{s2.cls}}" style="{{s2.style}}"><div class="px-a" style="{{s2.pa}}"><div class="ob-panel"><div class="ob-card ob-a" style="position:relative;animation-delay:80ms;width:320px;padding:20px;font:400 17px/1.7 var(--np-font-read);color:#ABA79E">
+La subida lo sitúa en <span class="ob-lit" style="background:#F7DFB0;animation-delay:820ms">el nivel más alto de Europa</span><sup class="ob-a" style="font:600 9px var(--np-font-ui);color:#8A5300;margin-left:3px;letter-spacing:.04em;animation-delay:1250ms">ENGAÑOSO</sup>, y <span class="ob-lit" style="background:#F6CFC9;animation-delay:1250ms">la patronal, fiel a su costumbre,</span> la rechaza. Desde 2018 ha crecido un 61 % <span class="ob-lit" style="background:#CFE9DE;animation-delay:1700ms">sin que se haya destruido empleo</span><sup class="ob-a" style="font:600 9px var(--np-font-ui);color:#0B6B50;margin-left:3px;letter-spacing:.04em;animation-delay:2100ms">EN DISPUTA</sup>.
+<span class="ob-lens" aria-hidden="true"><svg viewBox="0 0 46 46" width="46" height="46"><path d="M10 23c3-5 7-7 13-7s10 2 13 7c-3 5-7 7-13 7s-10-2-13-7z" fill="none" stroke="#17171A" stroke-width="2" stroke-linejoin="round"/><circle cx="23" cy="23" r="3.5" fill="#17171A"/></svg></span>
+</div></div></div><div class="px-b" style="padding:0 28px;{{s2.pbs}}"><div class="m-kicker ob-a" style="animation-delay:120ms">Cómo funciona · 2</div><h2 class="ob-h ob-a" style="animation-delay:200ms">Lo que importa, encendido</h2><p class="ob-p ob-a" style="animation-delay:300ms">La lente apaga el texto neutro y marca cada afirmación con su veredicto.</p></div></div>
+
+<div class="ob-s {{s3.cls}}" style="{{s3.style}}"><div class="px-a" style="{{s3.pa}}"><div class="ob-panel"><div class="ob-card ob-a" style="animation-delay:80ms;width:320px;padding:18px;display:flex;flex-direction:column;gap:10px">
 <div style="font:italic 400 15px/1.4 var(--np-font-read);color:var(--np-ink2);box-shadow:inset 2px 0 0 var(--np-accent);padding-left:10px">«sin que se haya destruido empleo»</div>
-<div class="ob-a" style="align-self:flex-end;background:var(--np-ink);color:var(--np-on-ink);padding:10px 14px;border-radius:16px 16px 4px 16px;font:400 14px var(--np-font-ui);animation-delay:500ms">¿Es cierto?</div>
+<div class="ob-a ob-pop" style="align-self:flex-end;background:var(--np-ink);color:var(--np-on-ink);padding:10px 14px;border-radius:16px 16px 4px 16px;font:400 14px var(--np-font-ui);animation-delay:500ms;transform-origin:right bottom">¿Es cierto?</div>
 <div style="height:0;position:relative"><div class="ob-a" style="position:absolute;top:4px;display:flex;gap:4px;animation:ob-dots 1300ms 900ms both"><i class="ob-dot" style="animation-delay:900ms"></i><i class="ob-dot" style="animation-delay:1040ms"></i><i class="ob-dot" style="animation-delay:1180ms"></i></div></div>
-<div class="ob-a" style="font:400 16px/1.5 var(--np-font-read);animation-delay:2000ms">Está en disputa: la AIReF estimó un efecto negativo moderado <span style="font:500 11px var(--np-font-mono);color:var(--np-accent);background:var(--np-accent-soft);padding:2px 6px;border-radius:5px">1</span> <span style="font:500 11px var(--np-font-mono);color:var(--np-accent);background:var(--np-accent-soft);padding:2px 6px;border-radius:5px">2</span></div>
-</div></div><div style="padding:0 28px"><div class="m-kicker ob-a" style="animation-delay:120ms">Cómo funciona · 3</div><h2 class="ob-h ob-a" style="animation-delay:200ms">Pregunta por cualquier frase</h2><p class="ob-p ob-a" style="animation-delay:300ms">Mantén pulsado un trozo del texto y pregúntale al agente. Responde con fuentes.</p></div></div>
-<div class="ob-s {{s4.cls}}" style="{{s4.style}}"><div style="padding:calc(var(--m-top) + 84px) 24px 0"><div class="m-kicker ob-a" style="animation-delay:100ms">Tu briefing</div><h2 class="ob-h ob-a" style="animation-delay:180ms;margin-top:8px">¿Qué te interesa?</h2><p class="ob-p ob-a" style="animation-delay:260ms">Elige los temas de tu edición diaria. No sale de tu móvil.</p><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px"><sc-for list="{{topics}}" as="t" hint-placeholder-count="10"><button class="m-chip ob-a" style="{{t.style}}" aria-pressed="{{t.on}}" onClick="{{t.toggle}}">{{t.name}}</button></sc-for></div></div></div>
-<div class="ob-s {{s5.cls}}" style="{{s5.style}}"><div style="padding:calc(var(--m-top) + 84px) 24px 0"><div class="m-kicker ob-a" style="animation-delay:100ms">Tu IA</div><h2 class="ob-h ob-a" style="animation-delay:180ms;margin-top:8px">¿Cómo la usamos?</h2><p class="ob-p ob-a" style="animation-delay:260ms">Puedes cambiarlo en Ajustes cuando quieras.</p><div style="display:flex;flex-direction:column;gap:10px;margin-top:20px"><sc-for list="{{aiOpts}}" as="o" hint-placeholder-count="3"><button class="ob-opt ob-a" style="{{o.style}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}"><span class="ob-radio"><span class="ob-radio-dot"></span></span><span style="flex:1"><b style="display:block;font:600 16px var(--np-font-ui)">{{o.name}}</b><span style="display:block;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted);margin-top:2px">{{o.desc}}</span></span></button></sc-for></div></div></div>
+<div class="ob-a" style="font:400 16px/1.5 var(--np-font-read);animation-delay:2000ms">Está en disputa: la AIReF estimó un efecto negativo moderado <span class="ob-cite" style="display:inline-block;font:500 11px var(--np-font-mono);color:var(--np-accent);background:var(--np-accent-soft);padding:2px 6px;border-radius:5px;animation-delay:2500ms">1</span> <span class="ob-cite" style="display:inline-block;font:500 11px var(--np-font-mono);color:var(--np-accent);background:var(--np-accent-soft);padding:2px 6px;border-radius:5px;animation-delay:2620ms">2</span></div>
+</div></div></div><div class="px-b" style="padding:0 28px;{{s3.pbs}}"><div class="m-kicker ob-a" style="animation-delay:120ms">Cómo funciona · 3</div><h2 class="ob-h ob-a" style="animation-delay:200ms">Pregunta por cualquier frase</h2><p class="ob-p ob-a" style="animation-delay:300ms">Mantén pulsado un trozo del texto y pregúntale al agente. Responde con fuentes.</p></div></div>
+
+<div class="ob-s {{s4.cls}}" style="{{s4.style}}"><div class="px-b" style="{{s4.pb}}"><div style="padding:calc(var(--m-top) + 84px) 24px 0"><div class="m-kicker ob-a" style="animation-delay:100ms">Tu briefing</div><h2 class="ob-h ob-a" style="animation-delay:180ms;margin-top:8px">¿Qué te interesa?</h2><p class="ob-p ob-a" style="animation-delay:260ms">Elige los temas de tu edición diaria. No sale de tu móvil.</p><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px"><sc-for list="{{topics}}" as="t" hint-placeholder-count="10"><button class="m-chip ob-a ob-pop" style="{{t.style}}" aria-pressed="{{t.on}}" onClick="{{t.toggle}}"><span class="tk"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg></span>{{t.name}}</button></sc-for></div><div class="{{cntCls}}" style="margin-top:18px;font:500 13px var(--np-font-mono);color:var(--np-muted)">{{nTopicsLabel}}</div></div></div></div>
+
+<div class="ob-s {{s5.cls}}" style="{{s5.style}}"><div class="px-b" style="{{s5.pb}}"><div style="padding:calc(var(--m-top) + 84px) 24px 0"><div class="m-kicker ob-a" style="animation-delay:100ms">Tu IA</div><h2 class="ob-h ob-a" style="animation-delay:180ms;margin-top:8px">¿Cómo la usamos?</h2><p class="ob-p ob-a" style="animation-delay:260ms">Puedes cambiarlo en Ajustes cuando quieras.</p><div style="display:flex;flex-direction:column;gap:10px;margin-top:20px"><sc-for list="{{aiOpts}}" as="o" hint-placeholder-count="3"><button class="ob-opt ob-a" style="{{o.style}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}"><span class="ob-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g class="mv"><path d="{{o.icon}}"/></g></svg></span><span style="flex:1;min-width:0"><b style="display:block;font:600 16px var(--np-font-ui)">{{o.name}}</b><span style="display:block;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted);margin-top:2px">{{o.desc}}</span><span class="ob-more"><div><span style="display:block;padding-top:6px">{{o.more}}</span></div></span></span><span class="ob-radio"><span class="ob-radio-dot"></span></span></button></sc-for></div></div></div></div>
 </div>
 <sc-if value="{{showSkip}}" hint-placeholder-val="{{ true }}"><button onClick="{{skip}}" style="position:absolute;right:8px;top:calc(var(--m-top) + 4px);height:48px;padding:0 16px;border-radius:24px;font:500 15px var(--np-font-ui);color:{{fg2}};z-index:4">Saltar</button></sc-if>
-<div style="position:absolute;left:0;right:0;bottom:0;padding:0 20px calc(var(--m-bottom) + 8px);display:flex;flex-direction:column;gap:18px;z-index:4">
-<div role="progressbar" aria-label="Paso {{step}} de 6" aria-valuemin="1" aria-valuemax="6" aria-valuenow="{{step}}" style="display:flex;justify-content:center;gap:6px"><sc-for list="{{dots}}" as="d" hint-placeholder-count="6"><span style="{{d}}"></span></sc-for></div>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:0 20px calc(var(--m-bottom) + 8px);display:flex;flex-direction:column;gap:16px;z-index:4">
+<div role="progressbar" aria-label="Paso {{step}} de 6" aria-valuemin="1" aria-valuemax="6" aria-valuenow="{{step}}" style="display:flex;align-items:center;justify-content:center;gap:5px"><sc-for list="{{segs}}" as="d" hint-placeholder-count="6"><span class="ob-seg" style="{{d.bg}}"><i style="{{d.fg}}"></i></span></sc-for><span class="{{cntCls2}}" style="margin-left:10px;font:500 12px var(--np-font-mono);color:{{fg2}};min-width:34px">{{step}} / 6</span></div>
 <div style="display:flex;gap:10px"><sc-if value="{{showBack}}" hint-placeholder-val="{{ false }}"><button class="m-btn sec m-pop" onClick="{{back}}" aria-label="Atrás" style="width:56px;padding:0;flex:none"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></sc-if><button class="{{ctaCls}}" onClick="{{next}}" style="{{ctaStyle}}">{{ctaLabel}}</button></div>
 </div>
 </div>
 </sc-if>
+
 <sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
-<div style="position:absolute;inset:0;padding:calc(var(--m-top) + 120px) 28px calc(var(--m-bottom) + 8px);display:flex;flex-direction:column;background:var(--np-paper)">
-<svg class="m-pop" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true"><circle cx="36" cy="36" r="34" fill="#E3F2EC"/><path d="M22 37l10 10 18-21" fill="none" stroke="#0B6B50" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 480ms var(--m-ease-inout) 300ms both"/></svg>
+<div style="position:absolute;inset:0;padding:calc(var(--m-top) + 120px) 28px calc(var(--m-bottom) + 8px);display:flex;flex-direction:column;background:var(--np-paper);overflow:hidden">
+<div style="position:relative;width:72px;height:72px">
+<span class="ob-ring"></span>
+<sc-for list="{{conf}}" as="c" hint-placeholder-count="16"><i class="ob-conf" style="{{c}}"></i></sc-for>
+<svg class="m-pop" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true"><circle cx="36" cy="36" r="34" fill="#E3F2EC"/><path d="M22 37l10 10 18-21" fill="none" stroke="#0B6B50" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 480ms var(--m-ease-inout) 300ms both"/></svg></div>
 <h1 class="m-rise" style="font:500 60px/1 var(--np-font-read);letter-spacing:-.035em;margin:28px 0 0;animation-delay:350ms">Listo.</h1>
 <p class="m-rise" style="font:400 19px/1.5 var(--np-font-read);color:var(--np-ink2);margin:12px 0 0;animation-delay:450ms">Tu edición está montada con {{nTopics}} temas y la IA {{aiName}}. Comparte cualquier noticia con newpaper para analizarla.</p>
-<a class="m-btn m-tap m-rise" href="Movil-Inicio.dc.html" style="margin-top:auto;animation-delay:600ms">Leer el briefing de hoy</a>
+<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:20px"><sc-for list="{{doneTopics}}" as="t" hint-placeholder-count="3"><span class="m-pop" style="{{t.style}}">{{t.name}}</span></sc-for></div>
+<a class="m-btn m-tap m-rise" href="Movil-Inicio.dc.html" style="margin-top:auto;animation-delay:900ms">Leer el briefing de hoy</a>
 </div>
 </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  constructor(p) { super(p); const q = new URLSearchParams(location.search).get('s'); this.state = { i: q === 'done' ? 5 : Number(q) || 0, phase: q === 'done' ? 'done' : 'flow', dx: 0, drag: false, topics: { Economía: true, Política: true, Europa: true }, ai: 'local' }; }
+  constructor(p) {
+    super(p);
+    const qs = new URLSearchParams(location.search), q = qs.get('s');
+    this.state = { i: q === 'done' ? 5 : Number(q) || 0, phase: q === 'done' ? 'done' : 'flow', dx: 0, drag: false, intro: !q || q === '0', rm: qs.get('rm') === '1', cnt: 0, ncnt: 0, topics: { Economía: true, Política: true, Europa: true }, ai: 'local' };
+  }
   renderVals() {
     const s = this.state, N = 6, W = 390;
     const T = ['Economía', 'Política', 'Europa', 'Internacional', 'Vivienda', 'Clima', 'Tecnología', 'Ciencia', 'Sanidad', 'Educación'];
-    const go = (n) => this.setState({ i: Math.max(0, Math.min(N - 1, n)), dx: 0, drag: false });
+    const go = (n) => this.setState({ i: Math.max(0, Math.min(N - 1, n)), dx: 0, drag: false, intro: false, cnt: s.cnt + 1 });
     const finish = () => this.setState({ phase: 'done' });
     const dark = s.i === 0;
     const pdown = (e) => { this.x0 = e.clientX; this.cap = false; this.setState({ drag: true, dx: 0 }); };
     const pmove = (e) => { if (!s.drag) return; const dx = e.clientX - this.x0; if (!this.cap && Math.abs(dx) > 8) { this.cap = true; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {} } if (this.cap) { const lim = (s.i === 0 && dx > 0) || (s.i === N - 1 && dx < 0) ? dx / 4 : dx; this.setState({ dx: lim }); } };
     const pup = () => { if (!s.drag) return; const dx = s.dx; this.cap = false; if (dx < -60) go(s.i + 1); else if (dx > 60) go(s.i - 1); else this.setState({ dx: 0, drag: false }); };
-    const sl = (k) => ({ cls: s.i === k ? 'on' : '', style: 'left:' + k * W + 'px' });
-    const o = { inFlow: s.phase === 'flow', isDone: s.phase === 'done', bg: dark ? '#17171A' : '#F6F4EF',
+    const pos = s.i - s.dx / W;
+    const sl = (k) => { const p = k - pos, ap = Math.min(1.2, Math.abs(p)); return { cls: s.i === k ? 'on' : '', style: 'left:' + k * W + 'px', pa: '--p:' + p.toFixed(3) + ';--ap:' + ap.toFixed(3), pb: '--p:' + p.toFixed(3) + ';--ap:' + ap.toFixed(3), pbs: '--p:' + p.toFixed(3) + ';--ap:' + ap.toFixed(3) }; };
+    const AI = [['local', 'En mi móvil o mi PC', 'Modelos locales: gratis y privado. Puede usar el Ollama de tu ordenador.', 'M4 6h16v10H4zM9 20h6M12 16v4', 'Gratis · nada sale de tu red'], ['equil', 'Equilibrado', 'Nube para verificar bien. Necesitas una clave de API.', 'M12 4v16M5 8h14M7 8l-3 7h6zM17 8l-3 7h6z', 'Unos 3 céntimos por noticia'], ['later', 'Lo decido luego', 'Empiezas con el análisis rápido.', 'M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18z', 'Análisis rápido, sin IA externa']];
+    const nT = Object.values(s.topics).filter(Boolean).length;
+    const dl = s.intro ? 380 : 0;
+    const o = { rootCls: 'm-app' + (s.rm ? ' m-reduce' : '') , inFlow: s.phase === 'flow', isDone: s.phase === 'done', bg: dark ? '#17171A' : '#F6F4EF',
+      trackCls: s.drag ? 'drag' : '', flyCls: 'ob-fly',
+      d0a: 150 + dl, d0b: 350 + dl, d0c: 550 + dl, d0d: 800 + dl, d0e: 1000 + dl,
       trackStyle: 'position:absolute;left:0;top:0;bottom:0;width:' + N * W + 'px;touch-action:pan-y;user-select:none;transform:translateX(' + (-s.i * W + s.dx) + 'px);transition:' + (s.drag ? 'none' : 'transform var(--m-dur-slow) var(--m-ease-emph)'),
       pdown, pmove, pup, showSkip: s.i < 4, skip: () => go(4), fg2: dark ? '#CBC7BE' : '#5E5B55',
-      step: s.i + 1, dots: Array.from({ length: N }, (_, k) => 'display:block;height:6px;border-radius:3px;transition:width var(--m-dur-base) var(--m-ease),background-color var(--m-dur-base);width:' + (k === s.i ? 22 : 6) + 'px;background:' + (k === s.i ? (dark ? '#F6F4EF' : '#17171A') : (dark ? '#4A4A50' : '#CFCAC0'))),
+      step: s.i + 1, cntCls: 'ob-n' + (s.ncnt % 2), cntCls2: 'ob-cnt' + (s.cnt % 2),
+      segs: Array.from({ length: N }, (_, k) => ({ bg: '--seg-bg:' + (dark ? '#4A4A50' : '#CFCAC0') + ';--seg-fg:' + (dark ? '#F6F4EF' : '#17171A') + (k === s.i ? '' : ''), fg: 'transform:scaleX(' + (k <= s.i ? 1 : 0) + ');opacity:' + (k === s.i ? 1 : 0.55) + ';transition-delay:' + (k <= s.i ? Math.max(0, k - 0) * 0 : 0) + 'ms' })),
       showBack: s.i > 0, back: () => go(s.i - 1), next: () => (s.i === N - 1 ? finish() : go(s.i + 1)),
       ctaLabel: s.i === 0 ? 'Empezar' : s.i === N - 1 ? 'Empezar a leer' : 'Siguiente',
-      ctaCls: dark ? 'm-btn paper' : 'm-btn', ctaStyle: 'flex:1;' + '',
-      topics: T.map((t) => { const on = !!s.topics[t]; return { name: t, on: on ? 'true' : 'false', style: 'height:48px;padding:0 20px;font-size:16px;animation-delay:' + (300 + T.indexOf(t) * 40) + 'ms', toggle: () => this.setState({ topics: { ...s.topics, [t]: !on } }) }; }),
-      aiOpts: [['local', 'En mi móvil o mi PC', 'Modelos locales: gratis y privado. Puede usar el Ollama de tu ordenador.'], ['equil', 'Equilibrado', 'Nube para verificar bien. Necesitas una clave de API.'], ['later', 'Lo decido luego', 'Empiezas con el análisis rápido.']].map((x, k) => ({ name: x[1], desc: x[2], on: s.ai === x[0] ? 'true' : 'false', style: 'animation-delay:' + (300 + k * 90) + 'ms', pick: () => this.setState({ ai: x[0] }) })),
-      nTopics: Object.values(s.topics).filter(Boolean).length, aiName: { local: 'local', equil: 'equilibrada', later: 'rápida' }[s.ai] };
+      ctaCls: dark ? 'm-btn paper' : 'm-btn', ctaStyle: 'flex:1;',
+      topics: T.map((t, k) => { const on = !!s.topics[t]; return { name: t, on: on ? 'true' : 'false', style: 'height:48px;padding:0 20px;font-size:16px;animation-delay:' + (300 + k * 45) + 'ms', toggle: () => this.setState({ topics: { ...s.topics, [t]: !on }, ncnt: s.ncnt + 1 }) }; }),
+      nTopicsLabel: nT + (nT === 1 ? ' tema elegido' : ' temas elegidos'),
+      aiOpts: AI.map((x, k) => ({ name: x[1], desc: x[2], icon: x[3], more: x[4], on: s.ai === x[0] ? 'true' : 'false', style: 'animation-delay:' + (300 + k * 90) + 'ms', pick: () => this.setState({ ai: x[0] }) })),
+      nTopics: nT, aiName: { local: 'local', equil: 'equilibrada', later: 'rápida' }[s.ai],
+      doneTopics: T.filter((t) => s.topics[t]).map((t, k) => ({ name: t, style: 'height:32px;padding:0 14px;border-radius:16px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line3);font:500 13px/32px var(--np-font-ui);animation-delay:' + (620 + k * 70) + 'ms' })),
+      conf: Array.from({ length: 18 }, (_, k) => { const a = (k / 18) * Math.PI * 2 + (k % 3) * 0.12, d = 90 + (k % 4) * 26; return '--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d) + 'px;--r:' + (k * 83 % 360) + 'deg;--d:' + (330 + (k % 5) * 40) + 'ms;background:' + ['#E8705A', '#7C9AF2', '#B9B4A9', '#0B6B50', '#17171A'][k % 5]; }) };
     for (let k = 0; k < N; k++) o['s' + k] = sl(k);
     return o;
   }

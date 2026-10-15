@@ -6,7 +6,7 @@ Copia completa, versionada en el repo, de la pizarra "newpaper — mockups UI" (
 
 ```
 design/mockups/
-  project/            39 artboards (*.dc.html) + canvas.json (índice: posición, tamaño, título, notas, orden)
+  project/            42 artboards (*.dc.html) + canvas.json (índice: posición, tamaño, título, notas, orden)
   assets/             14 SVG subidos a la pizarra (<id>.svg) + manifest.json (id, sha256, qué artboards los usan)
   runtime/support.js  runtime x-dc (el `./support.js` que cargan los .dc.html; viene de artifact-type/dc-runtime.js)
   reference/          formato de los .dc.html (format.md) y las instrucciones del tipo Design (design-type-SKILL.md)
@@ -48,4 +48,6 @@ El contenido de `reference/` y `runtime/support.js` viene del tipo de Artifact *
 
 ## Móvil v2 (rediseño Android)
 
-Spec y checklist de implementación: `MOVIL-DISENO.md`. Iconos de la app: `assets/newpaper-icon-*.svg` y `icons/android/`. Base compartida de los artboards `Movil-*`: `tools/motion-base.css` (se copia a cada artboard con `node design/mockups/tools/inject-base.mjs`; no editar la copia a mano).
+Spec y checklist de implementación: `MOVIL-DISENO.md`. Iconos de la app: `assets/newpaper-icon-*.svg` y `icons/android/`. Base compartida de los artboards `Movil-*`: `tools/motion-base.css` (se copia a cada artboard con `node design/mockups/tools/inject-base.mjs`; no editar la copia a mano). La intro de arranque (M16, M16b) usa además `tools/intro-engine.js`, que el mismo script copia entre los marcadores `@intro-engine`.
+
+Lote v3 (arranque animado M16/M16b, bienvenida y emparejado animados M0/M11, asistente de proveedores M15, IA M20, Conexión/Tor M21): ver `MOVIL-DISENO.md` y los estados `?s=` listados allí.

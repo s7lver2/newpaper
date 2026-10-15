@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Móvil · IA y proveedores</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&amp;display=swap">
+<style>
+/*@m-base*/
+/* newpaper móvil · base compartida de los artboards Movil-*.dc.html.
+   FUENTE ÚNICA: este fichero. Se copia entre los marcadores @m-base de cada artboard con
+   `node design/mockups/tools/inject-base.mjs` (no editar la copia a mano). */
+:root{
+  --np-paper:#F6F4EF;--np-chrome:#E7E3DA;--np-panel:#FBFAF7;--np-card:#FFFFFF;--np-ink:#17171A;--np-ink2:#3D3B37;--np-muted:#5E5B55;--np-faint:#8D8981;
+  --np-line:#E2DED5;--np-line2:#EFECE6;--np-line3:#D9D5CC;--np-soft:#EFECE5;--np-switch-off:#CFCAC0;--np-accent:#2340B8;--np-accent-soft:#E8ECFA;--np-accent-sel:#DCE3FA;
+  --np-ok:#0B6B50;--np-ok-bg:#E3F2EC;--np-warn:#8A5300;--np-warn-bg:#FBF0DC;--np-bad:#A3271B;--np-bad-bg:#FBE7E4;--np-left:#C2412F;--np-center:#B9B4A9;--np-right:#2F5BD3;
+  --np-tor:#4A2FB8;--np-tor-soft:#ECE8FB;--np-ai:#993556;--np-ai-bg:#FBEAF0;--np-on-ink:#F6F4EF;
+  --np-font-read:'Newsreader',Georgia,serif;--np-font-ui:'IBM Plex Sans',system-ui,sans-serif;--np-font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  /* movimiento: duraciones */
+  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;--m-dur-intro:2920ms;--m-dur-intro-short:1080ms;--m-dur-intro-reduce:800ms;--m-dur-iris:360ms;--m-dur-packet:1500ms;--m-par-art:.65;--m-par-text:1.25;
+  /* movimiento: curvas */
+  --m-ease:cubic-bezier(.22,1,.36,1);--m-ease-emph:cubic-bezier(.05,.7,.1,1);--m-ease-exit:cubic-bezier(.3,0,.8,.15);--m-ease-inout:cubic-bezier(.65,0,.35,1);--m-spring:cubic-bezier(.34,1.56,.64,1);
+  /* medidas */
+  --m-top:32px;--m-bottom:20px;--m-hit:48px;--m-gutter:20px;--m-appbar:56px;--m-tabbar:64px;--m-r-card:20px;--m-r-ctl:16px;
+}
+body{margin:0}
+.m-app{width:390px;height:844px;position:relative;overflow:hidden;background:var(--np-paper);color:var(--np-ink);font:400 15px/1.45 var(--np-font-ui);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.m-app,.m-app *{box-sizing:border-box}
+:where(.m-app) a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+:where(.m-app) button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;margin:0;-webkit-tap-highlight-color:transparent;transition:transform var(--m-dur-press) var(--m-ease),background-color var(--m-dur-fast) var(--m-ease),color var(--m-dur-fast) var(--m-ease),border-color var(--m-dur-fast) var(--m-ease),opacity var(--m-dur-fast) var(--m-ease)}
+.m-app button:active:not(:disabled),.m-app a.m-tap:active{transform:scale(.97)}
+.m-app a.m-tap{transition:transform var(--m-dur-press) var(--m-ease),background-color var(--m-dur-fast) var(--m-ease)}
+.m-app :focus-visible{outline:2px solid var(--np-accent);outline-offset:2px}
+:where(.m-app) input{font:inherit;color:inherit}
+:where(.m-app) svg{flex:none}
+.m-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none}
+.m-scroll::-webkit-scrollbar{display:none}
+.m-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* barras */
+.m-appbar{flex:none;display:flex;align-items:center;gap:4px;height:calc(var(--m-appbar) + var(--m-top));padding:var(--m-top) 8px 0}
+.m-back{flex:none;width:var(--m-hit);height:var(--m-hit);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--np-ink)}
+.m-back:active{background:var(--np-soft)}
+.m-bar-title{flex:1;min-width:0;font:500 21px/1.15 var(--np-font-read);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-bar-sub{display:block;font:400 12px/1.3 var(--np-font-ui);color:var(--np-muted);letter-spacing:0}
+.m-bar-act{flex:none;min-width:var(--m-hit);height:var(--m-hit);border-radius:24px;display:flex;align-items:center;justify-content:center;padding:0 12px;font-weight:500;color:var(--np-accent)}
+.m-large{padding:calc(var(--m-top) + 20px) var(--m-gutter) 4px;font:500 36px/1.04 var(--np-font-read);letter-spacing:-.025em}
+.m-kicker{font:600 11px/1.4 var(--np-font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--np-muted)}
+.m-sec{margin:26px var(--m-gutter) 8px;font:600 12px/1.3 var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);display:flex;justify-content:space-between;align-items:baseline}
+.m-sec small{font:400 12px var(--np-font-ui);letter-spacing:0;text-transform:none;color:var(--np-faint)}
+/* grupos y filas */
+.m-group{margin:0 16px;background:var(--np-card);border:1px solid var(--np-line2);border-radius:var(--m-r-card);overflow:hidden}
+.m-row{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:60px;padding:10px 16px;text-align:left;background:none}
+.m-row+.m-row::before,.m-row-wrap+.m-row-wrap::before{content:'';position:absolute;left:66px;right:0;top:0;height:1px;background:var(--np-line2)}
+.m-row-wrap{position:relative}
+button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!important}
+.m-ico{flex:none;width:36px;height:36px;border-radius:11px;background:var(--np-soft);color:var(--np-ink);display:flex;align-items:center;justify-content:center}
+.m-ico svg{width:20px;height:20px}
+.m-ico.ok{background:var(--np-ok-bg);color:var(--np-ok)}.m-ico.acc{background:var(--np-accent-soft);color:var(--np-accent)}.m-ico.warn{background:var(--np-warn-bg);color:var(--np-warn)}.m-ico.bad{background:var(--np-bad-bg);color:var(--np-bad)}.m-ico.tor{background:var(--np-tor-soft);color:var(--np-tor)}.m-ico.ai{background:var(--np-ai-bg);color:var(--np-ai)}.m-ico.ink{background:var(--np-ink);color:var(--np-on-ink)}
+.m-rt{flex:1;min-width:0}
+.m-rt>b{display:block;font:500 16px/1.3 var(--np-font-ui)}
+.m-rt>span{display:block;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted);margin-top:1px}
+.m-val{flex:none;font:400 14px var(--np-font-ui);color:var(--np-muted);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-chev{flex:none;color:var(--np-faint)}
+.m-note{margin:8px 20px 0;font:400 12.5px/1.5 var(--np-font-ui);color:var(--np-muted)}
+/* interruptor */
+.m-switch{position:relative;flex:none;width:52px;height:32px;border-radius:16px;background:var(--np-switch-off);transition:background-color var(--m-dur-base) var(--m-ease)!important}
+.m-switch::before{content:'';position:absolute;left:4px;top:4px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(23,23,26,.3);transition:transform var(--m-dur-base) var(--m-spring),width var(--m-dur-fast) var(--m-ease)}
+.m-switch::after{content:'';position:absolute;inset:-8px -4px}
+.m-switch[aria-checked=true]{background:var(--np-ink)}
+.m-switch[aria-checked=true]::before{transform:translateX(20px)}
+.m-switch:active::before{width:28px}
+.m-switch[aria-checked=true]:active::before{transform:translateX(16px)}
+/* botones y chips */
+.m-btn{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;padding:0 24px;border-radius:var(--m-r-ctl);background:var(--np-ink);color:var(--np-on-ink)!important;font:600 16px var(--np-font-ui)}
+.m-btn.sec{background:transparent;color:var(--np-ink)!important;box-shadow:inset 0 0 0 1.5px var(--np-line3)}
+.m-btn.soft{background:var(--np-soft);color:var(--np-ink)!important}
+.m-btn.acc{background:var(--np-accent)}
+.m-btn.danger{background:var(--np-bad-bg);color:var(--np-bad)!important}
+.m-btn.sm{height:48px;font-size:15px;border-radius:14px}
+.m-chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:20px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line3);font:500 14px var(--np-font-ui);position:relative}
+.m-chip::after{content:'';position:absolute;inset:-4px 0}
+.m-chip[aria-pressed=true]{background:var(--np-ink);color:var(--np-on-ink);box-shadow:none}
+.m-seg{display:flex;padding:4px;border-radius:18px;background:var(--np-chrome);gap:2px}
+.m-seg>button{flex:1;height:44px;border-radius:14px;font:500 14px var(--np-font-ui);color:var(--np-muted)}
+.m-seg>button[aria-selected=true],.m-seg>button[aria-pressed=true]{background:var(--np-card);color:var(--np-ink);box-shadow:0 1px 3px rgba(23,23,26,.14)}
+.m-card{background:var(--np-card);border:1px solid var(--np-line2);border-radius:var(--m-r-card)}
+.m-leanbar{display:flex;gap:1px;height:4px;border-radius:2px;overflow:hidden}
+.m-leanbar i{display:block}.m-leanbar i:nth-child(1){background:var(--np-left)}.m-leanbar i:nth-child(2){background:var(--np-center)}.m-leanbar i:nth-child(3){background:var(--np-right)}
+/* barra de pestañas */
+.m-tabbar{flex:none;position:relative;display:grid;grid-template-columns:repeat(4,1fr);height:calc(var(--m-tabbar) + var(--m-bottom));padding:0 4px var(--m-bottom);background:var(--np-paper);border-top:1px solid var(--np-line)}
+.m-tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;padding-top:8px;color:var(--np-muted);font:500 12px/1 var(--np-font-ui);min-height:var(--m-hit)}
+.m-tab .pill{position:relative;width:64px;height:32px;display:flex;align-items:center;justify-content:center}
+.m-tab .pill::before{content:'';position:absolute;inset:0;border-radius:16px;background:var(--np-accent-soft);transform:scaleX(.35);opacity:0;transition:transform var(--m-dur-base) var(--m-ease),opacity var(--m-dur-fast) var(--m-ease)}
+.m-tab svg{position:relative;width:24px;height:24px;transition:transform var(--m-dur-base) var(--m-spring)}
+.m-tab[aria-current=page]{color:var(--np-ink)}
+.m-tab[aria-current=page] .pill::before{transform:none;opacity:1}
+.m-tab[aria-current=page] svg{color:var(--np-accent)}
+.m-tab[aria-current=page] .fill{fill:currentColor;fill-opacity:.16}
+.m-tab:active svg{transform:scale(.88)}
+.m-tab .badge{position:absolute;top:2px;right:16px;min-width:8px;height:8px;border-radius:4px;background:var(--np-left);box-shadow:0 0 0 2px var(--np-paper)}
+/* hoja inferior */
+.m-scrim{position:absolute;inset:0;background:rgba(23,23,26,.42);animation:m-fade var(--m-dur-base) var(--m-ease) both;z-index:20}
+.m-sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--np-card);border-radius:28px 28px 0 0;padding:12px 20px calc(var(--m-bottom) + 12px);box-shadow:0 -12px 40px rgba(23,23,26,.18);animation:m-sheet var(--m-dur-sheet) var(--m-spring) both}
+.m-grab{width:36px;height:4px;border-radius:2px;background:var(--np-line3);margin:0 auto 14px}
+/* esqueletos */
+.m-skel{display:block;border-radius:8px;background:linear-gradient(100deg,var(--np-chrome) 30%,#F4F1EB 50%,var(--np-chrome) 70%);background-size:300% 100%;animation:m-shimmer var(--m-dur-shimmer) linear infinite}
+/* animaciones */
+.m-rise{animation:m-rise var(--m-dur-slow) var(--m-ease) both}
+.m-enter{animation:m-push-in var(--m-dur-base) var(--m-ease-emph) both}
+.m-fadein{animation:m-fade var(--m-dur-base) var(--m-ease) both}
+.m-pop{animation:m-pop var(--m-dur-slow) var(--m-spring) both}
+.m-stagger>*{animation:m-rise var(--m-dur-slow) var(--m-ease) both;animation-delay:calc(var(--i,0)*var(--m-stagger))}
+.m-stagger>*:nth-child(2){--i:1}.m-stagger>*:nth-child(3){--i:2}.m-stagger>*:nth-child(4){--i:3}.m-stagger>*:nth-child(5){--i:4}.m-stagger>*:nth-child(6){--i:5}.m-stagger>*:nth-child(7){--i:6}.m-stagger>*:nth-child(8){--i:7}.m-stagger>*:nth-child(n+9){--i:8}
+@keyframes m-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes m-fade{from{opacity:0}to{opacity:1}}
+@keyframes m-push-in{from{opacity:.4;transform:translateX(32px)}to{opacity:1;transform:none}}
+@keyframes m-push-under{from{transform:none}to{transform:translateX(-24%);opacity:.6}}
+@keyframes m-pop-out{from{transform:none;opacity:1}to{transform:translateX(32px);opacity:0}}
+@keyframes m-sheet{from{transform:translateY(100%)}to{transform:none}}
+@keyframes m-pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes m-shimmer{from{background-position:100% 0}to{background-position:-200% 0}}
+@keyframes m-ring{from{stroke-dashoffset:var(--len,100)}to{stroke-dashoffset:var(--to,0)}}
+@keyframes m-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes m-pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes m-spin{to{transform:rotate(360deg)}}
+@keyframes m-scan{0%{transform:translateY(0);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translateY(var(--h,240px));opacity:0}}
+@keyframes m-bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){
+  .m-app *,.m-app *::before,.m-app *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}
+  .m-skel{animation:none!important;background:var(--np-chrome)}
+}
+/* simulación de "reducir movimiento" (los mockups la activan con la clase m-reduce en la raíz) */
+.m-reduce *,.m-reduce *::before,.m-reduce *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}
+.m-reduce .m-skel{animation:none!important;background:var(--np-chrome)}
+.m-btn.paper{background:var(--np-on-ink);color:var(--np-ink)!important}
+.m-app>.m-tabbar{margin-top:auto}
+/* ojo de la lente (Analisis): abierto = lente activa; cerrado = inactiva. Morfa el contorno con d (CSS) y apaga la pupila. */
+.m-lens .lid{d:path("M2.5 12C5 7.5 8.3 5.5 12 5.5C15.7 5.5 19 7.5 21.5 12C19 16.5 15.7 18.5 12 18.5C8.3 18.5 5 16.5 2.5 12Z");transition:d var(--m-dur-base) var(--m-ease-inout)}
+.m-lens[aria-pressed=false] .lid{d:path("M2.5 9.5C5 14.5 8.3 16.5 12 16.5C15.7 16.5 19 14.5 21.5 9.5C19 12.5 15.7 13.5 12 13.5C8.3 13.5 5 12.5 2.5 9.5Z")}
+.m-lens .pupil{transform-box:fill-box;transform-origin:center;transform:scale(1);opacity:1;transition:transform var(--m-dur-base) var(--m-spring),opacity var(--m-dur-fast) var(--m-ease)}
+.m-lens[aria-pressed=false] .pupil{transform:scale(.2);opacity:0}
+.m-lens .lash{opacity:0;transition:opacity var(--m-dur-fast) var(--m-ease) 0ms}
+.m-lens[aria-pressed=false] .lash{opacity:1;transition-delay:var(--m-dur-fast)}
+@media (prefers-reduced-motion:reduce){.m-lens .lid,.m-lens .pupil,.m-lens .lash{transition:none}}
+/*@m-base-end*/
+.ia-logo{flex:none;display:flex;align-items:center;justify-content:center;font:600 12px var(--np-font-mono);width:40px;height:40px;border-radius:12px}
+.ia-logo img{display:block}
+.ia-st{display:flex;align-items:center;gap:6px;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted)}
+.ia-st i{flex:none;width:8px;height:8px;border-radius:50%;background:var(--c,#8D8981)}
+.ia-st.ok{color:var(--np-ok)}.ia-st.warn{color:var(--np-warn)}.ia-st.bad{color:var(--np-bad)}
+.ia-st.live i{animation:m-pulse 1.6s ease-in-out infinite}
+.ia-tag{flex:none;font:500 11px/1 var(--np-font-ui);padding:4px 8px;border-radius:999px;background:var(--np-soft);color:var(--np-ink2)}
+.ia-tag.free{background:var(--np-ok-bg);color:var(--np-ok)}.ia-tag.acct{background:var(--np-accent-soft);color:var(--np-accent)}
+.ia-hero{margin:8px 16px 0;border-radius:var(--m-r-card);background:var(--np-ink);color:var(--np-on-ink);padding:18px 18px 16px}
+.ia-fig{flex:1;min-width:0}.ia-fig b{display:block;font:500 25px/1.1 var(--np-font-read)}.ia-fig span{display:block;font:400 11.5px var(--np-font-ui);color:#CBC7BE;margin-top:2px}
+.ia-bar{display:flex;gap:2px;height:6px;margin-top:14px}.ia-bar i{display:block;border-radius:3px;transform-origin:left;animation:m-bar 700ms var(--m-ease-inout) both}
+.ia-seg4{display:grid;grid-template-columns:repeat(4,1fr)}
+.ia-seg4>button{height:48px;font-size:13px}
+.ia-range{-webkit-appearance:none;appearance:none;width:100%;height:48px;background:transparent}
+.ia-range::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--np-line3)}
+.ia-range::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-11px;border-radius:50%;background:var(--np-ink);border:3px solid var(--np-paper);box-shadow:0 1px 4px rgba(23,23,26,.4)}
+.ia-chk path{stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 360ms var(--m-ease-inout) both}
+.ia-spin{animation:m-spin 1000ms linear infinite}
+.ia-prog{height:4px;border-radius:2px;background:var(--np-line2);overflow:hidden}.ia-prog i{display:block;height:100%;background:var(--np-ink);transition:width 300ms linear}
+.ia-empty-ico{animation:m-pop var(--m-dur-slow) var(--m-spring) both}
+</style>
+</helmet>
+<div class="{{rootCls}}">
+<div class="m-appbar"><a class="m-back" href="Movil-Ajustes.dc.html" aria-label="Volver a Ajustes"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a><div class="m-bar-title">IA y proveedores</div></div>
+
+<div class="m-scroll m-enter" style="padding-bottom:28px">
+
+<sc-if value="{{empty}}" hint-placeholder-val="{{ false }}">
+<div style="padding:40px 28px 0;text-align:left"><div class="ia-empty-ico" style="width:88px;height:88px;border-radius:28px;background:var(--np-ai-bg);color:var(--np-ai);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.800 4.700L18.500 9.500 13.800 11.300 12 16l-1.800-4.700L5.500 9.500l4.700-1.800z"/><path d="M18.500 15l.8 2.200 2.200.8-2.200.8-.8 2.200-.8-2.200-2.200-.8 2.200-.8z"/></svg></div>
+<h1 class="m-rise" style="margin:24px 0 0;font:500 34px/1.08 var(--np-font-read);letter-spacing:-.025em;animation-delay:100ms">Conecta un proveedor</h1>
+<p class="m-rise" style="margin:12px 0 0;font:400 16px/1.55 var(--np-font-ui);color:var(--np-muted);animation-delay:180ms">Con uno basta para empezar. Un asistente te guía paso a paso y newpaper elige el modelo de cada paso.</p>
+<a class="m-btn m-tap m-rise" href="Movil-Proveedor.dc.html" style="margin-top:24px;animation-delay:260ms">Conectar un proveedor</a>
+<a class="m-btn sec m-tap m-rise" href="Movil-Emparejar.dc.html" style="margin-top:10px;animation-delay:320ms">Usar el Ollama de mi PC</a></div>
+</sc-if>
+
+<sc-if value="{{hasList}}" hint-placeholder-val="{{ true }}">
+<div class="ia-hero m-rise">
+<div style="display:flex;gap:10px"><div class="ia-fig"><b>{{fig.cost}}</b><span>coste por noticia</span></div><div class="ia-fig"><b>{{fig.time}}</b><span>tiempo estimado</span></div><div class="ia-fig"><b>{{fig.local}}</b><span>pasos en tu equipo</span></div></div>
+<div class="ia-bar" aria-hidden="true"><i style="flex:{{fig.lw}};background:#4FD1A5"></i><i style="flex:{{fig.cw}};background:#7C9AF2;animation-delay:120ms"></i></div>
+<div style="display:flex;justify-content:space-between;font:400 11.5px var(--np-font-ui);color:#CBC7BE;margin-top:6px"><span>en tu equipo</span><span>en la nube</span></div>
+</div>
+
+<div class="m-sec"><span>Tus proveedores</span><small>{{count}}</small></div>
+<div class="m-group m-stagger">
+<sc-for list="{{provs}}" as="p" hint-placeholder-count="4">
+<button class="m-row" onClick="{{p.open}}"><span class="ia-logo" style="{{p.box}}"><sc-if value="{{p.logo}}" hint-placeholder-val="{{ true }}"><img src="{{p.logo}}" alt="" width="24" height="24"></sc-if><sc-if value="{{p.mono}}" hint-placeholder-val="{{ false }}">{{p.mono}}</sc-if></span><span class="m-rt"><b>{{p.name}}</b><span class="{{p.stCls}}" style="display:flex;align-items:center;gap:6px;color:{{p.col}}"><i style="width:8px;height:8px;border-radius:50%;background:{{p.col}};flex:none"></i>{{p.status}}</span></span><svg class="m-chev" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+</sc-for>
+<a class="m-row m-tap" href="Movil-Proveedor.dc.html" style="color:var(--np-accent)"><span class="m-ico acc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></span><span class="m-rt"><b style="color:var(--np-accent)">Añadir proveedor</b><span>Asistente de tres pasos</span></span></a>
+</div>
+
+<div class="m-sec"><span>Punto de partida</span></div>
+<div style="margin:0 16px"><div class="m-seg ia-seg4" role="radiogroup" aria-label="Punto de partida"><sc-for list="{{presets}}" as="p" hint-placeholder-count="4"><button role="radio" aria-pressed="{{p.on}}" aria-checked="{{p.on}}" onClick="{{p.pick}}">{{p.name}}</button></sc-for></div></div>
+<p class="m-note" style="margin-top:10px">{{presetDesc}}</p>
+
+<div class="m-sec"><span>Gasto</span><small>este mes: {{spent}}</small></div>
+<div class="m-card" style="margin:0 16px;padding:14px 16px 6px">
+<div style="display:flex;align-items:baseline"><label for="lim" style="flex:1;font:500 16px var(--np-font-ui)">Límite mensual</label><b style="font:500 20px var(--np-font-read)">{{limLabel}}</b></div>
+<input id="lim" class="ia-range" type="range" min="0" max="50" step="1" value="{{lim}}" onInput="{{onLim}}" aria-valuetext="{{limLabel}}">
+<div class="ia-prog" role="progressbar" aria-label="Gastado del límite" aria-valuenow="{{spentPct}}" aria-valuemin="0" aria-valuemax="100" style="margin-top:-4px"><i style="width:{{spentPct}}%;background:{{spentCol}}"></i></div>
+<p style="margin:10px 0 8px;font:400 12.5px/1.5 var(--np-font-ui);color:var(--np-muted)">Al llegar al límite, el análisis completo pasa a modelos locales. 0 desactiva el límite.</p></div>
+
+<div class="m-sec"><span>Avanzado</span></div>
+<div class="m-group"><a class="m-row m-tap" href="Movil-Proveedor.dc.html?s=adv"><span class="m-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h8M17 8h3M4 16h3M12 16h8"/><circle cx="14.500" cy="8" r="2.500"/><circle cx="9.500" cy="16" r="2.500"/></svg></span><span class="m-rt"><b>Modelo de cada paso</b><span>Proveedor, modelo, creatividad y respaldo por paso</span></span><svg class="m-chev" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></a></div>
+</sc-if>
+</div>
+
+<!-- hoja: un proveedor -->
+<sc-if value="{{sheet.edit}}" hint-placeholder-val="{{ false }}">
+<div class="m-scrim" onClick="{{closeSheet}}"></div>
+<div class="m-sheet" role="dialog" aria-label="{{cur.name}}"><div class="m-grab"></div>
+<div style="display:flex;align-items:center;gap:14px"><span class="ia-logo" style="{{cur.box}};width:52px;height:52px;border-radius:15px"><sc-if value="{{cur.logo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="28" height="28"></sc-if><sc-if value="{{cur.mono}}" hint-placeholder-val="{{ false }}">{{cur.mono}}</sc-if></span><div style="flex:1;min-width:0"><div style="font:500 24px/1.15 var(--np-font-read)">{{cur.name}}</div><div class="ia-st" style="color:{{cur.col}}"><i style="background:{{cur.col}}"></i>{{cur.status}}</div></div></div>
+<div style="margin-top:14px;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font:400 13.5px/1.4 var(--np-font-ui)"><span style="color:var(--np-muted)">{{cur.k1}}</span><span style="font-family:var(--np-font-mono);font-size:12.5px;word-break:break-all">{{cur.v1}}</span><span style="color:var(--np-muted)">Usado en</span><span>{{cur.uses}}</span></div>
+
+<sc-if value="{{tst.idle}}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:8px;margin-top:16px"><button class="m-btn" style="flex:1" onClick="{{runTest}}">Probar conexión</button><sc-if value="{{cur.changeable}}" hint-placeholder-val="{{ true }}"><a class="m-btn sec m-tap" style="flex:1" href="Movil-Proveedor.dc.html?s=key">{{cur.changeLabel}}</a></sc-if></div></sc-if>
+<sc-if value="{{tst.run}}" hint-placeholder-val="{{ false }}"><div class="m-rise" style="margin-top:16px"><div class="m-btn soft" style="gap:10px;color:var(--np-ink2)!important"><svg class="ia-spin" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 019 9"/></svg>{{tst.label}}</div><div class="ia-prog" style="margin-top:10px"><i style="width:{{tst.pct}}%"></i></div></div></sc-if>
+<sc-if value="{{tst.ok}}" hint-placeholder-val="{{ false }}"><div class="m-pop" style="margin-top:16px;display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:16px;background:var(--np-ok-bg);color:var(--np-ok)"><svg class="ia-chk" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" pathLength="1"/></svg><span style="flex:1;font:500 14px/1.35 var(--np-font-ui)">Funciona · responde en {{cur.ms}} ms · {{cur.nModels}}</span><button class="m-btn sm soft" style="height:44px;padding:0 14px" onClick="{{runTest}}">Repetir</button></div></sc-if>
+<sc-if value="{{tst.bad}}" hint-placeholder-val="{{ false }}"><div class="m-rise" style="margin-top:16px;padding:12px 14px;border-radius:16px;background:var(--np-bad-bg);color:var(--np-bad)"><b style="display:block;font:600 14px var(--np-font-ui)">{{cur.errTitle}}</b><span style="display:block;font:400 13px/1.5 var(--np-font-ui);margin-top:3px">{{cur.errBody}}</span><span style="display:block;font:400 11.5px/1.5 var(--np-font-mono);margin-top:6px;opacity:.85">{{cur.errCode}}</span><div style="display:flex;gap:8px;margin-top:10px"><button class="m-btn sm" style="flex:1;height:44px" onClick="{{runTest}}">Reintentar</button><a class="m-btn sm sec m-tap" style="flex:1;height:44px" href="{{cur.errHref}}">{{cur.errAct}}</a></div></div></sc-if>
+
+<div style="margin-top:14px;padding-top:6px;border-top:1px solid var(--np-line2)"><button class="m-btn danger" style="width:100%;margin-top:10px" onClick="{{askDisc}}">{{cur.discLabel}}</button></div>
+</div>
+</sc-if>
+
+<!-- hoja: confirmar -->
+<sc-if value="{{sheet.disc}}" hint-placeholder-val="{{ false }}">
+<div class="m-scrim" onClick="{{closeSheet}}" style="z-index:30"></div>
+<div class="m-sheet" role="alertdialog" aria-label="Desconectar {{cur.name}}" style="z-index:31"><div class="m-grab"></div>
+<div style="width:48px;height:48px;border-radius:16px;background:var(--np-bad-bg);color:var(--np-bad);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 7V5a3 3 0 016 0v2M5 7h14l-1 12a2 2 0 01-2 2H8a2 2 0 01-2-2z"/><path d="M10 11v6M14 11v6"/></svg></div>
+<h2 style="margin:14px 0 0;font:500 26px/1.15 var(--np-font-read)">¿Desconectar {{cur.name}}?</h2>
+<p style="margin:8px 0 0;font:400 15px/1.55 var(--np-font-ui);color:var(--np-ink2)">{{cur.discBody}}</p>
+<div style="display:flex;gap:10px;margin-top:20px"><button class="m-btn sec" style="flex:1" onClick="{{closeSheet}}">Cancelar</button><button class="m-btn" style="flex:1;background:var(--np-bad)" onClick="{{doDisc}}">Desconectar</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{toast}}" hint-placeholder-val="{{ false }}"><div class="m-pop" role="status" style="position:absolute;left:16px;right:16px;bottom:calc(var(--m-bottom) + 12px);z-index:40;background:var(--np-ink);color:var(--np-on-ink);border-radius:16px;padding:14px 16px;font:400 14px/1.4 var(--np-font-ui);display:flex;align-items:center;gap:12px"><span style="flex:1">{{toastText}}</span><button style="color:#9DB1F7;font-weight:600;min-width:48px;height:48px" onClick="{{undo}}">Deshacer</button></div></sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  constructor(p) {
+    super(p);
+    const qs = new URLSearchParams(location.search), q = qs.get('s') || 'list';
+    const o = { list: {}, empty: { gone: ['google', 'openrouter', 'ollama', 'openai'] }, edit: { sheet: 'edit', sel: 'google' }, 'edit-login': { sheet: 'edit', sel: 'openrouter' }, testing: { sheet: 'edit', sel: 'google', tp: 0.9 }, 'test-ok': { sheet: 'edit', sel: 'google', tp: 9, done: true }, 'test-bad': { sheet: 'edit', sel: 'openai', tp: 9, done: true }, disc: { sheet: 'disc', sel: 'google' }, offline: { off: true, sheet: 'edit', sel: 'ollama' }, 'ollama': { sheet: 'edit', sel: 'ollama' } }[q] || {};
+    this.state = Object.assign({ sheet: null, sel: 'google', tp: -1, done: false, gone: [], off: false, preset: 'balanced', lim: 10, toast: false, last: null, rm: qs.get('rm') === '1' }, o);
+    this.boot = q;
+  }
+  componentDidMount() { if (this.boot === 'testing') this.run(0.9); }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); clearTimeout(this.to); }
+  run(from) {
+    cancelAnimationFrame(this.raf);
+    const t0 = performance.now() - (from || 0) * 1000;
+    this.setState({ tp: from || 0, done: false });
+    const tick = (t) => { const sec = (t - t0) / 1000; if (sec < 2.6) { this.setState({ tp: sec }); this.raf = requestAnimationFrame(tick); } else this.setState({ tp: 3, done: true }); };
+    this.raf = requestAnimationFrame(tick);
+  }
+  renderVals() {
+    const s = this.state, B = '/_blob/';
+    const D = {
+      google: { name: 'Gemini', logo: B + '51a886ba4778142cb4b9957c71e366f6', tint: '#E4EBFB', st: 'ok', status: 'Conectado · 312 ms', k1: 'Clave', v1: 'AIza••••••••••••3Hp6 · llavero de Android', uses: 'Verificar, Neutralidad, Síntesis', ms: 312, nModels: '2 modelos', discBody: 'Se borra la clave del llavero. Los pasos que usan Gemini pasarán a tu Ollama; si no hay otro proveedor, quedarán sin asignar hasta que conectes uno.' , discLabel: 'Desconectar Gemini', changeLabel: 'Cambiar la clave', changeable: true },
+      openrouter: { name: 'OpenRouter', logo: B + 'dd8c6ff2c71cb73bdcb2c252b050081d', tint: '#EAE8F6', st: 'ok', status: 'Sesión iniciada · 455 ms', k1: 'Acceso', v1: 'Inicio de sesión con tu cuenta · clave generada por OpenRouter', uses: 'Agente', ms: 455, nModels: '2 modelos', discBody: 'Se cierra la sesión en este móvil y se borra la clave que generó OpenRouter. Puedes volver a iniciar sesión cuando quieras.', discLabel: 'Cerrar sesión y desconectar', changeLabel: 'Cambiar de cuenta', changeable: true },
+      ollama: { name: 'Ollama de PC-ESCRITORIO', logo: B + 'a5ba83869b71d8f76e17ed7ed73b84d2', tint: '#EDEDEB', st: s.off ? 'bad' : 'ok', status: s.off ? 'No responde · último contacto hace 3 h' : 'En tu red · 3 modelos · 38 ms', k1: 'Dirección', v1: '192.168.1.34:11434 · vía emparejamiento', uses: 'Afirmaciones, Detector de IA, respaldo', ms: 38, nModels: '3 modelos', discBody: 'Se olvida la dirección del PC. El emparejamiento con tu PC se mantiene: puedes volver a usar su Ollama desde el asistente.', discLabel: 'Dejar de usar este Ollama', changeLabel: 'Cambiar dirección', changeable: !s.off, errTitle: 'PC-ESCRITORIO no responde', errBody: 'El PC no contesta en 192.168.1.34:11434. Comprueba que está encendido, en la misma red, y que Ollama escucha fuera de localhost (OLLAMA_HOST=0.0.0.0).', errCode: 'connection refused · 3 ms', errAct: 'Volver a emparejar', errHref: 'Movil-Emparejar.dc.html' },
+      openai: { name: 'ChatGPT', logo: B + 'a3e89b95754fab0b6e6d5b234cc85530', tint: '#ECECEA', st: 'warn', status: 'Sin saldo · error 429 en el último análisis', k1: 'Clave', v1: 'sk-proj-••••••••••••pY · llavero de Android', uses: 'Ningún paso (de reserva)', ms: 412, nModels: '2 modelos', discBody: 'Se borra la clave del llavero. No hay pasos que dependan de ChatGPT.', discLabel: 'Desconectar ChatGPT', changeLabel: 'Cambiar la clave', changeable: true, errTitle: 'ChatGPT dice que no hay saldo', errBody: 'La clave es válida pero la cuenta no tiene saldo o superó su cuota. Añade saldo en platform.openai.com › Billing.', errCode: 'HTTP 429 · insufficient_quota', errAct: 'Abrir facturación', errHref: '#' }
+    };
+    const COL = { ok: '#0B6B50', warn: '#8A5300', bad: '#A3271B' };
+    const order = ['google', 'openrouter', 'ollama', 'openai'].filter((id) => s.gone.indexOf(id) < 0);
+    const provs = order.map((id) => { const d = D[id]; return { name: d.name, status: d.status, col: COL[d.st], stCls: '', logo: d.logo, mono: '', box: 'background:' + d.tint, open: () => this.setState({ sheet: 'edit', sel: id, tp: -1, done: false }) }; });
+    const cur = D[s.sel] || D.google, cc = Object.assign({}, cur, { col: COL[cur.st], box: 'background:' + cur.tint, mono: '' });
+    const bad = s.done && (s.sel === 'openai' || (s.sel === 'ollama' && s.off));
+    const tst = { idle: s.tp < 0, run: s.tp >= 0 && !s.done, ok: s.done && !bad, bad, label: s.tp < 0.9 ? 'Conectando…' : s.tp < 1.8 ? 'Listando modelos…' : 'Probando respuesta…', pct: Math.min(100, Math.round(s.tp / 2.6 * 100)) };
+    const PR = [['privacy', 'Privacidad', 'Todo en tu equipo. Nada sale a internet.', { cost: 'gratis', time: '~21 s', local: '6 de 6', lw: 6, cw: 0.001 }], ['balanced', 'Equilibrado', 'Nube barata para lo ligero, buena para verificar.', { cost: '~0,03 $', time: '~14 s', local: '2 de 6', lw: 2, cw: 4 }], ['quality', 'Calidad', 'Los mejores modelos en cada paso.', { cost: '~0,07 $', time: '~16 s', local: '1 de 6', lw: 1, cw: 5 }], ['cheap', 'Coste', 'Modelos rápidos y económicos.', { cost: '~0,01 $', time: '~9 s', local: '1 de 6', lw: 1, cw: 5 }]];
+    const pn = PR.find((x) => x[0] === s.preset);
+    const spent = 1.84, spentPct = s.lim === 0 ? 0 : Math.min(100, Math.round(spent / s.lim * 100));
+    return {
+      rootCls: 'm-app' + (s.rm ? ' m-reduce' : ''), empty: order.length === 0, hasList: order.length > 0, fig: pn[3], count: order.length + ' conectados', provs,
+      presets: PR.map((p) => ({ name: p[1], on: s.preset === p[0] ? 'true' : 'false', pick: () => this.setState({ preset: p[0] }) })), presetDesc: pn[2],
+      lim: s.lim, limLabel: s.lim === 0 ? 'Sin límite' : s.lim + ' $', onLim: (e) => this.setState({ lim: Number(e.target.value) }), spent: '1,84 $', spentPct, spentCol: spentPct > 80 ? '#A3271B' : '#17171A',
+      sheet: { edit: s.sheet === 'edit', disc: s.sheet === 'disc' }, cur: cc, closeSheet: () => this.setState({ sheet: s.sheet === 'disc' ? 'edit' : null }), runTest: () => this.run(0), tst,
+      askDisc: () => this.setState({ sheet: 'disc' }), doDisc: () => { clearTimeout(this.to); this.setState({ gone: s.gone.concat([s.sel]), sheet: null, toast: true, last: s.sel }); this.to = setTimeout(() => this.setState({ toast: false }), 4500); },
+      toast: s.toast, toastText: (D[s.last] ? D[s.last].name : '') + ' desconectado', undo: () => this.setState({ gone: s.gone.filter((x) => x !== s.last), toast: false })
+    };
+  }
+}
+</script>
+</body>
+</html>

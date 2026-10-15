@@ -2,13 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Móvil · conectar un proveedor</title>
+<title>Móvil · conectar un proveedor de IA</title>
 <script src="./support.js"></script>
 </head>
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&amp;display=swap">
 <style>
 /*@m-base*/
 /* newpaper móvil · base compartida de los artboards Movil-*.dc.html.
@@ -21,7 +21,7 @@
   --np-tor:#4A2FB8;--np-tor-soft:#ECE8FB;--np-ai:#993556;--np-ai-bg:#FBEAF0;--np-on-ink:#F6F4EF;
   --np-font-read:'Newsreader',Georgia,serif;--np-font-ui:'IBM Plex Sans',system-ui,sans-serif;--np-font-mono:'IBM Plex Mono',ui-monospace,monospace;
   /* movimiento: duraciones */
-  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;
+  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;--m-dur-intro:2920ms;--m-dur-intro-short:1080ms;--m-dur-intro-reduce:800ms;--m-dur-iris:360ms;--m-dur-packet:1500ms;--m-par-art:.65;--m-par-text:1.25;
   /* movimiento: curvas */
   --m-ease:cubic-bezier(.22,1,.36,1);--m-ease-emph:cubic-bezier(.05,.7,.1,1);--m-ease-exit:cubic-bezier(.3,0,.8,.15);--m-ease-inout:cubic-bezier(.65,0,.35,1);--m-spring:cubic-bezier(.34,1.56,.64,1);
   /* medidas */
@@ -147,264 +147,428 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 .m-lens[aria-pressed=false] .lash{opacity:1;transition-delay:var(--m-dur-fast)}
 @media (prefers-reduced-motion:reduce){.m-lens .lid,.m-lens .pupil,.m-lens .lash{transition:none}}
 /*@m-base-end*/
-.scr{scrollbar-width:none}.scr::-webkit-scrollbar{display:none}
-button:disabled{cursor:default}
-input:focus{outline:none;border-color:#17171A!important}
-.rise{animation:rise .7s cubic-bezier(.22,1,.36,1) both}
-@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes st0{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
-@keyframes st1{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
-@keyframes bounce0{0%{transform:scale(.6)}55%{transform:scale(1.18)}75%{transform:scale(.94)}100%{transform:scale(1)}}
-@keyframes bounce1{0%{transform:scale(.6)}55%{transform:scale(1.18)}75%{transform:scale(.94)}100%{transform:scale(1)}}
-@keyframes pop{0%{opacity:0;transform:scale(.4)}70%{opacity:1;transform:scale(1.12)}100%{opacity:1;transform:scale(1)}}
-@keyframes open0{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-@keyframes open1{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-@keyframes pulse{0%,100%{opacity:.35}50%{opacity:1}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
-
+/* transiciones de pantalla: avanzar entra por la derecha, volver por la izquierda; 0/1 alternan para reiniciar la animación */
+.pv-f0{animation:pv-f0 var(--m-dur-base) var(--m-ease-emph) both}.pv-f1{animation:pv-f1 var(--m-dur-base) var(--m-ease-emph) both}
+.pv-b0{animation:pv-b0 var(--m-dur-base) var(--m-ease-emph) both}.pv-b1{animation:pv-b1 var(--m-dur-base) var(--m-ease-emph) both}
+@keyframes pv-f0{from{opacity:.3;transform:translateX(36px)}to{opacity:1;transform:none}}
+@keyframes pv-f1{from{opacity:.3;transform:translateX(36px)}to{opacity:1;transform:none}}
+@keyframes pv-b0{from{opacity:.3;transform:translateX(-36px)}to{opacity:1;transform:none}}
+@keyframes pv-b1{from{opacity:.3;transform:translateX(-36px)}to{opacity:1;transform:none}}
+.pv-seg3{flex:none;height:4px;border-radius:2px;background:var(--np-line);overflow:hidden;flex:1}
+.pv-seg3>i{display:block;height:100%;background:var(--np-ink);transform-origin:left;transition:transform var(--m-dur-slow) var(--m-ease-inout)}
+.pv-logo{flex:none;display:flex;align-items:center;justify-content:center;font:600 13px var(--np-font-mono)}
+.pv-logo img{display:block}
+.pv-rec{display:flex;align-items:center;gap:14px;width:100%;min-height:76px;padding:12px 14px;border-radius:20px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line);text-align:left}
+.pv-rec:active{background:var(--np-soft)}
+.pv-tag{flex:none;font:500 11px/1 var(--np-font-ui);padding:4px 8px;border-radius:999px;background:var(--np-soft);color:var(--np-ink2)}
+.pv-tag.free{background:var(--np-ok-bg);color:var(--np-ok)}.pv-tag.acct{background:var(--np-accent-soft);color:var(--np-accent)}.pv-tag.loc{background:var(--np-ink);color:var(--np-on-ink)}
+.pv-input{width:100%;height:56px;border-radius:16px;border:1.5px solid var(--np-line3);background:var(--np-card);padding:0 16px;font:500 15px var(--np-font-mono);transition:border-color var(--m-dur-fast) var(--m-ease),box-shadow var(--m-dur-fast) var(--m-ease)}
+.pv-input:focus{outline:none;border-color:var(--np-ink);box-shadow:0 0 0 3px rgba(23,23,26,.08)}
+.pv-input.ok{border-color:var(--np-ok)}
+.pv-sw{position:relative;display:grid;grid-template-columns:repeat(3,1fr);padding:4px;border-radius:18px;background:var(--np-chrome)}
+.pv-sw>i{position:absolute;left:4px;top:4px;bottom:4px;width:calc((100% - 8px)/3);border-radius:14px;background:var(--np-card);box-shadow:0 1px 3px rgba(23,23,26,.14);transition:transform var(--m-dur-base) var(--m-spring)}
+.pv-sw>button{position:relative;height:44px;border-radius:14px;font:500 14px var(--np-font-ui);color:var(--np-muted)}
+.pv-sw>button[aria-selected=true]{color:var(--np-ink)}
+.pv-row{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:8px 16px;text-align:left;position:relative}
+.pv-row+.pv-row::before{content:'';position:absolute;left:68px;right:0;top:0;height:1px;background:var(--np-line2)}
+.pv-row:active{background:var(--np-soft)}
+.pv-soon{opacity:.7;border:1.5px dashed var(--np-line3);border-radius:18px;margin:0 0 12px;padding:10px 14px;display:flex;align-items:center;gap:12px}
+.pv-st{display:flex;align-items:center;gap:12px;min-height:56px;padding:6px 0;font:400 15px var(--np-font-ui)}
+.pv-st+.pv-st{border-top:1px solid var(--np-line2)}
+.pv-dot{flex:none;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--np-line3);display:flex;align-items:center;justify-content:center;transition:background-color var(--m-dur-base) var(--m-ease),box-shadow var(--m-dur-base) var(--m-ease)}
+.pv-dot.cur{box-shadow:inset 0 0 0 2px var(--np-accent)}
+.pv-dot.cur::after{content:'';width:9px;height:9px;border-radius:50%;background:var(--np-accent);animation:m-pulse 900ms ease-in-out infinite}
+.pv-dot.ok{background:var(--np-ok);box-shadow:none}
+.pv-dot.bad{background:var(--np-bad);box-shadow:none}
+.pv-dot svg{width:14px;height:14px}
+.pv-dot.ok svg path,.pv-dot.bad svg path{stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 320ms var(--m-ease-inout) both}
+.pv-ms{margin-left:auto;font:500 12px var(--np-font-mono);color:var(--np-muted)}
+.pv-ring{animation:m-spin 1000ms linear infinite}
+.pv-kb{flex:none;height:262px;background:#D4D6DB;padding:10px 4px 0;display:flex;flex-direction:column;gap:11px;animation:m-sheet var(--m-dur-sheet) var(--m-ease-emph) both}
+.pv-kb div{display:flex;justify-content:center;gap:5px}
+.pv-kb span{flex:1;max-width:34px;height:44px;border-radius:7px;background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;font:400 18px var(--np-font-ui);color:#1a1a1a}
+.pv-opt{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:20px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line);transition:box-shadow var(--m-dur-base) var(--m-ease)}
+.pv-opt[aria-checked=true]{box-shadow:inset 0 0 0 2px var(--np-ink),0 8px 22px rgba(23,23,26,.1)}
+.pv-more{display:grid;grid-template-rows:0fr;transition:grid-template-rows var(--m-dur-slow) var(--m-ease)}
+.pv-opt[aria-checked=true] .pv-more{grid-template-rows:1fr}
+.pv-more>div{overflow:hidden}
+.pv-fig{flex:1;text-align:center;padding:10px 4px;border-radius:14px;background:var(--np-soft)}
+.pv-fig b{display:block;font:500 20px var(--np-font-read)}.pv-fig span{display:block;font:400 11px var(--np-font-ui);color:var(--np-muted)}
+.pv-range{-webkit-appearance:none;appearance:none;width:100%;height:48px;background:transparent}
+.pv-range::-webkit-slider-runnable-track{height:6px;border-radius:3px;background:var(--np-line3)}
+.pv-range::-webkit-slider-thumb{-webkit-appearance:none;width:28px;height:28px;margin-top:-11px;border-radius:50%;background:var(--np-ink);border:3px solid var(--np-paper);box-shadow:0 1px 4px rgba(23,23,26,.4)}
+.pv-bump0{animation:pv-bump0 300ms var(--m-spring)}.pv-bump1{animation:pv-bump1 300ms var(--m-spring)}
+@keyframes pv-bump0{0%{transform:scale(.9)}100%{transform:none}}
+@keyframes pv-bump1{0%{transform:scale(.9)}100%{transform:none}}
+.pv-conf{position:absolute;left:36px;top:36px;width:8px;height:12px;margin:-6px 0 0 -4px;border-radius:1.5px;opacity:0;animation:pv-conf 1000ms var(--m-ease) var(--d,300ms) both}
+@keyframes pv-conf{0%{opacity:0;transform:translate(0,0) rotate(0) scale(.4)}12%{opacity:1}100%{opacity:0;transform:translate(var(--dx),calc(var(--dy) + 30px)) rotate(var(--r)) scale(1)}}
+.pv-wait{stroke-dasharray:100;animation:pv-wait 300s linear both}
+@keyframes pv-wait{from{stroke-dashoffset:0}to{stroke-dashoffset:100}}
+.pv-chk path{stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 420ms var(--m-ease-inout) 150ms both}
+@media (prefers-reduced-motion:reduce){.pv-conf{display:none}}
+.m-reduce .pv-conf{display:none}
 </style>
 </helmet>
-<div class="m-app m-enter" style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
-<div style="padding: calc(var(--m-top) + 12px) 12px 0; border-bottom: 1px solid #E2DED5">
-<div style="display: flex; align-items: center; gap: 8px">
-<sc-if value="{{isFirst}}" hint-placeholder-val="{{ true }}"><a href="Movil-Ajustes.dc.html" aria-label="Volver a Ajustes" style="width: 48px; height: 48px; border-radius: 50%; flex: none; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></a></sc-if>
-<sc-if value="{{notFirst}}" hint-placeholder-val="{{ false }}"><button onClick="{{back}}" aria-label="Paso anterior" style="width: 48px; height: 48px; border-radius: 50%; border: 0; padding: 0; background: transparent; color: #17171A; display: flex; align-items: center; justify-content: center"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"></path></svg></button></sc-if>
-<div style="flex: 1; min-width: 0"><div style="font: 500 21px/1.15 'Newsreader', serif; letter-spacing: -0.01em">Conectar un proveedor</div><div style="font-size: 12px; color: #5E5B55">{{headSub}}</div></div>
-<span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #5E5B55; border: 1px solid #D9D5CC; border-radius: 6px; padding: 3px 6px; margin-right: 8px">{{stepTag}}</span>
+<div class="{{rootCls}}">
+
+<div class="m-appbar" style="padding-bottom:0">
+<sc-if value="{{V.home}}" hint-placeholder-val="{{ true }}"><a class="m-back" href="Movil-IA.dc.html" aria-label="Volver a IA y proveedores"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a></sc-if><sc-if value="{{notHome}}" hint-placeholder-val="{{ false }}"><button class="m-back" onClick="{{back}}" aria-label="Paso anterior"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></sc-if>
+<div style="flex:1;min-width:0"><div class="m-bar-title">{{title}}</div><span class="m-bar-sub">{{sub}}</span></div>
+<sc-if value="{{showStep}}" hint-placeholder-val="{{ true }}"><span style="margin-right:12px;font:500 12px var(--np-font-mono);color:var(--np-muted)">{{stepTag}}</span></sc-if>
 </div>
-<div style="display: flex; gap: 4px; padding: 10px 8px 12px"><sc-for list="{{bars}}" as="b" hint-placeholder-count="3"><span style="flex: 1; height: 3px; border-radius: 2px; background: #E2DED5; overflow: hidden"><span style="{{b.fill}}"></span></span></sc-for></div>
-</div>
+<sc-if value="{{showStep}}" hint-placeholder-val="{{ true }}"><div style="display:flex;gap:6px;padding:8px 20px 4px" role="progressbar" aria-label="Paso {{stepN}} de 3" aria-valuemin="1" aria-valuemax="3" aria-valuenow="{{stepN}}"><sc-for list="{{bars}}" as="b" hint-placeholder-count="3"><span class="pv-seg3"><i style="{{b}}"></i></span></sc-for></div></sc-if>
 
-<div class="scr" style="flex: 1; overflow-y: auto; padding: 18px 20px 16px">
+<div class="m-scroll {{dirCls}}" style="padding:12px 0 16px">
 
-<sc-if value="{{is.s1}}" hint-placeholder-val="{{ true }}">
-<div style="{{anim}}">
-<h1 style="margin: 0; font-family: 'Newsreader', serif; font-weight: 400; font-size: 28px; line-height: 1.12; letter-spacing: -0.02em">¿Con qué IA quieres analizar?</h1>
-<p style="margin: 8px 0 0; font-size: 13px; line-height: 1.55; color: #5E5B55">Elige uno; después repartimos el trabajo por ti. Puedes añadir más cuando quieras.</p>
-
-<div style="font-size: 12px; font-weight: 600; color: #5E5B55; margin: 20px 0 8px">Recomendados</div>
-<div style="display: flex; flex-direction: column; gap: 8px">
-<sc-for list="{{recs}}" as="r" hint-placeholder-count="2">
-<button onClick="{{r.pick}}" style="{{r.style}}">
-<span style="{{r.logoBox}}"><sc-if value="{{r.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{r.logo}}" alt="" width="28" height="28" style="display: block"></sc-if><sc-if value="{{r.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{r.mono}}</span></sc-if></span>
-<span style="flex: 1; min-width: 0"><span style="display: block; font-family: 'Newsreader', serif; font-size: 22px; line-height: 1.15">{{r.name}}</span><span style="display: block; font-size: 12px; color: #5E5B55; line-height: 1.45; margin-top: 3px">{{r.desc}}</span><span style="display: block; font-family: 'IBM Plex Mono', monospace; font-size: 12px; margin-top: 6px">{{r.cost}}</span></span>
-<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8D8981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none"><path d="M9 6l6 6-6 6"></path></svg>
+<!-- ============ 1 · elegir ============ -->
+<sc-if value="{{V.home}}" hint-placeholder-val="{{ true }}">
+<div style="padding:0 20px"><h1 style="margin:0;font:500 31px/1.1 var(--np-font-read);letter-spacing:-.02em">Empieza con uno de estos</h1></div>
+<div style="display:flex;flex-direction:column;gap:10px;padding:16px 16px 0">
+<sc-for list="{{recs}}" as="r" hint-placeholder-count="3">
+<button class="pv-rec m-rise" style="{{r.anim}}" onClick="{{r.pick}}">
+<span class="pv-logo" style="{{r.box}}"><sc-if value="{{r.logo}}" hint-placeholder-val="{{ true }}"><img src="{{r.logo}}" alt="" width="28" height="28"></sc-if><sc-if value="{{r.mono}}" hint-placeholder-val="{{ false }}">{{r.mono}}</sc-if></span>
+<span style="flex:1;min-width:0"><b style="display:block;font:500 17px/1.25 var(--np-font-ui)">Conectar {{r.name}}</b><span style="display:block;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted)">{{r.pitch}}</span><span style="{{r.stStyle}}">{{r.status}}</span></span>
+<span class="{{r.tagCls}}">{{r.tag}}</span>
+<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--np-faint)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
 </button>
 </sc-for>
 </div>
-
-<div style="display: flex; justify-content: space-between; align-items: baseline; margin: 22px 0 8px"><span style="font-size: 12px; font-weight: 600; color: #5E5B55">Más proveedores</span><span style="font-size: 12px; color: #6B675F">10 en la nube</span></div>
-<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px">
-<sc-for list="{{more}}" as="m" hint-placeholder-count="10"><button onClick="{{m.pick}}" aria-label="{{m.name}}" style="{{m.style}}"><span style="{{m.logoBox}}"><sc-if value="{{m.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{m.logo}}" alt="" width="20" height="20" style="display: block"></sc-if><sc-if value="{{m.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600">{{m.mono}}</span></sc-if></span><span style="font-size: 11px; line-height: 1.2; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%">{{m.short}}</span></button></sc-for>
+<div style="padding:22px 20px 0">
+<label for="pk" style="display:block;font:600 12px var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);margin-bottom:8px">¿Ya tienes una clave? Pégala aquí</label>
+<div style="display:flex;gap:8px"><input id="pk" class="{{pasteCls}}" value="{{paste}}" onInput="{{onPaste}}" onFocus="{{kbOn}}" autocomplete="off" spellcheck="false" placeholder="sk-…, sk-ant-…, AIza…" style="flex:1;min-width:0"><button class="m-btn soft sm" style="flex:none;padding:0 16px" onClick="{{pasteDemo}}">Pegar</button></div>
+<sc-if value="{{det1}}" hint-placeholder-val="{{ false }}"><div class="m-pop" style="margin-top:12px;display:flex;align-items:center;gap:12px;padding:10px 10px 10px 14px;border-radius:16px;background:var(--np-ok-bg);color:var(--np-ok)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg><span style="flex:1;font:500 14px var(--np-font-ui)">Es de <b>{{det1Name}}</b></span><button class="m-btn sm" style="height:44px;padding:0 16px" onClick="{{det1Go}}">Continuar</button></div></sc-if>
+<sc-if value="{{detUnknown}}" hint-placeholder-val="{{ false }}"><div class="m-rise" style="margin-top:12px;padding:12px 14px;border-radius:16px;background:var(--np-warn-bg);color:var(--np-warn);font:400 13px/1.5 var(--np-font-ui)">No reconocemos este prefijo. Elige el proveedor en la lista completa.</div></sc-if>
 </div>
-
-<div style="font-size: 12px; font-weight: 600; color: #5E5B55; margin: 22px 0 8px">En tu equipo</div>
-<div class="rise" style="display: flex; align-items: center; gap: 12px; padding: 14px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; animation-delay: 300ms">
-<span style="flex: none; width: 44px; height: 44px; border-radius: 12px; background: #EDEDEB; display: flex; align-items: center; justify-content: center"><img src="/_blob/a5ba83869b71d8f76e17ed7ed73b84d2" alt="" width="24" height="24" style="display: block"></span>
-<div style="flex: 1; min-width: 0"><div style="font-weight: 500">Usar el Ollama de tu PC</div><div style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #0B6B50; margin-top: 3px"><span style="width: 6px; height: 6px; border-radius: 50%; background: #0B6B50; animation: pulse 1.6s infinite"></span>Detectado en PC-ESCRITORIO · gratis</div></div>
-<button onClick="{{useOllama}}" style="flex: none; height: 44px; padding: 0 16px; border: 0; border-radius: 12px; background: #17171A; color: #F6F4EF; font-weight: 500">Usar</button>
-</div>
-<button onClick="{{pasteFirst}}" style="width: 100%; min-height: 44px; margin-top: 12px; border: 1px dashed #CFCAC0; border-radius: 12px; background: transparent; color: #3D3B37; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="15" r="4"></circle><path d="M11 12l9-9M17 6l3 3M15 8l2 2"></path></svg>¿Ya tienes una clave? Pégala y lo detectamos</button>
-</div>
+<div style="padding:12px 16px 0"><button class="m-row m-tap" style="width:100%;height:56px;border-radius:16px;justify-content:center;gap:8px;color:var(--np-accent);font:500 15px var(--np-font-ui)" onClick="{{toAll}}">Ver todos los proveedores (13)<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button></div>
 </sc-if>
 
-<sc-if value="{{is.s2}}" hint-placeholder-val="{{ false }}">
-<div style="{{anim}}">
-<div style="display: flex; align-items: center; gap: 14px; padding: 16px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 18px">
-<span style="{{cur.logoBox}}"><sc-if value="{{cur.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="30" height="30" style="display: block"></sc-if><sc-if value="{{cur.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{cur.mono}}</span></sc-if></span>
-<div style="flex: 1; min-width: 0"><div style="font-family: 'Newsreader', serif; font-size: 22px; line-height: 1.15">{{cur.name}}</div><div style="{{cur.statusStyle}}">{{cur.status}}</div></div>
+<!-- ============ 1b · lista completa ============ -->
+<sc-if value="{{V.all}}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 16px">
+<label class="m-sr" for="ps">Buscar un proveedor</label>
+<div style="position:relative"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--np-muted)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position:absolute;left:16px;top:18px"><circle cx="11" cy="11" r="6.500"/><path d="M20 20l-4.200-4.200"/></svg><input id="ps" class="pv-input" style="padding-left:46px;font:400 16px var(--np-font-ui)" value="{{q}}" onInput="{{onQ}}" onFocus="{{kbOn}}" placeholder="Buscar un proveedor" autocomplete="off"></div>
+<div class="pv-sw" role="tablist" aria-label="Tipo de proveedor" style="margin-top:12px;opacity:{{segDim}};transition:opacity var(--m-dur-base) var(--m-ease)"><i style="{{segThumb}}"></i><sc-for list="{{segs}}" as="g" hint-placeholder-count="3"><button role="tab" aria-selected="{{g.on}}" onClick="{{g.pick}}">{{g.name}}</button></sc-for></div>
+<p style="margin:10px 4px 12px;font:400 13px/1.45 var(--np-font-ui);color:var(--np-muted)">{{segLine}}</p>
 </div>
-
-<label for="pkey" style="display: block; font-size: 12px; font-weight: 600; color: #5E5B55; margin: 18px 0 8px">Clave de API</label>
-<input id="pkey" value="{{key}}" onChange="{{onKey}}" autocomplete="off" spellcheck="false" placeholder="Pega aquí tu clave" style="{{keyStyle}}">
-<button onClick="{{pasteSample}}" style="width: 100%; min-height: 44px; margin-top: 8px; border: 1px solid #D9D5CC; border-radius: 12px; background: #FFFFFF; color: #17171A; font-size: 13px; display: flex; align-items: center; justify-content: center; gap: 8px"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; padding: 2px 5px; border-radius: 4px; border: 1px solid currentColor; opacity: .6">DEMO</span>Pegar clave de ejemplo</button>
-<div style="font-size: 12px; color: #6B675F; line-height: 1.5; margin-top: 10px">Reconocemos el proveedor por el principio de la clave: sk-ant-, nvapi-, gsk_, xai-, AIza, sk-or-, hf_…</div>
-
-<sc-if value="{{hasProv}}" hint-placeholder-val="{{ true }}">
-<div style="margin-top: 16px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 4px 14px">
-<button onClick="{{toggleGet}}" aria-expanded="{{getAria}}" style="width: 100%; min-height: 48px; border: 0; padding: 0; background: transparent; color: #2340B8; font-weight: 500; display: flex; align-items: center; gap: 10px; text-align: left"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"></path></svg><span style="flex: 1">Consigue tu clave</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6B675F">{{cur.getHost}}</span></button>
-<sc-if value="{{showGet}}" hint-placeholder-val="{{ false }}"><div style="{{getAnim}}">Se abrirá {{cur.getKey}} en tu navegador. Crea una clave, cópiala y vuelve aquí: la pegaremos por ti.</div></sc-if>
-</div>
-</sc-if>
-
-<div style="display: flex; gap: 10px; align-items: flex-start; margin-top: 14px; font-size: 12px; color: #5E5B55; line-height: 1.5"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0B6B50" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="flex: none; margin-top: 1px"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 018 0v3"></path></svg>La clave se guarda en el llavero del móvil. Solo la usa el núcleo de la app para hablar con el proveedor; nunca pasa por newpaper.</div>
-</div>
-</sc-if>
-
-<sc-if value="{{is.s3}}" hint-placeholder-val="{{ false }}">
-<div style="{{anim}}">
-<sc-if value="{{testing}}" hint-placeholder-val="{{ true }}">
-<div style="display: flex; align-items: center; gap: 14px">
-<span style="{{cur.logoBox}}"><sc-if value="{{cur.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="30" height="30" style="display: block"></sc-if><sc-if value="{{cur.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600">{{cur.mono}}</span></sc-if></span>
-<div><div style="font-family: 'Newsreader', serif; font-size: 26px; line-height: 1.1">Probando la conexión…</div><div style="font-size: 12px; color: #5E5B55; margin-top: 3px">{{cur.name}}</div></div>
-</div>
-<div style="margin-top: 20px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 6px 14px">
-<sc-for list="{{checks}}" as="c" hint-placeholder-count="4"><div style="{{c.row}}"><span style="{{c.dot}}"></span><span style="flex: 1">{{c.t}}</span><span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: #6B675F">{{c.r}}</span></div></sc-for>
-</div>
-</sc-if>
-<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
-<div style="display: flex; flex-direction: column; align-items: center; text-align: center; padding-top: 4px">
-<span style="width: 64px; height: 64px; border-radius: 50%; background: #0B6B50; display: flex; align-items: center; justify-content: center; animation: pop .7s cubic-bezier(.34,1.56,.64,1) both"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></span>
-<div class="rise" style="font-family: 'Newsreader', serif; font-size: 28px; line-height: 1.12; letter-spacing: -0.015em; margin-top: 14px; animation-delay: 120ms">Listo, asignado automáticamente</div>
-<div class="rise" style="font-size: 13px; color: #5E5B55; line-height: 1.55; margin-top: 8px; max-width: 320px; animation-delay: 200ms">{{summary}}</div>
-</div>
-<div style="margin-top: 18px; background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 16px; padding: 4px 12px">
-<sc-for list="{{tasks}}" as="t" hint-placeholder-count="6">
-<div style="{{t.row}}">
-<span style="{{t.node}}"><sc-if value="{{t.hasLogo}}" hint-placeholder-val="{{ true }}"><img src="{{t.logo}}" alt="" width="18" height="18" style="display: block"></sc-if><sc-if value="{{t.isMono}}" hint-placeholder-val="{{ false }}"><span style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600">{{t.mono}}</span></sc-if></span>
-<span style="flex: 1; min-width: 0"><span style="display: block; font-weight: 500">{{t.name}}</span><span style="display: block; font-size: 12px; color: #5E5B55">{{t.model}}</span></span>
-<span style="{{t.chip}}">{{t.where}}</span>
-</div>
+<div style="padding:0 16px">
+<sc-if value="{{showSoon}}" hint-placeholder-val="{{ true }}"><div class="pv-soon"><span class="pv-logo" style="width:40px;height:40px;border-radius:12px;background:#E7EEF0"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="var(--np-ink2)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="5.500" cy="12" r="2"/><circle cx="18.500" cy="6" r="2"/><circle cx="18.500" cy="18" r="2"/><path d="M7.500 12h4l4.500-5M11.500 12l4.500 5"/></svg></span><span style="flex:1"><b style="display:block;font:500 15px var(--np-font-ui)">New Router</b><span style="font:400 12px var(--np-font-ui);color:var(--np-muted)">Elige el modelo por ti</span></span><span class="pv-tag">Próximamente</span></div></sc-if>
+<div class="m-group" style="margin:0">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="5">
+<button class="pv-row m-rise" style="{{r.anim}}" onClick="{{r.pick}}">
+<span class="pv-logo" style="{{r.box}}"><sc-if value="{{r.logo}}" hint-placeholder-val="{{ true }}"><img src="{{r.logo}}" alt="" width="22" height="22"></sc-if><sc-if value="{{r.mono}}" hint-placeholder-val="{{ false }}">{{r.mono}}</sc-if></span>
+<span style="flex:1;min-width:0"><b style="display:block;font:500 16px/1.3 var(--np-font-ui)">{{r.name}}</b><span style="display:block;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{r.pitch}}</span></span>
+<sc-if value="{{r.free}}" hint-placeholder-val="{{ false }}"><span class="pv-tag free">Gratis</span></sc-if><sc-if value="{{r.acct}}" hint-placeholder-val="{{ false }}"><span class="pv-tag acct">Con cuenta</span></sc-if><sc-if value="{{r.loc}}" hint-placeholder-val="{{ false }}"><span class="pv-tag loc">Local</span></sc-if>
+<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--np-faint)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
+</button>
 </sc-for>
 </div>
-<div style="display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; padding: 0 4px; font-size: 12px; color: #5E5B55"><span>Coste estimado</span><span style="font-family: 'IBM Plex Mono', monospace; color: #17171A">{{costLine}}</span></div>
+<sc-if value="{{noRows}}" hint-placeholder-val="{{ false }}"><p class="m-rise" style="margin:24px 8px;text-align:center;color:var(--np-muted);font:400 15px/1.5 var(--np-font-ui)">Ningún proveedor se llama así. Prueba con otra palabra o conecta tu propio servidor.</p></sc-if>
+<button class="m-row m-tap" style="width:100%;min-height:56px;margin-top:12px;border-radius:16px;gap:12px;color:var(--np-accent);font:500 15px var(--np-font-ui)" onClick="{{toServer}}"><span class="m-ico" style="background:var(--np-accent-soft);color:var(--np-accent)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="6" rx="2"/><rect x="4" y="13" width="16" height="6" rx="2"/><path d="M8 8h.01M8 16h.01"/></svg></span><span style="flex:1;text-align:left">¿Tienes tu propio servidor? Conéctalo</span></button>
+</div>
 </sc-if>
+
+<!-- ============ 2 · clave o inicio de sesión ============ -->
+<sc-if value="{{V.key}}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 16px">
+<div class="m-card" style="padding:14px;display:flex;align-items:center;gap:14px"><span class="pv-logo" style="{{cur.box56}}"><sc-if value="{{cur.logo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="30" height="30"></sc-if><sc-if value="{{cur.mono}}" hint-placeholder-val="{{ false }}">{{cur.mono}}</sc-if></span><div style="flex:1"><div style="font:500 23px/1.15 var(--np-font-read)">{{cur.name}}</div><div style="font:400 12px/1.4 var(--np-font-ui);color:var(--np-muted);margin-top:2px">En la nube · pagas por uso con tu propia clave</div></div></div>
+
+<sc-if value="{{cur.login}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:16px">
+<sc-if value="{{login.idle}}" hint-placeholder-val="{{ true }}"><div class="m-rise"><button class="m-btn" style="width:100%" onClick="{{loginGo}}"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 01-1 1H5a1 1 0 01-1-1V7a1 1 0 011-1h5"/></svg>Iniciar sesión con {{cur.name}}</button><p style="margin:10px 4px 0;font:400 13px/1.5 var(--np-font-ui);color:var(--np-muted)">Se abre la web de {{cur.name}} en tu navegador. Apruebas el acceso allí y newpaper recibe la clave sin que la veas ni la copies.</p></div></sc-if>
+<sc-if value="{{login.wait}}" hint-placeholder-val="{{ false }}"><div class="m-card m-rise" style="padding:16px;background:var(--np-accent-soft);border-color:#C9D3F3"><div style="display:flex;align-items:center;gap:14px"><svg viewBox="0 0 44 44" width="44" height="44" aria-hidden="true" style="transform:rotate(-90deg)"><circle cx="22" cy="22" r="18" fill="none" stroke="#C9D3F3" stroke-width="4"/><circle class="pv-wait" cx="22" cy="22" r="18" fill="none" stroke="var(--np-accent)" stroke-width="4" stroke-linecap="round" pathLength="100"/></svg><div style="flex:1"><div style="font:500 15px/1.3 var(--np-font-ui)">Esperando a que apruebes el acceso en {{cur.name}}…</div><div style="font:400 12px/1.4 var(--np-font-ui);color:var(--np-muted);margin-top:2px">Se ha abierto tu navegador. Tienes 5 minutos.</div></div></div><div style="display:flex;gap:8px;margin-top:14px"><button class="m-btn sec sm" style="flex:1" onClick="{{copyLink}}">{{copyLabel}}</button><button class="m-btn soft sm" style="flex:1" onClick="{{loginCancel}}">Cancelar</button></div></div></sc-if>
+<sc-if value="{{login.err}}" hint-placeholder-val="{{ false }}"><div class="m-rise"><button class="m-btn" style="width:100%" onClick="{{loginGo}}">Reintentar</button><div style="margin-top:10px;padding:12px 14px;border-radius:16px;background:var(--np-bad-bg);color:var(--np-bad);font:400 13px/1.5 var(--np-font-ui)">{{loginMsg}}</div></div></sc-if>
+<div style="display:flex;align-items:center;gap:12px;margin:18px 0 2px;color:var(--np-muted);font:500 12px var(--np-font-ui)"><span style="flex:1;height:1px;background:var(--np-line3)"></span>o pega una clave<span style="flex:1;height:1px;background:var(--np-line3)"></span></div>
+</div>
+</sc-if>
+
+<label for="kk" style="display:block;font:600 12px var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);margin:18px 0 8px">Pega tu clave de {{cur.name}}</label>
+<div style="display:flex;gap:8px"><input id="kk" class="{{keyCls}}" value="{{key}}" onInput="{{onKey}}" onFocus="{{kbOn}}" autocomplete="off" spellcheck="false" placeholder="{{cur.ph}}" style="flex:1;min-width:0"><button class="m-btn soft sm" style="flex:none;padding:0 16px" onClick="{{pasteKey}}">Pegar</button></div>
+<sc-if value="{{keyHit}}" hint-placeholder-val="{{ false }}"><div class="m-rise" style="margin-top:10px;display:flex;align-items:center;gap:8px;font:400 13px/1.4 var(--np-font-ui);color:var(--np-ok)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500"/></svg><span>Empieza por <code style="font:500 12px var(--np-font-mono)">{{cur.prefix}}</code>: es una clave de {{cur.name}}</span></div></sc-if>
+<sc-if value="{{keyMiss}}" hint-placeholder-val="{{ false }}"><div class="m-rise" style="margin-top:10px;font:400 13px/1.5 var(--np-font-ui);color:var(--np-warn)">No reconocemos el prefijo. Si es de {{cur.name}}, sigue adelante: lo comprobaremos en la prueba.</div></sc-if>
+<sc-if value="{{cur.tip}}" hint-placeholder-val="{{ false }}"><div style="margin-top:14px;padding:12px 14px;border-radius:16px;background:var(--np-warn-bg);color:#6B4A12;font:400 13px/1.5 var(--np-font-ui)">{{cur.tipText}}</div></sc-if>
+
+<div class="m-card" style="margin-top:16px;padding:4px 16px;overflow:hidden">
+<button class="m-row" style="padding:0;min-height:56px;color:var(--np-accent);font:500 15px var(--np-font-ui);gap:10px" onClick="{{toggleHow}}" aria-expanded="{{howAria}}"><span style="flex:1;text-align:left">¿No tienes clave?</span><span style="font:400 12px var(--np-font-mono);color:var(--np-muted)">{{cur.site}}</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{howChev}}"><path d="M6 9l6 6 6-6"/></svg></button>
+<div class="{{howCls}}" style="display:grid;grid-template-rows:{{howRows}};transition:grid-template-rows var(--m-dur-slow) var(--m-ease)"><div style="overflow:hidden"><ol style="margin:0;padding:0 0 12px 20px;font:400 14px/1.55 var(--np-font-ui);color:var(--np-ink2)"><li>Entra o crea una cuenta en {{cur.site}}.</li><li>Abre {{cur.section}} y pulsa «{{cur.button}}».</li><li>Copia la clave y pégala aquí. Solo se muestra una vez.</li></ol><button class="m-btn sec sm" style="width:100%;margin-bottom:12px" onClick="{{openSite}}">Consigue tu clave en {{cur.site}}</button><sc-if value="{{opened}}" hint-placeholder-val="{{ false }}"><div class="m-rise" style="margin:-4px 0 12px;font:400 13px var(--np-font-ui);color:var(--np-ok)">Abierta en el navegador. Vuelve aquí cuando la tengas.</div></sc-if></div></div>
+</div>
+<div style="display:flex;gap:10px;margin:14px 4px 0;font:400 12.5px/1.5 var(--np-font-ui);color:var(--np-muted)"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="var(--np-ok)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="margin-top:2px"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>Tu clave se guarda en el llavero de Android, cifrada. Nunca sale de tu móvil salvo hacia {{cur.name}}.</div>
+</div>
+</sc-if>
+
+<!-- ============ 2b · servidor propio / Ollama ============ -->
+<sc-if value="{{V.server}}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 16px">
+<sc-if value="{{ol.paired}}" hint-placeholder-val="{{ false }}">
+<div class="m-card m-rise" style="padding:16px"><div style="display:flex;align-items:center;gap:14px"><span class="pv-logo" style="width:56px;height:56px;border-radius:16px;background:#EDEDEB"><img src="/_blob/a5ba83869b71d8f76e17ed7ed73b84d2" alt="" width="30" height="30"></span><div style="flex:1"><div style="font:500 22px/1.15 var(--np-font-read)">Ollama de tu PC</div><div style="display:flex;align-items:center;gap:6px;font:500 12px var(--np-font-ui);color:var(--np-ok);margin-top:3px"><i style="width:7px;height:7px;border-radius:50%;background:var(--np-ok);animation:m-pulse 1.6s infinite"></i>Detectado vía emparejamiento</div></div></div>
+<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--np-line2);display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font:400 13px var(--np-font-ui)"><span style="color:var(--np-muted)">Equipo</span><span>PC-ESCRITORIO</span><span style="color:var(--np-muted)">Dirección</span><span style="font-family:var(--np-font-mono);font-size:12px">192.168.1.34:11434</span><span style="color:var(--np-muted)">Modelos</span><span style="display:flex;flex-wrap:wrap;gap:6px"><span class="pv-tag">llama3.1:8b</span><span class="pv-tag">qwen2.5:7b</span><span class="pv-tag">mistral</span></span></div></div>
+<p style="margin:12px 6px 0;font:400 13px/1.5 var(--np-font-ui);color:var(--np-muted)">No hace falta copiar nada: el emparejamiento ya guardó la dirección. Gratis, y los datos no salen de tu red.</p>
+<button class="m-row m-tap" style="width:100%;min-height:52px;margin-top:8px;border-radius:14px;color:var(--np-accent);font:500 14px var(--np-font-ui);justify-content:center" onClick="{{ol.other}}">Usar otra dirección</button>
+</sc-if>
+<sc-if value="{{ol.unpaired}}" hint-placeholder-val="{{ false }}">
+<div class="m-card m-rise" style="padding:18px;text-align:center"><span class="pv-logo" style="width:64px;height:64px;border-radius:20px;background:#EDEDEB;margin:0 auto"><img src="/_blob/a5ba83869b71d8f76e17ed7ed73b84d2" alt="" width="34" height="34"></span><div style="font:500 22px/1.2 var(--np-font-read);margin-top:12px">Empareja tu PC para usar su Ollama</div><p style="margin:8px 0 0;font:400 14px/1.5 var(--np-font-ui);color:var(--np-muted)">Así newpaper encuentra el modelo en tu red sin que escribas ninguna dirección.</p><a class="m-btn m-tap" href="Movil-Emparejar.dc.html" style="margin-top:14px">Emparejar con el PC</a><button class="m-btn sec sm" style="width:100%;margin-top:8px" onClick="{{ol.other}}">Escribir una dirección</button></div>
+</sc-if>
+<sc-if value="{{ol.manual}}" hint-placeholder-val="{{ true }}">
+<div class="m-card" style="padding:14px;display:flex;align-items:center;gap:14px"><span class="pv-logo" style="{{cur.box56}}"><sc-if value="{{cur.logo}}" hint-placeholder-val="{{ false }}"><img src="{{cur.logo}}" alt="" width="30" height="30"></sc-if><sc-if value="{{cur.mono}}" hint-placeholder-val="{{ true }}">{{cur.mono}}</sc-if></span><div style="flex:1"><div style="font:500 22px/1.15 var(--np-font-read)">{{cur.name}}</div><div style="font:400 12px/1.4 var(--np-font-ui);color:var(--np-muted);margin-top:2px">Cualquier servidor que hable la API de OpenAI</div></div></div>
+<label for="u1" style="display:block;font:600 12px var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);margin:18px 0 8px">Dirección base</label>
+<input id="u1" class="pv-input" value="{{url}}" onInput="{{onUrl}}" onFocus="{{kbOn}}" inputmode="url" autocomplete="off" spellcheck="false" placeholder="http://192.168.1.34:11434/v1">
+<p style="margin:8px 4px 0;font:400 12.5px/1.5 var(--np-font-ui);color:var(--np-muted)">Suele terminar en /v1. En el móvil, «localhost» es el propio móvil: usa la IP o el nombre de tu servidor.</p>
+<label for="u2" style="display:block;font:600 12px var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);margin:18px 0 8px">Modelos (separados por comas)</label>
+<input id="u2" class="pv-input" value="llama3, mistral" onFocus="{{kbOn}}" autocomplete="off" spellcheck="false">
+<label for="u3" style="display:block;font:600 12px var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);margin:18px 0 8px">Clave (opcional)</label>
+<input id="u3" class="pv-input" value="" onFocus="{{kbOn}}" autocomplete="off" spellcheck="false" placeholder="Déjalo vacío si no pide clave">
+</sc-if>
+</div>
+</sc-if>
+
+<!-- ============ 3a · prueba ============ -->
+<sc-if value="{{V.test}}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 16px">
+<div style="display:flex;align-items:center;gap:14px;padding:0 4px"><span class="pv-logo" style="{{cur.box56}}"><sc-if value="{{cur.logo}}" hint-placeholder-val="{{ true }}"><img src="{{cur.logo}}" alt="" width="30" height="30"></sc-if><sc-if value="{{cur.mono}}" hint-placeholder-val="{{ false }}">{{cur.mono}}</sc-if></span><div><div style="font:500 26px/1.1 var(--np-font-read)">{{testTitle}}</div><div style="font:400 12px var(--np-font-ui);color:var(--np-muted);margin-top:3px">{{cur.host}}</div></div></div>
+<div class="m-card" style="margin-top:18px;padding:6px 16px">
+<sc-for list="{{checks}}" as="c" hint-placeholder-count="3">
+<div class="pv-st"><span class="{{c.dot}}"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{c.ic}}" pathLength="1"/></svg></span><span style="flex:1;min-width:0"><span style="display:block;color:{{c.col}}">{{c.t}}</span><span style="display:block;font:400 12.5px/1.4 var(--np-font-ui);color:{{c.dc}}">{{c.d}}</span></span><span class="pv-ms">{{c.ms}}</span></div>
+</sc-for>
+</div>
+<sc-if value="{{slow}}" hint-placeholder-val="{{ false }}"><p class="m-rise" style="margin:12px 6px 0;font:400 13px/1.5 var(--np-font-ui);color:var(--np-warn)">Tarda más de lo normal. {{cur.name}} puede estar saturado; seguimos esperando (máx. 10 s).</p></sc-if>
+<sc-if value="{{okModels}}" hint-placeholder-val="{{ false }}"><div class="m-rise" style="margin-top:14px;display:flex;flex-wrap:wrap;gap:6px"><sc-for list="{{models}}" as="m" hint-placeholder-count="3"><span class="pv-tag m-pop" style="{{m.s}}">{{m.n}}</span></sc-for></div></sc-if>
+<sc-if value="{{okReply}}" hint-placeholder-val="{{ false }}"><div class="m-pop" style="margin-top:14px;display:inline-block;background:var(--np-ink);color:var(--np-on-ink);padding:10px 14px;border-radius:16px 16px 16px 4px;font:400 15px var(--np-font-read);transform-origin:left bottom">Listo para leer noticias contigo.</div></sc-if>
+</div>
+</sc-if>
+
+<!-- ============ 3b · fallo honesto ============ -->
+<sc-if value="{{V.fail}}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 16px">
+<div class="m-card m-pop" style="padding:18px;border-color:#EFC9C3;background:#FFFDFC"><div style="display:flex;gap:14px;align-items:flex-start"><span style="flex:none;width:48px;height:48px;border-radius:16px;background:var(--np-bad-bg);color:var(--np-bad);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 8v5M12 16.500v.01"/><path d="M10.300 3.900L2.400 17.500A2 2 0 004.100 20.500h15.800a2 2 0 001.700-3L13.700 3.900a2 2 0 00-3.400 0z"/></svg></span><div><div style="font:500 22px/1.2 var(--np-font-read)">{{f.title}}</div><p style="margin:6px 0 0;font:400 14px/1.55 var(--np-font-ui);color:var(--np-ink2)">{{f.body}}</p></div></div>
+<div style="margin-top:14px;padding:10px 12px;border-radius:12px;background:var(--np-soft);font:400 12px/1.6 var(--np-font-mono);color:var(--np-ink2);word-break:break-all">{{f.detail}}</div>
+<div style="margin-top:12px;font:400 13px/1.5 var(--np-font-ui);color:var(--np-muted)"><b style="font-weight:600;color:var(--np-ink2)">Qué comprobamos:</b> {{f.tried}}</div></div>
+<sc-if value="{{f.save}}" hint-placeholder-val="{{ false }}"><div class="m-rise" style="margin-top:12px;display:flex;align-items:center;gap:12px;padding:6px 6px 6px 16px;border-radius:16px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line)"><span style="flex:1;font:400 14px/1.4 var(--np-font-ui)">La clave es válida. ¿Guardarla igualmente?</span><button class="m-switch" role="switch" aria-checked="{{saveAnyway}}" aria-label="Guardar igualmente" onClick="{{toggleSave}}"></button></div></sc-if>
+</div>
+</sc-if>
+
+<!-- ============ 3c · punto de partida, límite, avanzado ============ -->
+<sc-if value="{{V.preset}}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 20px"><div style="display:flex;align-items:center;gap:10px"><span class="m-pop" style="width:28px;height:28px;border-radius:50%;background:var(--np-ok);display:flex;align-items:center;justify-content:center"><svg class="pv-chk" viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></span><span style="font:500 13px var(--np-font-ui);color:var(--np-ok)">{{cur.name}} funciona · {{lat}} ms</span></div><h1 style="margin:10px 0 0;font:500 29px/1.12 var(--np-font-read);letter-spacing:-.02em">¿Cómo repartimos el trabajo?</h1><p style="margin:8px 0 0;font:400 14px/1.5 var(--np-font-ui);color:var(--np-muted)">Es solo el punto de partida: cada paso se puede cambiar luego.</p></div>
+<div role="radiogroup" aria-label="Punto de partida" style="display:flex;flex-direction:column;gap:8px;padding:14px 16px 0">
+<sc-for list="{{presets}}" as="p" hint-placeholder-count="4">
+<button class="pv-opt m-rise" style="{{p.anim}}" role="radio" aria-checked="{{p.on}}" onClick="{{p.pick}}">
+<span style="display:flex;align-items:center;gap:12px"><span class="m-ico {{p.tone}}" style="width:40px;height:40px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{p.ic}}"/></svg></span><span style="flex:1"><b style="display:block;font:600 16px var(--np-font-ui)">{{p.name}}</b><span style="display:block;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted)">{{p.desc}}</span></span><span style="flex:none;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 {{p.ringW}}px {{p.ringC}};display:flex;align-items:center;justify-content:center;transition:box-shadow var(--m-dur-base) var(--m-ease)"><span style="width:12px;height:12px;border-radius:50%;background:var(--np-ink);transform:scale({{p.dotS}});transition:transform var(--m-dur-base) var(--m-spring)"></span></span></span>
+<span class="pv-more"><div><div style="padding-top:12px;margin-top:12px;border-top:1px solid var(--np-line2)"><sc-for list="{{p.tasks}}" as="t" hint-placeholder-count="6"><div style="display:flex;align-items:center;gap:10px;min-height:34px;font:400 13px var(--np-font-ui)"><span style="flex:1;color:var(--np-ink2)">{{t.n}}</span><span style="flex:none;color:var(--np-muted)">{{t.m}}</span><span class="{{t.cls}}">{{t.w}}</span></div></sc-for></div></div></span>
+</button>
+</sc-for>
+</div>
+<div style="display:flex;gap:8px;padding:12px 16px 0"><div class="pv-fig"><b class="{{bump}}">{{fig.cost}}</b><span>coste por noticia</span></div><div class="pv-fig"><b class="{{bump}}">{{fig.time}}</b><span>tiempo estimado</span></div><div class="pv-fig"><b class="{{bump}}">{{fig.local}}</b><span>pasos en tu equipo</span></div></div>
+<div style="padding:4px 20px 0;font:400 11.5px/1.4 var(--np-font-ui);color:var(--np-muted)">Estimación con una noticia de 6.000 caracteres y 5 coberturas.</div>
+
+<div class="m-card" style="margin:16px 16px 0;padding:14px 16px 4px">
+<div style="display:flex;align-items:baseline"><label for="lim" style="flex:1;font:500 16px var(--np-font-ui)">Límite mensual</label><b style="font:500 20px var(--np-font-read)">{{limLabel}}</b></div>
+<input id="lim" class="pv-range" type="range" min="0" max="50" step="1" value="{{lim}}" onInput="{{onLim}}" aria-valuetext="{{limLabel}}">
+<div style="display:flex;justify-content:space-between;font:400 11px var(--np-font-ui);color:var(--np-muted);margin-top:-6px"><span>Sin límite</span><span>50 $</span></div>
+<p style="margin:10px 0 10px;font:400 12.5px/1.5 var(--np-font-ui);color:var(--np-muted)">Al llegar al límite, el análisis completo pasa a modelos locales. {{limHint}}</p></div>
+
+<div class="m-card" style="margin:12px 16px 0;padding:4px 16px;overflow:hidden">
+<button class="m-row" style="padding:0;min-height:56px;gap:10px;font:500 15px var(--np-font-ui)" onClick="{{toggleAdv}}" aria-expanded="{{advAria}}"><span style="flex:1;text-align:left">Opciones avanzadas<span style="display:block;font:400 12.5px var(--np-font-ui);color:var(--np-muted)">Modelo de cada paso y creatividad</span></span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="{{advChev}}"><path d="M6 9l6 6 6-6"/></svg></button>
+<div style="display:grid;grid-template-rows:{{advRows}};transition:grid-template-rows var(--m-dur-slow) var(--m-ease)"><div style="overflow:hidden">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="8">
+<button class="m-row" style="padding:0;min-height:56px;border-top:1px solid var(--np-line2);border-radius:0;gap:10px" onClick="{{s.open}}" disabled="{{s.fixed}}"><span style="font:500 11px var(--np-font-mono);color:var(--np-faint);width:18px">{{s.n}}</span><span style="flex:1;min-width:0;text-align:left"><b style="display:block;font:500 15px/1.3 var(--np-font-ui)">{{s.name}}</b><span style="display:block;font:400 12.5px var(--np-font-ui);color:var(--np-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{s.model}}</span></span><span class="{{s.cls}}">{{s.w}}</span><sc-if value="{{s.editable}}" hint-placeholder-val="{{ true }}"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="var(--np-faint)" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></sc-if></button>
+</sc-for>
+</div></div></div>
+<div style="height:8px"></div>
+</sc-if>
+
+<!-- ============ final ============ -->
+<sc-if value="{{V.done}}" hint-placeholder-val="{{ false }}">
+<div style="padding:40px 28px 0;display:flex;flex-direction:column">
+<div style="position:relative;width:72px;height:72px"><sc-for list="{{conf}}" as="c" hint-placeholder-count="14"><i class="pv-conf" style="{{c}}"></i></sc-for><svg class="m-pop" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true"><circle cx="36" cy="36" r="34" fill="#E3F2EC"/><path d="M22 37l10 10 18-21" fill="none" stroke="#0B6B50" stroke-width="4.500" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 480ms var(--m-ease-inout) 300ms both"/></svg></div>
+<h1 class="m-rise" style="margin:24px 0 0;font:500 40px/1.05 var(--np-font-read);letter-spacing:-.03em;animation-delay:350ms">{{cur.name}} está conectado</h1>
+<p class="m-rise" style="margin:12px 0 0;font:400 18px/1.5 var(--np-font-read);color:var(--np-ink2);animation-delay:450ms">{{doneLine}}</p>
+<div class="m-card m-rise" style="margin-top:20px;padding:4px 16px;animation-delay:560ms"><div style="display:flex;align-items:center;min-height:48px;font:400 14px var(--np-font-ui)"><span style="flex:1;color:var(--np-muted)">Punto de partida</span><b style="font-weight:500">{{presetName}}</b></div><div style="display:flex;align-items:center;min-height:48px;font:400 14px var(--np-font-ui);border-top:1px solid var(--np-line2)"><span style="flex:1;color:var(--np-muted)">Límite mensual</span><b style="font-weight:500">{{limLabel}}</b></div></div>
 </div>
 </sc-if>
 </div>
 
-<div style="padding: 12px 20px calc(var(--m-bottom) + 10px); border-top: 1px solid #E2DED5; background: #F6F4EF; display: flex; gap: 8px">
-<sc-if value="{{is.s1}}" hint-placeholder-val="{{ true }}"><div style="flex: 1; min-height: 44px; display: flex; align-items: center; justify-content: center; font-size: 12px; color: #6B675F; text-align: center; line-height: 1.45">Las claves nunca salen de tus dispositivos.</div></sc-if>
-<sc-if value="{{is.s2}}" hint-placeholder-val="{{ false }}"><button onClick="{{toTest}}" disabled="{{cantTest}}" style="{{testBtn}}">Probar conexión</button></sc-if>
-<sc-if value="{{is.s3}}" hint-placeholder-val="{{ false }}">
-<sc-if value="{{testing}}" hint-placeholder-val="{{ true }}"><div style="flex: 1; height: 52px; border-radius: 14px; background: #E7E3DA; color: #3D3B37; display: flex; align-items: center; justify-content: center; gap: 10px"><span style="width: 8px; height: 8px; border-radius: 50%; background: #2340B8; animation: pulse 1.2s infinite"></span>Probando…</div></sc-if>
-<sc-if value="{{done}}" hint-placeholder-val="{{ false }}">
-<a href="Movil-Ajustes.dc.html" style="flex: 1; height: 52px; border: 1px solid #D9D5CC; border-radius: 14px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; box-sizing: border-box; font-size: 13px">Opciones avanzadas</a>
-<a href="Movil-Ajustes.dc.html" style="flex: 1; height: 52px; border-radius: 14px; background: #17171A; color: #F6F4EF; font-weight: 500; display: flex; align-items: center; justify-content: center">Hecho</a>
-</sc-if>
-</sc-if>
+<!-- pies -->
+<sc-if value="{{foot.test}}" hint-placeholder-val="{{ false }}"><div style="flex:none;padding:10px 20px calc(var(--m-bottom) + 8px);background:var(--np-paper);border-top:1px solid var(--np-line)"><div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;font:500 11px var(--np-font-mono);color:var(--np-faint)"><span>DEMO</span><sc-for list="{{demos}}" as="d" hint-placeholder-count="5"><button aria-pressed="{{d.on}}" onClick="{{d.pick}}" style="height:32px;padding:0 10px;border-radius:10px;font:500 12px var(--np-font-ui);color:var(--np-muted);box-shadow:inset 0 0 0 1px var(--np-line3);{{d.st}}">{{d.n}}</button></sc-for></div><button class="m-btn" style="width:100%" disabled="{{foot.cant}}" onClick="{{foot.go}}"><span style="{{foot.s}}">Probar conexión</span></button></div></sc-if>
+<sc-if value="{{foot.busy}}" hint-placeholder-val="{{ false }}"><div style="flex:none;padding:12px 20px calc(var(--m-bottom) + 8px);background:var(--np-paper);border-top:1px solid var(--np-line)"><div class="m-btn soft" style="width:100%;gap:10px;color:var(--np-ink2)!important"><svg class="pv-ring" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 3a9 9 0 019 9" /></svg>Probando… {{foot.sec}}</div></div></sc-if>
+<sc-if value="{{foot.fail}}" hint-placeholder-val="{{ false }}"><div style="flex:none;padding:12px 20px calc(var(--m-bottom) + 8px);background:var(--np-paper);border-top:1px solid var(--np-line);display:flex;flex-direction:column;gap:8px"><button class="m-btn" onClick="{{foot.retry}}">{{foot.main}}</button><div style="display:flex;gap:8px"><button class="m-btn sec sm" style="flex:1" onClick="{{foot.alt1}}">{{foot.alt1L}}</button><button class="m-btn sec sm" style="flex:1" onClick="{{foot.alt2}}">{{foot.alt2L}}</button></div></div></sc-if>
+<sc-if value="{{foot.preset}}" hint-placeholder-val="{{ false }}"><div style="flex:none;padding:12px 20px calc(var(--m-bottom) + 8px);background:var(--np-paper);border-top:1px solid var(--np-line)"><button class="m-btn" style="width:100%" onClick="{{foot.finish}}">Listo</button></div></sc-if>
+<sc-if value="{{foot.done}}" hint-placeholder-val="{{ false }}"><div style="flex:none;padding:12px 20px calc(var(--m-bottom) + 8px);display:flex;gap:10px"><button class="m-btn sec" style="flex:1" onClick="{{foot.another}}">Conectar otro</button><a class="m-btn m-tap" style="flex:1" href="Movil-IA.dc.html">Volver a IA</a></div></sc-if>
+<sc-if value="{{kb}}" hint-placeholder-val="{{ false }}"><div class="pv-kb" aria-hidden="true"><div><span>q</span><span>w</span><span>e</span><span>r</span><span>t</span><span>y</span><span>u</span><span>i</span><span>o</span><span>p</span></div><div><span>a</span><span>s</span><span>d</span><span>f</span><span>g</span><span>h</span><span>j</span><span>k</span><span>l</span></div><div><span>z</span><span>x</span><span>c</span><span>v</span><span>b</span><span>n</span><span>m</span></div><div><span style="max-width:80px">?123</span><span style="max-width:170px"> </span><span style="max-width:60px;background:#17171A;color:#fff">OK</span></div></div></sc-if>
+
+<!-- hoja: modelo de un paso -->
+<sc-if value="{{sheet}}" hint-placeholder-val="{{ false }}">
+<div class="m-scrim" onClick="{{sh.close}}"></div>
+<div class="m-sheet" role="dialog" aria-label="{{sh.title}}"><div class="m-grab"></div>
+<div style="display:flex;align-items:baseline;gap:8px"><h2 style="margin:0;flex:1;font:500 24px/1.15 var(--np-font-read)">{{sh.title}}</h2><span style="font:400 12px var(--np-font-ui);color:var(--np-muted)">{{sh.sub}}</span></div>
+<div style="font:600 11px var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);margin:14px 0 8px">Proveedor</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap"><sc-for list="{{sh.provs}}" as="p" hint-placeholder-count="2"><button class="m-chip" aria-pressed="{{p.on}}" onClick="{{p.pick}}">{{p.n}}</button></sc-for></div>
+<div style="font:600 11px var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);margin:16px 0 4px">Modelo</div>
+<div role="radiogroup" aria-label="Modelo"><sc-for list="{{sh.models}}" as="m" hint-placeholder-count="3"><button class="m-row" role="radio" aria-checked="{{m.on}}" style="padding:0 4px;min-height:52px;border-radius:12px" onClick="{{m.pick}}"><span style="flex:none;width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 {{m.rw}}px {{m.rc}};display:flex;align-items:center;justify-content:center"><i style="width:10px;height:10px;border-radius:50%;background:var(--np-ink);transform:scale({{m.ds}});transition:transform var(--m-dur-base) var(--m-spring)"></i></span><span style="flex:1;text-align:left"><b style="display:block;font:500 15px/1.3 var(--np-font-ui)">{{m.n}}</b><span style="font:400 12px var(--np-font-ui);color:var(--np-muted)">{{m.d}}</span></span><span class="{{m.cls}}">{{m.w}}</span></button></sc-for></div>
+<div style="display:flex;align-items:baseline;margin:14px 0 0"><label for="tp" style="flex:1;font:500 15px var(--np-font-ui)">Creatividad</label><span style="font:500 13px var(--np-font-mono);color:var(--np-muted)">{{sh.tempLabel}}</span></div>
+<input id="tp" class="pv-range" type="range" min="0" max="10" step="1" value="{{sh.temp}}" onInput="{{sh.onTemp}}" aria-valuetext="{{sh.tempLabel}}" style="height:40px">
+<div style="display:flex;justify-content:space-between;font:400 11px var(--np-font-ui);color:var(--np-muted);margin-top:-4px"><span>precisa</span><span>equilibrada</span><span>creativa</span></div>
+<div style="display:flex;align-items:center;gap:12px;margin-top:10px;min-height:48px"><span style="flex:1;font:400 14px/1.4 var(--np-font-ui)">Si falla, pasar al modelo local<span style="display:block;font:400 12px var(--np-font-ui);color:var(--np-muted)">qwen2.5:7b · PC-ESCRITORIO</span></span><button class="m-switch" role="switch" aria-checked="{{sh.fb}}" aria-label="Modelo de respaldo" onClick="{{sh.toggleFb}}"></button></div>
+<button class="m-btn" style="width:100%;margin-top:10px" onClick="{{sh.close}}">Aplicar</button>
 </div>
+</sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
   constructor(p) {
     super(p);
-    this.state = { step: 1, k: 0, sel: null, key: '', bk: 0, get: false, gk: 0, lv: 0, done: false };
+    const qs = new URLSearchParams(location.search), q = qs.get('s') || 'home';
+    const map = { home: ['home'], all: ['all'], search: ['all', { q: 'cl', kb: true }], open: ['all', { seg: 'open' }], local: ['all', { seg: 'local' }], key: ['key', { sel: 'google' }], keykb: ['key', { sel: 'google', kb: true }], openai: ['key', { sel: 'openai' }], how: ['key', { sel: 'google', how: true }], login: ['key', { sel: 'openrouter', login: 'wait' }], loginerr: ['key', { sel: 'openrouter', login: 'err' }], server: ['server', { sel: 'custom', kb: false }], ollama: ['server', { sel: 'ollama' }], 'ollama-unpaired': ['server', { sel: 'ollama', paired: false }], test: ['test', { sel: 'google', key: 'AIzaSyD4k9Qm2Lx7Vb1Nc8Rt5Wz3', tp: 1.4, hold: true }], 'test-slow': ['test', { sel: 'google', key: 'AIzaSyD4k9Qm2Lx7Vb1Nc8Rt5Wz3', tp: 5.5, planFail: 'net', hold: true }], ok: ['test', { sel: 'google', key: 'AIzaSyD4k9Qm2Lx7Vb1Nc8Rt5Wz3', tp: 4, hold: true }], fail: ['fail', { sel: 'google', e: 'auth' }], 'fail-net': ['fail', { sel: 'google', e: 'net' }], 'fail-quota': ['fail', { sel: 'openai', e: 'quota' }], 'fail-local': ['fail', { sel: 'ollama', e: 'local' }], preset: ['preset', { sel: 'google' }], adv: ['preset', { sel: 'google', adv: true }], picker: ['preset', { sel: 'google', adv: true, sheet: 'verify' }], done: ['done', { sel: 'google' }] };
+    const m = map[q] || map.home;
+    this.state = Object.assign({ v: m[0], dir: 'f', k: 0, sel: null, q: '', seg: 'open', paste: '', key: '', kb: false, how: false, opened: false, login: 'idle', copied: false, paired: true, url: 'http://192.168.1.34:11434/v1', tp: 0, e: 'auth', demo: 'ok', planFail: null, hold: false, saveAnyway: false, preset: 'balanced', lim: 10, adv: false, sheet: null, over: {}, bump: 0, rm: qs.get('rm') === '1' }, m[1] || {});
+    this.boot = q;
   }
-  componentWillUnmount() { clearInterval(this.iv); }
-  go(step, extra) {
-    clearInterval(this.iv);
-    this.setState(Object.assign({ step, k: this.state.k + 1, lv: 0, done: false, get: false }, extra || {}));
-    if (step === 3) {
-      this.iv = setInterval(() => {
-        const n = this.state.lv + 1;
-        if (n >= 4) { clearInterval(this.iv); this.setState({ lv: 4, done: true }); }
-        else this.setState({ lv: n });
-      }, 650);
-    }
-  }
-  detect(key, sel) {
-    const k = key.trim();
-    const RULES = [['sk-ant-', 'anthropic'], ['sk-or-', 'openrouter'], ['sk-proj-', 'openai'], ['nvapi-', 'nvidia'], ['gsk_', 'groq'], ['xai-', 'xai'], ['AIza', 'gemini'], ['hf_', 'hf'], ['pplx-', 'perplexity']];
-    for (let i = 0; i < RULES.length; i++) if (k.indexOf(RULES[i][0]) === 0) return { id: RULES[i][1], prefix: RULES[i][0] };
-    if (k.indexOf('sk-') === 0) return { id: sel === 'deepseek' ? 'deepseek' : 'openai', prefix: 'sk-' };
-    return null;
-  }
-  setKey(key) {
-    const s = this.state, d = this.detect(key, s.sel);
-    const next = d ? d.id : s.sel;
-    this.setState({ key, sel: next, bk: d && d.id !== this.lastDet ? s.bk + 1 : s.bk });
-    this.lastDet = d ? d.id : null;
+  componentDidMount() { if (this.state.v === 'test') this.runTest(); }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); clearTimeout(this.to); }
+  go(v, dir, extra) { cancelAnimationFrame(this.raf); clearTimeout(this.to); this.setState(Object.assign({ v, dir: dir || 'f', k: this.state.k + 1, kb: false }, extra || {})); if (v === 'test') this.runTest(); }
+  runTest() {
+    cancelAnimationFrame(this.raf); clearTimeout(this.to);
+    const t0 = performance.now() - (this.state.tp || 0) * 1000;
+    const tick = (t) => {
+      const sec = (t - t0) / 1000, st = this.state, fo = this.failPlanFor(st);
+      this.setState({ tp: sec });
+      const end = fo ? fo.at + 0.7 : 4.3;
+      if (sec < end) this.raf = requestAnimationFrame(tick);
+      else if (st.hold) return;
+      else if (fo) this.go('fail', 'f', { e: fo.kind });
+      else this.to = setTimeout(() => this.go('preset'), 900);
+    };
+    this.raf = requestAnimationFrame(tick);
   }
   renderVals() {
-    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)', BN = 'cubic-bezier(.34,1.56,.64,1)', B = '/_blob/';
+    const s = this.state, B = '/_blob/', E = 'cubic-bezier(.22,1,.36,1)';
     const P = {
-      openai: { name: 'ChatGPT', short: 'ChatGPT', logo: B + 'a3e89b95754fab0b6e6d5b234cc85530', tint: '#ECECEA', sample: 'sk-proj-Q7mX2c9LwT4hVb8ZkR1nE5pY', host: 'api.openai.com', getKey: 'platform.openai.com/api-keys', models: ['GPT grande', 'GPT mini'], cost: '~0,03 €', ms: 412 },
-      nous: { name: 'Nous Research', short: 'Nous', mono: 'N', tint: '#E6E5FA', sample: 'b3f1c8e2a9d74e5691c0f27a4be8d613', host: 'Nous Portal', getKey: 'portal.nousresearch.com', models: ['Hermes 4 405B', 'Hermes 4 70B'], cost: '~0,01 €', ms: 486 },
-      anthropic: { name: 'Anthropic', short: 'Anthropic', logo: B + 'ba377cf2a06c3e158b0b2aeacce903b7', tint: '#F6E7DD', sample: 'sk-ant-api03-x8Lq2VnR5tYw9ZcK4mJ1', host: 'api.anthropic.com', getKey: 'console.anthropic.com', models: ['Claude Sonnet', 'Claude Haiku'], cost: '~0,04 €', ms: 390 },
-      gemini: { name: 'Gemini', short: 'Gemini', logo: B + '51a886ba4778142cb4b9957c71e366f6', tint: '#E4EBFB', sample: 'AIzaSyD4k9Qm2Lx7Vb1Nc8Rt5Wz3Hp6Jf0Eg', host: 'generativelanguage.googleapis.com', getKey: 'aistudio.google.com', models: ['Gemini Pro', 'Gemini Flash'], cost: '~0,02 €', ms: 350 },
-      deepseek: { name: 'DeepSeek', short: 'DeepSeek', logo: B + '0a650a2d77b79d46568b3c30a33ae2c9', tint: '#E3E8FA', sample: 'sk-5e1a9c7f3b2d48e6a0c4f8b1d7e2a93c', host: 'api.deepseek.com', getKey: 'platform.deepseek.com', models: ['DeepSeek R1', 'DeepSeek V3'], cost: '~0,01 €', ms: 520 },
-      xai: { name: 'Grok', short: 'Grok', logo: B + '20246f60aec5a544b9f0f7537d632e14', tint: '#EAEAEA', sample: 'xai-Rk3vP8mQ2wL6cN9tY4hB7sD1', host: 'api.x.ai', getKey: 'console.x.ai', models: ['Grok', 'Grok mini'], cost: '~0,03 €', ms: 430 },
-      mistral: { name: 'Mistral', short: 'Mistral', logo: B + '3980b31a745ae93a87afafef0604abf8', tint: '#FCE9D6', sample: 'q8Vw2Lm5Xn9Rc4Tb7Kp1Hz6Jd3Fs0Ag', host: 'api.mistral.ai', getKey: 'console.mistral.ai', models: ['Mistral Large', 'Mistral Small'], cost: '~0,02 €', ms: 310 },
-      perplexity: { name: 'Perplexity', short: 'Perplexity', logo: B + '8812be03ab552d65051ad4dab501be9b', tint: '#DFF0F0', sample: 'pplx-7Gh2Kq9Mv4Xc1Ln8Rb5Tw3Zp6', host: 'api.perplexity.ai', getKey: 'perplexity.ai/settings/api', models: ['Sonar Pro', 'Sonar'], cost: '~0,03 €', ms: 470 },
-      openrouter: { name: 'OpenRouter', short: 'OpenRouter', logo: B + 'dd8c6ff2c71cb73bdcb2c252b050081d', tint: '#EAE8F6', sample: 'sk-or-v1-4d8e2a7c1f9b3e6d0a5c8f2b', host: 'openrouter.ai', getKey: 'openrouter.ai/keys', models: ['Modelo grande', 'Modelo ligero'], cost: '~0,02 €', ms: 455 },
-      nvidia: { name: 'NVIDIA', short: 'NVIDIA', logo: B + '048157e8325fcfda7cee0ae95694d062', tint: '#E9F3DC', sample: 'nvapi-Hc4Lw9Qm2Vx7Rb1Kn8Tz5Jp3', host: 'integrate.api.nvidia.com', getKey: 'build.nvidia.com', models: ['Nemotron Super', 'Nemotron Nano'], cost: '~0,02 €', ms: 380 },
-      hf: { name: 'Hugging Face', short: 'HuggingFace', logo: B + '5ac192ecfbe7b570ec9433605b6637dd', tint: '#FFF1CC', sample: 'hf_Tq8Mv2Lx6Rc9Kb4Wn1Zp7Hd3Js', host: 'huggingface.co', getKey: 'huggingface.co/settings/tokens', models: ['Modelos abiertos', 'Modelos abiertos ligeros'], cost: '~0,01 €', ms: 610 },
-      groq: { name: 'Groq', short: 'Groq', mono: 'gq', tint: '#FBE4DC', sample: 'gsk_Zr5Kc9Lm2Xv7Qb4Wn1Tp8Hd3', host: 'api.groq.com', getKey: 'console.groq.com/keys', models: ['Llama 70B', 'Llama 8B'], cost: '~0,01 €', ms: 120 },
-      ollama: { name: 'Ollama de PC-ESCRITORIO', short: 'Ollama', logo: B + 'a5ba83869b71d8f76e17ed7ed73b84d2', tint: '#EDEDEB', local: true, host: 'PC-ESCRITORIO:11434', getKey: '', models: ['Llama 8B', 'Qwen 7B'], cost: 'gratis', ms: 38 }
+      google: { name: 'Gemini', pitch: 'Gratis para empezar, sin complicaciones', seg: 'closed', free: 1, logo: B + '51a886ba4778142cb4b9957c71e366f6', tint: '#E4EBFB', prefix: 'AIza', ph: 'AIza…', site: 'aistudio.google.com', section: 'Get API key', button: 'Create API key', host: 'generativelanguage.googleapis.com', tip: 'Tiene un nivel gratuito con límites diarios, suficiente para probar. A cambio, Google puede usar lo que envías para mejorar sus productos.', ms: 312, models: ['gemini-pro', 'gemini-flash'], mn: ['Gemini Pro', 'Gemini Flash'], cost: [0.011, 0.0016] },
+      openrouter: { name: 'OpenRouter', pitch: 'Entra con tu cuenta, sin copiar claves', seg: 'open', free: 1, acct: 1, login: 1, logo: B + 'dd8c6ff2c71cb73bdcb2c252b050081d', tint: '#EAE8F6', prefix: 'sk-or-', ph: 'sk-or-…', site: 'openrouter.ai/keys', section: 'Keys', button: 'Create Key', host: 'openrouter.ai', ms: 455, models: ['modelo grande', 'modelo ligero'], mn: ['Modelo grande', 'Modelo ligero'], cost: [0.009, 0.002] },
+      ollama: { name: 'Ollama', pitch: 'Privado: todo se queda en tu ordenador', seg: 'local', loc: 1, logo: B + 'a5ba83869b71d8f76e17ed7ed73b84d2', tint: '#EDEDEB', host: '192.168.1.34:11434 · PC-ESCRITORIO', ms: 38, models: ['llama3.1:8b', 'qwen2.5:7b', 'mistral'], mn: ['Llama 3.1 8B', 'Qwen 2.5 7B', 'Mistral 7B'], cost: [0, 0] },
+      anthropic: { name: 'Claude', pitch: 'Muy bueno redactando y verificando', seg: 'closed', logo: B + 'ba377cf2a06c3e158b0b2aeacce903b7', tint: '#F6E7DD', prefix: 'sk-ant-', ph: 'sk-ant-…', site: 'console.anthropic.com', section: 'Settings → API keys', button: 'Create Key', host: 'api.anthropic.com', ms: 390, models: ['claude-sonnet', 'claude-haiku'], mn: ['Claude Sonnet', 'Claude Haiku'], cost: [0.014, 0.002] },
+      openai: { name: 'ChatGPT', pitch: 'El más conocido; se paga por uso', seg: 'closed', logo: B + 'a3e89b95754fab0b6e6d5b234cc85530', tint: '#ECECEA', prefix: 'sk-proj-', ph: 'sk-…', site: 'platform.openai.com', section: 'API keys', button: 'Create new secret key', host: 'api.openai.com', tip: 'La API se paga aparte de ChatGPT Plus: añade saldo en Billing, desde 5 $.', ms: 412, models: ['gpt', 'gpt-mini'], mn: ['GPT grande', 'GPT mini'], cost: [0.012, 0.0018] },
+      xai: { name: 'Grok', pitch: 'El modelo de xAI', seg: 'closed', logo: B + '20246f60aec5a544b9f0f7537d632e14', tint: '#EAEAEA', prefix: 'xai-', ph: 'xai-…', site: 'console.x.ai', section: 'API Keys', button: 'Create API key', host: 'api.x.ai', ms: 430, models: ['grok', 'grok-mini'], mn: ['Grok', 'Grok mini'], cost: [0.013, 0.002] },
+      groq: { name: 'Groq', pitch: 'Respuestas casi instantáneas', seg: 'open', free: 1, mono: 'gq', tint: '#FBE4DC', prefix: 'gsk_', ph: 'gsk_…', site: 'console.groq.com/keys', section: 'API Keys', button: 'Create API Key', host: 'api.groq.com', ms: 120, models: ['llama-70b', 'llama-8b'], mn: ['Llama 70B', 'Llama 8B'], cost: [0.004, 0.0006] },
+      nvidia: { name: 'NVIDIA NIM', pitch: 'Modelos abiertos en la nube de NVIDIA', seg: 'open', logo: B + '048157e8325fcfda7cee0ae95694d062', tint: '#E8F3DA', prefix: 'nvapi-', ph: 'nvapi-…', site: 'build.nvidia.com', section: 'tu perfil → API Keys', button: 'Generate API Key', host: 'integrate.api.nvidia.com', ms: 380, models: ['nemotron', 'nano'], mn: ['Nemotron', 'Nemotron Nano'], cost: [0.006, 0.001] },
+      deepseek: { name: 'DeepSeek', pitch: 'Muy barato, modelos abiertos', seg: 'open', logo: B + '0a650a2d77b79d46568b3c30a33ae2c9', tint: '#E3E8FA', prefix: 'sk-', ph: 'sk-…', site: 'platform.deepseek.com', section: 'API keys', button: 'Create new API key', host: 'api.deepseek.com', ms: 520, models: ['v4', 'v4-lite'], mn: ['DeepSeek V4', 'DeepSeek lite'], cost: [0.004, 0.0008] },
+      mistral: { name: 'Mistral', pitch: 'Proveedor europeo', seg: 'open', logo: B + '3980b31a745ae93a87afafef0604abf8', tint: '#FCE9D6', prefix: '', ph: 'Pega aquí tu clave', site: 'console.mistral.ai', section: 'API Keys', button: 'Create new key', host: 'api.mistral.ai', ms: 310, models: ['large', 'small'], mn: ['Mistral Large', 'Mistral Small'], cost: [0.008, 0.0012] },
+      nous: { name: 'Nous Research', pitch: 'Modelos abiertos Hermes', seg: 'open', mono: 'N', tint: '#E9E4F7', prefix: '', ph: 'Pega aquí tu clave', site: 'portal.nousresearch.com', section: 'API Keys', button: 'Create key', host: 'inference-api.nousresearch.com', ms: 486, models: ['hermes'], mn: ['Hermes 4'], cost: [0.005, 0.001] },
+      huggingface: { name: 'Hugging Face', pitch: 'Miles de modelos abiertos', seg: 'open', free: 1, logo: B + '5ac192ecfbe7b570ec9433605b6637dd', tint: '#FFF1CC', prefix: 'hf_', ph: 'hf_…', site: 'huggingface.co/settings/tokens', section: 'Settings → Access Tokens', button: 'Create new token', host: 'router.huggingface.co', ms: 610, models: ['open'], mn: ['Modelo abierto'], cost: [0.005, 0.001] },
+      lmstudio: { name: 'LM Studio', pitch: 'En tu equipo, con interfaz gráfica', seg: 'local', loc: 1, logo: B + '176c4a1f00e7a1f59ede0c32da866dc3', tint: '#E6E5FA', host: 'tu equipo', ms: 40, models: ['local'], mn: ['Modelo local'], cost: [0, 0] },
+      custom: { name: 'Compatible con OpenAI', pitch: 'Tu propio servidor', seg: 'open', mono: '{ }', tint: '#EFECE5', prefix: '', ph: '', site: 'la documentación de tu servidor', section: '', button: '', host: 'tu servidor', ms: 70, models: ['llama3', 'mistral'], mn: ['llama3', 'mistral'], cost: [0, 0] }
     };
-    const MORE = ['anthropic', 'gemini', 'deepseek', 'xai', 'mistral', 'perplexity', 'openrouter', 'nvidia', 'hf', 'groq'];
-    const sel = s.sel ? P[s.sel] : null;
-    const d = this.detect(s.key, s.sel);
-    const keyOk = s.key.trim().length >= 16 && !!sel;
-    const lb = (p, size, rad) => 'flex:none;width:' + size + 'px;height:' + size + 'px;border-radius:' + rad + 'px;display:flex;align-items:center;justify-content:center;background:' + p.tint;
-    const SUBS = ['Elige un proveedor', 'Pega tu clave', s.done ? 'Conectado' : 'Probando la conexión'];
-    let cur = { name: 'Detectaremos el proveedor', hasLogo: false, isMono: true, mono: '?', logo: '', getKey: '', getHost: '', status: 'Pega una clave y lo reconocemos por su prefijo.', statusStyle: 'font-size:12px;color:#5E5B55;margin-top:3px;line-height:1.4', logoBox: 'flex:none;width:56px;height:56px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:#F1EEE7;color:#6B675F' };
-    if (sel) {
-      const st = d && d.id === s.sel ? 'Detectado por el prefijo «' + d.prefix + '»' : s.key.trim() ? (s.key.trim().length < 16 ? 'La clave parece incompleta' : 'Sin prefijo conocido: usaremos ' + sel.name) : 'Pega la clave de tu cuenta de ' + sel.name;
-      cur = {
-        name: sel.name, hasLogo: !!sel.logo, isMono: !sel.logo, mono: sel.mono || '', logo: sel.logo || '', getKey: sel.getKey, getHost: sel.getKey.split('/')[0],
-        status: st, statusStyle: 'font-size:12px;margin-top:3px;line-height:1.4;transition:color .45s ' + E + ';color:' + (d && d.id === s.sel ? '#0B6B50' : '#5E5B55'),
-        logoBox: lb(sel, 56, 16) + ';animation:bounce' + (s.bk % 2) + ' .7s ' + BN + ' both'
-      };
-    }
-    const local = !!(sel && sel.local);
-    const TASKS = [['Afirmaciones', 1], ['Verificar', 0], ['Puntuar', 1], ['Síntesis y gráficos', 0], ['Detector IA', 'ollama'], ['Agente', 1]];
-    const OL = P.ollama;
-    const tasks = TASKS.map((t, i) => {
-      const useOl = local || t[1] === 'ollama';
-      const prov = useOl ? OL : sel || P.openai;
-      const model = useOl ? (t[1] === 'ollama' ? 'Qwen 7B' : OL.models[t[1]]) : prov.models[t[1]];
-      return {
-        name: t[0], model: (useOl ? 'Ollama' : prov.name) + ' · ' + model, hasLogo: !!prov.logo, isMono: !prov.logo, mono: prov.mono || '', logo: prov.logo || '',
-        where: useOl ? 'local' : 'nube',
-        node: lb(prov, 34, 10),
-        chip: 'flex:none;font-size: 12px;font-weight:500;padding:2px 8px;border-radius:999px;' + (useOl ? 'background:#E3F2EC;color:#0B6B50' : 'background:#E8ECFA;color:#2340B8'),
-        row: 'display:flex;align-items:center;gap:10px;padding:9px 0;' + (i ? 'border-top:1px solid #EFECE6;' : '') + 'animation:rise .6s ' + E + ' both;animation-delay:' + (250 + i * 70) + 'ms'
-      };
+    const FOLD = (x) => x.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+    const detect = (k) => { k = k.trim(); if (k.length < 4) return []; const R = [['sk-ant-', 'anthropic'], ['sk-or-', 'openrouter'], ['sk-proj-', 'openai'], ['nvapi-', 'nvidia'], ['gsk_', 'groq'], ['xai-', 'xai'], ['AIza', 'google'], ['hf_', 'huggingface']]; const hit = R.filter((r) => k.indexOf(r[0]) === 0).map((r) => r[1]); if (!hit.length && k.indexOf('sk-') === 0) return ['openai', 'deepseek']; return hit; };
+    const box = (p, n, r) => 'width:' + n + 'px;height:' + n + 'px;border-radius:' + r + 'px;background:' + p.tint;
+    const sel = P[s.sel] || P.google, isLocal = !!sel.loc;
+    const stepNum = { home: 1, all: 1, key: 2, server: 2, test: 3, fail: 3, preset: 3, done: 3 }[s.v];
+    const V = { home: s.v === 'home', all: s.v === 'all', key: s.v === 'key', server: s.v === 'server', test: s.v === 'test', fail: s.v === 'fail', preset: s.v === 'preset', done: s.v === 'done' };
+    // ---- paso 1
+    const REC = ['google', 'openrouter', 'ollama'];
+    const recs = REC.map((id, i) => { const p = P[id]; const st = id === 'ollama' ? (s.paired ? 'PC-ESCRITORIO · 3 modelos · detectado' : 'Empareja tu PC para usarlo') : ''; return { name: p.name, pitch: p.pitch, logo: p.logo || '', mono: p.mono || '', box: box(p, 52, 15), tag: id === 'google' ? 'Gratis' : id === 'openrouter' ? 'Con cuenta' : 'Local', tagCls: 'pv-tag ' + (id === 'google' ? 'free' : id === 'openrouter' ? 'acct' : 'loc'), status: st, stStyle: st ? 'display:flex;font:500 12px var(--np-font-ui);color:' + (s.paired ? '#0B6B50' : '#8A5300') + ';margin-top:3px' : 'display:none', anim: 'animation-delay:' + (60 + i * 80) + 'ms', pick: () => this.pickProv(id) }; });
+    const det = detect(s.paste);
+    // ---- lista completa
+    const SEGS = [['open', 'Abiertos'], ['closed', 'Cerrados'], ['local', 'En tu equipo']];
+    const SEGLINE = { open: 'Modelos que cualquiera puede descargar y auditar.', closed: 'Modelos propietarios: solo funcionan en la nube de su empresa.', local: 'Gratis y sin enviar datos: corren en tu equipo.' };
+    const q = FOLD(s.q);
+    const ALL = Object.keys(P).filter((x) => x !== 'custom');
+    const list = q ? ALL.filter((id) => FOLD(P[id].name).includes(q) || id.includes(q)) : ALL.filter((id) => P[id].seg === s.seg);
+    const rows = list.map((id, i) => { const p = P[id]; return { name: p.name, pitch: p.pitch, logo: p.logo || '', mono: p.mono || '', box: box(p, 40, 12), free: !!p.free, acct: !!p.acct, loc: !!p.loc, anim: 'animation-delay:' + (i * 40) + 'ms;animation-duration:.4s', pick: () => this.pickProv(id) }; });
+    // ---- paso 2
+    const cur = { name: sel.name, logo: sel.logo || '', mono: sel.mono || '', box56: box(sel, 56, 16), login: !!sel.login, ph: sel.ph || 'Pega aquí tu clave', prefix: sel.prefix, site: sel.site, section: sel.section, button: sel.button, host: sel.host, tip: !!sel.tip, tipText: sel.tip || '' };
+    const keyHit = !!(sel.prefix && s.key.trim().startsWith(sel.prefix) && s.key.trim().length > sel.prefix.length), keyMiss = !keyHit && !!sel.prefix && s.key.trim().length >= 4;
+    const keyOk = s.key.trim().length >= 12;
+    const LM = { denied: 'Has rechazado el acceso en OpenRouter. Puedes volver a intentarlo.', timeout: 'Se acabó el tiempo sin que se aprobara el acceso. Puedes volver a intentarlo.' };
+    // ---- paso 3a: prueba
+    const tp = s.tp, fp = this.failPlanFor(s);
+    const START = [0, 1.0, 1.9], END = [1.0, 1.9, 3.2];
+    const cdef = isLocal ? ['Buscar el servidor en tu red', 'Leer los modelos instalados', 'Prueba de respuesta'] : ['Conectar con el servidor', 'Listar modelos', 'Prueba de respuesta'];
+    const checks = [0, 1, 2].map((i) => {
+      const isF = !!fp && fp.step === i, end = isF ? fp.at : END[i], pending = !!fp && i > fp.step;
+      const bad = isF && tp >= fp.at, ok = !pending && !isF && tp >= end, run = !pending && !bad && !ok && tp >= START[i];
+      const secs = run ? tp - START[i] : 0;
+      const det = ok ? [sel.ms + ' ms hasta el primer byte', sel.models.length + (sel.models.length > 1 ? ' modelos disponibles' : ' modelo disponible'), 'respuesta correcta'][i] : bad ? fp.short : run ? ['esperando respuesta…', 'pidiendo la lista…', 'enviando «hola» al modelo ligero…'][i] : '';
+      return { t: cdef[i], d: det, dc: bad ? '#A3271B' : ok ? '#0B6B50' : '#5E5B55', col: ok || run || bad ? '#17171A' : '#8D8981', ms: ok ? [sel.ms + ' ms', Math.round(sel.ms * 0.6) + ' ms', '1,4 s'][i] : run ? secs.toFixed(1).replace('.', ',') + ' s' : '', dot: 'pv-dot' + (bad ? ' bad' : ok ? ' ok' : run ? ' cur' : ''), ic: bad ? 'M6 6l12 12M18 6L6 18' : 'M5 12.500l4.500 4.500L19 7.500' };
     });
-    const pp = sel || P.openai;
-    const checkT = local ? ['Buscando PC-ESCRITORIO en la red local', 'Conectando con Ollama', 'Leyendo modelos instalados', 'Midiendo latencia'] : ['Conectando con ' + pp.host, 'Comprobando la clave', 'Leyendo modelos disponibles', 'Midiendo latencia'];
-    const checkR = local ? ['192.168.1.34', 'v0.12', '3 modelos', pp.ms + ' ms'] : ['TLS', 'válida', pp.models.length + ' usados', pp.ms + ' ms'];
+    const allOk = !fp && tp >= 3.2;
+    const slow = !!fp && fp.kind === 'net' && tp > 3 && tp < fp.at;
+    const models = sel.mn.map((n, i) => ({ n, s: 'animation-delay:' + (i * 90) + 'ms' }));
+    // ---- 3b
+    const F = {
+      auth: { title: sel.name + ' no acepta la clave', body: 'El servidor respondió 401: la clave no es válida o no tiene permiso. Revisa que la copiaste entera, sin espacios, y que tu cuenta tiene la API activada.', detail: 'HTTP 401 · invalid_api_key\n' + sel.host + ' · 312 ms · TLS ok', tried: 'la conexión con ' + sel.host + ' funciona; solo falla la clave.', main: 'Cambiar la clave', a1: 'Reintentar', a2: 'Copiar detalles' },
+      net: { title: 'No hay respuesta de ' + sel.name, body: 'Pasaron 10 s sin que el servidor contestara. Puede ser tu red o el servicio. Las llamadas de IA van siempre directas, también con Tor activado.', detail: 'timeout · 10 000 ms · sin respuesta\n' + sel.host + ' · TLS no iniciado', tried: 'resolvimos el nombre (DNS) pero la conexión no se completó.', main: 'Reintentar', a1: 'Revisar la red', a2: 'Copiar detalles', save: false },
+      quota: { title: sel.name + ' dice que no hay saldo', body: 'La clave es válida, pero la cuenta no tiene saldo o ha superado su cuota. Añade saldo en la web del proveedor y vuelve a probar.', detail: 'HTTP 429 · insufficient_quota\n' + sel.host + ' · 402 ms · TLS ok', tried: 'la clave se acepta y los modelos se listan; falla la respuesta.', main: 'Abrir ' + sel.site, a1: 'Reintentar', a2: 'Copiar detalles', save: true },
+      local: { title: 'Ollama no responde', body: 'PC-ESCRITORIO no contesta en 192.168.1.34:11434. ¿Está encendido el PC y Ollama en marcha? Por defecto Ollama solo escucha en el propio PC: define OLLAMA_HOST=0.0.0.0 y reinícialo.', detail: 'connection refused · 192.168.1.34:11434\nconectado a la red local (Wi-Fi) · 3 ms', tried: 'el PC está en la red local; el puerto 11434 rechaza la conexión.', main: 'Reintentar', a1: 'Volver a emparejar', a2: 'Cambiar dirección', save: false }
+    }[s.e] || {};
+    // ---- 3c
+    const STEPS = [['Extraer el artículo', null], ['Afirmaciones', 'claims'], ['Buscar coberturas', null], ['Verificar datos', 'verify'], ['Puntuar neutralidad', 'score'], ['Síntesis y gráficos', 'synthesis'], ['Detector de texto IA', 'aiDetect'], ['Agente', 'agent']];
+    const MD = (pid, tier) => P[pid].mn[tier === 'light' ? Math.min(1, P[pid].mn.length - 1) : 0];
+    const light = ['claims', 'aiDetect'];
+    const assign = (preset) => {
+      const o = {}, cloud = isLocal ? 'ollama' : s.sel || 'google', loc = 'ollama';
+      STEPS.forEach((st) => { if (!st[1]) return; const l = light.indexOf(st[1]) >= 0; let pid = cloud, tier = l ? 'light' : 'strong';
+        if (preset === 'privacy') pid = loc; else if (preset === 'balanced') pid = l ? loc : cloud; else if (preset === 'cheap') { pid = cloud; tier = 'light'; } else if (preset === 'quality') { pid = cloud; tier = 'strong'; }
+        if (isLocal) pid = 'ollama';
+        const pm = P[pid]; const mi = pid === 'ollama' ? (l ? 1 : 0) : tier === 'light' ? Math.min(1, pm.mn.length - 1) : 0;
+        o[st[1]] = { pid, m: pm.mn[mi], local: pid === 'ollama', cost: pm.cost[tier === 'light' && pid !== 'ollama' ? 1 : 0], tier }; });
+      return o;
+    };
+    const eff = (preset) => { const a = assign(preset); Object.keys(s.over).forEach((k) => { if (a[k]) a[k] = Object.assign({}, a[k], s.over[k]); }); return a; };
+    const W = { claims: 1, verify: 2, score: 1, synthesis: 2, aiDetect: 0.5, agent: 1 };
+    const fig = (preset) => { const a = eff(preset); let c = 0, t = 2.2, loc = 0, n = 0; STEPS.forEach((st) => { n++; if (!st[1]) { loc++; return; } const x = a[st[1]]; if (st[1] === 'agent') { if (x.local) loc++; return; } c += x.cost * W[st[1]]; t += (x.local ? 4 : x.tier === 'light' ? 1.5 : 4) * W[st[1]] * 0.6; if (x.local) loc++; }); return { cost: c === 0 ? 'gratis' : '~' + c.toFixed(2).replace('.', ',') + ' $', time: '~' + Math.round(t) + ' s', local: loc + ' de ' + n }; };
+    const PR = [['privacy', 'Privacidad total', 'Todo en tu equipo. Nada sale a internet.', 'M12 3l7.500 2.800v5.700c0 4.600-3.200 8-7.500 9.500-4.300-1.500-7.500-4.900-7.500-9.500V5.800z', 'ok'], ['balanced', 'Equilibrado', 'Nube barata para lo ligero, buena para verificar.', 'M12 4v16M5 8h14M7 8l-3 7h6zM17 8l-3 7h6z', 'acc'], ['quality', 'Máxima calidad', 'Los mejores modelos en cada paso.', 'M12 4l2.300 5 5.500.6-4.100 3.700 1.200 5.400L12 15.800 7.100 18.700l1.200-5.400L4.200 9.600 9.700 9z', 'warn'], ['cheap', 'Mínimo coste', 'Modelos rápidos y económicos.', 'M12 3a9 9 0 100 18 9 9 0 000-18zM12 7v10M9.500 9.500c0-1 1-1.700 2.500-1.700s2.500.7 2.500 1.700-1 1.500-2.500 1.700-2.500.7-2.500 1.700 1 1.700 2.500 1.700 2.500-.7 2.500-1.700', 'ai']];
+    const effNow = eff(s.preset);
+    const presets = PR.map((p, i) => { const a = eff(p[0]); const on = s.preset === p[0]; return { name: p[1], desc: p[2], ic: p[3], tone: p[4], on: on ? 'true' : 'false', ringW: on ? 2 : 1.5, ringC: on ? '#17171A' : '#8D8981', dotS: on ? 1 : 0, anim: 'animation-delay:' + (60 + i * 60) + 'ms;animation-duration:.45s', pick: () => this.setState({ preset: p[0], bump: s.bump + 1, over: {} }),
+      tasks: [['claims', 'Afirmaciones'], ['verify', 'Verificación'], ['score', 'Neutralidad'], ['synthesis', 'Síntesis'], ['agent', 'Agente']].map((t) => ({ n: t[1], m: a[t[0]].m, w: a[t[0]].local ? 'tu equipo' : 'nube', cls: 'pv-tag ' + (a[t[0]].local ? 'free' : 'acct') })) }; });
+    const nowFig = fig(s.preset);
+    const lims = s.lim;
+    const steps = STEPS.map((st, i) => { const x = st[1] ? effNow[st[1]] : null; return { n: String(i + 1).padStart(2, '0'), name: st[0], model: x ? x.m + ' · ' + P[x.pid].name : i === 0 ? 'Readability · sin IA' : 'Índice RSS + búsqueda de respaldo', w: x ? (x.local ? 'tu equipo' : 'nube') : 'sin IA', cls: 'pv-tag ' + (x ? (x.local ? 'free' : 'acct') : ''), fixed: !x, editable: !!x, open: () => x && this.setState({ sheet: st[1] }) }; });
+    // hoja de un paso
+    const shKey = s.sheet, shStep = STEPS.find((x) => x[1] === shKey), shCur = shKey ? effNow[shKey] : null;
+    const connected = isLocal ? ['ollama'] : [s.sel || 'google', 'ollama'];
+    const shTemp = shKey ? (s.over[shKey] && s.over[shKey].temp !== undefined ? s.over[shKey].temp : ({ claims: 0, verify: 0, score: 0, synthesis: 3, aiDetect: 0, agent: 4 })[shKey]) : 0;
+    const TL = (t) => (t <= 2 ? 'precisa' : t <= 6 ? 'equilibrada' : 'creativa') + ' · ' + (t / 10).toFixed(1).replace('.', ',');
+    const sh = shKey ? { title: shStep[0], sub: 'paso ' + (STEPS.indexOf(shStep) + 1) + ' de 8', close: () => this.setState({ sheet: null }),
+      provs: connected.map((pid) => ({ n: P[pid].name, on: shCur.pid === pid ? 'true' : 'false', pick: () => this.setOver(shKey, { pid, m: P[pid].mn[0], local: pid === 'ollama', cost: P[pid].cost[0] }) })),
+      models: P[shCur.pid].mn.map((mn, i) => { const on = shCur.m === mn; const loc = shCur.pid === 'ollama'; return { n: mn, d: loc ? 'tu equipo · gratis' : i === 0 ? 'más capaz · ~' + P[shCur.pid].cost[0].toFixed(3).replace('.', ',') + ' $ por paso' : 'más rápido y barato · ~' + P[shCur.pid].cost[1].toFixed(4).replace('.', ',') + ' $', on: on ? 'true' : 'false', rw: on ? 2 : 1.5, rc: on ? '#17171A' : '#8D8981', ds: on ? 1 : 0, w: loc ? 'local' : i === 0 ? 'grande' : 'ligero', cls: 'pv-tag ' + (loc ? 'free' : ''), pick: () => this.setOver(shKey, { m: mn, cost: P[shCur.pid].cost[i === 0 ? 0 : 1] }) }; }),
+      temp: shTemp, tempLabel: TL(shTemp), onTemp: (e) => this.setOver(shKey, { temp: Number(e.target.value) }), fb: (s.over[shKey] && s.over[shKey].fb === false) ? 'false' : 'true', toggleFb: () => this.setOver(shKey, { fb: !(s.over[shKey] && s.over[shKey].fb === false) ? false : true }) } : { provs: [], models: [], close: () => {} };
+    // ---- cabecera y pies
+    const TITLES = { home: ['Conectar un proveedor', 'Elige uno; después repartimos el trabajo'], all: ['Todos los proveedores', '13 compatibles'], key: [sel.name, s.login === 'wait' ? 'Esperando tu aprobación' : 'Entra o pega tu clave'], server: [s.sel === 'ollama' ? 'Ollama' : 'Tu propio servidor', s.sel === 'ollama' ? 'En tu equipo' : 'Dirección, modelos y clave'], test: ['Probando la conexión', sel.name], fail: ['No se pudo conectar', sel.name], preset: ['Punto de partida', 'Paso final'], done: ['Listo', ''] };
+    const T = TITLES[s.v];
+    const srv = isLocal || s.sel === 'custom';
+    const back = () => { const to = { all: 'home', key: this.fromAll ? 'all' : 'home', server: this.fromAll ? 'all' : 'home', test: srv ? 'server' : 'key', fail: srv ? 'server' : 'key', preset: srv ? 'server' : 'key', done: 'preset' }[s.v]; this.go(to, 'b'); };
+    const dirCls = (s.dir === 'f' ? 'pv-f' : 'pv-b') + (s.k % 2);
+    const testing = s.v === 'test' && !allOk && !(fp && tp >= fp.at + 0.4);
+    const failFoot = s.v === 'fail';
+    const idxSeg = { open: 0, closed: 1, local: 2 }[s.seg];
     return {
-      is: { s1: s.step === 1, s2: s.step === 2, s3: s.step === 3 },
-      isFirst: s.step === 1, notFirst: s.step > 1,
-      back: () => this.go(s.step === 3 && local ? 1 : s.step - 1),
-      headSub: SUBS[s.step - 1], stepTag: s.step + ' / 3',
-      bars: [1, 2, 3].map((i) => ({ fill: 'display:block;height:100%;border-radius:2px;background:#17171A;transition:width .7s ' + E + ';width:' + (i <= s.step ? '100%' : '0%') })),
-      anim: 'animation:st' + (s.k % 2) + ' .55s ' + E + ' both',
-      recs: [['openai', 'De OpenAI. Bueno en todo y el más fácil para empezar.'], ['nous', 'Modelos abiertos Hermes, a través de Nous Portal.']].map((r, i) => {
-        const p = P[r[0]];
-        return {
-          name: p.name, desc: r[1], cost: p.cost + ' por noticia', hasLogo: !!p.logo, isMono: !p.logo, mono: p.mono || '', logo: p.logo || '',
-          logoBox: lb(p, 56, 16),
-          pick: () => { this.lastDet = null; this.go(2, { sel: r[0], key: '', bk: s.bk + 1 }); },
-          style: 'width:100%;display:flex;align-items:center;gap:14px;padding:16px 14px;border:1px solid #E2DED5;border-radius:18px;background:#FFFFFF;color:#17171A;text-align:left;animation:rise .7s ' + E + ' both;animation-delay:' + (80 + i * 80) + 'ms'
-        };
-      }),
-      more: MORE.map((id, i) => {
-        const p = P[id];
-        return {
-          name: p.name, short: p.short, hasLogo: !!p.logo, isMono: !p.logo, mono: p.mono || '', logo: p.logo || '',
-          logoBox: lb(p, 36, 10),
-          pick: () => { this.lastDet = null; this.go(2, { sel: id, key: '', bk: s.bk + 1 }); },
-          style: 'display:flex;flex-direction:column;align-items:center;gap:5px;min-height:70px;padding:8px 2px 6px;border:1px solid #E2DED5;border-radius:12px;background:#FFFFFF;color:#17171A;animation:rise .6s ' + E + ' both;animation-delay:' + (200 + i * 30) + 'ms'
-        };
-      }),
-      useOllama: () => this.go(3, { sel: 'ollama', key: '' }),
-      pasteFirst: () => { this.lastDet = null; this.go(2, { sel: null, key: '' }); },
-      cur, key: s.key,
-      onKey: (e) => this.setKey(e.target.value),
-      pasteSample: () => this.setKey((sel && !sel.local ? sel : P.openai).sample),
-      keyStyle: "width:100%;box-sizing:border-box;height:52px;padding:0 16px;border-radius:14px;background:#FFFFFF;color:#17171A;font-family:'IBM Plex Mono',monospace;font-size:13px;transition:border-color .4s " + E + ';border:1px solid ' + (d && d.id === s.sel ? '#0B6B50' : '#D9D5CC'),
-      hasProv: !!sel && !local,
-      toggleGet: () => this.setState({ get: !s.get, gk: s.gk + 1 }), getAria: s.get ? 'true' : 'false', showGet: s.get,
-      getAnim: 'font-size:12px;color:#5E5B55;line-height:1.5;padding:0 0 12px 26px;animation:open' + (s.gk % 2) + ' .45s ' + E + ' both',
-      cantTest: !keyOk,
-      toTest: () => { if (keyOk) this.go(3); },
-      testBtn: 'flex:1;height:52px;border-radius:14px;font-weight:500;transition:background-color .45s ' + E + ',color .45s ' + E + ';' + (keyOk ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:#E7E3DA;color:#6B675F;border:1px solid #E7E3DA'),
-      testing: s.step === 3 && !s.done, done: s.done,
-      checks: checkT.map((t, i) => ({
-        t, r: i < s.lv ? checkR[i] : '',
-        row: 'display:flex;align-items:center;gap:12px;min-height:44px;font-size:13px;transition:color .4s;' + (i ? 'border-top:1px solid #EFECE6;' : '') + 'color:' + (i <= s.lv ? '#17171A' : '#A9A59C'),
-        dot: 'flex:none;width:8px;height:8px;border-radius:50%;transition:background-color .4s;' + (i < s.lv ? 'background:#0B6B50' : i === s.lv ? 'background:#2340B8;animation:pulse 1.2s infinite' : 'background:#E2DED5')
-      })),
-      summary: local ? 'Todo se queda en tu red: el PC hace el trabajo y nada sale a internet.' : 'Verificar y la síntesis usarán ' + pp.models[0] + '; lo ligero, ' + pp.models[1] + '. El detector de IA, el Ollama de tu PC.',
-      tasks,
-      costLine: local ? 'gratis' : pp.cost + ' por noticia'
+      rootCls: 'm-app' + (s.rm ? ' m-reduce' : ''), V, notHome: s.v !== 'home', back, title: T[0], sub: T[1], showStep: s.v !== 'all' && s.v !== 'done' && s.v !== 'fail', stepN: stepNum, stepTag: stepNum + ' / 3', dirCls,
+      bars: [1, 2, 3].map((i) => 'transform:scaleX(' + (i <= stepNum ? 1 : 0) + ')'),
+      recs, paste: s.paste, pasteCls: 'pv-input' + (det.length === 1 ? ' ok' : ''), onPaste: (e) => this.setState({ paste: e.target.value }), pasteDemo: () => this.setState({ paste: 'sk-ant-api03-x8Lq2VnR5tYw9ZcK4mJ1' }), kbOn: () => this.setState({ kb: true }),
+      det1: det.length === 1, det1Name: det.length ? P[det[0]].name : '', det1Go: () => det.length === 1 && this.pickProv(det[0], true), detUnknown: s.paste.trim().length >= 4 && det.length === 0, toAll: () => { this.fromAll = false; this.go('all', 'f', { q: '', seg: 'open' }); },
+      q: s.q, onQ: (e) => this.setState({ q: e.target.value }), segs: SEGS.map((g) => ({ name: g[1], on: s.seg === g[0] ? 'true' : 'false', pick: () => this.setState({ seg: g[0], q: '' }) })), segThumb: 'transform:translateX(' + idxSeg * 100 + '%)', segDim: q ? 0.4 : 1, segLine: q ? 'Buscando en todos los grupos.' : SEGLINE[s.seg], rows, noRows: rows.length === 0, showSoon: !q && s.seg === 'open', toServer: () => { this.fromAll = true; this.go('server', 'f', { sel: 'custom' }); },
+      cur, keyCls: 'pv-input' + (keyHit ? ' ok' : ''), key: s.key, onKey: (e) => this.setState({ key: e.target.value }), pasteKey: () => this.setState({ key: ({ google: 'AIzaSyD4k9Qm2Lx7Vb1Nc8Rt5Wz3Hp6Jf0Eg', openai: 'sk-proj-Q7mX2c9LwT4hVb8ZkR1nE5pY', openrouter: 'sk-or-v1-4d8e2a7c1f9b3e6d0a5c8f2b', anthropic: 'sk-ant-api03-x8Lq2VnR5tYw9ZcK4mJ1' })[s.sel] || 'k9Qm2Lx7Vb1Nc8Rt5Wz3Hp6' }), keyHit, keyMiss,
+      login: { idle: s.login === 'idle', wait: s.login === 'wait', err: s.login === 'err' }, loginGo: () => { this.setState({ login: 'wait', copied: false }); clearTimeout(this.to); this.to = setTimeout(() => this.setState({ login: 'err', loginKind: 'denied' }), 5200); }, loginCancel: () => { clearTimeout(this.to); this.setState({ login: 'idle' }); }, copyLink: () => this.setState({ copied: true }), copyLabel: s.copied ? 'Enlace copiado' : 'Copiar enlace', loginMsg: LM[s.loginKind || 'denied'],
+      how: s.how, howRows: s.how ? '1fr' : '0fr', howAria: s.how ? 'true' : 'false', howChev: 'transition:transform var(--m-dur-base) var(--m-ease);transform:rotate(' + (s.how ? 180 : 0) + 'deg)', howCls: '', toggleHow: () => this.setState({ how: !s.how }), openSite: () => this.setState({ opened: true }), opened: s.opened,
+      ol: { paired: s.sel === 'ollama' && s.paired !== false && !s.manualUrl, unpaired: s.sel === 'ollama' && s.paired === false && !s.manualUrl, manual: s.sel !== 'ollama' || !!s.manualUrl, other: () => this.setState({ manualUrl: true }) }, url: s.url, onUrl: (e) => this.setState({ url: e.target.value }),
+      testTitle: allOk ? sel.name + ' funciona' : fp && tp >= fp.at ? sel.name + ' no responde' : 'Probando ' + sel.name + '…', checks, slow, okModels: allOk || tp > 2.4 && !fp, models, okReply: allOk,
+      f: { title: F.title, body: F.body, detail: F.detail, tried: F.tried, save: !!F.save }, saveAnyway: s.saveAnyway ? 'true' : 'false', toggleSave: () => this.setState({ saveAnyway: !s.saveAnyway }),
+      lat: sel.ms, presets, fig: nowFig, bump: 'pv-bump' + (s.bump % 2), lim: lims, onLim: (e) => this.setState({ lim: Number(e.target.value) }), limLabel: lims === 0 ? 'Sin límite' : lims + ' $', limHint: lims === 0 ? 'Ahora no hay límite.' : 'Con ' + lims + ' $ salen unas ' + (nowFig.cost === 'gratis' ? 'infinitas' : Math.floor(lims / Number(nowFig.cost.replace(/[^0-9,]/g, '').replace(',', '.'))).toLocaleString('es-ES')) + ' noticias al mes.',
+      adv: s.adv, advRows: s.adv ? '1fr' : '0fr', advAria: s.adv ? 'true' : 'false', advChev: 'transition:transform var(--m-dur-base) var(--m-ease);transform:rotate(' + (s.adv ? 180 : 0) + 'deg)', toggleAdv: () => this.setState({ adv: !s.adv }), steps,
+      doneLine: nowFig.cost === 'gratis' ? 'Analizarás noticias gratis y sin que nada salga de tu equipo.' : 'Cada análisis costará unos ' + nowFig.cost.replace('~', '') + '. Lo ligero sigue en tu equipo cuando puede.', presetName: PR.find((x) => x[0] === s.preset)[1],
+      conf: Array.from({ length: 14 }, (_, k) => { const a = (k / 14) * Math.PI * 2, d = 70 + (k % 3) * 24; return '--dx:' + Math.round(Math.cos(a) * d) + 'px;--dy:' + Math.round(Math.sin(a) * d) + 'px;--r:' + (k * 71 % 360) + 'deg;--d:' + (320 + (k % 4) * 50) + 'ms;background:' + ['#E8705A', '#7C9AF2', '#B9B4A9', '#0B6B50', '#17171A'][k % 5]; }),
+      foot: { test: s.v === 'key' || (s.v === 'server' && !(s.sel === 'ollama' && s.paired === false && !s.manualUrl)), cant: s.v === 'key' ? !keyOk : false, s: 'transition:opacity var(--m-dur-fast)', go: () => this.startTest(), busy: testing, sec: tp.toFixed(1).replace('.', ',') + ' s', fail: failFoot, main: F.main, retry: () => this.go('test', 'f', { tp: 0 }), alt1: () => (s.e === 'net' ? this.go('key', 'b') : this.go('test', 'f', { tp: 0 })), alt1L: F.a1, alt2: () => this.go(isLocal ? 'server' : 'key', 'b'), alt2L: F.a2, preset: s.v === "preset", finish: () => this.go("done"), done: s.v === "done", another: () => this.go('home', 'b', { sel: null, key: '', paste: '' }) , },
+      demos: [['ok','Correcto'],['auth','Clave'],['net','Red'],['quota','Saldo'],['local','Local']].map((d) => ({ n: d[1], on: s.demo === d[0] ? 'true' : 'false', st: s.demo === d[0] ? 'background:#17171A;color:#F6F4EF;box-shadow:none' : '', pick: () => this.setState({ demo: d[0] }) })), sheet: !!shKey, sh, kb: s.kb && (V.home || V.all || V.key || V.server)
     };
   }
+  pickProv(id, fromPaste) {
+    const s = this.state; this.fromAll = s.v === 'all';
+    const isSrv = id === 'ollama' || id === 'lmstudio' || id === 'custom';
+    this.go(isSrv ? 'server' : 'key', 'f', { sel: id, key: fromPaste ? s.paste : '', login: 'idle', how: false, opened: false, manualUrl: false });
+  }
+  setOver(k, patch) { const s = this.state; this.setState({ over: Object.assign({}, s.over, { [k]: Object.assign({}, s.over[k] || {}, patch) }) }); }
+  startTest() { const d = this.state.demo; this.go('test', 'f', { tp: 0, hold: false, planFail: d === 'ok' ? null : d }); }
+  failPlanFor(s) { const m = { auth: { kind: 'auth', step: 1, at: 2.4, short: 'HTTP 401: clave no válida' }, net: { kind: 'net', step: 0, at: 10, short: 'sin respuesta tras 10 s' }, quota: { kind: 'quota', step: 2, at: 3.4, short: 'HTTP 429: sin saldo' }, local: { kind: 'local', step: 0, at: 1.2, short: 'conexión rechazada' } }; return s.planFail ? m[s.planFail] : null; }
 }
 </script>
 </body>

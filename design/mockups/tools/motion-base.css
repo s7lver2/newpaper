@@ -8,7 +8,7 @@
   --np-tor:#4A2FB8;--np-tor-soft:#ECE8FB;--np-ai:#993556;--np-ai-bg:#FBEAF0;--np-on-ink:#F6F4EF;
   --np-font-read:'Newsreader',Georgia,serif;--np-font-ui:'IBM Plex Sans',system-ui,sans-serif;--np-font-mono:'IBM Plex Mono',ui-monospace,monospace;
   /* movimiento: duraciones */
-  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;
+  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;--m-dur-intro:2920ms;--m-dur-intro-short:1080ms;--m-dur-intro-reduce:800ms;--m-dur-iris:360ms;--m-dur-packet:1500ms;--m-par-art:.65;--m-par-text:1.25;
   /* movimiento: curvas */
   --m-ease:cubic-bezier(.22,1,.36,1);--m-ease-emph:cubic-bezier(.05,.7,.1,1);--m-ease-exit:cubic-bezier(.3,0,.8,.15);--m-ease-inout:cubic-bezier(.65,0,.35,1);--m-spring:cubic-bezier(.34,1.56,.64,1);
   /* medidas */

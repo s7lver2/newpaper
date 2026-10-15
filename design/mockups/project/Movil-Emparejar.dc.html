@@ -21,7 +21,7 @@
   --np-tor:#4A2FB8;--np-tor-soft:#ECE8FB;--np-ai:#993556;--np-ai-bg:#FBEAF0;--np-on-ink:#F6F4EF;
   --np-font-read:'Newsreader',Georgia,serif;--np-font-ui:'IBM Plex Sans',system-ui,sans-serif;--np-font-mono:'IBM Plex Mono',ui-monospace,monospace;
   /* movimiento: duraciones */
-  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;
+  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;--m-dur-intro:2920ms;--m-dur-intro-short:1080ms;--m-dur-intro-reduce:800ms;--m-dur-iris:360ms;--m-dur-packet:1500ms;--m-par-art:.65;--m-par-text:1.25;
   /* movimiento: curvas */
   --m-ease:cubic-bezier(.22,1,.36,1);--m-ease-emph:cubic-bezier(.05,.7,.1,1);--m-ease-exit:cubic-bezier(.3,0,.8,.15);--m-ease-inout:cubic-bezier(.65,0,.35,1);--m-spring:cubic-bezier(.34,1.56,.64,1);
   /* medidas */
@@ -147,25 +147,61 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 .m-lens[aria-pressed=false] .lash{opacity:1;transition-delay:var(--m-dur-fast)}
 @media (prefers-reduced-motion:reduce){.m-lens .lid,.m-lens .pupil,.m-lens .lash{transition:none}}
 /*@m-base-end*/
-@keyframes fl{to{stroke-dashoffset:-24}}
-@keyframes snap{0%{transform:scale(1)}50%{transform:scale(.9)}100%{transform:scale(.94)}}
+/* enlace móvil <-> PC con paquetes de datos */
+.pr-link{display:flex;align-items:center;gap:0}
+.pr-dev{flex:none;display:flex;flex-direction:column;align-items:center;gap:6px;font:500 12px var(--np-font-ui);color:var(--np-ink2)}
+.pr-dev svg{display:block}
+.pr-line{position:relative;flex:1;height:2px;margin:0 6px;--w:120px;background:repeating-linear-gradient(90deg,var(--lc,#2340B8) 0 6px,transparent 6px 12px);background-size:12px 2px;animation:pr-flow 700ms linear infinite;transition:opacity var(--m-dur-base) var(--m-ease)}
+.pr-line.solid{background:var(--lc,#0B6B50);animation:none}
+.pr-line.idle{opacity:.35;animation:none}
+@keyframes pr-flow{to{background-position:12px 0}}
+.pr-pk{position:absolute;left:0;top:-6px;min-width:14px;height:14px;padding:0 5px;border-radius:7px;background:var(--pc,#2340B8);color:#fff;font:600 8px/14px var(--np-font-mono);letter-spacing:.04em;opacity:0;animation:pr-go 1500ms var(--m-ease-inout) infinite var(--d,0s)}
+.pr-pk.rev{animation-name:pr-back}
+.pr-line.idle .pr-pk,.pr-line.solid .pr-pk{display:none}
+@keyframes pr-go{0%{opacity:0;transform:translateX(0) scale(.6)}12%{opacity:1;transform:translateX(calc(var(--w)*.1)) scale(1)}88%{opacity:1}100%{opacity:0;transform:translateX(var(--w)) scale(.6)}}
+@keyframes pr-back{0%{opacity:0;transform:translateX(var(--w)) scale(.6)}12%{opacity:1;transform:translateX(calc(var(--w)*.9)) scale(1)}88%{opacity:1}100%{opacity:0;transform:translateX(0) scale(.6)}}
+.pr-qrscan{position:absolute;left:0;right:0;top:0;height:2px;background:linear-gradient(90deg,transparent,#2340B8,transparent);animation:pr-qs 1800ms var(--m-ease-inout) infinite}
+@keyframes pr-qs{0%{transform:translateY(0);opacity:0}15%{opacity:1}85%{opacity:1}100%{transform:translateY(46px);opacity:0}}
+.pr-dev-in{animation:m-pop var(--m-dur-slow) var(--m-spring) both}
+/* escáner */
+@keyframes pr-br{0%,100%{transform:scale(1);opacity:.55}50%{transform:scale(1.08);opacity:1}}
+.pr-brk{position:absolute;width:40px;height:40px;animation:pr-br 2400ms ease-in-out infinite;animation-delay:var(--bd,0s)}
+.found .pr-brk{animation:none;opacity:0;transition:opacity var(--m-dur-fast) var(--m-ease) 120ms}
+.pr-reticle{position:absolute;border-radius:10px;box-shadow:0 0 0 2px rgba(255,255,255,.0);transition:all 520ms var(--m-ease)}
+@keyframes pr-hunt{0%{transform:translate(-16px,12px) scale(1.22);opacity:0}30%{opacity:.9}55%{transform:translate(10px,-8px) scale(1.08)}80%{transform:translate(-4px,3px) scale(1.02);opacity:.9}100%{transform:translate(0,0) scale(1);opacity:0}}
+.pr-hunt{position:absolute;inset:-10px;border-radius:14px;border:2px dashed rgba(246,244,239,.7);animation:pr-hunt 3000ms var(--m-ease-inout) infinite}
+.pr-lock{position:absolute;inset:-6px;border-radius:12px;border:3px solid #4FD1A5;opacity:0;transform:scale(1.35)}
+.found .pr-lock{opacity:1;transform:none;transition:opacity 160ms var(--m-ease),transform 420ms var(--m-spring)}
+/* pasos de apretón de manos */
+.pr-st{display:flex;align-items:center;gap:12px;min-height:48px;font:400 15px var(--np-font-ui);transition:color var(--m-dur-base) var(--m-ease)}
+.pr-st i{flex:none;width:22px;height:22px;border-radius:50%;box-shadow:inset 0 0 0 2px var(--np-line3);display:flex;align-items:center;justify-content:center;transition:background-color var(--m-dur-base) var(--m-ease),box-shadow var(--m-dur-base) var(--m-ease)}
+.pr-st.cur i{box-shadow:inset 0 0 0 2px var(--np-accent)}
+.pr-st.cur i::after{content:'';width:8px;height:8px;border-radius:50%;background:var(--np-accent);animation:m-pulse 900ms ease-in-out infinite}
+.pr-st.ok i{background:var(--np-ok);box-shadow:none}
+.pr-st svg{width:14px;height:14px;opacity:0}
+.pr-st.ok svg{opacity:1}
+.pr-st.ok svg path{stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 320ms var(--m-ease-inout) both}
+.pr-st small{margin-left:auto;font:500 11px var(--np-font-mono);color:var(--np-muted)}
+.pr-lockico .shackle{transform-box:fill-box;transform-origin:left bottom;transition:transform var(--m-dur-slow) var(--m-spring)}
+.pr-lockico.open .shackle{transform:translateY(-3px) rotate(-24deg)}
+.pr-chk path{stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 420ms var(--m-ease-inout) 120ms both}
+@media (prefers-reduced-motion:reduce){.pr-pk,.pr-hunt{display:none}.pr-line{animation:none}}
+.m-reduce .pr-pk,.m-reduce .pr-hunt{display:none}.m-reduce .pr-line{animation:none}
 </style>
 </helmet>
-<div class="m-app">
+<div class="{{rootCls}}">
 
 <sc-if value="{{is.s1}}" hint-placeholder-val="{{ true }}">
 <div class="m-enter" style="display:flex;flex-direction:column;flex:1;min-height:0">
 <div class="m-appbar"><a class="m-back" href="Movil-Ajustes.dc.html" aria-label="Volver a Ajustes"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></a><div class="m-bar-title">Emparejar con el PC</div></div>
 <div class="m-scroll" style="padding-bottom:16px">
-<div style="margin:8px 20px 0;height:190px;border-radius:28px;background:var(--np-soft);display:flex;align-items:center;justify-content:center;overflow:hidden">
-<svg width="330" height="170" viewBox="0 0 330 170" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-<rect x="24" y="26" width="150" height="96" rx="12" stroke="#17171A" stroke-width="2" fill="#FFFFFF"/><path d="M99 122v16M76 140h46" stroke="#17171A" stroke-width="2"/>
-<rect x="74" y="42" width="50" height="50" rx="5" fill="#F6F4EF" stroke="#D9D5CC" stroke-width="1.4"/><path d="M80 48h12v12H80zM106 48h12v12h-12zM80 74h12v12H80z" fill="#17171A" stroke="none"/><path d="M100 66h6v6h-6zM110 76h8v4h-8zM102 80h4v6h-4z" fill="#17171A" stroke="none"/>
-<path d="M180 74C208 74 220 84 240 84" stroke="#2340B8" stroke-width="2" stroke-dasharray="4 8" style="animation:fl 1.4s linear infinite"/>
-<rect x="244" y="34" width="62" height="112" rx="15" stroke="#17171A" stroke-width="2" fill="#FFFFFF"/><path d="M265 42h20" stroke="#17171A" stroke-width="2"/>
-<rect x="254" y="64" width="42" height="42" rx="7" stroke="#2340B8" stroke-width="1.8" fill="#E8ECFA"/><path d="M264 85h22" stroke="#2340B8" stroke-width="1.8"/>
-</svg></div>
-<div style="padding:22px 20px 0"><h1 style="margin:0;font:500 31px/1.1 var(--np-font-read);letter-spacing:-.02em">Sin cuenta: escanea el QR de tu PC</h1><p style="margin:10px 0 0;font:400 15px/1.55 var(--np-font-ui);color:var(--np-muted)">En el PC abre Ajustes → Dispositivos → Emparejar un móvil. Verás un código QR de un solo uso.</p></div>
+<div style="margin:8px 20px 0;height:190px;border-radius:28px;background:var(--np-soft);display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0 22px">
+<div class="pr-link" style="width:100%">
+<div class="pr-dev pr-dev-in" style="animation-delay:60ms"><svg width="92" height="84" viewBox="0 0 92 84" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="86" height="56" rx="8" stroke="#17171A" stroke-width="2" fill="#FFFFFF"/><path d="M46 60v12M28 74h36" stroke="#17171A" stroke-width="2"/><g transform="translate(26 12)"><rect width="40" height="40" rx="4" fill="#F6F4EF" stroke="#D9D5CC" stroke-width="1.4"/><path d="M5 5h10v10H5zM25 5h10v10H25zM5 25h10v10H5z" fill="#17171A" stroke="none"/><path d="M20 20h5v5h-5zM28 24h7v4h-7zM21 29h4v6h-4z" fill="#17171A" stroke="none"/><rect x="0" y="0" width="40" height="40" rx="4" fill="none"/></g></svg>PC</div>
+<div class="pr-line" style="--w:118px;flex:1;min-width:130px"><i class="pr-pk" style="--d:0s">QR</i><i class="pr-pk rev" style="--d:.75s;--pc:#0B6B50">OK</i></div>
+<div class="pr-dev pr-dev-in" style="animation-delay:220ms"><svg width="56" height="84" viewBox="0 0 56 84" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="50" height="78" rx="13" stroke="#17171A" stroke-width="2" fill="#FFFFFF"/><path d="M22 10h12" stroke="#17171A" stroke-width="2"/><rect x="12" y="26" width="32" height="32" rx="6" stroke="#2340B8" stroke-width="1.8" fill="#E8ECFA"/><path d="M12 42h32" stroke="#2340B8" stroke-width="1.8" style="animation:pr-qs 1800ms var(--m-ease-inout) infinite;transform-box:fill-box"/></svg>Móvil</div>
+</div></div>
+<div style="padding:22px 20px 0"><h1 class="m-rise" style="margin:0;font:500 31px/1.1 var(--np-font-read);letter-spacing:-.02em;animation-delay:120ms">Sin cuenta: escanea el QR de tu PC</h1><p class="m-rise" style="margin:10px 0 0;font:400 15px/1.55 var(--np-font-ui);color:var(--np-muted);animation-delay:200ms">En el PC abre Ajustes → Dispositivos → Emparejar un móvil. Verás un código QR de un solo uso.</p></div>
 <div class="m-group m-stagger" style="margin-top:20px">
 <div class="m-row"><span class="m-ico ok"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 11h12v9H6z"/><path d="M8.5 11V8a3.5 3.5 0 017 0v3"/></svg></span><span class="m-rt"><b>Cifrado de extremo a extremo</b><span>Cada par crea su propia clave.</span></span></div>
 <div class="m-row"><span class="m-ico acc"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.500a13 13 0 0118 0M6 13a8.500 8.500 0 0112 0M9.300 16.500a4 4 0 015.400 0"/><path d="M12 20h.01"/></svg></span><span class="m-rt"><b>Por tu red local</b><span>Fuera de casa, por Tailscale si lo tienes.</span></span></div>
@@ -180,17 +216,17 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 </sc-if>
 
 <sc-if value="{{is.s2}}" hint-placeholder-val="{{ false }}">
-<div class="m-fadein" style="position:absolute;inset:0;background:#0C0C0E;color:#F6F4EF;overflow:hidden">
+<div class="m-fadein {{foundCls}}" style="position:absolute;inset:0;background:#0C0C0E;color:#F6F4EF;overflow:hidden">
 <div style="position:absolute;inset:0;background:radial-gradient(120% 70% at 30% 20%,#2A2D3A 0,#14151B 60%,#0A0A0D 100%)"></div>
 <div style="position:absolute;left:-30px;top:200px;width:330px;height:240px;border-radius:18px;background:#1D2029;transform:rotate(-7deg);box-shadow:0 30px 60px rgba(0,0,0,.5)"></div>
 <div style="position:absolute;inset:0;background:#fff;opacity:{{torchOp}};transition:opacity var(--m-dur-base) var(--m-ease);pointer-events:none;mix-blend-mode:soft-light"></div>
-<div style="{{qrStyle}}"><div style="background:#F6F4EF;border-radius:12px;padding:12px"><svg width="156" height="156" viewBox="0 0 200 200" aria-hidden="true" style="display:block"><path d="{{qr}}" fill="#17171A"/></svg></div></div>
+<div style="{{qrStyle}}"><div style="position:relative;background:#F6F4EF;border-radius:12px;padding:12px"><svg width="156" height="156" viewBox="0 0 200 200" aria-hidden="true" style="display:block"><path d="{{qr}}" fill="#17171A"/></svg><sc-if value="{{scanning}}" hint-placeholder-val="{{ true }}"><span class="pr-hunt"></span></sc-if><span class="pr-lock"></span></div></div>
 <div style="position:absolute;left:65px;top:236px;width:260px;height:260px;border-radius:30px;box-shadow:0 0 0 1200px rgba(8,8,10,.62)"></div>
 <div style="{{frameStyle}}">
-<svg viewBox="0 0 40 40" width="40" height="40" style="position:absolute;left:0;top:0;transform:rotate(0deg)" aria-hidden="true"><path d="M3 38V14A11 11 0 0114 3h24" fill="none" stroke="{{brk}}" stroke-width="4.5" stroke-linecap="round"/></svg><svg viewBox="0 0 40 40" width="40" height="40" style="position:absolute;right:0;top:0;transform:rotate(90deg)" aria-hidden="true"><path d="M3 38V14A11 11 0 0114 3h24" fill="none" stroke="{{brk}}" stroke-width="4.5" stroke-linecap="round"/></svg><svg viewBox="0 0 40 40" width="40" height="40" style="position:absolute;right:0;bottom:0;transform:rotate(180deg)" aria-hidden="true"><path d="M3 38V14A11 11 0 0114 3h24" fill="none" stroke="{{brk}}" stroke-width="4.5" stroke-linecap="round"/></svg><svg viewBox="0 0 40 40" width="40" height="40" style="position:absolute;left:0;bottom:0;transform:rotate(270deg)" aria-hidden="true"><path d="M3 38V14A11 11 0 0114 3h24" fill="none" stroke="{{brk}}" stroke-width="4.5" stroke-linecap="round"/></svg>
+<svg class="pr-brk" viewBox="0 0 40 40" style="left:0;top:0;--bd:0s" aria-hidden="true"><path d="M3 38V14A11 11 0 0114 3h24" fill="none" stroke="#F6F4EF" stroke-width="4.5" stroke-linecap="round"/></svg><svg class="pr-brk" viewBox="0 0 40 40" style="right:0;top:0;transform-origin:center;--bd:.3s" aria-hidden="true"><g transform="rotate(90 20 20)"><path d="M3 38V14A11 11 0 0114 3h24" fill="none" stroke="#F6F4EF" stroke-width="4.5" stroke-linecap="round"/></g></svg><svg class="pr-brk" viewBox="0 0 40 40" style="right:0;bottom:0;--bd:.6s" aria-hidden="true"><g transform="rotate(180 20 20)"><path d="M3 38V14A11 11 0 0114 3h24" fill="none" stroke="#F6F4EF" stroke-width="4.5" stroke-linecap="round"/></g></svg><svg class="pr-brk" viewBox="0 0 40 40" style="left:0;bottom:0;--bd:.9s" aria-hidden="true"><g transform="rotate(270 20 20)"><path d="M3 38V14A11 11 0 0114 3h24" fill="none" stroke="#F6F4EF" stroke-width="4.5" stroke-linecap="round"/></g></svg>
 <sc-if value="{{scanning}}" hint-placeholder-val="{{ true }}"><span style="position:absolute;left:18px;right:18px;top:14px;height:2px;border-radius:1px;background:linear-gradient(90deg,transparent,#F6F4EF,transparent);box-shadow:0 0 18px 4px rgba(246,244,239,.35);--h:228px;animation:m-scan var(--m-dur-scan) var(--m-ease-inout) infinite"></span></sc-if>
-<sc-if value="{{found}}" hint-placeholder-val="{{ false }}"><span class="m-pop" style="position:absolute;inset:0;margin:auto;width:84px;height:84px;border-radius:50%;background:#0B6B50;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="44" height="44" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 420ms var(--m-ease-inout) 200ms both"/></svg></span></sc-if>
 </div>
+<div style="{{ringStyle}}"><sc-if value="{{found}}" hint-placeholder-val="{{ false }}"><svg class="pr-chk" viewBox="0 0 24 24" width="52" height="52" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" fill="none" stroke="#4FD1A5" stroke-width="2.600" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></sc-if></div>
 <div style="position:absolute;left:0;right:0;top:calc(var(--m-top) + 4px);display:flex;align-items:center;padding:0 8px;z-index:3">
 <a class="m-back" href="Movil-Ajustes.dc.html" aria-label="Cerrar el escáner" style="color:#F6F4EF"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
 <div style="flex:1;text-align:center;font:500 17px var(--np-font-ui)">Escanear QR</div>
@@ -219,13 +255,31 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 <div class="m-enter" style="display:flex;flex-direction:column;flex:1;min-height:0">
 <div class="m-appbar"><button class="m-back" onClick="{{toIntro}}" aria-label="Atrás"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></div>
 <div style="flex:1;padding:24px 28px 0;display:flex;flex-direction:column;align-items:flex-start">
-<div class="m-pop" style="width:96px;height:96px;border-radius:30px;background:var(--np-warn-bg);color:var(--np-warn);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A1.5 1.5 0 015.500 7H8l1.500-2.500h5L16 7h2.500A1.500 1.500 0 0120 8.500v9a1.500 1.500 0 01-1.500 1.500h-13A1.500 1.500 0 014 17.500z"/><circle cx="12" cy="13" r="3.200"/><path d="M3.500 3.500l17 17"/></svg></div>
-<h1 style="margin:28px 0 0;font:500 32px/1.1 var(--np-font-read);letter-spacing:-.02em">Falta el permiso de cámara</h1>
-<p style="margin:12px 0 0;font:400 16px/1.55 var(--np-font-ui);color:var(--np-muted)">newpaper solo usa la cámara para leer el QR del emparejamiento. La imagen no se guarda ni sale del móvil.</p>
-<div class="m-card" style="margin-top:22px;padding:14px 16px;width:100%;font:400 14px/1.5 var(--np-font-ui);color:var(--np-ink2)"><b style="font-weight:600">Cómo activarlo</b><br>Ajustes de Android → Aplicaciones → newpaper → Permisos → Cámara → «Solo mientras se usa la app».</div>
+<div class="m-pop" style="width:96px;height:96px;border-radius:30px;background:var(--np-warn-bg);color:var(--np-warn);display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5A1.5 1.5 0 015.500 7H8l1.500-2.500h5L16 7h2.500A1.500 1.500 0 0120 8.500v9a1.500 1.500 0 01-1.500 1.500h-13A1.500 1.500 0 014 17.500z"/><circle cx="12" cy="13" r="3.200"/><path d="M3.500 3.500l17 17" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 420ms var(--m-ease-inout) 300ms both"/></svg></div>
+<h1 class="m-rise" style="margin:28px 0 0;font:500 32px/1.1 var(--np-font-read);letter-spacing:-.02em;animation-delay:120ms">Falta el permiso de cámara</h1>
+<p class="m-rise" style="margin:12px 0 0;font:400 16px/1.55 var(--np-font-ui);color:var(--np-muted);animation-delay:200ms">newpaper solo usa la cámara para leer el QR del emparejamiento. La imagen no se guarda ni sale del móvil.</p>
+<div class="m-card m-rise" style="margin-top:22px;padding:14px 16px;width:100%;font:400 14px/1.5 var(--np-font-ui);color:var(--np-ink2);animation-delay:280ms"><b style="font-weight:600">Cómo activarlo</b><br>Ajustes de Android → Aplicaciones → newpaper → Permisos → Cámara → «Solo mientras se usa la app».</div>
 </div>
 <div style="padding:12px 20px calc(var(--m-bottom) + 8px);display:flex;flex-direction:column;gap:10px"><button class="m-btn">Abrir los ajustes de Android</button><button class="m-btn sec" onClick="{{toManual}}">Introducir el código a mano</button></div>
 </div>
+</sc-if>
+
+<sc-if value="{{is.shake}}" hint-placeholder-val="{{ false }}">
+<div class="m-enter" style="display:flex;flex-direction:column;flex:1;min-height:0">
+<div class="m-appbar"><button class="m-back" onClick="{{toScan}}" aria-label="Cancelar y volver a escanear"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button><div class="m-bar-title">Conectando con tu PC</div></div>
+<div class="m-scroll" style="padding:8px 20px 16px">
+<div style="height:200px;border-radius:28px;background:var(--np-soft);display:flex;align-items:center;justify-content:center;padding:0 20px;position:relative;overflow:hidden">
+<div class="pr-link" style="width:100%">
+<div class="pr-dev"><svg width="60" height="56" viewBox="0 0 92 84" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="86" height="56" rx="8" stroke="#17171A" stroke-width="2" fill="#FFFFFF"/><path d="M46 60v12M28 74h36" stroke="#17171A" stroke-width="2"/><rect x="30" y="16" width="32" height="32" rx="4" fill="#E8ECFA" stroke="#2340B8" stroke-width="1.6"/></svg>PC-ESCRITORIO</div>
+<div class="{{lineCls}}" style="--w:150px;--lc:{{lineCol}};flex:1;min-width:150px"><i class="pr-pk" style="--d:0s">SYN</i><i class="pr-pk rev" style="--d:.5s;--pc:#0B6B50">ACK</i><i class="pr-pk" style="--d:1s;--pc:#7A5AF0">KEY</i><i class="pr-pk rev" style="--d:1.25s;--pc:#7A5AF0">KEY</i>
+<span style="{{lockWrap}}"><svg class="{{lockCls}}" viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5.500" y="11" width="13" height="9" rx="2" fill="#FFFFFF"/><path class="shackle" d="M8.500 11V8a3.500 3.500 0 017 0v3"/></svg></span></div>
+<div class="pr-dev"><svg width="38" height="56" viewBox="0 0 56 84" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="50" height="78" rx="13" stroke="#17171A" stroke-width="2" fill="#FFFFFF"/><path d="M22 10h12" stroke="#17171A" stroke-width="2"/><rect x="12" y="26" width="32" height="32" rx="6" stroke="#2340B8" stroke-width="1.8" fill="#E8ECFA"/></svg>Este móvil</div>
+</div></div>
+<div style="margin-top:14px">
+<sc-for list="{{hsSteps}}" as="h" hint-placeholder-count="4"><div class="{{h.cls}}"><i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" pathLength="1"/></svg></i><span>{{h.t}}</span><small>{{h.r}}</small></div></sc-for>
+</div>
+<div style="font:400 11px var(--np-font-mono);color:var(--np-faint);margin-top:8px;text-align:center">X25519 · HKDF · XChaCha20-Poly1305</div>
+</div></div>
 </sc-if>
 
 <sc-if value="{{is.s3}}" hint-placeholder-val="{{ false }}">
@@ -233,10 +287,11 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 <div class="m-appbar"><button class="m-back" onClick="{{toScan}}" aria-label="Volver a escanear"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button><div class="m-bar-title">Comprueba el código</div></div>
 <div class="m-scroll" style="padding:8px 20px 16px">
 <p style="margin:0;font:400 16px/1.55 var(--np-font-ui);color:var(--np-muted)">Tu PC muestra ahora un código. Si es el mismo, nadie se ha colado entre los dos.</p>
-<div class="m-card" style="margin-top:18px;padding:22px 16px 16px;border-radius:24px">
+<div class="m-card" style="margin-top:18px;padding:22px 16px 16px;border-radius:24px;position:relative;transition:box-shadow var(--m-dur-slow) var(--m-ease),border-color var(--m-dur-slow) var(--m-ease);{{fpCardStyle}}">
 <div class="m-kicker" style="text-align:center">Huella del emparejamiento</div>
-<div style="display:flex;align-items:baseline;justify-content:center;gap:10px;margin-top:18px;font:500 30px var(--np-font-mono);letter-spacing:.02em"><span class="m-rise" style="animation-delay:80ms">7F3A</span><span style="color:#B9B4A9">·</span><span class="m-rise" style="animation-delay:200ms">91C2</span><span style="color:#B9B4A9">·</span><span class="m-rise" style="animation-delay:320ms">E04B</span></div>
-<div style="display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--np-line2)"><div style="flex:1"><div style="font:400 12px var(--np-font-ui);color:var(--np-muted)">Este móvil</div><div style="font-weight:500">Pixel 8</div></div><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 00-14.500-3.500M4 4v4h4"/><path d="M4 13a8 8 0 0014.500 3.500M20 20v-4h-4"/></svg><div style="flex:1;text-align:right"><div style="font:400 12px var(--np-font-ui);color:var(--np-muted)">Tu PC</div><div style="font-weight:500">PC-ESCRITORIO</div></div></div>
+<div style="display:flex;align-items:baseline;justify-content:center;gap:10px;margin-top:18px;font:500 30px var(--np-font-mono);letter-spacing:.02em;min-height:40px;{{fpCodeStyle}}"><span style="{{fp.a}}">{{fp.sa}}</span><span style="color:#B9B4A9">·</span><span style="{{fp.b}}">{{fp.sb}}</span><span style="color:#B9B4A9">·</span><span style="{{fp.c}}">{{fp.sc}}</span></div>
+<sc-if value="{{fpOk}}" hint-placeholder-val="{{ false }}"><div class="m-pop" style="position:absolute;right:14px;top:14px;width:32px;height:32px;border-radius:50%;background:var(--np-ok);display:flex;align-items:center;justify-content:center"><svg class="pr-chk" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></div></sc-if>
+<div style="display:flex;align-items:center;gap:10px;margin-top:20px;padding-top:14px;border-top:1px solid var(--np-line2)"><div style="flex:1"><div style="font:400 12px var(--np-font-ui);color:var(--np-muted)">Este móvil</div><div style="font-weight:500">Pixel 8</div></div><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="{{fpLink}}" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="transition:stroke var(--m-dur-slow) var(--m-ease)"><path d="M20 11a8 8 0 00-14.500-3.500M4 4v4h4"/><path d="M4 13a8 8 0 0014.500 3.500M20 20v-4h-4"/></svg><div style="flex:1;text-align:right"><div style="font:400 12px var(--np-font-ui);color:var(--np-muted)">Tu PC</div><div style="font-weight:500">PC-ESCRITORIO</div></div></div>
 </div>
 <div style="font:400 11px var(--np-font-mono);color:var(--np-faint);margin-top:10px;text-align:center">X25519 · HKDF · XChaCha20-Poly1305</div>
 <sc-if value="{{fpBad}}" hint-placeholder-val="{{ false }}"><div class="m-rise" style="margin-top:14px;background:var(--np-warn-bg);border-radius:18px;padding:14px;display:flex;gap:12px"><span class="m-ico warn" style="background:#F6E2BD"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 100 18 9 9 0 000-18z"/><path d="M12 11v5.500M12 7.800v.01"/></svg></span><div><div style="font-weight:500;color:var(--np-warn)">Emparejamiento cancelado</div><div style="font:400 13px/1.5 var(--np-font-ui);color:#6B4A12;margin-top:3px">No se ha guardado nada. Vuelve a escanear el QR; si falla otra vez, puede que otro equipo de tu red se haga pasar por el PC.</div></div></div></sc-if>
@@ -249,14 +304,18 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 <div class="m-enter" style="display:flex;flex-direction:column;flex:1;min-height:0">
 <div class="m-appbar"><a class="m-back" href="Movil-Ajustes.dc.html" aria-label="Cerrar"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></a><div class="m-bar-title">{{s4Title}}</div></div>
 <div class="m-scroll" style="padding-bottom:16px">
-<sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}"><div class="m-card m-pop" style="margin:4px 16px 16px;padding:16px;display:flex;gap:14px;align-items:center"><span style="flex:none;width:48px;height:48px;border-radius:50%;background:var(--np-ok);display:flex;align-items:center;justify-content:center;color:#fff"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><div><div style="font:500 18px/1.25 var(--np-font-read)">Emparejado con PC-ESCRITORIO</div><div style="font:400 12px var(--np-font-ui);color:var(--np-muted);margin-top:2px">Red local · próxima sincronización en 5 min</div></div></div></sc-if>
+<div class="m-card" style="margin:0 16px 14px;padding:12px 16px;display:flex;align-items:center;gap:6px">
+<div class="pr-link" style="width:100%"><div class="pr-dev"><svg width="30" height="28" viewBox="0 0 92 84" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="86" height="56" rx="8" stroke="#17171A" stroke-width="3.5" fill="#FFFFFF"/><path d="M46 60v12M28 74h36" stroke="#17171A" stroke-width="3.5"/></svg></div><div class="{{syncLineCls}}" style="--w:{{lineW}};--lc:{{syncCol}};--pc:{{syncCol}}"><i class="pr-pk" style="--d:0s"></i><i class="pr-pk" style="--d:.3s"></i><i class="pr-pk" style="--d:.6s"></i><i class="pr-pk" style="--d:.9s"></i></div><div class="pr-dev"><svg width="20" height="30" viewBox="0 0 56 84" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="50" height="78" rx="13" stroke="#17171A" stroke-width="4" fill="#FFFFFF"/></svg></div></div>
+<span style="flex:none;margin-left:8px;font:500 12px var(--np-font-mono);color:{{syncCol}};width:64px;text-align:right">{{linkLabel}}</span>
+</div>
+<sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}"><div class="m-card m-pop" style="margin:0 16px 16px;padding:16px;display:flex;gap:14px;align-items:center"><span style="flex:none;width:48px;height:48px;border-radius:50%;background:var(--np-ok);display:flex;align-items:center;justify-content:center;color:#fff"><svg class="pr-chk" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" pathLength="1"/></svg></span><div><div style="font:500 18px/1.25 var(--np-font-read)">Emparejado con PC-ESCRITORIO</div><div style="font:400 12px var(--np-font-ui);color:var(--np-muted);margin-top:2px">Red local · próxima sincronización en 5 min</div></div></div></sc-if>
 <p style="margin:0 20px 14px;font:400 15px/1.5 var(--np-font-ui);color:var(--np-muted)">{{s4Sub}}</p>
-<div class="m-group">
+<div class="m-group m-stagger">
 <sc-for list="{{scopes}}" as="g" hint-placeholder-count="7">
 <div class="m-row m-row-wrap" style="flex-wrap:wrap;gap:0 14px">
 <span class="m-rt"><b>{{g.name}}</b><span>{{g.desc}}</span></span>
 <sc-if value="{{g.picking}}" hint-placeholder-val="{{ true }}"><button class="m-switch" role="switch" aria-checked="{{g.aria}}" aria-label="{{g.name}}" onClick="{{g.toggle}}"></button></sc-if>
-<sc-if value="{{g.syncing}}" hint-placeholder-val="{{ false }}"><span style="font:500 13px var(--np-font-mono);color:{{g.col}}">{{g.pct}}</span></sc-if>
+<sc-if value="{{g.syncing}}" hint-placeholder-val="{{ false }}"><span style="font:500 13px var(--np-font-mono);color:{{g.col}};display:flex;align-items:center">{{g.pct}}<sc-if value="{{g.isDone}}" hint-placeholder-val="{{ false }}"><svg class="pr-chk" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M5 12.500l4.500 4.500L19 7.500" fill="none" stroke="#0B6B50" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" pathLength="1"/></svg></sc-if></span></sc-if>
 <sc-if value="{{g.syncing}}" hint-placeholder-val="{{ false }}"><div style="width:100%;height:4px;border-radius:2px;background:var(--np-line2);margin-top:8px;overflow:hidden"><div style="{{g.bar}}"></div></div></sc-if>
 </div>
 </sc-for>
@@ -276,13 +335,31 @@ button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!impo
 class Component extends DCLogic {
   constructor(p) {
     super(p);
-    const q = new URLSearchParams(location.search).get('s') || '1';
-    this.state = { step: q === 'denied' ? 'denied' : q === 'manual' || q === 'found' ? 2 : Number(q) || 1, found: q === 'found', manual: q === 'manual', torch: false, k: 0, bad: false, phase: q === '4' ? 'pick' : 'pick', t: 0,
+    const qs = new URLSearchParams(location.search), q = qs.get('s') || '1';
+    const step = q === 'denied' ? 'denied' : q === 'shake' ? 'shake' : q === 'manual' || q === 'found' ? 2 : q === 'sync' || q === 'done' ? 4 : Number(q) || 1;
+    this.state = { step, found: q === 'found', manual: q === 'manual', torch: false, k: 0, bad: false, phase: q === 'done' ? 'done' : 'pick', t: q === 'done' ? 1 : 0, hs: q === 'shake' ? 0 : 0, fpT: q === '3' ? 0 : 1, fpOk: false, rm: qs.get('rm') === '1',
       sc: { ajustes: true, historial: true, guardados: true, analisis: true, temas: true, fuentes: true, claves: false } };
+    this.boot = q;
   }
-  componentWillUnmount() { clearTimeout(this.to); cancelAnimationFrame(this.raf); }
-  go(step) { clearTimeout(this.to); cancelAnimationFrame(this.raf); this.setState({ step, k: this.state.k + 1, found: false, manual: false, bad: false, phase: 'pick', t: 0 }); }
-  simulate() { if (this.state.found) return; this.setState({ found: true }); clearTimeout(this.to); this.to = setTimeout(() => this.go(3), 1500); }
+  componentDidMount() { if (this.boot === 'sync') this.startSync(); if (this.boot === 'shake') this.runShake(); if (this.boot === '3') this.runFp(); }
+  componentWillUnmount() { clearTimeout(this.to); cancelAnimationFrame(this.raf); cancelAnimationFrame(this.raf2); cancelAnimationFrame(this.raf3); }
+  stopAll() { clearTimeout(this.to); cancelAnimationFrame(this.raf); cancelAnimationFrame(this.raf2); cancelAnimationFrame(this.raf3); }
+  go(step) {
+    this.stopAll();
+    this.setState({ step, k: this.state.k + 1, found: false, manual: false, bad: false, phase: 'pick', t: 0, hs: 0, fpOk: false, fpT: step === 3 ? 0 : 1 });
+    if (step === 'shake') this.runShake(); if (step === 3) this.runFp();
+  }
+  simulate() { if (this.state.found) return; this.setState({ found: true }); clearTimeout(this.to); this.to = setTimeout(() => this.go('shake'), 1500); }
+  runShake() {
+    const t0 = performance.now(), dur = 3600;
+    const tick = (t) => { const k = Math.min(1, (t - t0) / dur); this.setState({ hs: k }); if (k < 1) this.raf2 = requestAnimationFrame(tick); else this.to = setTimeout(() => this.go(3), 450); };
+    this.raf2 = requestAnimationFrame(tick);
+  }
+  runFp() {
+    const t0 = performance.now(), dur = 1500;
+    const tick = (t) => { const k = Math.min(1, (t - t0) / dur); this.setState({ fpT: k }); if (k < 1) this.raf3 = requestAnimationFrame(tick); };
+    this.raf3 = requestAnimationFrame(tick);
+  }
   startSync() {
     cancelAnimationFrame(this.raf);
     const t0 = performance.now(), dur = 3600;
@@ -303,25 +380,41 @@ class Component extends DCLogic {
   renderVals() {
     const s = this.state, scanning = s.step === 2 && !s.found;
     const SC = [['ajustes', 'Ajustes y proveedores', 'Sin las claves de API'], ['historial', 'Historial', 'Visitas y búsquedas'], ['guardados', 'Guardados', 'Artículos para leer después'], ['analisis', 'Análisis y síntesis', 'Los que ya has pagado'], ['temas', 'Temas y briefing', 'Lo que sigues'], ['fuentes', 'Fuentes y posiciones', 'Cómo mides a cada medio'], ['claves', 'Claves de API', 'Cifradas con la clave del par']];
-    const picking = s.phase === 'pick', n = SC.length, on = SC.filter((x) => s.sc[x[0]]);
-    const scopes = SC.map((x, i) => {
+    const picking = s.phase === 'pick', on = SC.filter((x) => s.sc[x[0]]);
+    const scopes = SC.map((x) => {
       const enabled = !!s.sc[x[0]], idx = on.findIndex((y) => y[0] === x[0]);
       const p = !enabled ? 0 : s.phase === 'done' ? 1 : s.phase === 'sync' ? Math.max(0, Math.min(1, (s.t * (on.length + 2) - idx * 0.9) / 1.6)) : 0;
-      return { name: x[1], desc: x[2], picking, syncing: !picking && enabled, aria: enabled ? 'true' : 'false', toggle: () => this.setState({ sc: { ...s.sc, [x[0]]: !enabled } }), pct: p >= 1 ? 'Hecho' : Math.round(p * 100) + ' %', col: p >= 1 ? '#0B6B50' : '#5E5B55', bar: 'height:100%;border-radius:2px;background:' + (p >= 1 ? '#0B6B50' : '#17171A') + ';width:' + p * 100 + '%' };
+      return { name: x[1], desc: x[2], picking, syncing: !picking && enabled, aria: enabled ? 'true' : 'false', toggle: () => this.setState({ sc: { ...s.sc, [x[0]]: !enabled } }), pct: p >= 1 ? '' : Math.round(p * 100) + ' %', isDone: p >= 1, col: p >= 1 ? '#0B6B50' : '#5E5B55', bar: 'height:100%;border-radius:2px;background:' + (p >= 1 ? '#0B6B50' : '#17171A') + ';width:' + p * 100 + '%;transition:background-color var(--m-dur-base) var(--m-ease)' };
     });
     const total = s.phase === 'done' ? 100 : Math.round(s.t * 100);
+    // apretón de manos
+    const H = [['Intercambiando claves públicas', 'X25519', 0.12], ['Derivando la clave del par', 'HKDF', 0.42], ['Cerrando el canal cifrado', 'XChaCha20', 0.7], ['Comprobando la huella', '3 grupos', 0.92]];
+    const hsSteps = H.map((h, i) => { const done = s.hs >= h[2] + 0.2 || (i === 3 && s.hs >= 1), cur = !done && s.hs >= (i ? H[i - 1][2] + 0.2 : 0); return { t: h[0], r: done ? h[1] : '', cls: 'pr-st' + (done ? ' ok' : cur ? ' cur' : '') }; });
+    const hsLocked = s.hs >= 0.62, hsDone = s.hs >= 1;
+    // huella: los dígitos se mezclan y se fijan de uno en uno
+    const FIN = ['7F3A', '91C2', 'E04B'], HEX = '0123456789ABCDEF';
+    const scr = (j) => { const lock = 0.34 + j * 0.2; if (s.fpT >= lock) return FIN[j]; let seed = Math.floor(s.fpT * 26) * 31 + j * 97, o = ''; for (let c = 0; c < 4; c++) { seed = (seed * 16807 + 11) % 2147483647; o += HEX[seed % 16]; } return o; };
+    const grp = (j) => 'display:inline-block;min-width:3.4ch;text-align:center;transition:color var(--m-dur-base) var(--m-ease);color:' + (s.fpT >= 0.34 + j * 0.2 ? (s.fpOk ? '#0B6B50' : '#17171A') : '#8D8981');
     return {
-      is: { s1: s.step === 1, s2: s.step === 2, s3: s.step === 3, s4: s.step === 4, denied: s.step === 'denied' },
-      toScan: () => this.go(2), toIntro: () => this.go(1), toManual: () => this.setState({ manual: true, step: s.step === 'denied' ? 2 : s.step }), closeManual: () => this.setState({ manual: false }), codeOk: () => this.go(3),
+      rootCls: 'm-app' + (s.rm ? ' m-reduce' : ''),
+      is: { s1: s.step === 1, s2: s.step === 2, s3: s.step === 3, s4: s.step === 4, denied: s.step === 'denied', shake: s.step === 'shake' },
+      toScan: () => this.go(2), toIntro: () => this.go(1), toManual: () => this.setState({ manual: true, step: s.step === 'denied' ? 2 : s.step }), closeManual: () => this.setState({ manual: false }), codeOk: () => this.go('shake'),
       toDenied: () => this.go('denied'), torch: () => this.setState({ torch: !s.torch }), torchOn: s.torch ? 'true' : 'false', torchOp: s.torch ? 0.35 : 0,
       torchStyle: 'color:' + (s.torch ? '#17171A' : '#F6F4EF') + ';background:' + (s.torch ? '#F6F4EF' : 'transparent'),
-      simulate: () => this.simulate(), scanning, found: s.found, manual: s.manual,
-      brk: s.found ? '#4FD1A5' : '#F6F4EF', dotCol: s.found ? '#4FD1A5' : '#C2412F', status: s.found ? 'CÓDIGO LEÍDO' : 'BUSCANDO CÓDIGO',
-      frameStyle: 'position:absolute;left:65px;top:236px;width:260px;height:260px;transition:transform var(--m-dur-base) var(--m-spring);transform:scale(' + (s.found ? 0.94 : 1) + ');animation:' + (s.found ? 'none' : 'm-pulse 3s ease-in-out infinite') + ';opacity:1',
-      qrStyle: 'position:absolute;left:79px;top:250px;transition:transform var(--m-dur-slow) var(--m-ease);transform:rotate(' + (s.found ? 0 : -4) + 'deg) scale(' + (s.found ? 0.97 : 1.02) + ')',
+      simulate: () => this.simulate(), scanning, found: s.found, manual: s.manual, foundCls: s.found ? 'found' : '',
+      dotCol: s.found ? '#4FD1A5' : '#C2412F', status: s.found ? 'CÓDIGO LEÍDO' : 'BUSCANDO CÓDIGO',
+      frameStyle: 'position:absolute;left:65px;top:236px;width:260px;height:260px;transition:transform var(--m-dur-base) var(--m-spring),opacity var(--m-dur-base) var(--m-ease);transform:scale(' + (s.found ? 0.94 : 1) + ');opacity:' + (s.found ? 0 : 1),
+      ringStyle: s.found ? 'position:absolute;left:147px;top:318px;width:96px;height:96px;border-radius:50%;border:4px solid #4FD1A5;background:rgba(12,12,14,.7);display:flex;align-items:center;justify-content:center;transition:all 520ms var(--m-ease);z-index:2' : 'position:absolute;left:65px;top:236px;width:260px;height:260px;border-radius:30px;border:4px solid #4FD1A5;opacity:0;transition:all 520ms var(--m-ease);pointer-events:none;display:flex;align-items:center;justify-content:center',
+      qrStyle: 'position:absolute;left:79px;top:250px;transition:transform var(--m-dur-slow) var(--m-ease),opacity var(--m-dur-slow) var(--m-ease) 160ms;transform:rotate(' + (s.found ? 0 : -4) + 'deg) scale(' + (s.found ? 0.5 : 1.02) + ');opacity:' + (s.found ? 0 : 1),
       qr: this.qrPath(),
-      fpBad: s.bad, noLabel: s.bad ? 'Volver a escanear' : 'No coinciden', fpNo: () => (s.bad ? this.go(2) : this.setState({ bad: true })), fpYes: () => this.go(4),
+      lineCls: 'pr-line' + (hsDone ? ' solid' : ''), lineCol: hsDone ? '#0B6B50' : hsLocked ? '#7A5AF0' : '#2340B8', hsSteps,
+      lockWrap: 'position:absolute;left:50%;top:50%;margin:-22px 0 0 -22px;width:44px;height:44px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px ' + (hsDone ? '#0B6B50' : '#D9D5CC') + ';display:flex;align-items:center;justify-content:center;color:' + (hsDone ? '#0B6B50' : '#17171A') + ';transition:all var(--m-dur-base) var(--m-ease);transform:scale(' + (s.hs > 0.3 ? 1 : 0) + ')',
+      lockCls: 'pr-lockico' + (hsLocked ? '' : ' open'),
+      fp: { a: grp(0), b: grp(1), c: grp(2), sa: scr(0), sb: scr(1), sc: scr(2) },
+      fpCardStyle: s.fpOk ? 'box-shadow:0 0 0 2px #0B6B50;border-color:#0B6B50' : '', fpCodeStyle: '', fpOk: s.fpOk, fpLink: s.fpOk ? '#0B6B50' : '#17171A',
+      fpBad: s.bad, noLabel: s.bad ? 'Volver a escanear' : 'No coinciden', fpNo: () => (s.bad ? this.go(2) : this.setState({ bad: true })), fpYes: () => { this.setState({ fpOk: true }); clearTimeout(this.to); this.to = setTimeout(() => this.go(4), 900); },
       s4Title: s.phase === 'done' ? 'Emparejado' : 'Qué sincronizar', s4Sub: s.phase === 'pick' ? 'Elige qué viaja de tu PC a este móvil. Puedes cambiarlo luego en Ajustes.' : s.phase === 'sync' ? 'Copiando por tu red local, cifrado de extremo a extremo.' : 'Todo al día. Los cambios se sincronizan solos mientras ambos estén en la misma red.',
+      syncLineCls: 'pr-line' + (s.phase === 'pick' ? ' idle' : s.phase === 'done' ? ' solid' : ''), syncCol: s.phase === 'done' ? '#0B6B50' : '#2340B8', linkLabel: s.phase === 'pick' ? 'listo' : s.phase === 'sync' ? total + ' %' : 'al día', lineW: '170px',
       scopes, keysOn: !!s.sc.claves && s.phase === 'pick', isPick: s.phase === 'pick', isSync: s.phase === 'sync', isDone: s.phase === 'done', totalPct: total + ' %', syncBtn: 'Sincronizar ' + on.length + ' elementos'
     };
   }

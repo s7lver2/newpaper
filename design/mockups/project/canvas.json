@@ -104,7 +104,7 @@
       "h": 844,
       "is_interactive": true,
       "radius": 40,
-      "title": "M0 · Bienvenida y recorrido (deslizable)",
+      "title": "M0 · Bienvenida animada (paralaje, pasos, celebración)",
       "w": 390,
       "x": 0,
       "y": 7480
@@ -276,7 +276,7 @@
       "y": 12480,
       "w": 390,
       "h": 844,
-      "title": "M11 · Emparejar con el PC (escáner QR)",
+      "title": "M11 · Emparejar: escáner, apretón de manos y sincronización",
       "is_interactive": true,
       "radius": 40
     },
@@ -312,7 +312,7 @@
       "y": 12480,
       "w": 390,
       "h": 844,
-      "title": "M15 · Conectar un proveedor",
+      "title": "M15 · Conectar un proveedor (asistente de 3 pasos)",
       "is_interactive": true,
       "radius": 40
     },
@@ -321,7 +321,7 @@
       "y": 13700,
       "w": 390,
       "h": 844,
-      "title": "M16 · Arranque y primera carga",
+      "title": "M16 · Animación de arranque (la n nace de periódicos)",
       "is_interactive": true,
       "radius": 40
     },
@@ -348,6 +348,33 @@
       "h": 2150,
       "title": "M19 · Sistema de movimiento",
       "is_interactive": true
+    },
+    "Movil-ArranqueLinea.dc.html": {
+      "is_interactive": false,
+      "radius": 0,
+      "x": 0,
+      "y": 17230,
+      "w": 1280,
+      "h": 1900,
+      "title": "M16b · Arranque: fotogramas y empalme con el splash nativo"
+    },
+    "Movil-IA.dc.html": {
+      "is_interactive": true,
+      "radius": 40,
+      "x": 1360,
+      "y": 17230,
+      "w": 390,
+      "h": 844,
+      "title": "M20 · IA y proveedores (lista, estado, editar, desconectar)"
+    },
+    "Movil-Conexion.dc.html": {
+      "is_interactive": true,
+      "radius": 40,
+      "x": 1830,
+      "y": 17230,
+      "w": 390,
+      "h": 844,
+      "title": "M21 · Conexión y Tor (arranque honesto, lento, fallo, listo)"
     }
   },
   "createdOnFiles": {
@@ -438,6 +465,30 @@
       "fill": "blue",
       "size": "s",
       "text": "Todos los Movil-*.dc.html comparten tools/motion-base.css (tokens de movimiento, medidas, componentes). Se copia a cada artboard con node design/mockups/tools/inject-base.mjs."
+    },
+    "t8": {
+      "kind": "title1",
+      "maxW": 2840,
+      "text": "Móvil v3 — arranque animado, onboarding, emparejado y proveedores de IA",
+      "w": 240,
+      "x": 0,
+      "y": 16950
+    },
+    "n_v3a": {
+      "x": 1360,
+      "y": 18150,
+      "w": 390,
+      "fill": "teal",
+      "size": "s",
+      "text": "Estados con ?s= en el servidor local. M20: list|empty|edit|edit-login|testing|test-ok|test-bad|disc|offline. M15: home|all|search|open|local|key|keykb|how|login|loginerr|server|ollama|ollama-unpaired|test|test-slow|ok|fail|fail-net|fail-quota|fail-local|preset|adv|picker|done."
+    },
+    "n_v3b": {
+      "x": 1830,
+      "y": 18150,
+      "w": 390,
+      "fill": "purple",
+      "size": "s",
+      "text": "M21 ?s=direct|boot|warm|stall|slow|failed|ready|ready-warm|netchange|reset. El demo corre a x6 (un arranque en frío de 104 s sale en 17 s). M16 ?s=<ms>|short|reduce&ui=0 para congelar un fotograma; M11 ?s=shake|3|sync|done."
     }
   },
   "order": [
@@ -479,7 +530,10 @@
     "Movil-Splash.dc.html",
     "Movil-Icono.dc.html",
     "Movil-TabBar.dc.html",
-    "Movil-Movimiento.dc.html"
+    "Movil-Movimiento.dc.html",
+    "Movil-ArranqueLinea.dc.html",
+    "Movil-IA.dc.html",
+    "Movil-Conexion.dc.html"
   ],
   "pages": [],
   "title": "newpaper — mockups UI"
