@@ -46,10 +46,15 @@ class OriginalWebView(private val activity: Activity, private val onHtml: (Strin
         web.settings.allowFileAccess = false
         web.settings.allowContentAccess = false
         web.settings.mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+        // `WebView.getUrl()` solo vale en el hilo principal y `shouldInterceptRequest` corre en otro: la página actual se guarda aquí.
+        val page = java.util.concurrent.atomic.AtomicReference(url)
         web.webViewClient = object : WebViewClient() {
+            override fun onPageStarted(view: WebView, u: String, favicon: android.graphics.Bitmap?) {
+                page.set(u)
+            }
             override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? {
                 val type = if (request.isForMainFrame) "document" else "other"
-                val source = view.url ?: request.url.toString()
+                val source = if (request.isForMainFrame) request.url.toString() else page.get()
                 return if (NpNative.shouldBlock(request.url.toString(), source, type)) {
                     WebResourceResponse("text/plain", "utf-8", ByteArrayInputStream(ByteArray(0)))
                 } else null

@@ -1,7 +1,7 @@
 html, body, #root { height: 100%; margin: 0; background: var(--np-paper); color: var(--np-ink); }
 .m-app { display: flex; flex-direction: column; height: 100%; font: 15px/1.5 var(--np-font-ui); }
 .m-main { flex: 1; overflow: auto; padding: env(safe-area-inset-top) 16px 16px; }
-.m-tabs { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--np-line); background: var(--np-panel); padding-bottom: env(safe-area-inset-bottom); }
+.m-tabs { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--np-line); background: var(--np-panel); padding-bottom: max(env(safe-area-inset-bottom), 20px); }
 .m-tabs button { min-height: 56px; border: 0; background: none; font: 600 12px var(--np-font-ui); color: var(--np-muted); }
 .m-tabs button[aria-current='page'] { color: var(--np-accent); }
 .m-main button, .m-main .np-btn { min-height: 44px; }

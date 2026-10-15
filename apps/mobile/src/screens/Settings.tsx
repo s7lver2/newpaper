@@ -31,7 +31,7 @@ export function Settings() {
       </div>
       <div className="m-card">
         <strong>{t('sync.devices')}</strong>
-        {peers.length ? peers.map((p) => <p key={p.id}>{p.name} <span className="np-mono np-muted">{p.fingerprint}</span></p>) : <p className="np-muted">{t('sync.noDevices')}</p>}
+        {peers.length ? peers.map((p) => <p key={p.id}>{p.name} <span className="np-mono np-muted">{p.fingerprint}</span></p>) : <p className="np-muted">{t('mobile.settings.noDevices')}</p>}
         <div className="m-row">
           <Button onClick={() => go('emparejar')}>{t('sync.pair.start')}</Button>
           {peers.length ? (
