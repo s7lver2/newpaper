@@ -2,25 +2,94 @@
   "version": 1,
   "providers": [
     {
-      "id": "openai", "name": "ChatGPT (OpenAI)", "logo": "openai.svg", "category": "recommended", "type": "cloud",
-      "adapter": "openai", "baseUrl": "https://api.openai.com/v1", "auth": "bearer",
-      "keyPrefixes": ["sk-proj-", "sk-"], "keyUrl": "https://platform.openai.com/api-keys",
+      "id": "google", "name": "Gemini (Google)", "logo": "googlegemini.svg", "category": "cloud", "type": "cloud", "recommended": true, "openness": "closed",
+      "adapter": "google", "baseUrl": "https://generativelanguage.googleapis.com/v1beta", "auth": "x_goog_api_key",
+      "keyPrefixes": ["AIza"], "keyUrl": "https://aistudio.google.com/apikey",
       "models": [
-        { "id": "gpt-5", "name": "GPT-5", "price": { "input": 1.25, "output": 10 }, "latency": "medium", "capabilities": ["structured", "tools", "vision"], "tier": "strong" },
-        { "id": "gpt-5-mini", "name": "GPT-5 mini", "price": { "input": 0.25, "output": 2 }, "latency": "fast", "capabilities": ["structured", "tools", "vision"], "tier": "light" }
+        { "id": "gemini-3.8-flash", "name": "Gemini 3.8 Flash", "price": { "input": 0.75, "output": 3.75 }, "latency": "fast", "capabilities": ["structured", "tools", "vision"], "tier": "strong" },
+        { "id": "gemini-3.5-flash-lite", "name": "Gemini 3.5 Flash-Lite", "price": { "input": 0.3, "output": 2.5 }, "latency": "fast", "capabilities": ["structured", "tools", "vision"], "tier": "light" },
+        { "id": "gemini-4-argon", "name": "Gemini 4 Argon", "price": { "input": 2, "output": 10 }, "latency": "medium", "capabilities": ["structured", "tools", "vision", "search"], "tier": "strong" }
       ]
     },
     {
-      "id": "nous", "name": "Nous Research", "logo": "nous.svg", "category": "recommended", "type": "cloud",
+      "id": "openrouter", "name": "OpenRouter", "logo": "openrouter.svg", "category": "cloud", "type": "cloud", "recommended": true, "openness": "mixed",
+      "adapter": "openai-compatible", "baseUrl": "https://openrouter.ai/api/v1", "auth": "bearer",
+      "keyPrefixes": ["sk-or-"], "keyUrl": "https://openrouter.ai/settings/keys",
+      "login": { "flow": "oauth-pkce-key", "status": "available", "authUrl": "https://openrouter.ai/auth", "exchangeUrl": "https://openrouter.ai/api/v1/auth/keys" },
+      "models": [
+        { "id": "nvidia/nemotron-3-super-120b-a12b:free", "name": "Nemotron 3 Super 120B (gratis)", "price": { "input": 0, "output": 0 }, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "strong", "openness": "open" },
+        { "id": "openrouter/auto", "name": "Auto (OpenRouter)", "price": null, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "strong" },
+        { "id": "openrouter/free", "name": "Gratis (OpenRouter)", "price": { "input": 0, "output": 0 }, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "light" },
+        { "id": "openai/gpt-6-luna", "name": "GPT-6 Luna (OpenRouter)", "price": { "input": 0.1, "output": 0.5 }, "latency": "fast", "capabilities": ["structured", "tools", "vision"], "tier": "light", "openness": "closed" }
+      ]
+    },
+    {
+      "id": "ollama", "name": "Ollama", "logo": "ollama.svg", "category": "local", "type": "local", "recommended": true, "openness": "open",
+      "adapter": "openai-compatible", "baseUrl": "http://127.0.0.1:11434/v1", "auth": "none",
+      "keyPrefixes": [], "keyUrl": null,
+      "models": [
+        { "id": "qwen3:8b", "name": "Qwen3 8B", "price": { "input": 0, "output": 0 }, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "light" },
+        { "id": "llama3.1:8b", "name": "Llama 3.1 8B", "price": { "input": 0, "output": 0 }, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "light" }
+      ]
+    },
+    {
+      "id": "groq", "name": "Groq", "logo": "groq.svg", "category": "cloud", "type": "cloud", "openness": "open",
+      "adapter": "openai-compatible", "baseUrl": "https://api.groq.com/openai/v1", "auth": "bearer",
+      "keyPrefixes": ["gsk_"], "keyUrl": "https://console.groq.com/keys",
+      "models": [
+        { "id": "openai/gpt-oss-120b", "name": "GPT-OSS 120B (Groq)", "price": { "input": 0.15, "output": 0.6 }, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "strong" },
+        { "id": "openai/gpt-oss-20b", "name": "GPT-OSS 20B (Groq)", "price": { "input": 0.075, "output": 0.3 }, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "light" },
+        { "id": "llama-3.3-70b-versatile", "name": "Llama 3.3 70B (Groq)", "price": null, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "light" }
+      ]
+    },
+    {
+      "id": "nvidia", "name": "NVIDIA NIM", "logo": "nvidia.svg", "category": "cloud", "type": "cloud", "openness": "open",
+      "adapter": "openai-compatible", "baseUrl": "https://integrate.api.nvidia.com/v1", "auth": "bearer",
+      "keyPrefixes": ["nvapi-"], "keyUrl": "https://build.nvidia.com/settings/api-keys",
+      "models": [
+        { "id": "deepseek-ai/deepseek-v4.1-flash", "name": "DeepSeek V4.1 Flash (NIM)", "price": null, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "strong" },
+        { "id": "nvidia/nemotron-3-super-120b-a12b", "name": "Nemotron 3 Super 120B (NIM)", "price": null, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "strong" },
+        { "id": "nvidia/nemotron-3.5-lightning-30b-a3b", "name": "Nemotron 3.5 Lightning 30B (NIM)", "price": null, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "light" }
+      ]
+    },
+    {
+      "id": "deepseek", "name": "DeepSeek", "logo": "deepseek.svg", "category": "cloud", "type": "cloud", "openness": "open",
+      "adapter": "openai-compatible", "baseUrl": "https://api.deepseek.com/v1", "auth": "bearer",
+      "keyPrefixes": ["sk-"], "keyUrl": "https://platform.deepseek.com/api_keys",
+      "models": [
+        { "id": "deepseek-v4-pro", "name": "DeepSeek V4 Pro", "price": { "input": 1.32, "output": 3.96 }, "latency": "slow", "capabilities": ["structured", "tools"], "tier": "strong" },
+        { "id": "deepseek-flash", "name": "DeepSeek V4.1 Flash", "price": { "input": 0.3, "output": 1.2 }, "latency": "fast", "capabilities": ["structured", "tools", "vision"], "tier": "light" }
+      ]
+    },
+    {
+      "id": "mistral", "name": "Mistral", "logo": "mistralai.svg", "category": "cloud", "type": "cloud", "openness": "open",
+      "adapter": "openai-compatible", "baseUrl": "https://api.mistral.ai/v1", "auth": "bearer",
+      "keyPrefixes": [], "keyUrl": "https://console.mistral.ai/api-keys",
+      "models": [
+        { "id": "mistral-large-latest", "name": "Mistral Large", "price": null, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "strong" },
+        { "id": "mistral-small-latest", "name": "Mistral Small", "price": null, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "light" }
+      ]
+    },
+    {
+      "id": "nous", "name": "Nous Research", "logo": "nous.svg", "category": "cloud", "type": "cloud", "openness": "open",
       "adapter": "openai-compatible", "baseUrl": "https://inference-api.nousresearch.com/v1", "auth": "bearer",
       "keyPrefixes": [], "keyUrl": "https://portal.nousresearch.com/",
+      "login": { "flow": "oauth-device", "status": "unverified" },
       "models": [
         { "id": "Hermes-4-405B", "name": "Hermes 4 405B", "price": null, "latency": "slow", "capabilities": ["structured", "tools"], "tier": "strong" },
         { "id": "Hermes-4-70B", "name": "Hermes 4 70B", "price": null, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "light" }
       ]
     },
     {
-      "id": "anthropic", "name": "Claude (Anthropic)", "logo": "anthropic.svg", "category": "cloud", "type": "cloud",
+      "id": "huggingface", "name": "Hugging Face", "logo": "huggingface.svg", "category": "cloud", "type": "cloud", "openness": "open",
+      "adapter": "openai-compatible", "baseUrl": "https://router.huggingface.co/v1", "auth": "bearer",
+      "keyPrefixes": ["hf_"], "keyUrl": "https://huggingface.co/settings/tokens",
+      "models": [
+        { "id": "openai/gpt-oss-120b", "name": "GPT-OSS 120B (HF)", "price": null, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "strong" }
+      ]
+    },
+    {
+      "id": "anthropic", "name": "Claude (Anthropic)", "logo": "anthropic.svg", "category": "cloud", "type": "cloud", "openness": "closed",
       "adapter": "anthropic", "baseUrl": "https://api.anthropic.com/v1", "auth": "x_api_key",
       "keyPrefixes": ["sk-ant-"], "keyUrl": "https://console.anthropic.com/settings/keys",
       "models": [
@@ -30,88 +99,28 @@
       ]
     },
     {
-      "id": "google", "name": "Gemini (Google)", "logo": "googlegemini.svg", "category": "cloud", "type": "cloud",
-      "adapter": "google", "baseUrl": "https://generativelanguage.googleapis.com/v1beta", "auth": "x_goog_api_key",
-      "keyPrefixes": ["AIza"], "keyUrl": "https://aistudio.google.com/apikey",
+      "id": "openai", "name": "ChatGPT (OpenAI)", "logo": "openai.svg", "category": "cloud", "type": "cloud", "openness": "closed",
+      "adapter": "openai", "baseUrl": "https://api.openai.com/v1", "auth": "bearer",
+      "keyPrefixes": ["sk-proj-", "sk-"], "keyUrl": "https://platform.openai.com/api-keys",
       "models": [
-        { "id": "gemini-2.5-pro", "name": "Gemini 2.5 Pro", "price": { "input": 1.25, "output": 10 }, "latency": "medium", "capabilities": ["structured", "tools", "vision", "search"], "tier": "strong" },
-        { "id": "gemini-2.5-flash", "name": "Gemini 2.5 Flash", "price": { "input": 0.3, "output": 2.5 }, "latency": "fast", "capabilities": ["structured", "tools", "vision"], "tier": "light" }
+        { "id": "gpt-6-sol", "name": "GPT-6 Sol", "price": { "input": 2, "output": 10 }, "latency": "medium", "capabilities": ["structured", "tools", "vision"], "tier": "strong" },
+        { "id": "gpt-6-luna", "name": "GPT-6 Luna", "price": { "input": 0.1, "output": 0.5 }, "latency": "fast", "capabilities": ["structured", "tools", "vision"], "tier": "light" }
       ]
     },
     {
-      "id": "nvidia", "name": "NVIDIA NIM", "logo": "nvidia.svg", "category": "cloud", "type": "cloud",
-      "adapter": "openai-compatible", "baseUrl": "https://integrate.api.nvidia.com/v1", "auth": "bearer",
-      "keyPrefixes": ["nvapi-"], "keyUrl": "https://build.nvidia.com/settings/api-keys",
-      "models": [
-        { "id": "deepseek-ai/deepseek-v4.1-flash", "name": "DeepSeek V4.1 Flash (NIM)", "price": null, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "strong" },
-        { "id": "nvidia/nemotron-3.5-lightning-30b-a3b", "name": "Nemotron 3.5 Lightning 30B (NIM)", "price": null, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "light" }
-      ]
-    },
-    {
-      "id": "deepseek", "name": "DeepSeek", "logo": "deepseek.svg", "category": "cloud", "type": "cloud",
-      "adapter": "openai-compatible", "baseUrl": "https://api.deepseek.com/v1", "auth": "bearer",
-      "keyPrefixes": ["sk-"], "keyUrl": "https://platform.deepseek.com/api_keys",
-      "models": [
-        { "id": "deepseek-chat", "name": "DeepSeek Chat", "price": { "input": 0.27, "output": 1.1 }, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "light" },
-        { "id": "deepseek-reasoner", "name": "DeepSeek Reasoner", "price": { "input": 0.55, "output": 2.19 }, "latency": "slow", "capabilities": ["structured"], "tier": "strong" }
-      ]
-    },
-    {
-      "id": "xai", "name": "Grok (xAI)", "logo": "grok.svg", "category": "cloud", "type": "cloud",
+      "id": "xai", "name": "Grok (xAI)", "logo": "grok.svg", "category": "cloud", "type": "cloud", "openness": "closed",
       "adapter": "openai-compatible", "baseUrl": "https://api.x.ai/v1", "auth": "bearer",
       "keyPrefixes": ["xai-"], "keyUrl": "https://console.x.ai/",
-      "models": [{ "id": "grok-4", "name": "Grok 4", "price": { "input": 3, "output": 15 }, "latency": "medium", "capabilities": ["structured", "tools", "vision", "search"], "tier": "strong" }]
+      "models": [{ "id": "grok-4.7", "name": "Grok 4.7", "price": { "input": 2, "output": 6 }, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "strong" }]
     },
     {
-      "id": "mistral", "name": "Mistral", "logo": "mistralai.svg", "category": "cloud", "type": "cloud",
-      "adapter": "openai-compatible", "baseUrl": "https://api.mistral.ai/v1", "auth": "bearer",
-      "keyPrefixes": [], "keyUrl": "https://console.mistral.ai/api-keys",
-      "models": [
-        { "id": "mistral-large-latest", "name": "Mistral Large", "price": { "input": 2, "output": 6 }, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "strong" },
-        { "id": "mistral-small-latest", "name": "Mistral Small", "price": { "input": 0.2, "output": 0.6 }, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "light" }
-      ]
-    },
-    {
-      "id": "perplexity", "name": "Perplexity", "logo": "perplexity.svg", "category": "cloud", "type": "cloud",
-      "adapter": "openai-compatible", "baseUrl": "https://api.perplexity.ai", "auth": "bearer",
-      "keyPrefixes": ["pplx-"], "keyUrl": "https://www.perplexity.ai/settings/api",
-      "models": [{ "id": "sonar-pro", "name": "Sonar Pro", "price": { "input": 3, "output": 15 }, "latency": "medium", "capabilities": ["search"], "tier": "strong" }]
-    },
-    {
-      "id": "openrouter", "name": "OpenRouter", "logo": "openrouter.svg", "category": "cloud", "type": "cloud",
-      "adapter": "openai-compatible", "baseUrl": "https://openrouter.ai/api/v1", "auth": "bearer",
-      "keyPrefixes": ["sk-or-"], "keyUrl": "https://openrouter.ai/settings/keys",
-      "models": [{ "id": "openrouter/auto", "name": "Auto (OpenRouter)", "price": null, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "strong" }]
-    },
-    {
-      "id": "groq", "name": "Groq", "logo": "groq.svg", "category": "cloud", "type": "cloud",
-      "adapter": "openai-compatible", "baseUrl": "https://api.groq.com/openai/v1", "auth": "bearer",
-      "keyPrefixes": ["gsk_"], "keyUrl": "https://console.groq.com/keys",
-      "models": [{ "id": "llama-3.3-70b-versatile", "name": "Llama 3.3 70B (Groq)", "price": { "input": 0.59, "output": 0.79 }, "latency": "fast", "capabilities": ["structured", "tools"], "tier": "light" }]
-    },
-    {
-      "id": "huggingface", "name": "Hugging Face", "logo": "huggingface.svg", "category": "cloud", "type": "cloud",
-      "adapter": "openai-compatible", "baseUrl": "https://router.huggingface.co/v1", "auth": "bearer",
-      "keyPrefixes": ["hf_"], "keyUrl": "https://huggingface.co/settings/tokens",
-      "models": [{ "id": "meta-llama/Llama-3.3-70B-Instruct", "name": "Llama 3.3 70B (HF)", "price": null, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "light" }]
-    },
-    {
-      "id": "ollama", "name": "Ollama", "logo": "ollama.svg", "category": "local", "type": "local",
-      "adapter": "openai-compatible", "baseUrl": "http://127.0.0.1:11434/v1", "auth": "none",
-      "keyPrefixes": [], "keyUrl": null,
-      "models": [
-        { "id": "qwen3:8b", "name": "Qwen3 8B", "price": { "input": 0, "output": 0 }, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "light" },
-        { "id": "llama3.1:8b", "name": "Llama 3.1 8B", "price": { "input": 0, "output": 0 }, "latency": "medium", "capabilities": ["structured", "tools"], "tier": "light" }
-      ]
-    },
-    {
-      "id": "lmstudio", "name": "LM Studio", "logo": "lmstudio.svg", "category": "local", "type": "local",
+      "id": "lmstudio", "name": "LM Studio", "logo": "lmstudio.svg", "category": "local", "type": "local", "openness": "open",
       "adapter": "openai-compatible", "baseUrl": "http://127.0.0.1:1234/v1", "auth": "none",
       "keyPrefixes": [], "keyUrl": null,
       "models": [{ "id": "local-model", "name": "Modelo cargado en LM Studio", "price": { "input": 0, "output": 0 }, "latency": "medium", "capabilities": ["structured"], "tier": "light" }]
     },
     {
-      "id": "custom", "name": "Endpoint compatible con OpenAI", "logo": "custom.svg", "category": "advanced", "type": "cloud",
+      "id": "custom", "name": "Endpoint compatible con OpenAI", "logo": "custom.svg", "category": "advanced", "type": "cloud", "openness": "mixed",
       "adapter": "openai-compatible", "baseUrl": "https://example.invalid/v1", "auth": "bearer",
       "keyPrefixes": [], "keyUrl": null, "models": []
     }

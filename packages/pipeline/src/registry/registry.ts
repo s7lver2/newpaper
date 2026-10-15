@@ -1,4 +1,4 @@
-import { RegistryFileSchema, type ModelEntry, type ProviderCategory, type ProviderEntry } from './schema';
+import { RegistryFileSchema, type ModelEntry, type Openness, type ProviderCategory, type ProviderEntry } from './schema';
 
 export interface Registry {
   providers: ProviderEntry[];
@@ -6,6 +6,8 @@ export interface Registry {
   model(providerId: string, modelId: string): ModelEntry | undefined;
   byCategory(cat: ProviderCategory): ProviderEntry[];
   recommended(): ProviderEntry[];
+  /** Abierto/cerrado de un modelo concreto: el suyo, o el del proveedor si es de un solo tipo (`mixed` si no se sabe). */
+  opennessOf(providerId: string, modelId: string): Openness;
 }
 
 export function loadRegistry(json: unknown, priceOverrides: Record<string, { input: number; output: number }> = {}): Registry {
@@ -20,6 +22,7 @@ export function loadRegistry(json: unknown, priceOverrides: Record<string, { inp
     get,
     model: (pid, mid) => get(pid)?.models.find((m) => m.id === mid),
     byCategory: (cat) => providers.filter((p) => p.category === cat),
-    recommended: () => providers.filter((p) => p.category === 'recommended'),
+    opennessOf: (pid, mid) => get(pid)?.models.find((m) => m.id === mid)?.openness ?? get(pid)?.openness ?? 'mixed',
+    recommended: () => providers.filter((p) => p.recommended),
   };
 }

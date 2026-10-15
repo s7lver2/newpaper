@@ -1,7 +1,16 @@
 import { z } from 'zod';
 
 export const CapabilitySchema = z.enum(['structured', 'tools', 'vision', 'search']);
-export const ProviderCategorySchema = z.enum(['recommended', 'cloud', 'local', 'advanced']);
+export const ProviderCategorySchema = z.enum(['cloud', 'local', 'advanced']);
+/** open = pesos abiertos (se pueden ejecutar en casa); closed = solo propietarios; mixed = agregador con ambos. */
+export const OpennessSchema = z.enum(['open', 'closed', 'mixed']);
+/** Cómo se obtiene la clave sin pegarla. `available` = verificado con la documentación del proveedor; `unverified`/`gated` = marco listo, no se ejecuta. */
+export const LoginSchema = z.object({
+  flow: z.enum(['oauth-pkce-key', 'oauth-device']),
+  status: z.enum(['available', 'unverified', 'gated']),
+  authUrl: z.string().url().optional(),
+  exchangeUrl: z.string().url().optional(),
+});
 
 export const ModelEntrySchema = z.object({
   id: z.string().min(1),
@@ -11,6 +20,8 @@ export const ModelEntrySchema = z.object({
   capabilities: z.array(CapabilitySchema),
   tier: z.enum(['light', 'strong']),
   noTemperature: z.boolean().optional(),
+  /** Solo cuando difiere del proveedor (agregadores). */
+  openness: z.enum(['open', 'closed']).optional(),
 });
 
 export const ProviderEntrySchema = z.object({
@@ -18,6 +29,9 @@ export const ProviderEntrySchema = z.object({
   name: z.string().min(1),
   logo: z.string(),
   category: ProviderCategorySchema,
+  recommended: z.boolean().default(false),
+  openness: OpennessSchema,
+  login: LoginSchema.optional(),
   type: z.enum(['cloud', 'local']),
   adapter: z.enum(['openai', 'anthropic', 'google', 'openai-compatible']),
   baseUrl: z.string().url(),
@@ -31,6 +45,8 @@ export const RegistryFileSchema = z.object({ version: z.literal(1), providers: z
 
 export type Capability = z.infer<typeof CapabilitySchema>;
 export type ProviderCategory = z.infer<typeof ProviderCategorySchema>;
+export type Openness = z.infer<typeof OpennessSchema>;
+export type LoginEntry = z.infer<typeof LoginSchema>;
 export type ModelEntry = z.infer<typeof ModelEntrySchema>;
 export type ProviderEntry = z.infer<typeof ProviderEntrySchema>;
 export type RegistryFile = z.infer<typeof RegistryFileSchema>;

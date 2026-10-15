@@ -11,13 +11,13 @@ const reg = loadRegistry(JSON.parse(readFileSync(new URL('../../../../config/pro
 describe('costs', () => {
   it('estimates tokens and prices per million', () => {
     expect(estimateTokens('a'.repeat(4000))).toBe(1000);
-    expect(costOf(reg.model('openai', 'gpt-5'), 1_000_000, 100_000)).toBeCloseTo(1.25 + 1.0);
+    expect(costOf(reg.model('openai', 'gpt-6-sol'), 1_000_000, 100_000)).toBeCloseTo(2 + 1.0);
     expect(costOf(reg.model('nous', 'Hermes-4-70B'), 1000, 1000)).toBeNull();
     expect(costOf(reg.model('ollama', 'qwen3:8b'), 1000, 1000)).toBe(0);
   });
 
   it('estimates a full analysis and flags unknown prices', () => {
-    const a: Assignments = { claims: { provider: 'openai', model: 'gpt-5-mini' }, verify: { provider: 'nous', model: 'Hermes-4-405B' } };
+    const a: Assignments = { claims: { provider: 'openai', model: 'gpt-6-luna' }, verify: { provider: 'nous', model: 'Hermes-4-405B' } };
     const e = estimateAnalysis(reg, a, 'x'.repeat(8000), 6);
     expect(e.perStage.find((s) => s.stage === 'verify')!.usd).toBeNull();
     expect(e.unknown).toBe(true);
@@ -27,7 +27,7 @@ describe('costs', () => {
 
 describe('applyBudget', () => {
   const a: Assignments = {
-    verify: { provider: 'openai', model: 'gpt-5', fallback: { provider: 'ollama', model: 'qwen3:8b' } },
+    verify: { provider: 'openai', model: 'gpt-6-sol', fallback: { provider: 'ollama', model: 'qwen3:8b' } },
     judgeB: { provider: 'anthropic', model: 'claude-sonnet-5-5' },
     quickScore: { provider: 'ollama', model: 'qwen3:8b' },
   };

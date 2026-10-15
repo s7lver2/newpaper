@@ -28,7 +28,7 @@ function candidates(reg: Registry, connected: string[], localModels: Record<stri
 }
 
 const cost = (c: Candidate) => (c.m.price ? c.m.price.input + c.m.price.output * 3 : Number.POSITIVE_INFINITY);
-const rank = (c: Candidate) => (c.p.category === 'recommended' ? 0 : 1);
+const rank = (c: Candidate) => (c.p.recommended ? 0 : 1);
 
 function pick(list: Candidate[], want: { local?: boolean; tier?: 'light' | 'strong'; cheapest?: boolean; exclude?: string }): Candidate | undefined {
   let l = list.filter((c) => (want.local === undefined ? true : (c.p.type === 'local') === want.local) && c.p.id !== want.exclude);
