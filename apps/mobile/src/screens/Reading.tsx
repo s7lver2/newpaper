@@ -3,7 +3,7 @@ import { AnnotatedText, markTone, ReaderView, type LensMark } from '@newpaper/ui
 import { addPluginListener } from '@tauri-apps/api/core';
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { ipc, type HistoryEntry, type SavedArticle } from '../ipc';
-import { go, back } from '../router';
+import { go, back, useBackClose } from '../router';
 import { loadArticle, showHtml, useReading } from '../readingStore';
 import { AnalysisSheet } from './AnalysisSheet';
 import { IconBack, IconChevron, IconLens } from '../icons';
@@ -73,6 +73,7 @@ export function Reading({ url }: { url: string | null }) {
   const s = useReading();
   const [sheet, setSheet] = useState(false);
   const [lens, setLens] = useState(true);
+  const closeSheet = useBackClose(sheet, () => setSheet(false));
   useEffect(() => {
     if (url) void loadArticle(url);
   }, [url]);
@@ -82,7 +83,12 @@ export function Reading({ url }: { url: string | null }) {
       void ipc.originalClose().catch(() => {});
       void showHtml(e.url, e.html);
     }).catch(() => null);
-    return () => void l.then((x) => x?.unregister());
+    // Cerrar la webview original (botón o Atrás) también cierra su SOCKS de sesión en Rust.
+    const c = addPluginListener('np-mobile', 'original-closed', () => void ipc.originalClose().catch(() => {})).catch(() => null);
+    return () => {
+      void l.then((x) => x?.unregister());
+      void c.then((x) => x?.unregister());
+    };
   }, []);
   const result = s.full ?? s.quick;
   const marks = useMemo<LensMark[]>(() => {
@@ -141,7 +147,7 @@ export function Reading({ url }: { url: string | null }) {
           <span className="m-kicker">{t('mobile.reading.analysis')}</span>
           <span style={{ font: '400 15px/1.4 var(--np-font-ui)' }}>{result ? t('mobile.reading.bannerReady') : t('mobile.reading.bannerEmpty')}</span>
         </button>
-        {lens && result ? (
+        {lens && result && marks.length > 0 ? (
           <AnnotatedText
             text={a.text}
             lang={a.lang}
@@ -159,7 +165,7 @@ export function Reading({ url }: { url: string | null }) {
           <button type="button" className="m-btn sec sm" onClick={() => go('agente', { u: a.url })}>{t('mobile.reading.askAgent')}</button>
         </div>
       </div>
-      {sheet ? <AnalysisSheet onClose={() => setSheet(false)} /> : null}
+      {sheet ? <AnalysisSheet onClose={closeSheet} /> : null}
     </article>
   );
 }

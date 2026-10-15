@@ -1,6 +1,5 @@
 import { Bar } from './Bar';
 import { useT } from '@newpaper/i18n/react';
-import { Button } from '@newpaper/ui-kit';
 import { bestMove, winner, type Board, type Cell } from '@newpaper/ui-kit/logic';
 import { useState } from 'react';
 import { go } from '../router';
@@ -17,18 +16,20 @@ export function Offline() {
     setB(n);
   };
   return (
-    <section className="m-body">
+    <section>
       <Bar title={t('pages.offline.title')} />
-      <p>{t('pages.offline.body')}</p>
-      <Button variant="primary" onClick={() => go('edicion')}>{t('mobile.edition.title')}</Button>
-      <h2 className="np-mono np-muted">{t('pages.game.title')}</h2>
-      <div className="np-ttt-board" role="grid" aria-label={t('pages.game.board')}>
+      <p className="m-sub">{t('pages.offline.body')}</p>
+      <div className="m-btn-row" style={{ marginTop: 16 }}>
+        <button type="button" className="m-btn" onClick={() => go('edicion')}>{t('mobile.edition.title')}</button>
+      </div>
+      <h2 className="m-sec">{t('pages.game.title')}</h2>
+      <div className="m-ttt" role="grid" aria-label={t('pages.game.board')}>
         {b.map((c, i) => (
           <button
             key={i}
             type="button"
             role="gridcell"
-            className="np-ttt-cell"
+            className="m-ttt-cell"
             aria-label={t('pages.game.cell', { n: i + 1, value: c ?? t('pages.game.empty') })}
             onClick={() => play(i)}
           >
@@ -36,10 +37,10 @@ export function Offline() {
           </button>
         ))}
       </div>
-      <p role="status">
+      <p role="status" className="m-sub" style={{ textAlign: 'center', marginTop: 14 }}>
         {w === 'X' ? t('pages.game.youWin') : w === 'O' ? t('pages.game.iWin') : w === 'draw' ? t('pages.game.draw') : t('pages.game.yourTurn')}
       </p>
-      {w ? <Button onClick={() => setB(Array<Cell>(9).fill(null))}>{t('pages.game.again')}</Button> : null}
+      {w ? <div className="m-btn-row" style={{ marginTop: 12 }}><button type="button" className="m-btn sec" onClick={() => setB(Array<Cell>(9).fill(null))}>{t('pages.game.again')}</button></div> : null}
     </section>
   );
 }

@@ -1,5 +1,5 @@
 import { extractFromHtml, type Article } from '@newpaper/extract';
-import type { AnalysisResult } from '@newpaper/pipeline';
+import type { AnalysisResult, StageEvent } from '@newpaper/pipeline';
 import { useSyncExternalStore } from 'react';
 import { getPipeline } from './ai/pipeline';
 import { ipc } from './ipc';
@@ -11,9 +11,13 @@ export interface ReadingState {
   full: AnalysisResult | null;
   busy: 'loading' | 'quick' | 'full' | null;
   error: string | null;
+  /** Estado de cada paso del análisis en curso (los eventos `onStage` del pipeline). */
+  stages: Partial<Record<StageEvent['stage'], StageEvent['status']>>;
 }
 
-let state: ReadingState = { url: null, article: null, quick: null, full: null, busy: null, error: null };
+export const STAGE_ORDER: StageEvent['stage'][] = ['claims', 'quickScore', 'verify', 'score', 'judgeB', 'synthesis', 'aiDetect'];
+
+let state: ReadingState = { url: null, article: null, quick: null, full: null, busy: null, error: null, stages: {} };
 const listeners = new Set<() => void>();
 const set = (p: Partial<ReadingState>) => {
   state = { ...state, ...p };
@@ -46,10 +50,11 @@ export async function loadArticle(url: string): Promise<void> {
 export async function analyze(kind: 'quick' | 'full'): Promise<void> {
   const a = state.article;
   if (!a) return;
-  set({ busy: kind, error: null });
+  set({ busy: kind, error: null, stages: {} });
+  const onStage = (e: StageEvent) => set({ stages: { ...state.stages, [e.stage]: e.status } });
   try {
     const p = await getPipeline();
-    const r = kind === 'quick' ? await p.runQuickAnalysis(input(a)) : await p.runFullAnalysis(input(a));
+    const r = kind === 'quick' ? await p.runQuickAnalysis(input(a), { onStage }) : await p.runFullAnalysis(input(a), { onStage });
     if (state.url === a.url) set(kind === 'quick' ? { quick: r, busy: null } : { full: r, busy: null });
   } catch (e) {
     if (state.url === a.url) set({ busy: null, error: String((e as Error).message ?? e) });

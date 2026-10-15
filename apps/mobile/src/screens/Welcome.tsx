@@ -66,9 +66,9 @@ export function Welcome() {
       ) : null}
       <div className="m-welcome-track" style={{ flex: 1, minHeight: 0, overflow: 'hidden', display: 'flex' }} onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
         <div className={`m-track${drag !== null ? ' dragging' : ''}`} style={{ transform: `translateX(${offset})`, width: '100%' }}>
-          <div className="m-slide" aria-hidden={page !== 0}>
-            <div className="m-art">
-              <svg viewBox="0 0 108 108" width="132" height="132" aria-hidden="true">
+          <div className="m-slide m-slide-intro" aria-hidden={page !== 0}>
+            <div className="m-art m-art-intro">
+              <svg viewBox="0 0 108 108" width="72" height="72" aria-hidden="true">
                 <rect x="8" y="8" width="92" height="92" rx="22" fill="#F6F4EF" />
                 <g fill="none" stroke="#17171A" strokeLinecap="butt">
                   <path d="M33 40.5V71" strokeWidth={7.5} />
@@ -80,8 +80,13 @@ export function Welcome() {
                 <polygon points="76.17,66 80.5,61.67 80.5,70.33" fill="#2F5BD3" />
               </svg>
             </div>
-            <h2>{t('mobile.welcome.p1.title')}</h2>
+            <h2>
+              {t('mobile.welcome.p1.title')
+                .split(/(?<=[.!?])\s+/)
+                .map((part, i, all) => (i === all.length - 1 ? <em key={i}>{part}</em> : <span key={i}>{part}</span>))}
+            </h2>
             <p>{t('mobile.welcome.p1.body')}</p>
+            <span className="m-tribar" aria-hidden="true"><i /><i /><i /></span>
           </div>
           <div className="m-slide">
             <div className="m-art">

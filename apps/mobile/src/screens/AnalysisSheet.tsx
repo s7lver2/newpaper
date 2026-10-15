@@ -4,11 +4,11 @@ import { FramingAxis, NeutralityRing, VerdictTag } from '@newpaper/ui-kit';
 import { useState } from 'react';
 import { getPipeline } from '../ai/pipeline';
 import { ipc } from '../ipc';
-import { analyze, readingState, useReading } from '../readingStore';
+import { analyze, readingState, STAGE_ORDER, useReading } from '../readingStore';
 import { go } from '../router';
 
 /** Hoja de analisis: progreso indeterminado mientras corre, luego neutralidad, afirmaciones con veredicto y, sin cobertura, la investigacion con consentimiento en cada uso. */
-export function AnalysisSheet({ onClose }: { onClose(): void }) {
+export function AnalysisSheet({ onClose }: { onClose(after?: () => void): void }) {
   const { t, formatNumber } = useI18n();
   const s = useReading();
   const r = s.full ?? s.quick;
@@ -26,12 +26,12 @@ export function AnalysisSheet({ onClose }: { onClose(): void }) {
   };
   return (
     <>
-      <div className="m-scrim" onClick={onClose} aria-hidden="true" />
+      <div className="m-scrim" onClick={() => onClose()} aria-hidden="true" />
       <div className="m-sheet" role="dialog" aria-modal="true" aria-label={t('analysis.panel.label')}>
         <div className="m-grab" />
         <div className="m-row" style={{ minHeight: 0, padding: '0 0 12px' }}>
           <strong className="m-title-sm" style={{ flex: 1 }}>{t('analysis.panel.analysis')}</strong>
-          <button type="button" className="m-btn sec sm" onClick={onClose}>{t('mobile.reading.close')}</button>
+          <button type="button" className="m-btn sec sm" onClick={() => onClose()}>{t('mobile.reading.close')}</button>
         </div>
         {s.busy ? (
           <div aria-busy="true" style={{ display: 'grid', gap: 10, padding: '8px 0 16px' }}>
@@ -39,6 +39,18 @@ export function AnalysisSheet({ onClose }: { onClose(): void }) {
             <span className="m-splash-bar" style={{ width: '100%', height: 4, position: 'relative', background: 'var(--np-chrome)' }}>
               <i style={{ background: 'var(--np-accent)', animation: 'm-bar 1.2s var(--m-ease-inout) infinite alternate' }} />
             </span>
+            <ol className="m-steps" aria-label={t('analysis.panel.analysis')}>
+              {STAGE_ORDER.filter((id) => s.stages[id]).map((id) => {
+                const st = s.stages[id]!;
+                return (
+                  <li key={id} data-status={st}>
+                    <i aria-hidden="true" />
+                    <span>{t(`analysis.stage.${id}`)}</span>
+                    <small>{t(`mobile.analysis.step.${st}`)}</small>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
         ) : null}
         {s.error ? <p role="alert">{t('analysis.error', { message: s.error })}</p> : null}
@@ -123,7 +135,7 @@ export function AnalysisSheet({ onClose }: { onClose(): void }) {
           </div>
         ) : null}
         <div style={{ marginTop: 8 }}>
-          <button type="button" className="m-btn sec" onClick={() => go('agente', { u: readingState().url ?? '' })}>{t('mobile.reading.askAgent')}</button>
+          <button type="button" className="m-btn sec" onClick={() => onClose(() => go('agente', { u: readingState().url ?? '' }))}>{t('mobile.reading.askAgent')}</button>
         </div>
       </div>
     </>

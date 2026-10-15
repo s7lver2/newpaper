@@ -1,7 +1,8 @@
 import { useI18n } from '@newpaper/i18n/react';
-import { useEffect, useState, type FormEvent, type CSSProperties } from 'react';
+import { useEffect, useRef, useState, type FormEvent, type CSSProperties } from 'react';
 import { ipc, type EventCard } from '../ipc';
 import { go } from '../router';
+import { usePullRefresh } from '../usePullRefresh';
 import { IconRefresh, IconSearch } from '../icons';
 
 const greeting = (h: number) => (h < 6 ? 'night' : h < 13 ? 'morning' : h < 21 ? 'afternoon' : 'evening');
@@ -33,15 +34,27 @@ export function Today() {
     if (a) go('leer', { u: a.url });
   };
   const now = new Date();
+  const root = useRef<HTMLDivElement>(null);
+  const pull = usePullRefresh(root, async () => {
+    load();
+    await new Promise((r) => setTimeout(r, 600));
+  });
   return (
-    <div>
+    <div ref={root}>
+      <div className="m-pull" aria-hidden="true" style={{ height: pull.offset, opacity: Math.min(1, pull.offset / 56) }}>
+        <span className={`m-pull-dot${pull.state === 'refreshing' ? ' spin' : ''}`} style={{ transform: `rotate(${pull.offset * 4}deg) scale(${pull.state === 'armed' ? 1.15 : 1})` }}>
+          <IconRefresh />
+        </span>
+        <small>{pull.state === 'armed' ? t('mobile.today.pull') : pull.state === 'pulling' ? t('mobile.today.pullHint') : ''}</small>
+      </div>
       <header className="m-appbar" style={{ justifyContent: 'space-between' }}>
         <p className="m-kicker" style={{ margin: '0 0 0 12px' }}>{formatDate(now, { dateStyle: 'full' })}</p>
         <button type="button" className="m-back" aria-label={t('mobile.today.refresh')} onClick={load} disabled={busy}>
           <IconRefresh />
         </button>
       </header>
-      <h1 className="m-large">{t(`newtab.greeting.${greeting(now.getHours())}`)}</h1>
+      <h1 className="m-large" style={{ paddingTop: 4 }}>{t(`newtab.greeting.${greeting(now.getHours())}`)}</h1>
+      {cards && cards.length > 0 ? <p className="m-sub">{t('newtab.important', { n: cards.length })}</p> : null}
       <form role="search" onSubmit={(e) => void submit(e)} className="m-search">
         <IconSearch />
         <label className="m-sr" htmlFor="m-q">{t('mobile.today.search')}</label>

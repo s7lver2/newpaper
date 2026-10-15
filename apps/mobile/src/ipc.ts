@@ -19,7 +19,22 @@ export interface CustomEndpoint { id: string; baseUrl: string; auth: 'bearer' | 
 export interface PeerView { id: string; name: string; publicKey: string; addresses: string[]; scopes: string[]; sendKeys: boolean; pairedAt: number; lastSyncAt: number | null; revoked: boolean; fingerprint: string; lastError: string | null }
 export interface SyncReport { peerId: string; peerName: string; sent: number; received: number; applied: number; keys: number; paired: boolean }
 export interface OllamaProbe { base: string; models: string[] }
+export type ListCategory = 'ads' | 'privacy' | 'cookies' | 'newsletters';
+export interface FilterListStatus { id: string; name: string; category: ListCategory; enabled: boolean; source: 'downloaded' | 'embedded'; fetchedAt: number | null }
+export interface AdblockStatus { enabled: boolean; lists: FilterListStatus[]; lastRefresh: number | null }
+export interface RefreshReport { updated: string[]; failed: [string, string][]; skipped: boolean }
+export interface TopicState { id: string; name: string; following: boolean; newCount: number }
+export type DeleteScope = { scope: 'all' } | { scope: 'range'; from: number; to: number };
 export interface OriginalLabels { close: string; analyze: string }
+
+/** Los feeds RSS traen entidades HTML en los titulares (&#039;, &amp;...): se decodifican como texto, sin interpretar HTML. */
+export function decodeEntities(s: string): string {
+  if (!s.includes('&')) return s;
+  const t = document.createElement('textarea');
+  t.innerHTML = s.replace(/</g, '&lt;');
+  return t.value;
+}
+const cleanCards = (cs: EventCard[]) => cs.map((c) => ({ ...c, title: decodeEntities(c.title) }));
 
 /** Envoltorios de los comandos que usa el móvil (todos existen en el bloque `#[cfg(mobile)]` de src-tauri/src/lib.rs). */
 export const ipc = {
@@ -29,9 +44,18 @@ export const ipc = {
   secretSet: (key: string, value: string) => invoke<void>('secret_set', { key, value }),
   historyRecordVisit: (url: string, title: string) => invoke<string | null>('history_record_visit', { url, title }),
   historySearch: (filter: HistoryFilter) => invoke<HistoryEntry[]>('history_search', { filter }),
+  historyDelete: (scope: DeleteScope) => invoke<number>('history_delete', { scope }),
+  secretDelete: (key: string) => invoke<void>('secret_delete', { key }),
+  syncRevoke: (peerId: string) => invoke<PeerView[]>('sync_revoke', { peerId }),
+  adblockStatus: () => invoke<AdblockStatus>('adblock_status'),
+  adblockSetEnabled: (enabled: boolean) => invoke<AdblockStatus>('adblock_set_enabled', { enabled }),
+  adblockSetList: (id: string, enabled: boolean) => invoke<AdblockStatus>('adblock_set_list', { id, enabled }),
+  adblockRefresh: () => invoke<RefreshReport>('adblock_refresh'),
+  topicsList: () => invoke<TopicState[]>('topics_list'),
+  topicSetFollowing: (topicId: string, following: boolean) => invoke<TopicState[]>('topic_set_following', { topicId, following }),
   historyMarkAnalyzed: (url: string) => invoke<number>('history_mark_analyzed', { url }),
-  eventsBriefing: (limit?: number) => invoke<EventCard[]>('events_briefing', { limit }),
-  eventsSearch: (query: string) => invoke<EventCard[]>('events_search', { query }),
+  eventsBriefing: (limit?: number) => invoke<EventCard[]>('events_briefing', { limit }).then(cleanCards),
+  eventsSearch: (query: string) => invoke<EventCard[]>('events_search', { query }).then(cleanCards),
   eventDetail: (eventId: number) => invoke<EventDetail | null>('event_detail', { eventId }),
   coverageFor: (url: string, title: string, excerpt?: string) => invoke<CoverageResult>('coverage_for', { url, title, excerpt }),
   lexiconScore: (text: string, locale: string) => invoke<LexiconScore>('lexicon_score', { text, locale }),

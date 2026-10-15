@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 
 export type RouteName =
   | 'bienvenida'
@@ -10,7 +10,10 @@ export type RouteName =
   | 'emparejar'
   | 'historial'
   | 'edicion'
-  | 'sin-conexion';
+  | 'sin-conexion'
+  | 'pipeline'
+  | 'bloqueo'
+  | 'fuentes';
 export interface Route { name: RouteName; params: URLSearchParams }
 /** Cómo se llegó a la pantalla: decide la animación (push desde la derecha, pop hacia la derecha, pestaña = fundido). */
 export type NavDir = 'push' | 'pop' | 'tab';
@@ -52,4 +55,46 @@ export function go(name: RouteName, params: Record<string, string> = {}): void {
 export function back(): void {
   pending = 'pop';
   history.back();
+}
+
+/**
+ * Capas (hojas, escáner, confirmaciones): mientras están abiertas hay una entrada de historial propia, así que el
+ * gesto o botón Atrás de Android las cierra en vez de salir de la pantalla. Devuelve `dismiss`, que cierra por la
+ * misma vía (y ejecuta `after` ya cerrada, p. ej. para navegar).
+ */
+export function useBackClose(open: boolean, onClose: () => void): (after?: () => void) => void {
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+  const afterRef = useRef<(() => void) | undefined>(undefined);
+  const live = useRef(false);
+  useEffect(() => {
+    if (!open) return;
+    history.pushState({ npLayer: true }, '');
+    live.current = true;
+    const onPop = () => {
+      live.current = false;
+      closeRef.current();
+      const a = afterRef.current;
+      afterRef.current = undefined;
+      a?.();
+    };
+    window.addEventListener('popstate', onPop, { once: true });
+    return () => {
+      window.removeEventListener('popstate', onPop);
+      // Cerrada sin pasar por Atrás (p. ej. se desmontó la pantalla): quitar nuestra entrada.
+      if (live.current) {
+        live.current = false;
+        if ((history.state as { npLayer?: boolean } | null)?.npLayer) history.back();
+      }
+    };
+  }, [open]);
+  return (after) => {
+    if (live.current) {
+      afterRef.current = after;
+      history.back();
+    } else {
+      closeRef.current();
+      after?.();
+    }
+  };
 }

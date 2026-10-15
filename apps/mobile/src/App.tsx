@@ -13,6 +13,7 @@ import { Pair } from './screens/Pair';
 import { Provider } from './screens/Provider';
 import { Reading, ReadingIndex } from './screens/Reading';
 import { Settings } from './screens/Settings';
+import { Blocking, Pipeline, Sources } from './screens/SettingsSub';
 import { Today } from './screens/Today';
 import { Welcome } from './screens/Welcome';
 
@@ -87,6 +88,8 @@ export function App() {
   };
 
   const stacked = (() => {
+    // Las raíces de pestaña (incluidas «leer» y «agente» sin noticia) ya están montadas arriba.
+    if (root !== null) return null;
     switch (route.name) {
       case 'bienvenida':
         return <Welcome />;
@@ -104,6 +107,12 @@ export function App() {
         return <Edition />;
       case 'sin-conexion':
         return <Offline />;
+      case 'pipeline':
+        return <Pipeline />;
+      case 'bloqueo':
+        return <Blocking />;
+      case 'fuentes':
+        return <Sources />;
       default:
         return null;
     }
@@ -115,6 +124,7 @@ export function App() {
 
   return (
     <div className="m-app np-root" data-route={route.name}>
+      <div className="m-statusscrim" aria-hidden="true" />
       <main className="m-main">
         {/* Las raíces se quedan montadas: cada pestaña conserva su scroll y estado. */}
         <div className={`m-page m-with-tabs m-stage-tab`} hidden={root !== 'hoy'} ref={(el) => void (pageRefs.current.hoy = el)}>

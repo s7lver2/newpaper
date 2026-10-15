@@ -1,7 +1,6 @@
 import { Bar } from './Bar';
 import { useI18n } from '@newpaper/i18n/react';
 import { detectProviders, loadRegistry, type ProviderEntry, type Registry } from '@newpaper/pipeline';
-import { Button } from '@newpaper/ui-kit';
 import { useEffect, useMemo, useState } from 'react';
 import { getPipeline, resetPipeline } from '../ai/pipeline';
 import { ipc } from '../ipc';
@@ -41,10 +40,10 @@ export function Provider() {
   };
 
   return (
-    <section className="m-body">
+    <section>
       <Bar title={t('providers.title')} />
-      <p className="np-muted">{t('mobile.provider.pasteHint')}</p>
-      <label className="np-field">
+      <p className="m-sub">{t('mobile.provider.pasteHint')}</p>
+      <label className="m-field">
         <span>{t('providers.pasteKey')}</span>
         <input
           className="m-input"
@@ -61,30 +60,34 @@ export function Provider() {
       </label>
       {found.length > 1 && !chosen ? (
         <div>
-          <p>{t('providers.ambiguous')}</p>
-          {found.map((p) => (
-            <Button key={p.id} onClick={() => setChosen(p)}>{p.name}</Button>
-          ))}
+          <p className="m-sub">{t('providers.ambiguous')}</p>
+          <div className="m-chips" style={{ marginTop: 10 }}>
+            {found.map((p) => (
+              <button key={p.id} type="button" className="m-chip" onClick={() => setChosen(p)}>{p.name}</button>
+            ))}
+          </div>
         </div>
       ) : null}
       {key.length >= 4 && found.length === 0 ? (
         <div>
-          <p className="np-muted">{t('providers.unknownPrefix')}</p>
-          {registry.providers.filter((p) => p.type === 'cloud').map((p) => (
-            <Button key={p.id} variant="quiet" onClick={() => setChosen(p)}>{p.name}</Button>
-          ))}
+          <p className="m-sub">{t('providers.unknownPrefix')}</p>
+          <div className="m-chips" style={{ marginTop: 10, flexWrap: 'wrap' }}>
+            {registry.providers.filter((p) => p.type === 'cloud').map((p) => (
+              <button key={p.id} type="button" className="m-chip" onClick={() => setChosen(p)}>{p.name}</button>
+            ))}
+          </div>
         </div>
       ) : null}
-      {provider ? <p>{t('providers.detected', { name: provider.name })}</p> : null}
-      <p className="np-hint">{t('providers.keyStorage', { name: provider?.name ?? '' })}</p>
-      <div className="m-row">
-        <Button variant="primary" disabled={!provider || state === 'testing'} onClick={() => void test()}>
+      {provider ? <p className="m-sub m-ok" style={{ fontStyle: 'normal', fontWeight: 500 }}>{t('providers.detected', { name: provider.name })}</p> : null}
+      {provider ? <p className="m-hint">{t('providers.keyStorage', { name: provider.name })}</p> : null}
+      <div className="m-btn-row" style={{ flexDirection: 'column' }}>
+        <button type="button" className="m-btn" disabled={!provider || state === 'testing'} onClick={() => void test()}>
           {state === 'testing' ? t('providers.testing') : t('providers.test')}
-        </Button>
-        {state === 'ok' ? <Button onClick={() => go('ajustes')}>{t('providers.done')}</Button> : null}
+        </button>
+        {state === 'ok' ? <button type="button" className="m-btn sec" onClick={() => go('ajustes')}>{t('providers.done')}</button> : null}
       </div>
-      {state === 'ok' ? <p role="status">{t('providers.doneSub')}</p> : null}
-      {state === 'fail' ? <p role="alert">{t('providers.testFail', { message: error })}</p> : null}
+      {state === 'ok' ? <p role="status" className="m-hint m-ok">{t('providers.doneSub')}</p> : null}
+      {state === 'fail' ? <p role="alert" className="m-hint m-bad">{t('providers.testFail', { message: error })}</p> : null}
     </section>
   );
 }
