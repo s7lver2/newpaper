@@ -169,3 +169,7 @@ Implementación del diseño v2 (`design/mockups/MOVIL-DISENO.md`). Lo que no est
 - Splash en el dispositivo y arranque en frío con `Theme.SplashScreen`: no comprobado en emulador.
 - Que `TauriActivity` no sobrescriba el fondo de ventana después de `installSplashScreen()`.
 - Edge-to-edge con safe areas reales (gesto y recorte de cámara) en el emulador.
+
+### Emulador (2026-10-15)
+- Se instaló el APK x86_64 en el AVD np34 con su propio servidor adb (puerto 5591). La app arrancó (proceso vivo), pero la interfaz del sistema quedó en un diálogo «No responde» (systemui) que no se cerró ni con Esperar ni con Atrás. Sin capturas válidas de la app: no hay comparación visual con los mockups.
+- Emulador y adb propios detenidos al terminar. Capturas sin utilidad guardadas en target/shots (01 a 04).
