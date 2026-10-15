@@ -14,7 +14,7 @@ Parámetro `?s=` para saltar a un estado (solo en el servidor local, no cambia e
 
 | Artboard | URL | Qué enseña |
 |---|---|---|
-| M16 Arranque | `/Movil-Splash.dc.html` | **intro: la n nace de periódicos atraídos como por un agujero negro** → logo limpio → iris hacia la app; selector Primer inicio / Siguientes / Mov. reducido y línea de tiempo arrastrable |
+| M16 Arranque | `/Movil-Splash.dc.html` | **intro estilo arranque de Balatro: remolino de pintura, cascada de periódicos que giran y rebotan, encaje en la n, estallido** → logo limpio → iris hacia la app; selector Primer inicio / Siguientes / Mov. reducido y línea de tiempo arrastrable |
 | M16b Arranque, fotogramas | `/Movil-ArranqueLinea.dc.html` | 8 + 4 + 3 fotogramas con el mismo motor, medida de diferencia con el splash nativo (0 px) y tabla de empalme Android |
 | M17 Icono | `/Movil-Icono.dc.html` | icono adaptativo, máscaras, zona segura, capas, icono con tema, alternativas |
 | M18 Tab bar | `/Movil-TabBar.dc.html` | iconos en rejilla 24, estados, indicador animado, zonas táctiles |
@@ -45,7 +45,7 @@ Fuente única: `design/mockups/tools/motion-base.css` (variables `--m-*`; los co
 | `--m-dur-shimmer` | 1400 ms | brillo del esqueleto (bucle lineal) |
 | `--m-dur-scan` | 2200 ms | línea del escáner QR |
 | `--m-stagger` | 45 ms | retardo entre filas (máx. 8 elementos) |
-| `--m-dur-intro` | 2920 ms | intro de primer inicio (ver Arranque) |
+| `--m-dur-intro` | 2920 ms | intro de primer inicio (ver Arranque y la tabla de hitos) |
 | `--m-dur-intro-short` | 1080 ms | intro de los siguientes inicios |
 | `--m-dur-intro-reduce` | 800 ms | intro con movimiento reducido (solo fundidos) |
 | `--m-dur-iris` | 360 ms | iris que descubre la app tras la intro (`ease-in-out`) |
@@ -104,11 +104,31 @@ Alternativas descartadas (en M17): B solo rombo tripartito (más abstracta, pier
 
 ## Arranque (intro animada y primera carga)
 
-Concepto (M16 y M16b): lo primero que se ve es una entrada de ~2,9 s. La marca está ya en pantalla como una **n «fantasma»** (`#34343B` sobre tinta `#17171A`); decenas de hojas de periódico entran por los bordes y son **atraídas hacia el logo como por un agujero negro**: caen en espiral logarítmica con aceleración (`t^2,3`), se **estiran y comprimen** a lo largo de su trayectoria al acercarse (hasta ×4,2 en la dirección del movimiento), dejan una estela del color de su titular (rojo, gris, azul: el espectro) y un polvo fino de partículas, mientras un anillo de acreción de tres órbitas (rojo → papel → azul) gira alrededor del centro. Cada hoja, al llegar, **deposita tinta**: la n se rellena poco a poco (primero el tallo, luego el arco y los remates) con un acabado de papel prensa. Cuando se completa, hay un **cambio cruzado a la marca limpia** (n blanca `#F6F4EF`, 320 ms, con un resplandor) y el rombo tripartito se enciende con resorte (centro con escala, izquierda y derecha deslizando) y suelta una onda. Después un **iris** (círculo que se abre desde el centro, 360 ms) descubre la app. Es el mismo círculo que dibuja el agujero negro: la intro termina «abriendo» la app.
+Concepto (M16 y M16b, v4): el lenguaje de movimiento es el del arranque de **Balatro**, no una atracción gravitatoria. El fondo es un **remolino de «pintura»** (warp de dominio) a muy baja resolución (72×156 px escalados sin suavizado, ≈ 5,4 px lógicos por píxel), en una paleta derivada de la marca y oscura: tinta `#17171A`, rojo prensa `#C44A3C`, azul `#3656B8` y casi negro `#16161F`, con viñeta y barrido CRT (una de cada tres filas más oscura). Sobre él cae una **cascada de 32 hojas de periódico con grosor** (sprite con grano de papel, rótulo de color, columnas de texto, foto, esquina doblada, borde de varias capas y sombra) que entran por los bordes en **espiral**, **voltean** como cartas (el anverso pasa a un reverso con una n), se **estiran** en el sentido del movimiento, pasan de largo con **sobreimpulso** y aterrizan con un **rebote elástico** (squash & stretch). Toda la escena **gira lentamente y hace zoom** (−17° y +17 % que se endereza hasta ~2 s) y cada aterrizaje da un **temblor de pantalla** y un empujón de zoom. Las hojas forman un **abanico** de mano de cartas, «inhalan» (−13 %) y **saltan encajando en la n** (arco curvo, estiramiento ×1,55, sobreimpulso fuerte) con un impacto de 7 px de temblor y **franja cromática** (copias roja y azul desplazadas en modo `lighter`). La n de papel queda formada; el **remolino se enrolla** (la torsión radial se multiplica) y **colapsa** hasta un punto que **estalla**: destello, onda de choque con borde rojo/azul y **temblor de 11 px**, y aparece la **marca limpia: n blanca `#F6F4EF` y rombo sobre fondo tinta**, con squash & stretch rápido. El rombo tripartito se enciende con resorte (centro con escala, izquierda y derecha deslizando) y da un último temblor. Un **iris** (círculo que se abre desde el centro, 360 ms) descubre la app.
 
-Línea de tiempo (primer inicio, ms): 0 idéntico al splash nativo · 40–1950 llegan las hojas (38, escalonadas con `q` a lo largo de la n) · 100–700 el anillo aparece · 2100 n completa (pulso de 3,5 %) · 2100–2420 cambio a marca limpia · 2180–2640 rombo y onda · 2560–2920 iris · fin 2920. **Siguientes inicios**: el mismo motor con el tiempo ×2,7 más rápido (1080 ms) y la mitad de hojas; solo se muestra la larga la primera vez (o tras «borrar datos»). **Movimiento reducido** (`prefers-reduced-motion` o «Eliminar animaciones» de Android): sin hojas, sin espiral, sin iris: 0–120 ms n fantasma, 120–340 fundido a la marca limpia y rombo, 340–640 pausa, 640–800 fundido a la app.
+Hitos del primer inicio (ms; los de «siguientes» son los mismos ÷ 2,7):
 
-Implementación: `NPIntro.draw(ctx, t, mode)` (en `tools/intro-engine.js`, ~170 líneas, sin dependencias) es una **función pura del tiempo**: dibuja el fotograma t en un `<canvas>` 2D de 390×844 lógicos (escala `devicePixelRatio` máx. 2). La app lo llama desde un bucle de `requestAnimationFrame` con `t = performance.now() - t0`; si un fotograma tarda más de 24 ms, avanza el tiempo y no el número de fotogramas (nunca se alarga el arranque). Aleatoriedad con semilla fija (`mulberry32(11)`): siempre sale igual. Coste: ~38 hojas × 9 segmentos de estela + 96 partículas por fotograma, sin imágenes ni WebGL. Se porta tal cual a `apps/mobile/src/Splash.tsx` (un `useEffect` con el motor y un `<canvas aria-label="…">`). La app debe seguir arrancando mientras suena la intro: los datos locales se cargan detrás y la intro solo espera su duración mínima; salida inmediata (iris acelerado a 200 ms) si Hoy ya está listo y el usuario toca la pantalla.
+| ms | Hito | Detalle |
+|---|---|---|
+| 0 | Splash nativo | tinta + n y rombo fantasma `#34343B`; 0 px de diferencia con `drawNative()`; remolino, hojas y temblor a cero |
+| 60–560 | El remolino se abre | círculo que crece de 30 a 790 px con `easeOutCubic`, alfa 0,35 → 1, giro inicial rápido (≈ 7 rad/s) que se frena |
+| 120–1400 | Cascada | 32 hojas con salida escalonada (26 ms ± 12), 500–590 ms de vuelo cada una: espiral de 1,6–2,9 rad, sobreimpulso `easeOutBack(1,3)`, volteo de 2–4 medias vueltas, escala 3,4 → 2,3, estiramiento hasta ×1,8; aterrizaje con rebote `e^(−d/105)·cos(0,034 d)` y temblor de 1,7 px (τ 75 ms) |
+| 1450–1600 | Abanico | las hojas descansan en un abanico (±0,43 rad, radio 232 px) y «inhalan» −13 % |
+| 1600–2045 | Encaje en la n | 32 saltos de 290 ms con salida cada 5 ms, `easeOutBack(2,3)`, arco lateral de 30–80 px, estiramiento ×1,55, rotación al trazo; rebote de aterrizaje de 85 ms; la n de papel se rellena de 1720 a 2050 |
+| 1760 | Impacto | temblor 7 px (τ 120 ms) + franja cromática (τ 85 ms) |
+| 1900–2150 | Colapso | el remolino se enrolla (torsión ×26) y su radio cae con `1−s²` |
+| 2100 | Estallido | destello (τ 110 ms), onda de 18 → 400 px en 520 ms con borde rojo/azul, temblor 11 px; las hojas se desvanecen (2060–2230) |
+| 2100–2420 | Marca limpia | n blanca (fundido de 160 ms) con squash & stretch (+14 %/−10 %, `e^(−d/110)`) y franja cromática |
+| 2180–2640 | Rombo | resorte `easeOutBack(1,9)`, temblor de 3,5 px a 2330 |
+| 2560–2920 | Iris | `clip-path: circle(0 → 920 px)` sobre el esqueleto de Hoy (o la Bienvenida la primera vez) |
+
+**Siguientes inicios** (1080 ms): mismo motor con el tiempo ×2,7 y 16 hojas (las pares); la secuencia de hitos es idéntica. Solo se muestra la larga la primera vez (o tras «borrar datos»). **Movimiento reducido** (`prefers-reduced-motion` o «Eliminar animaciones» de Android): sin remolino, sin hojas, sin temblor ni zoom, sin iris: 0–120 ms n fantasma, 120–340 fundido a la marca limpia y rombo, 340–640 pausa, 640–800 fundido a la app.
+
+Tokens de movimiento de la intro: temblor = Σ `A·e^(−d/τ)·cos(0,09 d)` con (A, τ) = (1,7, 75) por hoja, (7, 120) encaje, (11, 120) estallido, (3,5, 100) rombo; empuje de zoom = `0,0045·A` por evento; franja cromática = ±6 px de desplazamiento (copias `#FF3D3D` y `#2D8CFF`, `lighter`, alfa ≤ 0,6); rebote elástico = `e^(−d/τ)·cos(ω d)` con τ 85–110 ms; sobreimpulso = `easeOutBack` con c1 1,3 (vuelo), 2,3 (encaje) y 1,9 (rombo). Nada es aleatorio en tiempo de ejecución: semilla fija (`rng(11)` para hojas, `rng(5)` para el grano de los sprites).
+
+Implementación: `NPIntro.draw(ctx, t, mode)` (en `tools/intro-engine.js`, sin dependencias) es una **función pura del tiempo** (modos `first`, `short`, `reduce`): dibuja el fotograma t en un `<canvas>` 2D de 390×844 lógicos (el llamante aplica `setTransform(dpr,0,0,dpr,0,0)`, `dpr` máx. 2). API completa: `draw(ctx,t,mode)`, `drawNative(ctx)` (splash nativo), `hand(t,mode)` → `{iris,fade}` (radio del iris y fundido para la capa DOM), `TOT`, `T` (hitos), `phases` (etiquetas del demo), `setQuality(0|1|2)` (remolino 72×156 / 48×104 / 32×70; no cambia la API de dibujo) y `sm`. Cambios respecto a v3: `T` tiene otras claves (`swirl, fly, fan, snap, hit, collapse, burst, clean, dia, hand`) y se añade `setQuality`; `draw`, `drawNative`, `hand`, `TOT` y `phases` conservan su firma. No hay variante WebGL: el remolino es un bucle de 11 232 píxeles con tablas de seno (sin `Math.sin`) que se recalcula a 30 Hz (paso `floor(t/33,3 ms)`, así sigue siendo función pura del tiempo) y se pinta escalado sin suavizado; si hiciera falta, el mismo cálculo cabe en un fragmento de GLSL a 72×156 y `draw()` seguiría siendo el respaldo en canvas 2D. La app lo llama desde `requestAnimationFrame` con `t = performance.now() − t0`; si un fotograma tarda más de 24 ms avanza el tiempo y no el número de fotogramas (nunca se alarga el arranque). La app debe seguir arrancando mientras suena la intro: los datos locales se cargan detrás y la intro solo espera su duración mínima; salida inmediata (iris acelerado a 200 ms) si Hoy ya está listo y el usuario toca la pantalla.
+
+Presupuesto de rendimiento: nada se asigna por fotograma (sprites, tablas, paleta con viñeta y barrido, siluetas cromáticas y el degradado del destello se crean una vez en el primer `draw`); por fotograma ≤ 32 `drawImage` de sprites + 1 del remolino + trazos de la n; el remolino cuesta ≈ 1,3 ms (JS, escritorio) cada 33 ms. Medido en el panel de navegador (escritorio, sin GPU, canvas de 780×1688 = dpr 2): 1–4 ms de JS por fotograma (mediana) y ≈ 23 ms con la rasterización por software forzada; en una WebView con canvas acelerado la rasterización pasa a la GPU. Regla de degradación: si la media de los primeros 10 fotogramas supera 14 ms, `setQuality(1)`; si supera 20 ms, `setQuality(2)` y la mitad de hojas (lista `short`). Con `devicePixelRatio` > 2 limitar a 2.
 
 ### Empalme con el splash nativo de Android (sin salto visible)
 
@@ -216,7 +236,7 @@ P0
 19. Splash nativo estático (n y rombo fantasma sobre `#17171A`) + `setKeepOnScreenCondition` hasta el primer fotograma del canvas.
 
 P1
-20. Intro animada (`NPIntro` en `Splash.tsx`, primer inicio / siguientes / reducido) y `prefers-reduced-motion`.
+20. Intro animada: portar `design/mockups/tools/intro-engine.js` tal cual a `apps/mobile/src/.../Splash.tsx` (un `useEffect` con `requestAnimationFrame`, `<canvas aria-label="...">`, `setTransform(dpr,...)` con dpr <= 2, `NPIntro.hand()` para el iris, modos primer inicio / siguientes / reducido y `prefers-reduced-motion`); aplicar la regla de degradación de `setQuality`; no tocar el primer fotograma (debe seguir siendo idéntico a `drawNative`).
 21. Onboarding: paralaje, indicador de segmentos, micro-animaciones por paso, celebración final, vuelo de la marca desde el splash.
 22. Emparejado: apretón de manos con paquetes, huella que se revela, marco→círculo con check al leer el QR, enlace PC↔móvil en la sincronización.
 23. Punto de partida avanzado y hoja de modelo por paso en móvil (creatividad, respaldo), límite mensual con deslizador.
@@ -225,14 +245,14 @@ P1
 
 P2
 26. Deshacer al desconectar (diferir el borrado del llavero).
-27. Ajustar el motor de la intro según el rendimiento medido en un dispositivo de gama baja (menos hojas con `navigator.hardwareConcurrency` ≤ 4 o si la media de fotogramas supera 24 ms).
+27. Ajustar el motor de la intro según el rendimiento medido en un dispositivo de gama baja (`setQuality(1|2)` y menos hojas con `navigator.hardwareConcurrency` ≤ 4 o si la media de fotogramas supera 14–20 ms).
 
 ## Preguntas abiertas
 
 - Icono: ¿«n.» (elegido) o la alternativa B (solo rombo)? Hay también un fondo liso alternativo (sin reglas de columna).
 - Pestañas: ¿mantener «Leyendo» y «Agente» como raíces con lista de sesiones? Los mockups solo muestran sus pantallas de sesión (apiladas, sin tab bar); falta diseñar la raíz de cada una (lista de lo abierto / conversaciones).
 - Splash nativo: **¿n fantasma o n blanca?** Para que no haya salto, el splash nativo y el primer fotograma son la marca en gris oscuro (`#34343B`), no blanca. Alternativa: splash con la n blanca y que la intro empiece disolviéndola en hojas durante 150 ms (la n «se desintegra» y vuelve a formarse), más espectacular pero con un fotograma más de ruptura.
-- Intro: ¿mantener 2,9 s la primera vez? Las siguientes son de 1,1 s (se puede saltar tocando). ¿Se prefiere solo la variante corta siempre?
+- Intro (v4, estilo Balatro): ¿más o menos temblor y franja cromática (tokens en Arranque)? ¿Mantener 2,9 s la primera vez? Las siguientes son de 1,1 s (se puede saltar tocando). ¿Se prefiere solo la variante corta siempre?
 - Texto de New Router y frases cortas de cada proveedor (`providers.hint.*`): las de M15 son provisionales, falta que el autor las revise.
 - Gemini: el mockup muestra el aviso de privacidad (Google puede usar lo que envías) en el paso 2; ¿también en la lista completa?
 - ¿El snackbar «Deshacer» al desconectar un proveedor es demasiado para una acción poco frecuente? La alternativa es solo la hoja de confirmación.

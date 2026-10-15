@@ -30,17 +30,18 @@ code{font:500 13px 'IBM Plex Mono',monospace;background:#EFECE5;padding:1px 5px;
 </style>
 </helmet>
 <div class="fl">
-<h1>Arranque: la n se forma con periódicos</h1>
-<p>Ocho fotogramas del primer inicio, cuatro de los siguientes y tres con movimiento reducido, dibujados con el mismo motor que la pantalla M16 (<code>tools/intro-engine.js</code>). Lo que se ve aquí es lo que se implementa: una función pura del tiempo.</p>
+<h1>Arranque: remolino de pintura y cascada de periódicos</h1>
+<p>Dieciséis fotogramas del primer inicio, cuatro de los siguientes y tres con movimiento reducido, dibujados con el mismo motor que la pantalla M16 (lenguaje de movimiento tipo arranque de Balatro: remolino de pintura, cascada con sobreimpulso, temblor, encaje en la n, estallido) (<code>tools/intro-engine.js</code>). Lo que se ve aquí es lo que se implementa: una función pura del tiempo.</p>
 
 <h2>Primer inicio · 2,92 s</h2>
 <div class="row"><sc-for list="{{first}}" as="f" hint-placeholder-count="8"><div class="fr"><canvas data-f="{{f.key}}" width="390" height="844"></canvas><b>{{f.ms}} ms</b><span>{{f.note}}</span></div></sc-for></div>
+<div class="row"><sc-for list="{{first2}}" as="f" hint-placeholder-count="8"><div class="fr"><canvas data-f="{{f.key}}" width="390" height="844"></canvas><b>{{f.ms}} ms</b><span>{{f.note}}</span></div></sc-for></div>
 <div class="bar">
-<i style="width:6%;background:#D9D5CC">0</i><i style="width:24%;background:#CBD3F2">entrada y atracción</i><i style="width:23%;background:#E8D3CE">la n se rellena</i><i style="width:8%;background:#E3F2EC">cambio</i><i style="width:16%;background:#FBF0DC">rombo y onda</i><i style="width:12%;background:#17171A;color:#F6F4EF">iris</i><i style="flex:1;background:#EFECE5">app</i>
+<i style="width:4%;background:#D9D5CC">0</i><i style="width:43%;background:#CBD3F2">remolino + cascada de hojas (120–1380)</i><i style="width:5%;background:#E8D3CE">abanico</i><i style="width:12%;background:#E3F2EC">encaje en la n</i><i style="width:7%;background:#FBF0DC">colapso</i><i style="width:16%;background:#F6F4EF">estallido, logo, rombo</i><i style="width:12%;background:#17171A;color:#F6F4EF">iris</i>
 </div>
 
 <h2>Siguientes inicios · 1,08 s</h2>
-<p>Mismo motor con el tiempo comprimido (×2,7) y la mitad de hojas. Entra directo en Hoy; solo se muestra la variante larga la primera vez, o tras borrar los datos de la app.</p>
+<p>Mismo motor con el tiempo comprimido (×2,7) y la mitad de hojas (16); el temblor y el estallido se mantienen. Entra directo en Hoy; solo se muestra la variante larga la primera vez, o tras borrar los datos de la app.</p>
 <div class="row"><sc-for list="{{short}}" as="f" hint-placeholder-count="4"><div class="fr"><canvas data-f="{{f.key}}" width="390" height="844"></canvas><b>{{f.ms}} ms</b><span>{{f.note}}</span></div></sc-for></div>
 
 <h2>Movimiento reducido · 0,8 s</h2>
@@ -63,168 +64,271 @@ code{font:500 13px 'IBM Plex Mono',monospace;background:#EFECE5;padding:1px 5px;
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1280,"height":1900}}'>
 /*@intro-engine*/
-/* newpaper movil · motor de la animación de arranque (intro). FUENTE ÚNICA: este fichero.
+/* newpaper movil · motor de la animación de arranque (intro), v4 «remolino». FUENTE ÚNICA: este fichero.
    Se copia entre los marcadores @intro-engine de los artboards que lo usan con
    `node design/mockups/tools/inject-base.mjs` (no editar la copia a mano).
-   Es una función pura del tiempo: NPIntro.draw(ctx, t, mode) dibuja el fotograma t (ms), así que se puede
-   reproducir, arrastrar en una línea de tiempo (?s=<ms>) y comparar con el splash nativo. Coordenadas lógicas 390x844. */
+   Es una función pura del tiempo: NPIntro.draw(ctx, t, mode) dibuja el fotograma t (ms) con aleatoriedad de semilla fija,
+   así que se puede reproducir, arrastrar en una línea de tiempo (?s=<ms>) y comparar con el splash nativo.
+   Coordenadas lógicas 390x844 (el llamante aplica ctx.setTransform(dpr,0,0,dpr,0,0), dpr <= 2).
+   Lenguaje de movimiento: arranque de Balatro. Fondo = remolino de «pintura» (warp de dominio) a baja resolución, escalado
+   sin suavizado; hojas de periódico con grosor que entran en espiral con sobreimpulso y rebote elástico, la escena gira y
+   hace zoom, temblor de pantalla e impactos con franjas cromáticas, abanico → encaje en la n → el remolino colapsa y estalla
+   en el logo limpio (n blanca + rombo sobre tinta) → iris (capa DOM, ver hand()).
+   API: draw(ctx,t,mode) · drawNative(ctx) · hand(t,mode) → {iris,fade} · TOT · T · phases · setQuality(0|1|2) · sm.
+   Presupuesto: sin asignaciones por fotograma (todo precalculado en init); remolino 72x156 px recalculado a 30 Hz con tablas
+   de seno (no Math.sin); ~26 drawImage de sprites por fotograma. */
 const NPIntro = (function () {
   const W = 390, H = 844, INK = '#17171A', PAPER = '#F6F4EF', GHOST = '#34343B';
   const S = 4.2, MC = [53.5, 56.25], CX = W / 2, CY = H / 2;
   const OX = CX - MC[0] * S, OY = CY - MC[1] * S;           // la marca (n + rombo) queda centrada en la pantalla
-  const BH = [CX, CY];                                      // «agujero negro»: el centro de la marca
   const TOT = { first: 2920, short: 1080, reduce: 800 };
-  const T = { done: 2100, clean: [2100, 2420], dia: [2180, 2640], hand: [2560, 2920] };
-  const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+  // hitos (ms, variante larga): entrada del remolino, aterrizajes, abanico, encaje, colapso, estallido, limpio, rombo, iris
+  const T = { swirl: [60, 560], fly: 120, fan: 1450, snap: 1600, hit: 1760, collapse: [1900, 2150], burst: 2100, clean: [2100, 2420], dia: [2180, 2640], hand: [2560, 2920] };
+  const clamp = (x, a, b) => (x < a ? a : x > b ? b : x);
   const sm = (a, b, x) => { const k = clamp((x - a) / (b - a), 0, 1); return k * k * (3 - 2 * k); };
   const lerp = (a, b, k) => a + (b - a) * k;
-  const back = (k) => { const c1 = 1.9, c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); };
+  const eob = (k, c1) => { const c3 = c1 + 1; return 1 + c3 * Math.pow(k - 1, 3) + c1 * Math.pow(k - 1, 2); };   // easeOutBack
+  const eoc = (k) => 1 - Math.pow(1 - k, 3);
+  const TAU = Math.PI * 2;
   function rng(seed) { return () => { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
   // ---- la marca (unidades del viewBox 108) -----------------------------------------------------------
   const P = { stem: 'M33 40.5V71', arc: 'M33 54C33 45 39 40 46.5 40 54 40 58 44.5 58 51.5V71', serif: 'M26.5 71H39.5M51.5 71H64.5M26.5 43.5L33 40' };
-  let path = null;
   const bez = (p0, p1, p2, p3, k) => { const u = 1 - k; return [u * u * u * p0[0] + 3 * u * u * k * p1[0] + 3 * u * k * k * p2[0] + k * k * k * p3[0], u * u * u * p0[1] + 3 * u * u * k * p1[1] + 3 * u * k * k * p2[1] + k * k * k * p3[1]]; };
   const ARC = [[[33, 54], [33, 45], [39, 40], [46.5, 40]], [[46.5, 40], [54, 40], [58, 44.5], [58, 51.5]], [[58, 51.5], [58, 51.5], [58, 71], [58, 71]]];
   const arcAt = (f) => { const L = [22.2, 17.6, 19.5], tot = L[0] + L[1] + L[2]; let d = f * tot; for (let i = 0; i < 3; i++) { if (d <= L[i] || i === 2) return bez(...ARC[i], clamp(d / L[i], 0, 1)); d -= L[i]; } };
   const LEN = { stem: 30.5, arc: 59.3 };
   const SERIFS = [[[26.5, 71], [39.5, 71]], [[51.5, 71], [64.5, 71]], [[26.5, 43.5], [33, 40]]];
+  function skel(q) {   // punto del esqueleto de la n según q en [0,1]: tallo, arco, remates (unidades del viewBox)
+    if (q < 0.28) return [33, 40.5 + 30.5 * (q / 0.28)];
+    if (q < 0.88) return arcAt((q - 0.28) / 0.6);
+    const f = (q - 0.88) / 0.12 * 3, i = Math.min(2, Math.floor(f)), k = f - i, s = SERIFS[i]; return [lerp(s[0][0], s[1][0], k), lerp(s[0][1], s[1][1], k)];
+  }
+
+  // ---- estado precalculado (una sola vez; nada se asigna por fotograma) -------------------------------------------
+  let ready = false, path, patN, texC, SPR = [], SPR_BACK, SIL_R, SIL_B, gradFlash;
+  let SW = 72, SH = 156, QUAL = 0, sc2, sctx, simg, s32, sA, sL, sV, swStep = -1;
+  const TS = new Float32Array(4096), LUT = new Uint32Array(32 * 256);   // LUT[sombra(0..31) << 8 | pintura(0..255)]: paleta ya con viñeta y barrido
+  const sheets = [], EV_T = [], EV_A = [], EV_TAU = [], EV_X = [], EV_Y = [], EV_I = [];
+  const NS = 32, FAN_SC = 2.3, SN_SC = 0.9, SD = 290;
+  const QA = { x: 0, y: 0, r: 0, sx: 1, sy: 1, a: 0, back: false, sd: 0, st: 1 }, FA = { x: 0, y: 0 }, FB = { x: 0, y: 0 };
+
+  function buildSwirl() {
+    sc2 = document.createElement('canvas'); sc2.width = SW; sc2.height = SH; sctx = sc2.getContext('2d');
+    simg = sctx.createImageData(SW, SH); s32 = new Uint32Array(simg.data.buffer); sA = new Float32Array(SW * SH); sL = new Float32Array(SW * SH); sV = new Uint8Array(SW * SH);
+    const m = Math.hypot(SW, SH);
+    for (let y = 0; y < SH; y++) for (let x = 0; x < SW; x++) { const ux = (x + 0.5 - SW / 2) / m, uy = (y + 0.5 - SH / 2) / m, i = y * SW + x; sA[i] = Math.atan2(uy, ux); sL[i] = Math.hypot(ux, uy); const vg = 1 - 0.86 * sm(0.14, 0.62, sL[i]); sV[i] = clamp(Math.round(vg * 31) - (y % 3 === 0 ? 3 : 0), 0, 31); }
+    swStep = -1;
+  }
   function init() {
-    if (path) return;
+    if (ready) return; ready = true;
     path = { stem: new Path2D(P.stem), arc: new Path2D(P.arc), serif: new Path2D(P.serif) };
-    const c = document.createElement('canvas'); c.width = c.height = 8; const x = c.getContext('2d');
-    x.fillStyle = '#D9D3C4'; x.fillRect(0, 0, 8, 8); x.fillStyle = '#B7B09F'; x.fillRect(0, 2, 8, 1); x.fillRect(0, 5, 6, 1); x.fillStyle = '#C9C2B1'; x.fillRect(3, 0, 1, 8);
-    path.tex = c;
-  }
-  // punto del esqueleto de la n según q en [0,1]: tallo, arco, remates
-  function targetOf(q, jit) {
-    let p;
-    if (q < 0.28) p = [33, 40.5 + 30.5 * (q / 0.28)];
-    else if (q < 0.88) p = arcAt((q - 0.28) / 0.6);
-    else { const f = (q - 0.88) / 0.12 * 3, i = Math.min(2, Math.floor(f)), k = f - i, s = SERIFS[i]; p = [lerp(s[0][0], s[1][0], k), lerp(s[0][1], s[1][1], k)]; }
-    return [OX + (p[0] + (jit[0] - 0.5) * 3) * S, OY + (p[1] + (jit[1] - 0.5) * 3) * S];
-  }
-
-  // ---- hojas y polvo (deterministas) --------------------------------------------------------------------
-  let sheets = null, dust = null;
-  function build() {
-    if (sheets) return;
-    const r = rng(11), N = 38; sheets = []; dust = [];
-    const TINT = ['#E8705A', '#B9B4A9', '#7C9AF2'];
-    for (let i = 0; i < N; i++) {
-      const q = (i + 0.5) / N;
-      sheets.push({ i, q, dly: 40 + q * 850 + r() * 120, D: 640 + r() * 340, th: i * 2.399963 + r() * 0.6, r0: 520 + r() * 260, spin: 2.1 * Math.PI + r() * Math.PI * 0.9, tum: r() * 6.28, tumv: (r() - 0.5) * 0.012, tint: TINT[i % 3], tgt: targetOf(q, [r(), r()]), sz: 0.9 + r() * 0.3, lines: 2 + Math.floor(r() * 3) });
+    for (let i = 0; i < 4096; i++) TS[i] = Math.sin(i / 4096 * TAU);
+    // paleta de la «pintura» (tres bandas como Balatro, colores derivados de la marca: rojo, azul, tinta, oscuros)
+    const C1 = [196, 74, 60], C2 = [54, 86, 184], C3 = [22, 22, 31], CM = 2.2, CT = 3.5, b = 0.3 / CT;
+    for (let i = 0; i < 256; i++) {
+      const v = i / 127.5, c1 = Math.max(0, 1 - CM * Math.abs(1 - v)), c2 = Math.max(0, 1 - CM * Math.abs(v)), c3 = 1 - Math.min(1, c1 + c2), o = [];
+      for (let k = 0; k < 3; k++) { let r = b * C1[k] + (1 - b) * (C1[k] * c1 + C2[k] * c2 + C3[k] * c3); if (k === 2 && v > 1.45) r += (v - 1.45) * 40; if (v > 1.7) r += (v - 1.7) * 90; o.push(clamp(r | 0, 0, 255)); }
+      for (let sh = 0; sh < 32; sh++) { const f = sh / 31; LUT[(sh << 8) | i] = (255 << 24) | ((o[2] * f | 0) << 16) | ((o[1] * f | 0) << 8) | (o[0] * f | 0); }
     }
-    for (let i = 0; i < 96; i++) dust.push({ dly: r() * 1750, D: 520 + r() * 420, th: r() * 6.28, r0: 300 + r() * 360, spin: 1.8 * Math.PI + r() * Math.PI, rr: r() * 14, sz: 0.8 + r() * 1.5, a: 0.3 + r() * 0.4 });
+    buildSwirl();
+    const mk = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+    // sprites de hoja (26x33 lógicos a 3.0 px/ud): papel con grano, rótulo, columnas de texto, foto, grosor y sombra
+    const SX = 3.0, SW2 = 26, SH2 = 33, MG = 8, SPW = Math.ceil(SW2 * SX + MG * 2), SPH = Math.ceil(SH2 * SX + MG * 2);
+    const TINT = ['#E8705A', '#B9B4A9', '#7C9AF2'], r = rng(5);
+    const face = (x, tint, v, back) => {
+      const w = SW2 * SX, h = SH2 * SX;
+      x.save(); x.translate(MG, MG);
+      x.shadowColor = 'rgba(0,0,0,.45)'; x.shadowBlur = 7; x.shadowOffsetY = 3;
+      ['#A39C8A', '#B9B2A0', '#CFC8B8'].forEach((c, k) => { x.fillStyle = c; x.beginPath(); x.roundRect((2 - k) * 0.9 + 1, (2 - k) * 1.4 + 1.5, w, h, 3); x.fill(); x.shadowColor = 'transparent'; });
+      x.fillStyle = back ? '#D9D3C4' : '#EFEBE1'; x.beginPath(); x.roundRect(0, 0, w, h, 3); x.fill();
+      x.save(); x.clip(); for (let i = 0; i < 160; i++) { x.fillStyle = 'rgba(' + (r() < 0.5 ? '23,23,26' : '120,110,90') + ',' + (0.03 + r() * 0.07) + ')'; x.fillRect(r() * w, r() * h, 1 + r() * 1.6, 1); }
+      if (!back) {
+        x.fillStyle = 'rgba(23,23,26,.82)'; x.fillRect(w * 0.1, h * 0.07, w * 0.8, 3); x.fillStyle = tint; x.fillRect(w * 0.1, h * 0.11, w * 0.5, h * 0.085);
+        x.fillStyle = 'rgba(23,23,26,.55)'; x.fillRect(w * 0.1, h * 0.215, w * 0.8, 1.2);
+        if (v) { x.fillStyle = 'rgba(23,23,26,.38)'; x.fillRect(w * 0.1, h * 0.26, w * 0.8, h * 0.2); x.strokeStyle = 'rgba(239,235,225,.35)'; x.lineWidth = 1; x.beginPath(); x.moveTo(w * 0.1, h * 0.46); x.lineTo(w * 0.9, h * 0.26); x.stroke(); }
+        const top = v ? h * 0.5 : h * 0.26;
+        for (let cI = 0; cI < 3; cI++) for (let l = 0; l < 7; l++) { x.fillStyle = 'rgba(23,23,26,' + (l === 0 ? 0.6 : 0.36) + ')'; x.fillRect(w * 0.1 + cI * w * 0.275, top + l * ((h * 0.9 - top) / 7), w * 0.24 * (l % 3 === 2 ? 0.7 : 1), 1.3); }
+      } else {
+        x.strokeStyle = 'rgba(23,23,26,.16)'; x.lineWidth = 1; for (let g = 1; g < 6; g++) { x.beginPath(); x.moveTo(0, h * g / 6); x.lineTo(w, h * g / 6); x.stroke(); }
+        x.fillStyle = 'rgba(23,23,26,.55)'; x.font = '600 ' + (w * 0.46) + 'px Georgia,serif'; x.textAlign = 'center'; x.fillText('n', w / 2, h * 0.6);
+      }
+      x.restore();
+      x.fillStyle = '#CFC8B8'; x.beginPath(); x.moveTo(w, h - 7 * SX / 2); x.lineTo(w - 7 * SX / 2, h); x.lineTo(w, h); x.closePath(); x.fill();
+      x.strokeStyle = 'rgba(23,23,26,.22)'; x.lineWidth = 1; x.beginPath(); x.roundRect(0.5, 0.5, w - 1, h - 1, 3); x.stroke();
+      x.restore();
+    };
+    for (let i = 0; i < 6; i++) { const c = mk(SPW, SPH); face(c.getContext('2d'), TINT[i % 3], i >= 3, false); SPR.push(c); }
+    SPR_BACK = mk(SPW, SPH); face(SPR_BACK.getContext('2d'), '#000', false, true);
+    const sil = (col) => { const c = mk(SPW, SPH), x = c.getContext('2d'); x.drawImage(SPR[0], 0, 0); x.globalCompositeOperation = 'source-in'; x.fillStyle = col; x.fillRect(0, 0, SPW, SPH); return c; };
+    SIL_R = sil('#FF3D3D'); SIL_B = sil('#2D8CFF');
+    SPR.gx = SPW / 2; SPR.gy = SPH / 2; SPR.k = 1 / SX;       // origen del sprite y escala lógica
+    texC = mk(8, 8); { const x = texC.getContext('2d'); x.fillStyle = '#D9D3C4'; x.fillRect(0, 0, 8, 8); x.fillStyle = '#B7B09F'; x.fillRect(0, 2, 8, 1); x.fillRect(0, 5, 6, 1); x.fillStyle = '#C9C2B1'; x.fillRect(3, 0, 1, 8); patN = x.createPattern(texC, 'repeat'); }
+    gradFlash = (function () { const x = mk(2, 2).getContext('2d'), g = x.createRadialGradient(CX, CY, 0, CX, CY, 300); g.addColorStop(0, 'rgba(246,244,239,1)'); g.addColorStop(0.35, 'rgba(246,244,239,.35)'); g.addColorStop(1, 'rgba(246,244,239,0)'); return g; })();
+    // hojas
+    const R = rng(11);
+    for (let i = 0; i < NS; i++) {
+      const q = (i + 0.5) / NS, ph = (i / (NS - 1) - 0.5), fa = ph * 0.85 + (R() - 0.5) * 0.05, tg = skel(q), tgp = skel(Math.min(0.999, q + 0.01)), tgm = skel(Math.max(0, q - 0.01));
+      const tx = OX + (tg[0] + (R() - 0.5) * 2) * S, ty = OY + (tg[1] + (R() - 0.5) * 2) * S;
+      const fx = CX + 232 * Math.sin(fa), fy = CY + 250 - 232 * Math.cos(fa) + (R() - 0.5) * 6, ang = Math.atan2(tgp[1] - tgm[1], tgp[0] - tgm[0]) + Math.PI / 2 + (R() - 0.5) * 0.25;
+      const sdn = Math.atan2(ty - fy, tx - fx);
+      sheets.push({ i, spr: i % 6, dly: 120 + i * 26 + R() * 12, D: 500 + R() * 90, th: i * 2.399963, r0: 560 + R() * 120, spin: 1.6 + R() * 1.3, tum: (R() < 0.5 ? -1 : 1) * (1.2 + R() * 2.4), flip: (2 + Math.floor(R() * 3)) * Math.PI + R() * 3, fx, fy, frot: fa, tx, ty, trot: ang + Math.round((fa - ang) / Math.PI) * Math.PI, arc: (R() < 0.5 ? -1 : 1) * (30 + R() * 50), sd: sdn, dir: R() * TAU });
+    }
+    sheets.forEach((s) => { EV_T.push(s.dly + s.D); EV_A.push(1.7); EV_TAU.push(75); EV_X.push(Math.cos(s.dir)); EV_Y.push(Math.sin(s.dir)); EV_I.push(s.i); });
+    [[T.hit, 7, 120, 0.5, 0.86], [2100, 11, 120, -0.6, 0.8], [2330, 3.5, 100, 0.2, 0.98]].forEach((e) => { EV_T.push(e[0]); EV_A.push(e[1]); EV_TAU.push(e[2]); EV_X.push(e[3]); EV_Y.push(e[4]); EV_I.push(-1); });
   }
-  // posición (px) de un cuerpo en tiempo t: espiral con aceleración (ease-in) hacia su destino
-  function place(o, t, tgt) {
-    const u = clamp((t - o.dly) / o.D, 0, 1), e = Math.pow(u, 2.3);
-    const cx = lerp(BH[0], tgt[0], Math.pow(e, 1.5)), cy = lerp(BH[1], tgt[1], Math.pow(e, 1.5));
-    const r = o.r0 * (1 - e), a = o.th + o.spin * Math.pow(u, 1.7);
-    return { u, e, x: cx + r * Math.cos(a), y: cy + r * Math.sin(a) };
+  function setQuality(q) { QUAL = q; const d = [[72, 156], [48, 104], [32, 70]][clamp(q | 0, 0, 2)]; if (SW !== d[0] || !sc2) { SW = d[0]; SH = d[1]; if (ready) buildSwirl(); } }
+
+  // ---- remolino de pintura (warp de dominio) --------------------------------------------------------------------------
+  function swirl(t) {
+    const step = (t / 33.3333) | 0; if (step === swStep) return; swStep = step; t = step * 33.3333;
+    const K = 4096 / TAU, n = SW * SH;
+    const rot = -(t * 0.0016 + 3.0 * (1 - Math.exp(-t / 420))), cl = sm(T.collapse[0], T.collapse[1], t);
+    const wind = 1.2 + 5.5 * Math.exp(-t / 700) + 26 * cl * cl, sp = t * 0.0022 * (1 + 2.5 * cl), SCL = 30;
+    for (let i = 0; i < n; i++) {
+      const l = sL[i], a = sA[i] + rot + wind * l, ai = (a * K) | 0;
+      let ux = l * TS[(ai + 1024) & 4095] * SCL, uy = l * TS[ai & 4095] * SCL, vx = ux + uy, vy = vx;
+      for (let k = 0; k < 3; k++) {
+        const m = ux > uy ? ux : uy, s = TS[((m * K) | 0) & 4095]; vx += s + ux; vy += s + uy;
+        ux += 0.5 * TS[((((5.1123314 + 0.353 * vy + sp * 0.131121) * K) | 0) + 1024) & 4095]; uy += 0.5 * TS[(((vx - 0.113 * sp) * K) | 0) & 4095];
+        const q = TS[(((ux + uy) * K | 0) + 1024) & 4095] - TS[(((ux * 0.711 - uy) * K) | 0) & 4095]; ux -= q; uy -= q;
+      }
+      let pr = Math.sqrt(ux * ux + uy * uy) * 0.0564; if (pr > 2) pr = 2;
+      s32[i] = LUT[(sV[i] << 8) | ((pr * 127.5) | 0)];
+    }
+    sctx.putImageData(simg, 0, 0);
   }
 
-  function useMark(c, scale) { c.save(); c.translate(OX, OY); if (scale && scale !== 1) { c.translate(MC[0] * 0 + 53.5, 56.25); c.scale(scale, scale); c.translate(-53.5, -56.25); } c.scale(S, S); }
+  // ---- la marca ---------------------------------------------------------------------------------------------------------
+  function useMark(c, sx, sy) { c.save(); c.translate(OX + 53.5 * S, OY + 56.25 * S); if (sx !== undefined) c.scale(sx, sy); c.translate(-53.5 * S, -56.25 * S); c.scale(S, S); }
   function strokeN(c, color, R, alpha, pat) {
     c.save(); c.globalAlpha = alpha; c.strokeStyle = pat || color; c.lineJoin = 'miter'; c.lineCap = 'butt';
-    const seg = (p, len, lw, a, b) => { const f = clamp((R - a) / (b - a), 0, 1); if (f <= 0) return; c.lineWidth = lw; c.setLineDash([len * f + 0.001, len + 30]); c.stroke(p); };
-    seg(path.stem, LEN.stem, 7.5, 0, 0.28); seg(path.arc, LEN.arc, 6, 0.28, 0.88);
-    const f = clamp((R - 0.88) / 0.12, 0, 1); if (f > 0) { c.setLineDash([]); c.lineWidth = 3; c.globalAlpha = alpha * f; c.stroke(path.serif); }
+    let f = clamp(R / 0.28, 0, 1); if (f > 0) { c.lineWidth = 7.5; c.setLineDash([LEN.stem * f + 0.001, LEN.stem + 30]); c.stroke(path.stem); }
+    f = clamp((R - 0.28) / 0.6, 0, 1); if (f > 0) { c.lineWidth = 6; c.setLineDash([LEN.arc * f + 0.001, LEN.arc + 30]); c.stroke(path.arc); }
+    f = clamp((R - 0.88) / 0.12, 0, 1); if (f > 0) { c.setLineDash([]); c.lineWidth = 3; c.globalAlpha = alpha * f; c.stroke(path.serif); }
     c.restore();
   }
   const DIA = { l: [[67.5, 66], [71.83, 61.67], [71.83, 70.33]], c: [[71.83, 61.67], [74, 59.5], [76.17, 61.67], [76.17, 70.33], [74, 72.5], [71.83, 70.33]], r: [[76.17, 61.67], [80.5, 66], [76.17, 70.33]] };
-  function poly(c, pts, fill, alpha, dx, sc) { c.save(); c.globalAlpha = alpha; c.fillStyle = fill; c.translate(74 + dx, 66); c.scale(sc, sc); c.translate(-74, -66); c.beginPath(); pts.forEach((p, i) => (i ? c.lineTo(p[0], p[1]) : c.moveTo(p[0], p[1]))); c.closePath(); c.fill(); c.restore(); }
+  function poly(c, pts, fill, alpha, dx, sc) { c.save(); c.globalAlpha = alpha; c.fillStyle = fill; c.translate(74 + dx, 66); c.scale(sc, sc); c.translate(-74, -66); c.beginPath(); for (let i = 0; i < pts.length; i++) (i ? c.lineTo(pts[i][0], pts[i][1]) : c.moveTo(pts[i][0], pts[i][1])); c.closePath(); c.fill(); c.restore(); }
+  const back = (k) => eob(k, 1.9);
   const DIA_POS = [OX + 74 * S, OY + 66 * S];
 
-  function sheetShape(c, s, k) {
-    const w = 26 * s.sz, h = 33 * s.sz;
-    c.fillStyle = '#EFEBE1'; c.beginPath(); c.roundRect(-w / 2, -h / 2, w, h, 2); c.fill();
-    c.fillStyle = s.tint; c.fillRect(-w / 2 + 3, -h / 2 + 3, w * 0.62, 4.5);
-    c.fillStyle = 'rgba(23,23,26,.55)'; for (let i = 0; i < s.lines + 2; i++) c.fillRect(-w / 2 + 3, -h / 2 + 11 + i * 4.6, (i % 2 ? 0.72 : 0.9) * (w - 6), 1.5);
-    c.fillStyle = '#CFC8B8'; c.beginPath(); c.moveTo(w / 2, h / 2 - 7); c.lineTo(w / 2 - 7, h / 2); c.lineTo(w / 2, h / 2); c.closePath(); c.fill();
+  // ---- hojas: vuelo en espiral con sobreimpulso, rebote elástico, abanico, encaje en la n ---------------------------
+  function flight(s, u, o) {   // posición en vuelo (u en [0,1]) → o.x, o.y
+    const e = eob(u, 1.3), r = s.r0 * (1 - e), a = s.th + s.spin * Math.pow(1 - u, 1.5);
+    o.x = s.fx + r * Math.cos(a); o.y = s.fy + r * Math.sin(a) * 0.9;
+  }
+  function sheetQ(s, t, o) {
+    const tl = s.dly + s.D, ts = T.snap + s.i * 5, te = ts + SD; o.a = 0; o.back = false;
+    if (t < s.dly) return;
+    o.a = 1; o.st = 1; o.sd = 0;
+    if (t < tl) {
+      const u = (t - s.dly) / s.D; flight(s, u, FA); flight(s, Math.max(0, u - 0.02), FB);
+      const vx = FA.x - FB.x, vy = FA.y - FB.y, v = Math.hypot(vx, vy);
+      o.x = FA.x; o.y = FA.y; o.sd = Math.atan2(vy, vx); o.st = 1 + clamp(v * 0.09, 0, 0.8) * (1 - u * 0.5);
+      const sc = lerp(3.4, FAN_SC, eoc(u)), fp = s.flip * Math.pow(1 - u, 1.2), cf = Math.cos(fp);
+      o.r = s.frot + s.tum * Math.pow(1 - u, 1.5); o.sx = sc * Math.max(0.16, Math.abs(cf)); o.sy = sc; o.back = cf < 0; o.a = sm(0, 0.05, u); return;
+    }
+    if (t < ts) {
+      const d = t - tl, b = Math.exp(-d / 105) * Math.cos(d * 0.034), inh = 1 - 0.13 * sm(T.fan + 80, T.snap, t);
+      o.x = s.fx; o.y = s.fy + 7 * b; o.r = s.frot + 0.05 * b * (s.i % 2 ? 1 : -1); o.sx = FAN_SC * inh * (1 + 0.3 * b); o.sy = FAN_SC * inh * (1 - 0.22 * b); o.sd = 0; o.st = 1; return;
+    }
+    if (t < te) {
+      const u = (t - ts) / SD, e = eob(u, 2.3), pa = Math.sin(Math.PI * u) * s.arc;
+      o.x = lerp(s.fx, s.tx, e) - Math.sin(s.sd) * pa; o.y = lerp(s.fy, s.ty, e) + Math.cos(s.sd) * pa;
+      o.r = lerp(s.frot, s.trot, eoc(u)); const sc = lerp(FAN_SC * 0.87, SN_SC, eoc(u)), st = 1 + 0.55 * Math.sin(Math.PI * u);
+      o.sd = s.sd; o.st = st; o.sx = sc; o.sy = sc; return;
+    }
+    const d = t - te, b = Math.exp(-d / 85) * Math.cos(d * 0.045);
+    o.x = s.tx; o.y = s.ty; o.r = s.trot; o.sx = SN_SC * (1 + 0.22 * b); o.sy = SN_SC * (1 - 0.14 * b); o.a = 1 - sm(2060, 2230, t); o.sd = 0; o.st = 1;
+  }
+  function drawSheets(c, t, list, n, pass) {
+    for (let j = 0; j < n; j++) {
+      const s = list[j]; sheetQ(s, t, QA); if (QA.a <= 0.01) continue;
+      const spr = pass === 1 ? SIL_R : pass === 2 ? SIL_B : QA.back ? SPR_BACK : SPR[s.spr], k = SPR.k;
+      c.globalAlpha = pass ? QA.a * FRINGE.al : QA.a; c.save(); c.translate(QA.x + (pass === 1 ? FRINGE.d : pass === 2 ? -FRINGE.d : 0), QA.y);
+      if (QA.st !== 1) { c.rotate(QA.sd); c.scale(QA.st, 1 / Math.sqrt(QA.st)); c.rotate(QA.r - QA.sd); } else c.rotate(QA.r);
+      c.scale(QA.sx * k, QA.sy * k); c.drawImage(spr, -SPR.gx, -SPR.gy); c.restore();
+    }
+    c.globalAlpha = 1;
   }
 
-  // ---- el fotograma ---------------------------------------------------------------------------------------------
-  function drawNative(c) { init(); c.fillStyle = INK; c.fillRect(0, 0, W, H); useMark(c); strokeN(c, GHOST, 1, 1); [['l'], ['c'], ['r']].forEach((k) => poly(c, DIA[k[0]], GHOST, 1, 0, 1)); c.restore(); }
+  // ---- el fotograma ---------------------------------------------------------------------------------------------------------
+  function drawNative(c) { init(); c.fillStyle = INK; c.fillRect(0, 0, W, H); useMark(c); strokeN(c, GHOST, 1, 1); poly(c, DIA.l, GHOST, 1, 0, 1); poly(c, DIA.c, GHOST, 1, 0, 1); poly(c, DIA.r, GHOST, 1, 0, 1); c.restore(); }
+  const FRINGE = { d: 0, al: 0 }, SHL = [];
 
   function draw(c, tm, mode) {
-    init(); build();
-    c.save(); c.fillStyle = INK; c.fillRect(0, 0, W, H);
+    init(); c.save(); c.globalAlpha = 1; c.globalCompositeOperation = 'source-over'; c.setLineDash([]); c.fillStyle = INK; c.fillRect(0, 0, W, H);
     if (mode === 'reduce') {
       const a = sm(120, 340, tm);
       useMark(c); strokeN(c, GHOST, 1, 1 - a); strokeN(c, PAPER, 1, a);
-      ['l', 'c', 'r'].forEach((k) => poly(c, DIA[k], GHOST, 1 - a, 0, 1)); poly(c, DIA.l, '#E8705A', a, 0, 1); poly(c, DIA.c, '#D8D3C8', a, 0, 1); poly(c, DIA.r, '#7C9AF2', a, 0, 1);
+      poly(c, DIA.l, GHOST, 1 - a, 0, 1); poly(c, DIA.c, GHOST, 1 - a, 0, 1); poly(c, DIA.r, GHOST, 1 - a, 0, 1); poly(c, DIA.l, '#E8705A', a, 0, 1); poly(c, DIA.c, '#D8D3C8', a, 0, 1); poly(c, DIA.r, '#7C9AF2', a, 0, 1);
       c.restore(); c.restore(); return;
     }
-    const k = mode === 'short' ? TOT.first / TOT.short : 1, t = tm * k;
-    const list = mode === 'short' ? sheets.filter((s) => s.i % 2 === 0) : sheets;
-    // anillo de acreción
-    const env = sm(60, 700, t) * (1 - sm(1950, 2250, t)), shrink = 1 - 0.8 * sm(1900, 2250, t);
-    if (env > 0.01) {
-      const rings = [[64, '#E8705A', 0.0046], [98, '#EFEBE1', 0.0034], [142, '#7C9AF2', 0.0026]];
-      c.save(); c.translate(BH[0], BH[1]); c.rotate(-0.38); c.scale(1, 0.36); c.lineCap = 'round';
-      rings.forEach((rg, ri) => {
-        const R = rg[0] * shrink, N = 36, head = t * rg[2];
-        for (let i = 0; i < N; i++) {
-          const a0 = (i / N) * Math.PI * 2, a1 = ((i + 1.15) / N) * Math.PI * 2;
-          const d = ((head - a0) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2), al = Math.pow(1 - d / (Math.PI * 2), 2.2) * 0.8 * env;
-          if (al < 0.02) continue;
-          c.strokeStyle = rg[1]; c.globalAlpha = al; c.lineWidth = (1.1 + ri * 0.2) / 0.5; c.beginPath(); c.arc(0, 0, R, a0, a1); c.stroke();
-        }
-      });
-      c.restore();
-      const g = c.createRadialGradient(BH[0], BH[1], 0, BH[0], BH[1], 110 * shrink); g.addColorStop(0, 'rgba(246,244,239,' + (0.07 * env) + ')'); g.addColorStop(1, 'rgba(246,244,239,0)');
-      c.fillStyle = g; c.fillRect(BH[0] - 120, BH[1] - 120, 240, 240);
+    const short = mode === 'short', t = short ? tm * (TOT.first / TOT.short) : tm;
+    let list = sheets, n = NS; if (short) { if (!SHL.length) for (let i = 0; i < NS; i += 2) SHL.push(sheets[i]); list = SHL; n = SHL.length; }
+    // impactos: temblor, empuje de zoom (suma de eventos amortiguados) y franja cromática
+    let shx = 0, shy = 0, kick = 0;
+    for (let i = 0; i < EV_T.length; i++) {
+      if (short && EV_I[i] >= 0 && (EV_I[i] & 1)) continue;
+      const d = t - EV_T[i]; if (d < 0 || d > 600) continue;
+      const a = EV_A[i] * Math.exp(-d / EV_TAU[i]); shx += a * Math.cos(d * 0.09) * EV_X[i]; shy += a * Math.cos(d * 0.09) * EV_Y[i]; kick += a * 0.0045;
     }
-    // marca: n fantasma (= splash nativo) + n que se rellena a medida que llegan las hojas
-    let R = 0, W8 = 0; list.forEach((s) => { const w = 1; W8 += w; const arr = s.dly + s.D; R += w * sm(arr - 10, arr + 140, t); }); R = W8 ? R / W8 : 0;
-    const pulse = 1 + 0.035 * Math.sin(clamp((t - T.done) / 300, 0, 1) * Math.PI) * (1 - clamp((t - T.done) / 300, 0, 1));
-    const cc = sm(T.clean[0], T.clean[1], t), glow = Math.sin(clamp((t - T.clean[0]) / (T.clean[1] - T.clean[0]), 0, 1) * Math.PI);
-    useMark(c, pulse);
-    strokeN(c, GHOST, 1, 1 - cc * 0);
-    if (cc < 1) strokeN(c, '#D9D3C4', R, 1 - cc, c.createPattern(path.tex, 'repeat'));
-    if (cc > 0) { c.shadowColor = 'rgba(246,244,239,' + (0.55 * glow) + ')'; c.shadowBlur = 26 / S * S; strokeN(c, PAPER, 1, cc); c.shadowBlur = 0; }
-    // rombo: fantasma → se enciende en sus tres tramos
-    const pc = back(clamp((t - T.dia[0]) / 420, 0, 1)), pl = back(clamp((t - T.dia[0] - 60) / 420, 0, 1)), vis = sm(T.dia[0], T.dia[0] + 120, t);
-    poly(c, DIA.l, GHOST, 1 - vis, 0, 1); poly(c, DIA.c, GHOST, 1 - vis, 0, 1); poly(c, DIA.r, GHOST, 1 - vis, 0, 1);
-    if (vis > 0) { poly(c, DIA.l, '#E8705A', vis, -7 * (1 - pl), 1); poly(c, DIA.c, '#D8D3C8', vis, 0, Math.max(0.01, 0.25 + 0.75 * pc)); poly(c, DIA.r, '#7C9AF2', vis, 7 * (1 - pl), 1); }
-    c.restore();
-    // onda al terminar
-    const wv = clamp((t - 2200) / 440, 0, 1);
-    if (wv > 0 && wv < 1) { c.save(); c.strokeStyle = PAPER; c.globalAlpha = 0.32 * (1 - wv); c.lineWidth = 1.5; c.beginPath(); c.arc(DIA_POS[0], DIA_POS[1], 8 + 150 * (1 - Math.pow(1 - wv, 3)), 0, Math.PI * 2); c.stroke(); c.restore(); }
-    // destellos de impacto
-    list.forEach((s) => { const a = clamp((t - s.dly - s.D) / 260, 0, 1); if (a > 0 && a < 1) { c.save(); c.globalAlpha = 0.5 * (1 - a); const g = c.createRadialGradient(s.tgt[0], s.tgt[1], 0, s.tgt[0], s.tgt[1], 20 * (0.5 + a)); g.addColorStop(0, '#F6F4EF'); g.addColorStop(1, 'rgba(246,244,239,0)'); c.fillStyle = g; c.fillRect(s.tgt[0] - 24, s.tgt[1] - 24, 48, 48); c.restore(); } });
-    // polvo
-    dust.forEach((d) => {
-      if (mode === 'short' && d.dly > 900) return;
-      const tg = [BH[0] + d.rr, BH[1] + d.rr * 0.4], p = place(d, t, tg); if (p.u <= 0 || p.u >= 1) return;
-      const q = place(d, t - 22, tg), al = d.a * sm(0, 0.12, p.u) * (1 - sm(0.9, 1, p.u));
-      c.strokeStyle = PAPER; c.globalAlpha = al; c.lineWidth = d.sz; c.lineCap = 'round'; c.beginPath(); c.moveTo(q.x, q.y); c.lineTo(p.x, p.y); c.stroke();
-    });
-    c.globalAlpha = 1;
-    // hojas: espiral, estela, estiramiento y compresión al acercarse
-    list.forEach((s) => {
-      const p = place(s, t, s.tgt); if (p.u <= 0 || p.u >= 1) return;
-      const al = sm(0, 0.1, p.u) * (1 - sm(0.93, 1, p.u));
-      const prev = place(s, t - 8, s.tgt), vx = (p.x - prev.x) / 8, vy = (p.y - prev.y) / 8, v = Math.hypot(vx, vy), ang = Math.atan2(vy, vx);
-      const sc = lerp(1.05, 0.3, Math.pow(p.e, 1.1)), st = 1 + clamp(v * 3.1, 0, 3.2) * (0.3 + 0.7 * p.e);
-      c.save(); c.lineCap = 'round';
-      for (let j = 9; j >= 1; j--) { const a = place(s, t - j * 16, s.tgt), b = place(s, t - (j - 1) * 16, s.tgt); if (a.u <= 0) continue; c.strokeStyle = s.tint; c.globalAlpha = 0.5 * al * (1 - j / 10) * clamp(v * 1.4, 0.15, 1); c.lineWidth = 7 * sc * (1 - j / 11); c.beginPath(); c.moveTo(a.x, a.y); c.lineTo(b.x, b.y); c.stroke(); }
-      c.globalAlpha = al; c.translate(p.x, p.y); c.rotate(ang); c.scale(st * sc, sc / Math.sqrt(st)); c.rotate(s.tum + s.tumv * t * (1 - p.e)); sheetShape(c, s, p.e);
+    const chroma = (t >= T.hit ? Math.exp(-(t - T.hit) / 85) : 0) + (t >= T.burst ? 1.2 * Math.exp(-(t - T.burst) / 95) : 0), ch2 = t >= T.burst ? 1.2 * Math.exp(-(t - T.burst) / 95) : 0;
+    c.save(); c.translate(shx, shy);
+    // 1· remolino de pintura: crece desde el centro, se enrolla y colapsa; viñeta y barrido CRT dentro
+    const sIn = sm(T.swirl[0], T.swirl[1], t), cl = sm(T.collapse[0], T.collapse[1], t), rad = (30 + 760 * eoc(sIn)) * (1 - cl * cl);
+    if (sIn > 0 && rad > 2) {
+      swirl(t);
+      const zoom = 1.25 + 0.5 * (1 - sIn) + kick * 1.3 + 0.25 * cl;
+      c.save(); c.beginPath(); c.arc(CX, CY, rad, 0, TAU); c.clip();
+      c.globalAlpha = 0.35 + 0.65 * sIn; c.imageSmoothingEnabled = false;
+      c.save(); c.translate(CX, CY); c.scale(zoom, zoom); c.drawImage(sc2, -W / 2, -H / 2, W, H); c.restore();
       c.restore();
-    });
+    }
+    // 2· marca: n fantasma (= splash nativo) + n de papel que se rellena al encajar las hojas
+    const cc = sm(T.clean[0], T.clean[1] - 160, t), R = sm(1720, 2050, t);
+    useMark(c); strokeN(c, GHOST, 1, 1 - 0.75 * sIn * (1 - cc) - cc);
+    if (R > 0 && cc < 1) strokeN(c, '#D9D3C4', R, 1 - cc, patN);
+    const vis = sm(T.dia[0], T.dia[0] + 120, t);
+    poly(c, DIA.l, GHOST, 1 - vis, 0, 1); poly(c, DIA.c, GHOST, 1 - vis, 0, 1); poly(c, DIA.r, GHOST, 1 - vis, 0, 1);
     c.restore();
+    // 3· hojas (la escena gira y hace zoom hasta quedar recta cuando encajan)
+    if (t > 100 && t < 2240) {
+      const sr = -0.3 * (1 - eoc(clamp(t / 2000, 0, 1))), sz = 1 + 0.17 * (1 - sm(150, 2000, t)) + kick;
+      c.save(); c.translate(CX, CY); c.rotate(sr); c.scale(sz, sz); c.translate(-CX, -CY);
+      if (chroma > 0.03 && t < 2000) { FRINGE.d = 6 * chroma; FRINGE.al = Math.min(0.6, 0.5 * chroma); c.globalCompositeOperation = 'lighter'; drawSheets(c, t, list, n, 1); drawSheets(c, t, list, n, 2); c.globalCompositeOperation = 'source-over'; }
+      drawSheets(c, t, list, n, 0);
+      c.restore();
+    }
+    // 4· marca limpia: n blanca con squash & stretch, franjas cromáticas, rombo con resorte
+    if (cc > 0) {
+      const d = t - T.burst, pb = d > 0 ? Math.exp(-d / 110) * Math.cos(d * 0.03) * (1 - sm(450, 700, d)) : 0;
+      if (ch2 > 0.03) { c.globalCompositeOperation = 'lighter'; useMark(c, 1 + 0.14 * pb, 1 - 0.1 * pb); c.translate(2.2 * ch2 / 1.2 * 1.5, 0); strokeN(c, '#FF3D3D', 1, 0.55 * Math.min(1, ch2) * cc); c.translate(-4.4 * ch2 / 1.2 * 1.5, 0); strokeN(c, '#2D8CFF', 1, 0.55 * Math.min(1, ch2) * cc); c.restore(); c.globalCompositeOperation = 'source-over'; }
+      useMark(c, 1 + 0.14 * pb, 1 - 0.1 * pb); strokeN(c, PAPER, 1, cc); c.restore();
+    }
+    const pc = back(clamp((t - T.dia[0]) / 420, 0, 1)), pl = back(clamp((t - T.dia[0] - 60) / 420, 0, 1));
+    if (vis > 0) { useMark(c); poly(c, DIA.l, '#E8705A', vis, -7 * (1 - pl), 1); poly(c, DIA.c, '#D8D3C8', vis, 0, Math.max(0.01, 0.25 + 0.75 * pc)); poly(c, DIA.r, '#7C9AF2', vis, 7 * (1 - pl), 1); c.restore(); }
+    // 5· estallido: destello y onda de choque con franjas rojo/azul
+    const bw = clamp((t - T.burst) / 520, 0, 1);
+    if (bw > 0 && bw < 1) {
+      c.globalAlpha = 0.6 * Math.exp(-(t - T.burst) / 110); c.fillStyle = gradFlash; c.fillRect(0, 0, W, H);
+      const rr = 18 + 380 * eoc(bw), lw = 1 + 7 * (1 - bw), al = 0.7 * (1 - bw);
+      c.lineWidth = lw; c.globalAlpha = al; c.strokeStyle = PAPER; c.beginPath(); c.arc(CX, CY, rr, 0, TAU); c.stroke();
+      c.globalCompositeOperation = 'lighter'; c.globalAlpha = al * 0.6; c.strokeStyle = '#FF3D3D'; c.beginPath(); c.arc(CX, CY, rr + 5, 0, TAU); c.stroke(); c.strokeStyle = '#2D8CFF'; c.beginPath(); c.arc(CX, CY, rr - 5, 0, TAU); c.stroke();
+      c.globalCompositeOperation = 'source-over'; c.globalAlpha = 1;
+    }
+    c.restore(); c.restore();
   }
 
   // capa del DOM encima del canvas: radio del iris con el que aparece la app (o fundido en movimiento reducido)
   function hand(tm, mode) {
     if (mode === 'reduce') return { iris: 0, fade: sm(640, 800, tm) };
-    const k = mode === 'short' ? TOT.first / TOT.short : 1, t = tm * k;
-    return { iris: 920 * Math.pow(sm(T.hand[0], T.hand[1], t), 1.0), fade: 0 };
+    const t = mode === 'short' ? tm * (TOT.first / TOT.short) : tm;
+    return { iris: 920 * sm(T.hand[0], T.hand[1], t), fade: 0 };
   }
-  const PH = [[0, 'Idéntico al splash nativo'], [40, 'Las hojas entran por los bordes'], [700, 'Atracción: espiral con aceleración'], [1500, 'La n se rellena con cada hoja'], [2100, 'Cambio al logo limpio'], [2180, 'El rombo se enciende'], [2560, 'Entrega a la app (iris)']];
-  return { W, H, TOT, T, draw, drawNative, hand, phases: PH, sm };
+  const PH = [[0, 'Idéntico al splash nativo (n fantasma)'], [60, 'El remolino de pintura se abre'], [120, 'Cascada: hojas en espiral con sobreimpulso'], [1450, 'Abanico: las hojas aterrizan y respiran'], [1600, 'Encaje: las hojas saltan a la forma de la n'], [1760, 'Impacto: temblor y franja cromática'], [1900, 'El remolino se enrolla y colapsa'], [2100, 'Estallido: logo limpio (n blanca)'], [2180, 'El rombo se enciende'], [2560, 'Entrega a la app (iris)']];
+  return { W, H, TOT, T, draw, drawNative, hand, phases: PH, setQuality, sm };
 })();
 /*@intro-engine-end*/
 class Component extends DCLogic {
@@ -246,8 +350,9 @@ class Component extends DCLogic {
     const f = (mode, arr) => arr.map((r) => ({ key: mode + ':' + r[0], ms: r[0], note: r[1] }));
     return {
       diff: this.state.diff,
-      first: f('first', [[0, 'idéntico al splash nativo'], [450, 'las hojas entran'], [900, 'espiral, estela y estiramiento'], [1300, 'la n se rellena'], [1800, 'casi completa'], [2200, 'logo limpio, el rombo se enciende'], [2450, 'onda y rombo completos'], [2740, 'marca final; el iris descubre la app']]),
-      short: f('short', [[0, 'idéntico al splash nativo'], [300, 'atracción'], [600, 'logo limpio'], [950, 'iris']]),
+      first: f('first', [[0, 'idéntico al splash nativo'], [200, 'el remolino se abre, entran las primeras hojas'], [420, 'cascada: giro, volteo y estiramiento'], [700, 'hojas aterrizando con rebote elástico'], [1000, 'montón creciendo, la escena gira y hace zoom'], [1300, 'últimas hojas, abanico casi hecho'], [1480, 'abanico: inhalan antes del encaje'], [1640, 'encaje: saltan a la forma de la n']]),
+      first2: f('first', [[1740, 'impacto: temblor y franja cromática'], [1860, 'la n de papel, remolino enrollándose'], [1990, 'el remolino colapsa al centro'], [2110, 'estallido: destello y onda'], [2200, 'n blanca con squash, rombo naciendo'], [2330, 'rombo con resorte y temblor'], [2500, 'marca final sobre tinta'], [2740, 'el iris descubre la app']]),
+      short: f('short', [[0, 'idéntico al splash nativo'], [120, 'cascada'], [330, 'encaje en la n'], [600, 'estallido y logo'], [950, 'iris']]),
       reduce: f('reduce', [[0, 'idéntico al splash nativo'], [260, 'la marca se enciende'], [700, 'fundido a la app']])
     };
   }
