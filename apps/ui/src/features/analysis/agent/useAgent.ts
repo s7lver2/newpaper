@@ -3,7 +3,7 @@ import type { TabId } from '../../../ipc/types';
 import { createStore } from '../../../state/store';
 import { getPipeline } from '../../ai/pipeline';
 import { analysisStore, latestResult } from '../controller';
-import { applyAgentEvent, type AgentMessage } from './citations';
+import { applyAgentEvent, type AgentMessage } from '@newpaper/ui-kit/logic';
 
 interface Thread { url: string; messages: AgentMessage[]; busy: boolean }
 export const agentStore = createStore<{ byTab: Record<number, Thread> }>({ byTab: {} });

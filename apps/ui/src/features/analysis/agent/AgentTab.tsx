@@ -9,7 +9,7 @@ import { latestResult, useTabAnalysis } from '../controller';
 import { panelStore, usePanel } from '../panelStore';
 import { useParties } from '../parties';
 import { useVizLabels } from '../vizLabels';
-import { renderCitations, type AgentMessage } from './citations';
+import { renderCitations, type AgentMessage } from '@newpaper/ui-kit/logic';
 import { useAgent } from './useAgent';
 
 const openSource = (url: string) => void navigate(url, { newTab: true });

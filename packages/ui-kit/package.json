@@ -8,6 +8,7 @@
     "./tokens.css": "./src/tokens.css",
     "./motion.css": "./src/motion.css",
     "./fonts": "./src/fonts.ts",
+    "./logic": "./src/logic/index.ts",
     "./test/media": "./src/test/media.ts",
     "./test/setup": "./src/test/setup.ts"
   },

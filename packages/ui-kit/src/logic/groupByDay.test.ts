@@ -1,8 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import type { HistoryEntry } from '../../ipc/types';
 import { groupByDay, rangeFor } from './groupByDay';
 
-const e = (id: string, at: Date): HistoryEntry => ({ id, kind: 'visit', url: `https://d.example/${id}`, title: id, outlet: null, query: null, source: null, analyzed: false, at: at.getTime() });
+const e = (id: string, at: Date) => ({ id, at: at.getTime() });
 
 describe('groupByDay', () => {
   it('groups by local calendar day, newest first, with today and yesterday', () => {

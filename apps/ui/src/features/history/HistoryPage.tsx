@@ -6,7 +6,7 @@ import type { HistoryEntry, HistoryFilter } from '../../ipc/types';
 import { IconClose } from '../../shell/icons';
 import { navigate } from '../../shell/navigate';
 import { useSetting } from '../../state/settings';
-import { groupByDay, rangeFor } from './groupByDay';
+import { groupByDay, rangeFor } from '@newpaper/ui-kit/logic';
 
 type Kind = 'all' | 'visit' | 'search' | 'analysis';
 

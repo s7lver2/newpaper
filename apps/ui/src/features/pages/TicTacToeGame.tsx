@@ -1,7 +1,7 @@
 import { useT } from '@newpaper/i18n/react';
 import { Button } from '@newpaper/ui-kit';
 import { useRef, useState, type KeyboardEvent } from 'react';
-import { bestMove, winner, type Board } from './ticTacToe';
+import { bestMove, winner, type Board } from '@newpaper/ui-kit/logic';
 
 const KEY_STEPS: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -3, ArrowDown: 3 };
 
