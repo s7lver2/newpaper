@@ -443,3 +443,44 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 .m-toast { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .m-toast-act { min-height: var(--m-hit); padding: 0 6px; font: 600 14px var(--np-font-ui); color: var(--np-on-ink); text-decoration: underline; }
 .m-pulse-text { font: 500 16px var(--np-font-ui); animation: m-pulse 900ms var(--m-ease-inout) infinite alternate; }
+
+/* emparejar (Movil-Emparejar): enlace PC↔móvil, apretón de manos, huella y alcance */
+.m-link { display: block; margin: 0 auto; max-width: 100%; }
+.m-link-intro .m-link-line { stroke-dashoffset: 0; animation: m-flow 1.2s linear infinite; }
+.m-link .m-packet { opacity: 0; }
+.m-link-intro .m-packet { animation: m-packet-pass var(--m-dur-packet) var(--m-ease-inout) infinite; }
+.m-link-intro .m-packet.ok { animation-delay: calc(var(--m-dur-packet) / 2); }
+.m-packet.qr { fill: var(--np-accent); }
+.m-packet.ok { fill: var(--np-ok); }
+@keyframes m-flow { to { stroke-dashoffset: -16; } }
+@keyframes m-packet-pass { 0% { opacity: 0; transform: translateX(0); } 15% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; transform: translateX(-100px); } }
+.m-scan-frame b { animation: m-breathe 2.4s var(--m-ease-inout) infinite both; }
+@keyframes m-breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+
+.m-hs { padding: 4px var(--m-gutter) 24px; }
+.m-hs-art .m-hs-pkt { opacity: 0; }
+.m-hs-pkt.syn { fill: var(--np-accent); animation: m-hs-go 800ms var(--m-ease-inout) 200ms infinite; }
+.m-hs-pkt.ack { fill: var(--np-ok); animation: m-hs-back 800ms var(--m-ease-inout) 1000ms infinite; }
+.m-hs-pkt.key { fill: #7C4DD8; animation: m-hs-go 800ms var(--m-ease-inout) 1800ms infinite; }
+@keyframes m-hs-go { 0% { opacity: 0; transform: translateX(0); } 20%, 80% { opacity: 1; } 100% { opacity: 0; transform: translateX(104px); } }
+@keyframes m-hs-back { 0% { opacity: 0; transform: translateX(104px); } 20%, 80% { opacity: 1; } 100% { opacity: 0; transform: translateX(0); } }
+.m-hs-line { animation: m-hs-line 3.6s var(--m-ease) both; }
+@keyframes m-hs-line { 0% { stroke: var(--np-accent); } 70% { stroke: #7C4DD8; } 100% { stroke: var(--np-ok); } }
+.m-hs-lock { transform-box: fill-box; transform-origin: center; animation: m-hs-lock 500ms var(--m-ease-inout) 2400ms both; }
+.m-hs-shackle { transform-box: fill-box; transform-origin: center bottom; animation: m-hs-close 420ms var(--m-ease-inout) 2400ms both; }
+@keyframes m-hs-close { from { transform: translateY(-9px); } to { transform: none; } }
+@keyframes m-hs-lock { from { opacity: .4; } to { opacity: 1; } }
+.m-hs-steps { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+.m-hs-steps li { display: flex; align-items: center; gap: 10px; font: 400 14px/1.4 var(--np-font-ui); color: var(--np-ink2); animation: m-rise var(--m-dur-slow) var(--m-ease) both; }
+.m-hs-dot { flex: none; width: 10px; height: 10px; border-radius: 50%; background: var(--np-line3); animation: m-hs-dot 400ms var(--m-ease) both; animation-delay: inherit; }
+@keyframes m-hs-dot { to { background: var(--np-ok); } }
+
+.m-fp { display: grid; gap: 4px; }
+.m-fp-groups { display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; }
+.m-fp-groups b { flex: 1; text-align: center; padding: 10px 0; border-radius: 12px; background: var(--np-soft); font: 500 20px var(--np-font-mono); letter-spacing: .04em; color: var(--np-muted); }
+.m-fp-groups b.on { color: var(--np-ink); animation: m-spring-in 300ms var(--m-spring) both; }
+.m-fp.match .m-fp-groups b { color: var(--np-ok); background: var(--np-ok-bg); transition: color var(--m-dur-base) var(--m-ease); }
+
+.m-scope-row { animation: m-rise var(--m-dur-slow) var(--m-ease) both; }
+.m-scope-check { flex: none; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: var(--np-ok-bg); color: var(--np-ok); }
+.m-scope-check path { stroke-dasharray: 1; stroke-dashoffset: 1; animation: m-draw var(--m-dur-slow) var(--m-ease-inout) 200ms forwards; }
