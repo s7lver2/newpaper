@@ -8,93 +8,236 @@
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&amp;display=swap">
 <style>
+/*@m-base*/
+/* newpaper móvil · base compartida de los artboards Movil-*.dc.html.
+   FUENTE ÚNICA: este fichero. Se copia entre los marcadores @m-base de cada artboard con
+   `node design/mockups/tools/inject-base.mjs` (no editar la copia a mano). */
+:root{
+  --np-paper:#F6F4EF;--np-chrome:#E7E3DA;--np-panel:#FBFAF7;--np-card:#FFFFFF;--np-ink:#17171A;--np-ink2:#3D3B37;--np-muted:#5E5B55;--np-faint:#8D8981;
+  --np-line:#E2DED5;--np-line2:#EFECE6;--np-line3:#D9D5CC;--np-soft:#EFECE5;--np-switch-off:#CFCAC0;--np-accent:#2340B8;--np-accent-soft:#E8ECFA;--np-accent-sel:#DCE3FA;
+  --np-ok:#0B6B50;--np-ok-bg:#E3F2EC;--np-warn:#8A5300;--np-warn-bg:#FBF0DC;--np-bad:#A3271B;--np-bad-bg:#FBE7E4;--np-left:#C2412F;--np-center:#B9B4A9;--np-right:#2F5BD3;
+  --np-tor:#4A2FB8;--np-tor-soft:#ECE8FB;--np-ai:#993556;--np-ai-bg:#FBEAF0;--np-on-ink:#F6F4EF;
+  --np-font-read:'Newsreader',Georgia,serif;--np-font-ui:'IBM Plex Sans',system-ui,sans-serif;--np-font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  /* movimiento: duraciones */
+  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;
+  /* movimiento: curvas */
+  --m-ease:cubic-bezier(.22,1,.36,1);--m-ease-emph:cubic-bezier(.05,.7,.1,1);--m-ease-exit:cubic-bezier(.3,0,.8,.15);--m-ease-inout:cubic-bezier(.65,0,.35,1);--m-spring:cubic-bezier(.34,1.56,.64,1);
+  /* medidas */
+  --m-top:32px;--m-bottom:20px;--m-hit:48px;--m-gutter:20px;--m-appbar:56px;--m-tabbar:64px;--m-r-card:20px;--m-r-ctl:16px;
+}
 body{margin:0}
-a{color:#17171A;text-decoration:none}
-button{font:inherit;cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),color .45s cubic-bezier(.22,1,.36,1),border-color .45s,transform .5s cubic-bezier(.34,1.56,.64,1)}
-button:active{transform:scale(.96)}
-.word{display:inline-block;animation:word .9s cubic-bezier(.22,1,.36,1) both}
-.rise{animation:rise .8s cubic-bezier(.22,1,.36,1) both}
-@keyframes word{from{opacity:0;transform:translateY(40%) rotate(3deg)}to{opacity:1;transform:none}}
-@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes p0{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
-@keyframes p1{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:none}}
-@keyframes fall{0%{transform:translateY(-40px) rotate(0);opacity:0}10%{opacity:1}100%{transform:translateY(860px) rotate(540deg);opacity:0}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.m-app{width:390px;height:844px;position:relative;overflow:hidden;background:var(--np-paper);color:var(--np-ink);font:400 15px/1.45 var(--np-font-ui);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.m-app,.m-app *{box-sizing:border-box}
+:where(.m-app) a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+:where(.m-app) button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;margin:0;-webkit-tap-highlight-color:transparent;transition:transform var(--m-dur-press) var(--m-ease),background-color var(--m-dur-fast) var(--m-ease),color var(--m-dur-fast) var(--m-ease),border-color var(--m-dur-fast) var(--m-ease),opacity var(--m-dur-fast) var(--m-ease)}
+.m-app button:active:not(:disabled),.m-app a.m-tap:active{transform:scale(.97)}
+.m-app a.m-tap{transition:transform var(--m-dur-press) var(--m-ease),background-color var(--m-dur-fast) var(--m-ease)}
+.m-app :focus-visible{outline:2px solid var(--np-accent);outline-offset:2px}
+:where(.m-app) input{font:inherit;color:inherit}
+:where(.m-app) svg{flex:none}
+.m-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none}
+.m-scroll::-webkit-scrollbar{display:none}
+.m-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* barras */
+.m-appbar{flex:none;display:flex;align-items:center;gap:4px;height:calc(var(--m-appbar) + var(--m-top));padding:var(--m-top) 8px 0}
+.m-back{flex:none;width:var(--m-hit);height:var(--m-hit);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--np-ink)}
+.m-back:active{background:var(--np-soft)}
+.m-bar-title{flex:1;min-width:0;font:500 21px/1.15 var(--np-font-read);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-bar-sub{display:block;font:400 12px/1.3 var(--np-font-ui);color:var(--np-muted);letter-spacing:0}
+.m-bar-act{flex:none;min-width:var(--m-hit);height:var(--m-hit);border-radius:24px;display:flex;align-items:center;justify-content:center;padding:0 12px;font-weight:500;color:var(--np-accent)}
+.m-large{padding:calc(var(--m-top) + 20px) var(--m-gutter) 4px;font:500 36px/1.04 var(--np-font-read);letter-spacing:-.025em}
+.m-kicker{font:600 11px/1.4 var(--np-font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--np-muted)}
+.m-sec{margin:26px var(--m-gutter) 8px;font:600 12px/1.3 var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);display:flex;justify-content:space-between;align-items:baseline}
+.m-sec small{font:400 12px var(--np-font-ui);letter-spacing:0;text-transform:none;color:var(--np-faint)}
+/* grupos y filas */
+.m-group{margin:0 16px;background:var(--np-card);border:1px solid var(--np-line2);border-radius:var(--m-r-card);overflow:hidden}
+.m-row{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:60px;padding:10px 16px;text-align:left;background:none}
+.m-row+.m-row::before,.m-row-wrap+.m-row-wrap::before{content:'';position:absolute;left:66px;right:0;top:0;height:1px;background:var(--np-line2)}
+.m-row-wrap{position:relative}
+button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!important}
+.m-ico{flex:none;width:36px;height:36px;border-radius:11px;background:var(--np-soft);color:var(--np-ink);display:flex;align-items:center;justify-content:center}
+.m-ico svg{width:20px;height:20px}
+.m-ico.ok{background:var(--np-ok-bg);color:var(--np-ok)}.m-ico.acc{background:var(--np-accent-soft);color:var(--np-accent)}.m-ico.warn{background:var(--np-warn-bg);color:var(--np-warn)}.m-ico.bad{background:var(--np-bad-bg);color:var(--np-bad)}.m-ico.tor{background:var(--np-tor-soft);color:var(--np-tor)}.m-ico.ai{background:var(--np-ai-bg);color:var(--np-ai)}.m-ico.ink{background:var(--np-ink);color:var(--np-on-ink)}
+.m-rt{flex:1;min-width:0}
+.m-rt>b{display:block;font:500 16px/1.3 var(--np-font-ui)}
+.m-rt>span{display:block;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted);margin-top:1px}
+.m-val{flex:none;font:400 14px var(--np-font-ui);color:var(--np-muted);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-chev{flex:none;color:var(--np-faint)}
+.m-note{margin:8px 20px 0;font:400 12.5px/1.5 var(--np-font-ui);color:var(--np-muted)}
+/* interruptor */
+.m-switch{position:relative;flex:none;width:52px;height:32px;border-radius:16px;background:var(--np-switch-off);transition:background-color var(--m-dur-base) var(--m-ease)!important}
+.m-switch::before{content:'';position:absolute;left:4px;top:4px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(23,23,26,.3);transition:transform var(--m-dur-base) var(--m-spring),width var(--m-dur-fast) var(--m-ease)}
+.m-switch::after{content:'';position:absolute;inset:-8px -4px}
+.m-switch[aria-checked=true]{background:var(--np-ink)}
+.m-switch[aria-checked=true]::before{transform:translateX(20px)}
+.m-switch:active::before{width:28px}
+.m-switch[aria-checked=true]:active::before{transform:translateX(16px)}
+/* botones y chips */
+.m-btn{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;padding:0 24px;border-radius:var(--m-r-ctl);background:var(--np-ink);color:var(--np-on-ink)!important;font:600 16px var(--np-font-ui)}
+.m-btn.sec{background:transparent;color:var(--np-ink)!important;box-shadow:inset 0 0 0 1.5px var(--np-line3)}
+.m-btn.soft{background:var(--np-soft);color:var(--np-ink)!important}
+.m-btn.acc{background:var(--np-accent)}
+.m-btn.danger{background:var(--np-bad-bg);color:var(--np-bad)!important}
+.m-btn.sm{height:48px;font-size:15px;border-radius:14px}
+.m-chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:20px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line3);font:500 14px var(--np-font-ui);position:relative}
+.m-chip::after{content:'';position:absolute;inset:-4px 0}
+.m-chip[aria-pressed=true]{background:var(--np-ink);color:var(--np-on-ink);box-shadow:none}
+.m-seg{display:flex;padding:4px;border-radius:18px;background:var(--np-chrome);gap:2px}
+.m-seg>button{flex:1;height:44px;border-radius:14px;font:500 14px var(--np-font-ui);color:var(--np-muted)}
+.m-seg>button[aria-selected=true],.m-seg>button[aria-pressed=true]{background:var(--np-card);color:var(--np-ink);box-shadow:0 1px 3px rgba(23,23,26,.14)}
+.m-card{background:var(--np-card);border:1px solid var(--np-line2);border-radius:var(--m-r-card)}
+.m-leanbar{display:flex;gap:1px;height:4px;border-radius:2px;overflow:hidden}
+.m-leanbar i{display:block}.m-leanbar i:nth-child(1){background:var(--np-left)}.m-leanbar i:nth-child(2){background:var(--np-center)}.m-leanbar i:nth-child(3){background:var(--np-right)}
+/* barra de pestañas */
+.m-tabbar{flex:none;position:relative;display:grid;grid-template-columns:repeat(4,1fr);height:calc(var(--m-tabbar) + var(--m-bottom));padding:0 4px var(--m-bottom);background:var(--np-paper);border-top:1px solid var(--np-line)}
+.m-tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;padding-top:8px;color:var(--np-muted);font:500 12px/1 var(--np-font-ui);min-height:var(--m-hit)}
+.m-tab .pill{position:relative;width:64px;height:32px;display:flex;align-items:center;justify-content:center}
+.m-tab .pill::before{content:'';position:absolute;inset:0;border-radius:16px;background:var(--np-accent-soft);transform:scaleX(.35);opacity:0;transition:transform var(--m-dur-base) var(--m-ease),opacity var(--m-dur-fast) var(--m-ease)}
+.m-tab svg{position:relative;width:24px;height:24px;transition:transform var(--m-dur-base) var(--m-spring)}
+.m-tab[aria-current=page]{color:var(--np-ink)}
+.m-tab[aria-current=page] .pill::before{transform:none;opacity:1}
+.m-tab[aria-current=page] svg{color:var(--np-accent)}
+.m-tab[aria-current=page] .fill{fill:currentColor;fill-opacity:.16}
+.m-tab:active svg{transform:scale(.88)}
+.m-tab .badge{position:absolute;top:2px;right:16px;min-width:8px;height:8px;border-radius:4px;background:var(--np-left);box-shadow:0 0 0 2px var(--np-paper)}
+/* hoja inferior */
+.m-scrim{position:absolute;inset:0;background:rgba(23,23,26,.42);animation:m-fade var(--m-dur-base) var(--m-ease) both;z-index:20}
+.m-sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--np-card);border-radius:28px 28px 0 0;padding:12px 20px calc(var(--m-bottom) + 12px);box-shadow:0 -12px 40px rgba(23,23,26,.18);animation:m-sheet var(--m-dur-sheet) var(--m-spring) both}
+.m-grab{width:36px;height:4px;border-radius:2px;background:var(--np-line3);margin:0 auto 14px}
+/* esqueletos */
+.m-skel{display:block;border-radius:8px;background:linear-gradient(100deg,var(--np-chrome) 30%,#F4F1EB 50%,var(--np-chrome) 70%);background-size:300% 100%;animation:m-shimmer var(--m-dur-shimmer) linear infinite}
+/* animaciones */
+.m-rise{animation:m-rise var(--m-dur-slow) var(--m-ease) both}
+.m-enter{animation:m-push-in var(--m-dur-base) var(--m-ease-emph) both}
+.m-fadein{animation:m-fade var(--m-dur-base) var(--m-ease) both}
+.m-pop{animation:m-pop var(--m-dur-slow) var(--m-spring) both}
+.m-stagger>*{animation:m-rise var(--m-dur-slow) var(--m-ease) both;animation-delay:calc(var(--i,0)*var(--m-stagger))}
+.m-stagger>*:nth-child(2){--i:1}.m-stagger>*:nth-child(3){--i:2}.m-stagger>*:nth-child(4){--i:3}.m-stagger>*:nth-child(5){--i:4}.m-stagger>*:nth-child(6){--i:5}.m-stagger>*:nth-child(7){--i:6}.m-stagger>*:nth-child(8){--i:7}.m-stagger>*:nth-child(n+9){--i:8}
+@keyframes m-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes m-fade{from{opacity:0}to{opacity:1}}
+@keyframes m-push-in{from{opacity:.4;transform:translateX(32px)}to{opacity:1;transform:none}}
+@keyframes m-push-under{from{transform:none}to{transform:translateX(-24%);opacity:.6}}
+@keyframes m-pop-out{from{transform:none;opacity:1}to{transform:translateX(32px);opacity:0}}
+@keyframes m-sheet{from{transform:translateY(100%)}to{transform:none}}
+@keyframes m-pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes m-shimmer{from{background-position:100% 0}to{background-position:-200% 0}}
+@keyframes m-ring{from{stroke-dashoffset:var(--len,100)}to{stroke-dashoffset:var(--to,0)}}
+@keyframes m-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes m-pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes m-spin{to{transform:rotate(360deg)}}
+@keyframes m-scan{0%{transform:translateY(0);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translateY(var(--h,240px));opacity:0}}
+@keyframes m-bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){
+  .m-app *,.m-app *::before,.m-app *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}
+  .m-skel{animation:none!important;background:var(--np-chrome)}
+}
+/* simulación de "reducir movimiento" (los mockups la activan con la clase m-reduce en la raíz) */
+.m-reduce *,.m-reduce *::before,.m-reduce *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}
+.m-reduce .m-skel{animation:none!important;background:var(--np-chrome)}
+.m-btn.paper{background:var(--np-on-ink);color:var(--np-ink)!important}
+.m-app>.m-tabbar{margin-top:auto}
+/*@m-base-end*/
+
+.ob-s{position:absolute;top:0;bottom:0;width:390px;padding-top:calc(var(--m-top) + 56px);padding-bottom:150px}
+.ob-panel{height:470px;margin:0 0 30px;display:flex;align-items:center;justify-content:center;background:var(--np-soft);border-radius:0 0 40px 40px;margin-top:calc(-1 * (var(--m-top) + 56px));padding-top:calc(var(--m-top) + 56px)}
+.ob-card{background:var(--np-card);border-radius:22px;box-shadow:0 1px 0 var(--np-line),0 14px 36px rgba(23,23,26,.1)}
+.ob-h{font:500 32px/1.1 var(--np-font-read);letter-spacing:-.02em;margin:8px 0 0}
+.ob-p{font:400 16px/1.5 var(--np-font-ui);color:var(--np-muted);margin:10px 0 0}
+.ob-a{opacity:0}
+.on .ob-a{animation:m-rise var(--m-dur-slow) var(--m-ease) both}
+.on span.ob-a[style*=m-pop]{animation:m-pop var(--m-dur-slow) var(--m-spring) both}
+.ob-lit{border-radius:3px;padding:0 2px;color:transparent;transition:none}
+.on .ob-lit{animation:ob-lit 600ms var(--m-ease) both}
+@keyframes ob-lit{from{color:#ABA79E;background-color:transparent}to{color:var(--np-ink)}}
+.ob-dot{display:block;width:7px;height:7px;border-radius:50%;background:var(--np-faint);opacity:0}
+.on .ob-dot{animation:m-pulse 700ms ease-in-out 2}
+@keyframes ob-dots{0%{opacity:0}10%{opacity:1}90%{opacity:1}100%{opacity:0;height:0;padding:0}}
+.ob-opt{display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border-radius:20px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line)}
+.ob-opt[aria-pressed=true]{box-shadow:inset 0 0 0 2px var(--np-ink)}
+.ob-radio{flex:none;width:24px;height:24px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--np-faint);display:flex;align-items:center;justify-content:center}
+.ob-opt[aria-pressed=true] .ob-radio{box-shadow:inset 0 0 0 2px var(--np-ink)}
+.ob-radio-dot{width:12px;height:12px;border-radius:50%;background:var(--np-ink);transform:scale(0);transition:transform var(--m-dur-base) var(--m-spring)}
+.ob-opt[aria-pressed=true] .ob-radio-dot{transform:none}
+
 </style>
 </helmet>
-<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
+<div class="m-app">
 
-<sc-if value="{{isWelcome}}" hint-placeholder-val="{{ true }}">
-<div style="flex: 1; display: flex; flex-direction: column; padding: 120px 28px 40px">
-<div class="rise" style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 0.14em; color: #5E5B55">BIENVENIDO A NEWPAPER</div>
-<div style="font-family: 'Newsreader', serif; font-size: 56px; line-height: 1.02; letter-spacing: -0.03em; font-weight: 500; margin-top: 18px"><span class="word" style="animation-delay: .15s">Lee.</span><br><span class="word" style="animation-delay: .4s">Contrasta.</span><br><span class="word" style="animation-delay: .65s; font-style: italic; color: #2340B8">Decide tú.</span></div>
-<div class="rise" style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.5; color: #3D3B37; margin-top: 22px; animation-delay: 1s">Tres preguntas rápidas y te enseñamos cómo funciona.</div>
-<div class="rise" style="margin-top: auto; display: flex; flex-direction: column; gap: 8px; animation-delay: 1.2s">
-<button onClick="{{start}}" style="height: 54px; border: 0; border-radius: 16px; background: #17171A; color: #F6F4EF; font-weight: 500; font-size: 16px">Empezar</button>
-<a href="Movil-Inicio.dc.html" style="height: 48px; display: flex; align-items: center; justify-content: center; color: #5E5B55">Saltar</a>
+<sc-if value="{{inFlow}}" hint-placeholder-val="{{ true }}">
+<div style="position:absolute;inset:0;overflow:hidden;background:{{bg}};transition:background-color var(--m-dur-slow) var(--m-ease)">
+<div style="{{trackStyle}}" onPointerDown="{{pdown}}" onPointerMove="{{pmove}}" onPointerUp="{{pup}}" onPointerCancel="{{pup}}">
+<div class="ob-s {{s0.cls}}" style="{{s0.style}}"><div style="position:absolute;inset:0;background:#17171A;color:#F6F4EF;padding:calc(var(--m-top) + 72px) 28px 0">
+<div class="ob-a" style="width:88px;height:88px;border-radius:0;overflow:visible;animation-name:m-pop;animation-timing-function:var(--m-spring)"><svg viewBox="0 0 108 108" width="88" height="88" aria-hidden="true"><g fill="none" stroke="#F6F4EF" stroke-linejoin="miter" stroke-linecap="butt"><path d="M33 40.500V71" stroke-width="7.500"/><path d="M33 54C33 45 39 40 46.500 40 54 40 58 44.500 58 51.500V71" stroke-width="6"/><path d="M26.500 71H39.500M51.500 71H64.500" stroke-width="3"/><path d="M26.500 43.500L33 40" stroke-width="3"/></g><polygon points="67.500,66 71.830,61.670 71.830,70.330" fill="#E8705A"/><polygon points="71.830,61.670 74,59.500 76.170,61.670 76.170,70.330 74,72.500 71.830,70.330" fill="#D8D3C8"/><polygon points="76.170,61.670 80.500,66 76.170,70.330" fill="#7C9AF2"/>
+</svg></div>
+<div style="font:500 60px/1.0 var(--np-font-read);letter-spacing:-.035em;margin-top:48px"><div class="ob-a" style="animation-delay:150ms">Lee.</div><div class="ob-a" style="animation-delay:350ms">Contrasta.</div><div class="ob-a" style="animation-delay:550ms;font-style:italic;color:#9DB1F7">Decide tú.</div></div>
+<p class="ob-a" style="font:400 18px/1.5 var(--np-font-read);color:#CBC7BE;margin:26px 0 0;max-width:300px;animation-delay:800ms">Un navegador solo de noticias que las contrasta con todo el espectro y te enseña de dónde sale cada dato.</p>
+<div class="ob-a" style="display:flex;gap:2px;width:96px;margin-top:32px;animation-delay:1000ms"><span style="flex:1;height:3px;border-radius:2px;background:#E8705A"></span><span style="flex:1;height:3px;border-radius:2px;background:#D8D3C8"></span><span style="flex:1;height:3px;border-radius:2px;background:#7C9AF2"></span></div>
+</div></div>
+<div class="ob-s {{s1.cls}}" style="{{s1.style}}"><div class="ob-panel"><div class="ob-card ob-a" style="animation-delay:80ms;width:320px;padding:18px 18px 16px">
+<div class="m-kicker">Una noticia</div>
+<div style="font:500 19px/1.25 var(--np-font-read);margin-top:6px">El Gobierno aprueba una subida del salario mínimo</div>
+<div style="position:relative;margin:34px 6px 8px;height:8px;border-radius:4px;background:linear-gradient(90deg,#C2412F,#E3DFD6 45%,#E3DFD6 55%,#2F5BD3)">
+<span class="ob-a" style="position:absolute;left:7%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #C2412F,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:420ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">DR</span><span class="ob-a" style="position:absolute;left:24%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #C2412F,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:550ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">EP</span><span class="ob-a" style="position:absolute;left:47%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #8D8981,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:680ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">EF</span><span class="ob-a" style="position:absolute;left:58%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #8D8981,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:810ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">AB</span><span class="ob-a" style="position:absolute;left:79%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #2F5BD3,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:940ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">LV</span><span class="ob-a" style="position:absolute;left:93%;top:-6px;width:20px;height:20px;margin-left:-10px;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #2F5BD3,0 2px 6px rgba(23,23,26,.2);display:flex;align-items:center;justify-content:center;font:600 8px var(--np-font-mono);animation-delay:1070ms;animation-name:m-pop;animation-timing-function:var(--m-spring)">CO</span>
+</div>
+<div style="display:flex;justify-content:space-between;font:400 11px var(--np-font-ui);color:var(--np-muted)"><span>Izquierda</span><span>Centro</span><span>Derecha</span></div>
+<div class="ob-a" style="display:flex;align-items:center;gap:14px;margin-top:16px;padding-top:14px;border-top:1px solid var(--np-line);animation-delay:1300ms"><svg viewBox="0 0 44 44" width="44" height="44" style="transform:rotate(-90deg)" aria-hidden="true"><circle cx="22" cy="22" r="17" fill="none" stroke="var(--np-line2)" stroke-width="5"/><circle cx="22" cy="22" r="17" fill="none" stroke="var(--np-ok)" stroke-width="5" stroke-linecap="round" stroke-dasharray="106.8" style="--len:106.8;--to:27.8;animation:m-ring 900ms var(--m-ease-inout) 1400ms both"/></svg><div><div style="font:500 15px var(--np-font-ui)">Contrastada con 6 medios</div><div style="font:400 12px var(--np-font-ui);color:var(--np-muted)">2 discrepancias señaladas</div></div></div>
+</div></div><div style="padding:0 28px"><div class="m-kicker ob-a" style="animation-delay:120ms">Cómo funciona · 1</div><h2 class="ob-h ob-a" style="animation-delay:200ms">Una noticia, seis medios</h2><p class="ob-p ob-a" style="animation-delay:300ms">Cada hecho se contrasta con coberturas de izquierda a derecha. Ves quién lo cuenta y cómo.</p></div></div>
+<div class="ob-s {{s2.cls}}" style="{{s2.style}}"><div class="ob-panel"><div class="ob-card ob-a" style="animation-delay:80ms;width:320px;padding:20px;font:400 17px/1.7 var(--np-font-read);color:#ABA79E">
+La subida lo sitúa en <span class="ob-lit" style="background:#F7DFB0;animation-delay:500ms">el nivel más alto de Europa</span><sup style="font:600 9px var(--np-font-ui);color:#8A5300;margin-left:3px;letter-spacing:.04em" class="ob-a"><span style="animation-delay:900ms">ENGAÑOSO</span></sup>, y <span class="ob-lit" style="background:#F6CFC9;animation-delay:1000ms">la patronal, fiel a su costumbre,</span> la rechaza. Desde 2018 ha crecido un 61 % <span class="ob-lit" style="background:#CFE9DE;animation-delay:1500ms">sin que se haya destruido empleo</span><sup style="font:600 9px var(--np-font-ui);color:#0B6B50;margin-left:3px;letter-spacing:.04em">EN DISPUTA</sup>.
+</div></div><div style="padding:0 28px"><div class="m-kicker ob-a" style="animation-delay:120ms">Cómo funciona · 2</div><h2 class="ob-h ob-a" style="animation-delay:200ms">Lo que importa, encendido</h2><p class="ob-p ob-a" style="animation-delay:300ms">La lente apaga el texto neutro y marca cada afirmación con su veredicto.</p></div></div>
+<div class="ob-s {{s3.cls}}" style="{{s3.style}}"><div class="ob-panel"><div class="ob-card ob-a" style="animation-delay:80ms;width:320px;padding:18px;display:flex;flex-direction:column;gap:10px">
+<div style="font:italic 400 15px/1.4 var(--np-font-read);color:var(--np-ink2);box-shadow:inset 2px 0 0 var(--np-accent);padding-left:10px">«sin que se haya destruido empleo»</div>
+<div class="ob-a" style="align-self:flex-end;background:var(--np-ink);color:var(--np-on-ink);padding:10px 14px;border-radius:16px 16px 4px 16px;font:400 14px var(--np-font-ui);animation-delay:500ms">¿Es cierto?</div>
+<div style="height:0;position:relative"><div class="ob-a" style="position:absolute;top:4px;display:flex;gap:4px;animation:ob-dots 1300ms 900ms both"><i class="ob-dot" style="animation-delay:900ms"></i><i class="ob-dot" style="animation-delay:1040ms"></i><i class="ob-dot" style="animation-delay:1180ms"></i></div></div>
+<div class="ob-a" style="font:400 16px/1.5 var(--np-font-read);animation-delay:2000ms">Está en disputa: la AIReF estimó un efecto negativo moderado <span style="font:500 11px var(--np-font-mono);color:var(--np-accent);background:var(--np-accent-soft);padding:2px 6px;border-radius:5px">1</span> <span style="font:500 11px var(--np-font-mono);color:var(--np-accent);background:var(--np-accent-soft);padding:2px 6px;border-radius:5px">2</span></div>
+</div></div><div style="padding:0 28px"><div class="m-kicker ob-a" style="animation-delay:120ms">Cómo funciona · 3</div><h2 class="ob-h ob-a" style="animation-delay:200ms">Pregunta por cualquier frase</h2><p class="ob-p ob-a" style="animation-delay:300ms">Mantén pulsado un trozo del texto y pregúntale al agente. Responde con fuentes.</p></div></div>
+<div class="ob-s {{s4.cls}}" style="{{s4.style}}"><div style="padding:calc(var(--m-top) + 84px) 24px 0"><div class="m-kicker ob-a" style="animation-delay:100ms">Tu briefing</div><h2 class="ob-h ob-a" style="animation-delay:180ms;margin-top:8px">¿Qué te interesa?</h2><p class="ob-p ob-a" style="animation-delay:260ms">Elige los temas de tu edición diaria. No sale de tu móvil.</p><div style="display:flex;flex-wrap:wrap;gap:10px;margin-top:22px"><sc-for list="{{topics}}" as="t" hint-placeholder-count="10"><button class="m-chip ob-a" style="{{t.style}}" aria-pressed="{{t.on}}" onClick="{{t.toggle}}">{{t.name}}</button></sc-for></div></div></div>
+<div class="ob-s {{s5.cls}}" style="{{s5.style}}"><div style="padding:calc(var(--m-top) + 84px) 24px 0"><div class="m-kicker ob-a" style="animation-delay:100ms">Tu IA</div><h2 class="ob-h ob-a" style="animation-delay:180ms;margin-top:8px">¿Cómo la usamos?</h2><p class="ob-p ob-a" style="animation-delay:260ms">Puedes cambiarlo en Ajustes cuando quieras.</p><div style="display:flex;flex-direction:column;gap:10px;margin-top:20px"><sc-for list="{{aiOpts}}" as="o" hint-placeholder-count="3"><button class="ob-opt ob-a" style="{{o.style}}" aria-pressed="{{o.on}}" onClick="{{o.pick}}"><span class="ob-radio"><span class="ob-radio-dot"></span></span><span style="flex:1"><b style="display:block;font:600 16px var(--np-font-ui)">{{o.name}}</b><span style="display:block;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted);margin-top:2px">{{o.desc}}</span></span></button></sc-for></div></div></div>
+</div>
+<sc-if value="{{showSkip}}" hint-placeholder-val="{{ true }}"><button onClick="{{skip}}" style="position:absolute;right:8px;top:calc(var(--m-top) + 4px);height:48px;padding:0 16px;border-radius:24px;font:500 15px var(--np-font-ui);color:{{fg2}};z-index:4">Saltar</button></sc-if>
+<div style="position:absolute;left:0;right:0;bottom:0;padding:0 20px calc(var(--m-bottom) + 8px);display:flex;flex-direction:column;gap:18px;z-index:4">
+<div role="progressbar" aria-label="Paso {{step}} de 6" aria-valuemin="1" aria-valuemax="6" aria-valuenow="{{step}}" style="display:flex;justify-content:center;gap:6px"><sc-for list="{{dots}}" as="d" hint-placeholder-count="6"><span style="{{d}}"></span></sc-for></div>
+<div style="display:flex;gap:10px"><sc-if value="{{showBack}}" hint-placeholder-val="{{ false }}"><button class="m-btn sec m-pop" onClick="{{back}}" aria-label="Atrás" style="width:56px;padding:0;flex:none"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button></sc-if><button class="{{ctaCls}}" onClick="{{next}}" style="{{ctaStyle}}">{{ctaLabel}}</button></div>
 </div>
 </div>
 </sc-if>
-
-<sc-if value="{{isFlow}}" hint-placeholder-val="{{ false }}">
-<div style="flex: 1; display: flex; flex-direction: column; padding: 56px 22px 30px">
-<div style="display: flex; gap: 4px"><sc-for list="{{bars}}" as="b" hint-placeholder-count="6"><span style="{{b}}"></span></sc-for></div>
-<div style="{{pane}}">
-<div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8D8981; margin-top: 26px">{{kicker}}</div>
-<div style="font-family: 'Newsreader', serif; font-size: 30px; line-height: 1.12; margin: 6px 0 8px">{{title}}</div>
-<div style="color: #5E5B55; line-height: 1.5; margin-bottom: 22px">{{desc}}</div>
-<sc-if value="{{s0}}" hint-placeholder-val="{{ true }}"><div style="display: flex; flex-wrap: wrap; gap: 8px"><sc-for list="{{topics}}" as="t" hint-placeholder-count="10"><button onClick="{{t.toggle}}" aria-pressed="{{t.aria}}" style="{{t.style}}">{{t.name}}</button></sc-for></div></sc-if>
-<sc-if value="{{s1}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 10px"><sc-for list="{{aiOpts}}" as="o" hint-placeholder-count="3"><button onClick="{{o.pick}}" style="{{o.style}}"><span style="{{o.radio}}"><span style="{{o.dot}}"></span></span><span style="flex: 1"><span style="display: block; font-weight: 600">{{o.name}}</span><span style="display: block; font-size: 13px; color: #5E5B55; margin-top: 2px; line-height: 1.4">{{o.desc}}</span></span></button></sc-for></div></sc-if>
-<sc-if value="{{s2}}" hint-placeholder-val="{{ false }}"><div style="display: flex; flex-direction: column; gap: 10px"><sc-for list="{{netOpts}}" as="o" hint-placeholder-count="2"><button onClick="{{o.pick}}" style="{{o.style}}"><span style="font-weight: 600; font-size: 16px">{{o.name}}</span><span style="font-size: 13px; opacity: .8">{{o.desc}}</span></button></sc-for></div></sc-if>
-<sc-if value="{{isFeat}}" hint-placeholder-val="{{ false }}">
-<div style="background: #FFFFFF; border: 1px solid #E2DED5; border-radius: 20px; padding: 22px; min-height: 230px">
-<sc-if value="{{f0}}" hint-placeholder-val="{{ true }}"><div style="font-family: 'Newsreader', serif; font-size: 18px; line-height: 1.75; color: #ABA79E">La subida lo sitúa en <span style="color: #17171A; background: #F7DFB0; border-radius: 3px; padding: 0 2px">el nivel más alto de Europa</span><span style="font-size: 10px; font-weight: 600; color: #8A5300; margin-left: 4px">ENGAÑOSO</span>, y <span style="color: #17171A; background: #F6CFC9; border-radius: 3px; padding: 0 2px">la patronal, fiel a su costumbre…</span></div></sc-if>
-<sc-if value="{{f1}}" hint-placeholder-val="{{ false }}"><div style="display: flex; align-items: center; gap: 16px"><div style="width: 86px; height: 86px; border-radius: 50%; box-shadow: inset 0 0 0 7px #B26A00; display: flex; align-items: center; justify-content: center; font-family: 'Newsreader', serif; font-size: 34px; color: #8A5300">38</div><div style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.3">Militante, con un dato inflado</div></div><div style="display: flex; height: 6px; border-radius: 3px; overflow: hidden; gap: 2px; margin-top: 18px"><span style="flex: 2; background: #C2412F"></span><span style="flex: 2; background: #B9B4A9"></span><span style="flex: 2; background: #2F5BD3"></span></div><div style="font-size: 12px; color: #5E5B55; margin-top: 6px">Contrastado con 6 medios de todo el espectro</div></sc-if>
-<sc-if value="{{f2}}" hint-placeholder-val="{{ false }}"><div style="font-family: 'Newsreader', serif; font-style: italic; font-size: 15px; border-left: 2px solid #2340B8; padding-left: 10px; color: #3D3B37; border-radius: 0">«sin que se haya destruido empleo»</div><div style="align-self: flex-end; background: #17171A; color: #F6F4EF; padding: 10px 14px; border-radius: 14px 14px 4px 14px; margin: 10px 0 10px 40px">¿Es cierto?</div><div style="font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.5">Está en disputa: la AIReF estimó un efecto negativo moderado <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #2340B8; background: #E8ECFA; padding: 0 4px; border-radius: 4px">1</span></div></sc-if>
-</div>
-</sc-if>
-</div>
-<div style="margin-top: auto; display: flex; gap: 8px">
-<button onClick="{{back}}" style="height: 54px; padding: 0 18px; border: 1px solid #D9D5CC; border-radius: 16px; background: transparent; color: #5E5B55">Atrás</button>
-<button onClick="{{next}}" style="flex: 1; height: 54px; border: 0; border-radius: 16px; background: #17171A; color: #F6F4EF; font-weight: 500; font-size: 15px">{{nextLabel}}</button>
-</div>
-</div>
-</sc-if>
-
 <sc-if value="{{isDone}}" hint-placeholder-val="{{ false }}">
-<sc-for list="{{confetti}}" as="c" hint-placeholder-count="0"><span style="{{c}}"></span></sc-for>
-<div class="rise" style="flex: 1; display: flex; flex-direction: column; padding: 160px 28px 40px">
-<div style="font-family: 'Newsreader', serif; font-size: 64px; letter-spacing: -0.03em">Listo.</div>
-<div style="font-family: 'Newsreader', serif; font-size: 19px; line-height: 1.5; color: #3D3B37; margin-top: 10px">Tu edición está montada. Comparte cualquier noticia con newpaper para analizarla.</div>
-<a href="Movil-Inicio.dc.html" style="margin-top: auto; height: 54px; border-radius: 16px; background: #17171A; color: #F6F4EF; display: flex; align-items: center; justify-content: center; font-weight: 500; font-size: 15px">Leer el briefing de hoy</a>
+<div style="position:absolute;inset:0;padding:calc(var(--m-top) + 120px) 28px calc(var(--m-bottom) + 8px);display:flex;flex-direction:column;background:var(--np-paper)">
+<svg class="m-pop" viewBox="0 0 72 72" width="72" height="72" aria-hidden="true"><circle cx="36" cy="36" r="34" fill="#E3F2EC"/><path d="M22 37l10 10 18-21" fill="none" stroke="#0B6B50" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1;animation:m-draw 480ms var(--m-ease-inout) 300ms both"/></svg>
+<h1 class="m-rise" style="font:500 60px/1 var(--np-font-read);letter-spacing:-.035em;margin:28px 0 0;animation-delay:350ms">Listo.</h1>
+<p class="m-rise" style="font:400 19px/1.5 var(--np-font-read);color:var(--np-ink2);margin:12px 0 0;animation-delay:450ms">Tu edición está montada con {{nTopics}} temas y la IA {{aiName}}. Comparte cualquier noticia con newpaper para analizarla.</p>
+<a class="m-btn m-tap m-rise" href="Movil-Inicio.dc.html" style="margin-top:auto;animation-delay:600ms">Leer el briefing de hoy</a>
 </div>
 </sc-if>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  constructor(p) { super(p); this.state = { phase: 'welcome', i: 0, k: 0, topics: { Economía: true, Política: true, Europa: true }, ai: 'local', net: 'tor' }; }
+  constructor(p) { super(p); const q = new URLSearchParams(location.search).get('s'); this.state = { i: q === 'done' ? 5 : Number(q) || 0, phase: q === 'done' ? 'done' : 'flow', dx: 0, drag: false, topics: { Economía: true, Política: true, Europa: true }, ai: 'local' }; }
   renderVals() {
-    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
-    const STEPS = [['1 DE 3', 'Qué te interesa', 'Para tu briefing diario. No sale del móvil.'], ['2 DE 3', 'Cómo usar la IA', 'Puedes cambiarlo en Ajustes cuando quieras.'], ['3 DE 3', 'Cómo sales a internet', 'El bloqueador de anuncios va siempre activado.'], ['ASÍ FUNCIONA', 'Las frases que hay que mirar, encendidas', 'La lente apaga el texto neutro y marca cada afirmación con su veredicto.'], ['ASÍ FUNCIONA', 'Una nota, seis medios', 'Cada noticia se contrasta con coberturas de todo el espectro.'], ['ASÍ FUNCIONA', 'Pregunta por cualquier frase', 'Mantén pulsado un trozo del texto y pregúntale al agente. Responde con fuentes.']];
+    const s = this.state, N = 6, W = 390;
     const T = ['Economía', 'Política', 'Europa', 'Internacional', 'Vivienda', 'Clima', 'Tecnología', 'Ciencia', 'Sanidad', 'Educación'];
-    const go = (d) => { const n = s.i + d; if (n < 0) { this.setState({ phase: 'welcome' }); return; } if (n >= STEPS.length) { this.setState({ phase: 'done' }); return; } this.setState({ i: n, k: s.k + 1 }); };
-    const COLS = ['#2340B8', '#A3271B', '#B26A00', '#0B6B50', '#17171A', '#4A2FB8'];
-    return {
-      isWelcome: s.phase === 'welcome', isFlow: s.phase === 'flow', isDone: s.phase === 'done',
-      start: () => this.setState({ phase: 'flow', i: 0, k: s.k + 1 }),
-      bars: STEPS.map((x, i) => 'flex:1;height:4px;border-radius:2px;transition:background-color .6s ' + E + ';background:' + (i <= s.i ? '#17171A' : '#E2DED5')),
-      pane: 'animation:p' + (s.k % 2) + ' .55s ' + E + ' both',
-      kicker: STEPS[s.i][0], title: STEPS[s.i][1], desc: STEPS[s.i][2],
-      s0: s.i === 0, s1: s.i === 1, s2: s.i === 2, isFeat: s.i >= 3, f0: s.i === 3, f1: s.i === 4, f2: s.i === 5,
-      topics: T.map((t) => { const on = !!s.topics[t]; return { name: t, aria: on ? 'true' : 'false', toggle: () => this.setState({ topics: { ...s.topics, [t]: !on } }), style: 'height:44px;padding:0 16px;border-radius:999px;font-size:15px;' + (on ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:#FFFFFF;color:#17171A;border:1px solid #D9D5CC') }; }),
-      aiOpts: [['local', 'En mi móvil o mi PC', 'Modelos locales: gratis y privado. Puede usar el Ollama de tu ordenador.'], ['equil', 'Equilibrado', 'Nube para verificar bien. Necesitas una clave de API.'], ['later', 'Lo decido luego', 'Empiezas con el análisis rápido.']].map((o) => { const on = s.ai === o[0]; return { name: o[1], desc: o[2], pick: () => this.setState({ ai: o[0] }), radio: 'flex:none;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 ' + (on ? '2px #17171A' : '1.5px #B9B4A9'), dot: 'width:11px;height:11px;border-radius:50%;background:#17171A;transition:transform .5s cubic-bezier(.34,1.56,.64,1);transform:scale(' + (on ? 1 : 0) + ')', style: 'display:flex;align-items:center;gap:14px;text-align:left;padding:16px;border-radius:18px;background:#FFFFFF;color:#17171A;' + (on ? 'border:1.5px solid #17171A' : 'border:1px solid #E2DED5') }; }),
-      netOpts: [['direct', 'Conexión directa', 'Lo más rápido. Los medios ven tu IP.'], ['tor', 'A través de Tor', 'Anónimo y eliges país de salida.']].map((o) => { const on = s.net === o[0]; return { name: o[1], desc: o[2], pick: () => this.setState({ net: o[0] }), style: 'display:flex;flex-direction:column;align-items:flex-start;gap:6px;text-align:left;padding:20px;border-radius:18px;' + (on ? (o[0] === 'tor' ? 'background:#4A2FB8;color:#FFFFFF;border:1px solid #4A2FB8' : 'background:#17171A;color:#F6F4EF;border:1px solid #17171A') : 'background:#FFFFFF;color:#17171A;border:1px solid #E2DED5') }; }),
-      back: () => go(-1), next: () => go(1), nextLabel: s.i === STEPS.length - 1 ? 'Empezar a leer' : 'Siguiente',
-      confetti: Array.from({ length: 18 }, (_, i) => 'position:absolute;top:0;left:' + ((i * 37) % 100) + '%;width:' + (6 + (i % 3) * 3) + 'px;height:' + (10 + (i % 4) * 3) + 'px;border-radius:2px;background:' + COLS[i % COLS.length] + ';animation:fall ' + (2.4 + (i % 5) * 0.4) + 's cubic-bezier(.3,.6,.5,1) ' + ((i % 7) * 0.12) + 's both')
-    };
+    const go = (n) => this.setState({ i: Math.max(0, Math.min(N - 1, n)), dx: 0, drag: false });
+    const finish = () => this.setState({ phase: 'done' });
+    const dark = s.i === 0;
+    const pdown = (e) => { this.x0 = e.clientX; this.cap = false; this.setState({ drag: true, dx: 0 }); };
+    const pmove = (e) => { if (!s.drag) return; const dx = e.clientX - this.x0; if (!this.cap && Math.abs(dx) > 8) { this.cap = true; try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {} } if (this.cap) { const lim = (s.i === 0 && dx > 0) || (s.i === N - 1 && dx < 0) ? dx / 4 : dx; this.setState({ dx: lim }); } };
+    const pup = () => { if (!s.drag) return; const dx = s.dx; this.cap = false; if (dx < -60) go(s.i + 1); else if (dx > 60) go(s.i - 1); else this.setState({ dx: 0, drag: false }); };
+    const sl = (k) => ({ cls: s.i === k ? 'on' : '', style: 'left:' + k * W + 'px' });
+    const o = { inFlow: s.phase === 'flow', isDone: s.phase === 'done', bg: dark ? '#17171A' : '#F6F4EF',
+      trackStyle: 'position:absolute;left:0;top:0;bottom:0;width:' + N * W + 'px;touch-action:pan-y;user-select:none;transform:translateX(' + (-s.i * W + s.dx) + 'px);transition:' + (s.drag ? 'none' : 'transform var(--m-dur-slow) var(--m-ease-emph)'),
+      pdown, pmove, pup, showSkip: s.i < 4, skip: () => go(4), fg2: dark ? '#CBC7BE' : '#5E5B55',
+      step: s.i + 1, dots: Array.from({ length: N }, (_, k) => 'display:block;height:6px;border-radius:3px;transition:width var(--m-dur-base) var(--m-ease),background-color var(--m-dur-base);width:' + (k === s.i ? 22 : 6) + 'px;background:' + (k === s.i ? (dark ? '#F6F4EF' : '#17171A') : (dark ? '#4A4A50' : '#CFCAC0'))),
+      showBack: s.i > 0, back: () => go(s.i - 1), next: () => (s.i === N - 1 ? finish() : go(s.i + 1)),
+      ctaLabel: s.i === 0 ? 'Empezar' : s.i === N - 1 ? 'Empezar a leer' : 'Siguiente',
+      ctaCls: dark ? 'm-btn paper' : 'm-btn', ctaStyle: 'flex:1;' + '',
+      topics: T.map((t) => { const on = !!s.topics[t]; return { name: t, on: on ? 'true' : 'false', style: 'height:48px;padding:0 20px;font-size:16px;animation-delay:' + (300 + T.indexOf(t) * 40) + 'ms', toggle: () => this.setState({ topics: { ...s.topics, [t]: !on } }) }; }),
+      aiOpts: [['local', 'En mi móvil o mi PC', 'Modelos locales: gratis y privado. Puede usar el Ollama de tu ordenador.'], ['equil', 'Equilibrado', 'Nube para verificar bien. Necesitas una clave de API.'], ['later', 'Lo decido luego', 'Empiezas con el análisis rápido.']].map((x, k) => ({ name: x[1], desc: x[2], on: s.ai === x[0] ? 'true' : 'false', style: 'animation-delay:' + (300 + k * 90) + 'ms', pick: () => this.setState({ ai: x[0] }) })),
+      nTopics: Object.values(s.topics).filter(Boolean).length, aiName: { local: 'local', equil: 'equilibrada', later: 'rápida' }[s.ai] };
+    for (let k = 0; k < N; k++) o['s' + k] = sl(k);
+    return o;
   }
 }
 </script>

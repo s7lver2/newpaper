@@ -6,7 +6,7 @@ Copia completa, versionada en el repo, de la pizarra "newpaper — mockups UI" (
 
 ```
 design/mockups/
-  project/            35 artboards (*.dc.html) + canvas.json (índice: posición, tamaño, título, notas, orden)
+  project/            39 artboards (*.dc.html) + canvas.json (índice: posición, tamaño, título, notas, orden)
   assets/             14 SVG subidos a la pizarra (<id>.svg) + manifest.json (id, sha256, qué artboards los usan)
   runtime/support.js  runtime x-dc (el `./support.js` que cargan los .dc.html; viene de artifact-type/dc-runtime.js)
   reference/          formato de los .dc.html (format.md) y las instrucciones del tipo Design (design-type-SKILL.md)
@@ -14,7 +14,7 @@ design/mockups/
   tools/rewrite-blobs.mjs  reescribe las referencias /_blob/<id> al republicar en una pizarra nueva
 ```
 
-Pantallas (título de `canvas.json`): 1 Navegador/análisis/agente (`Main`), 2 Síntesis, 3 Sin cobertura, 3b Hemeroteca, 4 Nueva pestaña (`Inicio`), 5 Ajustes, S1 404, S2 Errores de conexión, S3 Cuelgue, S4 Tres en raya, P1 Instalador, P2 Recorrido, M0–M10 móvil, N1–N7 novedades (proveedores, agente visual, posición, historial, sincronizar, edición sin conexión, idioma y actualizaciones) y M11–M15 móvil.
+Pantallas (título de `canvas.json`): 1 Navegador/análisis/agente (`Main`), 2 Síntesis, 3 Sin cobertura, 3b Hemeroteca, 4 Nueva pestaña (`Inicio`), 5 Ajustes, S1 404, S2 Errores de conexión, S3 Cuelgue, S4 Tres en raya, P1 Instalador, P2 Recorrido, M0–M10 móvil (rediseñados en la v2 móvil), N1–N7 novedades (proveedores, agente visual, posición, historial, sincronizar, edición sin conexión, idioma y actualizaciones) y M11–M15 móvil.
 
 ## Verlos en local (sin cuenta ni red salvo Google Fonts)
 
@@ -45,3 +45,7 @@ Nota: la pizarra original puede haber cambiado desde esta exportación. Para act
 ## Qué es de quién
 
 El contenido de `reference/` y `runtime/support.js` viene del tipo de Artifact *Design* de la plataforma (no es código del proyecto); se guarda aquí solo para poder renderizar y reconstruir los mockups sin conexión.
+
+## Móvil v2 (rediseño Android)
+
+Spec y checklist de implementación: `MOVIL-DISENO.md`. Iconos de la app: `assets/newpaper-icon-*.svg` y `icons/android/`. Base compartida de los artboards `Movil-*`: `tools/motion-base.css` (se copia a cada artboard con `node design/mockups/tools/inject-base.mjs`; no editar la copia a mano).

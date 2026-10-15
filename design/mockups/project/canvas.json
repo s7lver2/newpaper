@@ -86,7 +86,7 @@
       "h": 844,
       "is_interactive": true,
       "radius": 40,
-      "title": "M8 · Ajustes",
+      "title": "M8 · Ajustes (agrupados, con búsqueda)",
       "w": 390,
       "x": 940,
       "y": 8444
@@ -104,7 +104,7 @@
       "h": 844,
       "is_interactive": true,
       "radius": 40,
-      "title": "M0 · Bienvenida",
+      "title": "M0 · Bienvenida y recorrido (deslizable)",
       "w": 390,
       "x": 0,
       "y": 7480
@@ -122,7 +122,7 @@
       "h": 844,
       "is_interactive": true,
       "radius": 40,
-      "title": "M1 · Hoy",
+      "title": "M1 · Hoy (con carga en esqueleto)",
       "w": 390,
       "x": 470,
       "y": 7480
@@ -158,7 +158,7 @@
       "h": 844,
       "is_interactive": true,
       "radius": 40,
-      "title": "M5 · Salida de Tor",
+      "title": "M5 · Salida de Tor (FUTURO, no en Android)",
       "w": 390,
       "x": 2350,
       "y": 7480
@@ -276,7 +276,7 @@
       "y": 12480,
       "w": 390,
       "h": 844,
-      "title": "M11 · Emparejar con el PC",
+      "title": "M11 · Emparejar con el PC (escáner QR)",
       "is_interactive": true,
       "radius": 40
     },
@@ -315,6 +315,39 @@
       "title": "M15 · Conectar un proveedor",
       "is_interactive": true,
       "radius": 40
+    },
+    "Movil-Splash.dc.html": {
+      "x": 1320,
+      "y": 13700,
+      "w": 390,
+      "h": 844,
+      "title": "M16 · Arranque y primera carga",
+      "is_interactive": true,
+      "radius": 40
+    },
+    "Movil-Icono.dc.html": {
+      "x": 0,
+      "y": 13700,
+      "w": 1240,
+      "h": 640,
+      "title": "M17 · Icono de la app (Android adaptativo)",
+      "is_interactive": true
+    },
+    "Movil-TabBar.dc.html": {
+      "x": 1800,
+      "y": 13700,
+      "w": 1180,
+      "h": 560,
+      "title": "M18 · Barra de pestañas e iconos",
+      "is_interactive": true
+    },
+    "Movil-Movimiento.dc.html": {
+      "x": 0,
+      "y": 14664,
+      "w": 1200,
+      "h": 2150,
+      "title": "M19 · Sistema de movimiento",
+      "is_interactive": true
     }
   },
   "createdOnFiles": {
@@ -373,6 +406,38 @@
       "w": 240,
       "x": 0,
       "y": 12200
+    },
+    "t7": {
+      "kind": "title1",
+      "maxW": 3000,
+      "text": "Móvil v2 — identidad, arranque, tab bar y movimiento",
+      "w": 240,
+      "x": 0,
+      "y": 13400
+    },
+    "n_tor": {
+      "x": 2350,
+      "y": 8350,
+      "w": 390,
+      "fill": "purple",
+      "size": "s",
+      "text": "FUTURO · Tor se omite en la versión de Android por ahora. Este artboard se conserva como diseño de referencia para cuando se implemente (ver design/mockups/MOVIL-DISENO.md)."
+    },
+    "n_mv": {
+      "x": 1280,
+      "y": 14664,
+      "w": 420,
+      "fill": "teal",
+      "size": "s",
+      "text": "Cómo ver el movimiento: cada tarjeta de M19 tiene su botón de repetir; el interruptor «Simular movimiento reducido» apaga todas las animaciones. Los artboards M0, M1, M8, M11 y M2 también animan y se pueden recorrer (arrancan con ?s=… en el servidor local para saltar a un estado)."
+    },
+    "n_base": {
+      "x": 1280,
+      "y": 15200,
+      "w": 420,
+      "fill": "blue",
+      "size": "s",
+      "text": "Todos los Movil-*.dc.html comparten tools/motion-base.css (tokens de movimiento, medidas, componentes). Se copia a cada artboard con node design/mockups/tools/inject-base.mjs."
     }
   },
   "order": [
@@ -410,7 +475,11 @@
     "Movil-Edicion.dc.html",
     "Movil-Historial.dc.html",
     "Movil-AgenteVisual.dc.html",
-    "Movil-Proveedor.dc.html"
+    "Movil-Proveedor.dc.html",
+    "Movil-Splash.dc.html",
+    "Movil-Icono.dc.html",
+    "Movil-TabBar.dc.html",
+    "Movil-Movimiento.dc.html"
   ],
   "pages": [],
   "title": "newpaper — mockups UI"

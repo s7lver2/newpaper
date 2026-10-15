@@ -8,86 +8,206 @@
 <body>
 <x-dc>
 <helmet>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&amp;display=swap">
 <style>
+/*@m-base*/
+/* newpaper móvil · base compartida de los artboards Movil-*.dc.html.
+   FUENTE ÚNICA: este fichero. Se copia entre los marcadores @m-base de cada artboard con
+   `node design/mockups/tools/inject-base.mjs` (no editar la copia a mano). */
+:root{
+  --np-paper:#F6F4EF;--np-chrome:#E7E3DA;--np-panel:#FBFAF7;--np-card:#FFFFFF;--np-ink:#17171A;--np-ink2:#3D3B37;--np-muted:#5E5B55;--np-faint:#8D8981;
+  --np-line:#E2DED5;--np-line2:#EFECE6;--np-line3:#D9D5CC;--np-soft:#EFECE5;--np-switch-off:#CFCAC0;--np-accent:#2340B8;--np-accent-soft:#E8ECFA;--np-accent-sel:#DCE3FA;
+  --np-ok:#0B6B50;--np-ok-bg:#E3F2EC;--np-warn:#8A5300;--np-warn-bg:#FBF0DC;--np-bad:#A3271B;--np-bad-bg:#FBE7E4;--np-left:#C2412F;--np-center:#B9B4A9;--np-right:#2F5BD3;
+  --np-tor:#4A2FB8;--np-tor-soft:#ECE8FB;--np-ai:#993556;--np-ai-bg:#FBEAF0;--np-on-ink:#F6F4EF;
+  --np-font-read:'Newsreader',Georgia,serif;--np-font-ui:'IBM Plex Sans',system-ui,sans-serif;--np-font-mono:'IBM Plex Mono',ui-monospace,monospace;
+  /* movimiento: duraciones */
+  --m-dur-press:90ms;--m-dur-fast:160ms;--m-dur-base:280ms;--m-dur-slow:420ms;--m-dur-emph:560ms;--m-dur-sheet:380ms;--m-dur-ring:900ms;--m-dur-shimmer:1400ms;--m-dur-scan:2200ms;--m-stagger:45ms;
+  /* movimiento: curvas */
+  --m-ease:cubic-bezier(.22,1,.36,1);--m-ease-emph:cubic-bezier(.05,.7,.1,1);--m-ease-exit:cubic-bezier(.3,0,.8,.15);--m-ease-inout:cubic-bezier(.65,0,.35,1);--m-spring:cubic-bezier(.34,1.56,.64,1);
+  /* medidas */
+  --m-top:32px;--m-bottom:20px;--m-hit:48px;--m-gutter:20px;--m-appbar:56px;--m-tabbar:64px;--m-r-card:20px;--m-r-ctl:16px;
+}
 body{margin:0}
-a{color:#17171A;text-decoration:none}
-button,input{font:inherit}
-button{cursor:pointer;transition:background-color .45s cubic-bezier(.22,1,.36,1),transform .5s cubic-bezier(.34,1.56,.64,1)}
-button:active{transform:scale(.96)}
-input:focus{outline:none;border-color:#17171A!important}
-.rise{animation:rise .9s cubic-bezier(.22,1,.36,1) both}
-.up{animation:up .9s cubic-bezier(.34,1.3,.64,1) both}
-@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes up{from{opacity:0;transform:translateY(120%)}to{opacity:1;transform:none}}
-@keyframes dropIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.m-app{width:390px;height:844px;position:relative;overflow:hidden;background:var(--np-paper);color:var(--np-ink);font:400 15px/1.45 var(--np-font-ui);display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.m-app,.m-app *{box-sizing:border-box}
+:where(.m-app) a{color:inherit;text-decoration:none;-webkit-tap-highlight-color:transparent}
+:where(.m-app) button{font:inherit;color:inherit;cursor:pointer;border:0;background:none;padding:0;margin:0;-webkit-tap-highlight-color:transparent;transition:transform var(--m-dur-press) var(--m-ease),background-color var(--m-dur-fast) var(--m-ease),color var(--m-dur-fast) var(--m-ease),border-color var(--m-dur-fast) var(--m-ease),opacity var(--m-dur-fast) var(--m-ease)}
+.m-app button:active:not(:disabled),.m-app a.m-tap:active{transform:scale(.97)}
+.m-app a.m-tap{transition:transform var(--m-dur-press) var(--m-ease),background-color var(--m-dur-fast) var(--m-ease)}
+.m-app :focus-visible{outline:2px solid var(--np-accent);outline-offset:2px}
+:where(.m-app) input{font:inherit;color:inherit}
+:where(.m-app) svg{flex:none}
+.m-scroll{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none}
+.m-scroll::-webkit-scrollbar{display:none}
+.m-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* barras */
+.m-appbar{flex:none;display:flex;align-items:center;gap:4px;height:calc(var(--m-appbar) + var(--m-top));padding:var(--m-top) 8px 0}
+.m-back{flex:none;width:var(--m-hit);height:var(--m-hit);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--np-ink)}
+.m-back:active{background:var(--np-soft)}
+.m-bar-title{flex:1;min-width:0;font:500 21px/1.15 var(--np-font-read);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-bar-sub{display:block;font:400 12px/1.3 var(--np-font-ui);color:var(--np-muted);letter-spacing:0}
+.m-bar-act{flex:none;min-width:var(--m-hit);height:var(--m-hit);border-radius:24px;display:flex;align-items:center;justify-content:center;padding:0 12px;font-weight:500;color:var(--np-accent)}
+.m-large{padding:calc(var(--m-top) + 20px) var(--m-gutter) 4px;font:500 36px/1.04 var(--np-font-read);letter-spacing:-.025em}
+.m-kicker{font:600 11px/1.4 var(--np-font-ui);letter-spacing:.1em;text-transform:uppercase;color:var(--np-muted)}
+.m-sec{margin:26px var(--m-gutter) 8px;font:600 12px/1.3 var(--np-font-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--np-muted);display:flex;justify-content:space-between;align-items:baseline}
+.m-sec small{font:400 12px var(--np-font-ui);letter-spacing:0;text-transform:none;color:var(--np-faint)}
+/* grupos y filas */
+.m-group{margin:0 16px;background:var(--np-card);border:1px solid var(--np-line2);border-radius:var(--m-r-card);overflow:hidden}
+.m-row{position:relative;display:flex;align-items:center;gap:14px;width:100%;min-height:60px;padding:10px 16px;text-align:left;background:none}
+.m-row+.m-row::before,.m-row-wrap+.m-row-wrap::before{content:'';position:absolute;left:66px;right:0;top:0;height:1px;background:var(--np-line2)}
+.m-row-wrap{position:relative}
+button.m-row:active,a.m-row:active{background:var(--np-soft);transform:none!important}
+.m-ico{flex:none;width:36px;height:36px;border-radius:11px;background:var(--np-soft);color:var(--np-ink);display:flex;align-items:center;justify-content:center}
+.m-ico svg{width:20px;height:20px}
+.m-ico.ok{background:var(--np-ok-bg);color:var(--np-ok)}.m-ico.acc{background:var(--np-accent-soft);color:var(--np-accent)}.m-ico.warn{background:var(--np-warn-bg);color:var(--np-warn)}.m-ico.bad{background:var(--np-bad-bg);color:var(--np-bad)}.m-ico.tor{background:var(--np-tor-soft);color:var(--np-tor)}.m-ico.ai{background:var(--np-ai-bg);color:var(--np-ai)}.m-ico.ink{background:var(--np-ink);color:var(--np-on-ink)}
+.m-rt{flex:1;min-width:0}
+.m-rt>b{display:block;font:500 16px/1.3 var(--np-font-ui)}
+.m-rt>span{display:block;font:400 13px/1.4 var(--np-font-ui);color:var(--np-muted);margin-top:1px}
+.m-val{flex:none;font:400 14px var(--np-font-ui);color:var(--np-muted);max-width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.m-chev{flex:none;color:var(--np-faint)}
+.m-note{margin:8px 20px 0;font:400 12.5px/1.5 var(--np-font-ui);color:var(--np-muted)}
+/* interruptor */
+.m-switch{position:relative;flex:none;width:52px;height:32px;border-radius:16px;background:var(--np-switch-off);transition:background-color var(--m-dur-base) var(--m-ease)!important}
+.m-switch::before{content:'';position:absolute;left:4px;top:4px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(23,23,26,.3);transition:transform var(--m-dur-base) var(--m-spring),width var(--m-dur-fast) var(--m-ease)}
+.m-switch::after{content:'';position:absolute;inset:-8px -4px}
+.m-switch[aria-checked=true]{background:var(--np-ink)}
+.m-switch[aria-checked=true]::before{transform:translateX(20px)}
+.m-switch:active::before{width:28px}
+.m-switch[aria-checked=true]:active::before{transform:translateX(16px)}
+/* botones y chips */
+.m-btn{display:flex;align-items:center;justify-content:center;gap:8px;height:56px;padding:0 24px;border-radius:var(--m-r-ctl);background:var(--np-ink);color:var(--np-on-ink)!important;font:600 16px var(--np-font-ui)}
+.m-btn.sec{background:transparent;color:var(--np-ink)!important;box-shadow:inset 0 0 0 1.5px var(--np-line3)}
+.m-btn.soft{background:var(--np-soft);color:var(--np-ink)!important}
+.m-btn.acc{background:var(--np-accent)}
+.m-btn.danger{background:var(--np-bad-bg);color:var(--np-bad)!important}
+.m-btn.sm{height:48px;font-size:15px;border-radius:14px}
+.m-chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:20px;background:var(--np-card);box-shadow:inset 0 0 0 1px var(--np-line3);font:500 14px var(--np-font-ui);position:relative}
+.m-chip::after{content:'';position:absolute;inset:-4px 0}
+.m-chip[aria-pressed=true]{background:var(--np-ink);color:var(--np-on-ink);box-shadow:none}
+.m-seg{display:flex;padding:4px;border-radius:18px;background:var(--np-chrome);gap:2px}
+.m-seg>button{flex:1;height:44px;border-radius:14px;font:500 14px var(--np-font-ui);color:var(--np-muted)}
+.m-seg>button[aria-selected=true],.m-seg>button[aria-pressed=true]{background:var(--np-card);color:var(--np-ink);box-shadow:0 1px 3px rgba(23,23,26,.14)}
+.m-card{background:var(--np-card);border:1px solid var(--np-line2);border-radius:var(--m-r-card)}
+.m-leanbar{display:flex;gap:1px;height:4px;border-radius:2px;overflow:hidden}
+.m-leanbar i{display:block}.m-leanbar i:nth-child(1){background:var(--np-left)}.m-leanbar i:nth-child(2){background:var(--np-center)}.m-leanbar i:nth-child(3){background:var(--np-right)}
+/* barra de pestañas */
+.m-tabbar{flex:none;position:relative;display:grid;grid-template-columns:repeat(4,1fr);height:calc(var(--m-tabbar) + var(--m-bottom));padding:0 4px var(--m-bottom);background:var(--np-paper);border-top:1px solid var(--np-line)}
+.m-tab{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;padding-top:8px;color:var(--np-muted);font:500 12px/1 var(--np-font-ui);min-height:var(--m-hit)}
+.m-tab .pill{position:relative;width:64px;height:32px;display:flex;align-items:center;justify-content:center}
+.m-tab .pill::before{content:'';position:absolute;inset:0;border-radius:16px;background:var(--np-accent-soft);transform:scaleX(.35);opacity:0;transition:transform var(--m-dur-base) var(--m-ease),opacity var(--m-dur-fast) var(--m-ease)}
+.m-tab svg{position:relative;width:24px;height:24px;transition:transform var(--m-dur-base) var(--m-spring)}
+.m-tab[aria-current=page]{color:var(--np-ink)}
+.m-tab[aria-current=page] .pill::before{transform:none;opacity:1}
+.m-tab[aria-current=page] svg{color:var(--np-accent)}
+.m-tab[aria-current=page] .fill{fill:currentColor;fill-opacity:.16}
+.m-tab:active svg{transform:scale(.88)}
+.m-tab .badge{position:absolute;top:2px;right:16px;min-width:8px;height:8px;border-radius:4px;background:var(--np-left);box-shadow:0 0 0 2px var(--np-paper)}
+/* hoja inferior */
+.m-scrim{position:absolute;inset:0;background:rgba(23,23,26,.42);animation:m-fade var(--m-dur-base) var(--m-ease) both;z-index:20}
+.m-sheet{position:absolute;left:0;right:0;bottom:0;z-index:21;background:var(--np-card);border-radius:28px 28px 0 0;padding:12px 20px calc(var(--m-bottom) + 12px);box-shadow:0 -12px 40px rgba(23,23,26,.18);animation:m-sheet var(--m-dur-sheet) var(--m-spring) both}
+.m-grab{width:36px;height:4px;border-radius:2px;background:var(--np-line3);margin:0 auto 14px}
+/* esqueletos */
+.m-skel{display:block;border-radius:8px;background:linear-gradient(100deg,var(--np-chrome) 30%,#F4F1EB 50%,var(--np-chrome) 70%);background-size:300% 100%;animation:m-shimmer var(--m-dur-shimmer) linear infinite}
+/* animaciones */
+.m-rise{animation:m-rise var(--m-dur-slow) var(--m-ease) both}
+.m-enter{animation:m-push-in var(--m-dur-base) var(--m-ease-emph) both}
+.m-fadein{animation:m-fade var(--m-dur-base) var(--m-ease) both}
+.m-pop{animation:m-pop var(--m-dur-slow) var(--m-spring) both}
+.m-stagger>*{animation:m-rise var(--m-dur-slow) var(--m-ease) both;animation-delay:calc(var(--i,0)*var(--m-stagger))}
+.m-stagger>*:nth-child(2){--i:1}.m-stagger>*:nth-child(3){--i:2}.m-stagger>*:nth-child(4){--i:3}.m-stagger>*:nth-child(5){--i:4}.m-stagger>*:nth-child(6){--i:5}.m-stagger>*:nth-child(7){--i:6}.m-stagger>*:nth-child(8){--i:7}.m-stagger>*:nth-child(n+9){--i:8}
+@keyframes m-rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes m-fade{from{opacity:0}to{opacity:1}}
+@keyframes m-push-in{from{opacity:.4;transform:translateX(32px)}to{opacity:1;transform:none}}
+@keyframes m-push-under{from{transform:none}to{transform:translateX(-24%);opacity:.6}}
+@keyframes m-pop-out{from{transform:none;opacity:1}to{transform:translateX(32px);opacity:0}}
+@keyframes m-sheet{from{transform:translateY(100%)}to{transform:none}}
+@keyframes m-pop{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+@keyframes m-shimmer{from{background-position:100% 0}to{background-position:-200% 0}}
+@keyframes m-ring{from{stroke-dashoffset:var(--len,100)}to{stroke-dashoffset:var(--to,0)}}
+@keyframes m-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes m-pulse{0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes m-spin{to{transform:rotate(360deg)}}
+@keyframes m-scan{0%{transform:translateY(0);opacity:0}12%{opacity:1}88%{opacity:1}100%{transform:translateY(var(--h,240px));opacity:0}}
+@keyframes m-bar{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){
+  .m-app *,.m-app *::before,.m-app *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}
+  .m-skel{animation:none!important;background:var(--np-chrome)}
+}
+/* simulación de "reducir movimiento" (los mockups la activan con la clase m-reduce en la raíz) */
+.m-reduce *,.m-reduce *::before,.m-reduce *::after{animation-duration:.01ms!important;animation-iteration-count:1!important;animation-delay:0s!important;transition-duration:.01ms!important}
+.m-reduce .m-skel{animation:none!important;background:var(--np-chrome)}
+.m-btn.paper{background:var(--np-on-ink);color:var(--np-ink)!important}
+.m-app>.m-tabbar{margin-top:auto}
+/*@m-base-end*/
+
 </style>
 </helmet>
-<div style="width: 390px; height: 844px; position: relative; overflow: hidden; background: #F6F4EF; color: #17171A; font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; display: flex; flex-direction: column">
-<div style="display: flex; justify-content: space-between; align-items: center; padding: 54px 20px 0">
-<span style="font-family: 'Newsreader', serif; font-size: 20px; font-weight: 500; letter-spacing: -0.01em">newpaper</span>
-<a href="Movil-Tor.dc.html" style="display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4A2FB8; background: #ECE8FB; padding: 7px 11px; border-radius: 999px; font-weight: 500"><span style="width: 6px; height: 6px; border-radius: 50%; background: #4A2FB8"></span>Tor · ES</a>
+<div class="m-app">
+
+<div class="m-appbar" style="padding-top:var(--m-top)">
+<span style="flex:1;display:flex;align-items:center;gap:10px;padding-left:12px"><span style="width:28px;height:28px;border-radius:9px;overflow:hidden;display:block"><svg viewBox="0 0 108 108" width="28" height="28" aria-hidden="true"><rect width="108" height="108" fill="#17171A"/><path d="M36 0V108M54 0V108M72 0V108" stroke="#F6F4EF" stroke-opacity=".03" stroke-width=".6"/><g fill="none" stroke="#F6F4EF" stroke-linejoin="miter" stroke-linecap="butt"><path d="M33 40.500V71" stroke-width="7.500"/><path d="M33 54C33 45 39 40 46.500 40 54 40 58 44.500 58 51.500V71" stroke-width="6"/><path d="M26.500 71H39.500M51.500 71H64.500" stroke-width="3"/><path d="M26.500 43.500L33 40" stroke-width="3"/></g><polygon points="67.500,66 71.830,61.670 71.830,70.330" fill="#E8705A"/><polygon points="71.830,61.670 74,59.500 76.170,61.670 76.170,70.330 74,72.500 71.830,70.330" fill="#D8D3C8"/><polygon points="76.170,61.670 80.500,66 76.170,70.330" fill="#7C9AF2"/>
+</svg></span><span style="font:500 22px var(--np-font-read);letter-spacing:-.01em">newpaper</span></span>
+<button class="m-back" onClick="{{refresh}}" aria-label="Actualizar el briefing"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 00-14.500-3.500M4 4v4h4"/><path d="M4 13a8 8 0 0014.500 3.500M20 20v-4h-4"/></svg></button>
 </div>
-<div style="flex: 1; overflow: hidden; padding: 22px 20px 0">
-<div class="rise">
-<div style="font-family: 'Newsreader', serif; font-size: 40px; line-height: 1.05; letter-spacing: -0.025em">Buenos días.</div>
-<div style="font-family: 'Newsreader', serif; font-style: italic; font-size: 16px; color: #5E5B55; margin-top: 4px">4 hechos importantes · 2 con discrepancias</div>
-</div>
-<div class="rise" style="position: relative; margin-top: 18px; animation-delay: 100ms">
-<label for="mq" style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Buscar o pegar URL</label>
+<div class="m-scroll" style="padding-bottom:24px" id="sc">
+<sc-if value="{{loading}}" hint-placeholder-val="{{ false }}"><div class="m-fadein" style="padding:12px 20px 0"><span class="m-skel" style="width:90px;height:11px"></span><span class="m-skel" style="width:230px;height:40px;margin-top:12px;border-radius:10px"></span><span class="m-skel" style="width:190px;height:16px;margin-top:12px"></span><span class="m-skel" style="width:100%;height:52px;border-radius:18px;margin-top:22px"></span><span class="m-skel" style="width:96px;height:11px;margin-top:30px"></span>
+<div style="padding:16px 0;border-top:1px solid var(--np-line);margin-top:10px"><span class="m-skel" style="width:92%;height:24px"></span><span class="m-skel" style="width:70%;height:24px;margin-top:7px"></span><div style="display:flex;gap:10px;margin-top:12px;align-items:center"><span class="m-skel" style="width:46px;height:4px"></span><span class="m-skel" style="width:110px;height:12px"></span></div></div><div style="padding:16px 0;border-top:1px solid var(--np-line)"><span class="m-skel" style="width:86%;height:19px"></span><span class="m-skel" style="width:62%;height:19px;margin-top:7px"></span><div style="display:flex;gap:10px;margin-top:12px;align-items:center"><span class="m-skel" style="width:46px;height:4px"></span><span class="m-skel" style="width:110px;height:12px"></span></div></div><div style="padding:16px 0;border-top:1px solid var(--np-line)"><span class="m-skel" style="width:80%;height:19px"></span><span class="m-skel" style="width:54%;height:19px;margin-top:7px"></span><div style="display:flex;gap:10px;margin-top:12px;align-items:center"><span class="m-skel" style="width:46px;height:4px"></span><span class="m-skel" style="width:110px;height:12px"></span></div></div><div style="padding:16px 0;border-top:1px solid var(--np-line)"><span class="m-skel" style="width:74%;height:19px"></span><span class="m-skel" style="width:46%;height:19px;margin-top:7px"></span><div style="display:flex;gap:10px;margin-top:12px;align-items:center"><span class="m-skel" style="width:46px;height:4px"></span><span class="m-skel" style="width:110px;height:12px"></span></div></div></div></sc-if>
+<sc-if value="{{ready}}" hint-placeholder-val="{{ true }}">
+<div class="m-stagger" style="padding:12px 20px 0">
+<div><div class="m-kicker">Jueves 8 de octubre</div><div style="font:500 42px/1.02 var(--np-font-read);letter-spacing:-.03em;margin-top:6px">Buenos días.</div><div style="font:italic 400 17px/1.35 var(--np-font-read);color:var(--np-muted);margin-top:6px">4 hechos importantes · 2 con discrepancias</div></div>
+<div style="position:relative;margin-top:20px">
+<label class="m-sr" for="mq">Buscar o pegar URL</label>
+<span style="position:absolute;left:16px;top:15px;color:var(--np-muted)"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4a7 7 0 100 14 7 7 0 000-14z"/><path d="M16.5 16.5L21 21"/></svg></span>
 <input id="mq" value="{{q}}" onChange="{{onQ}}" autocomplete="off" placeholder="Busca un tema o pega una URL" style="{{inputStyle}}">
-<sc-if value="{{hasQ}}" hint-placeholder-val="{{ false }}">
-<div style="position: absolute; left: 0; right: 0; top: 52px; z-index: 5; background: #FFFFFF; border: 1px solid #17171A; border-top: 0; border-radius: 0 0 16px 16px; padding: 4px; box-shadow: 0 16px 30px rgba(23,23,26,.12)">
-<sc-for list="{{results}}" as="r" hint-placeholder-count="2"><a href="{{r.href}}" style="{{r.style}}"><span style="{{r.ico}}">{{r.icon}}</span><span style="flex: 1; min-width: 0"><span style="display: block; font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.3">{{r.title}}</span><span style="font-size: 12px; color: #5E5B55">{{r.meta}}</span></span></a></sc-for>
+<sc-if value="{{hasQ}}" hint-placeholder-val="{{ false }}"><div class="m-fadein" style="position:absolute;left:0;right:0;top:52px;z-index:5;background:var(--np-card);box-shadow:inset 0 0 0 1.5px var(--np-ink);border-radius:0 0 18px 18px;padding:4px"><sc-for list="{{results}}" as="r" hint-placeholder-count="2"><a class="m-tap" href="{{r.href}}" style="display:flex;align-items:center;gap:12px;padding:10px;min-height:56px;border-radius:12px"><span class="m-ico {{r.tone}}">{{r.icon}}</span><span style="flex:1;min-width:0"><span style="display:block;font:400 16px/1.3 var(--np-font-read)">{{r.title}}</span><span style="font:400 12px var(--np-font-ui);color:var(--np-muted)">{{r.meta}}</span></span></a></sc-for></div></sc-if>
 </div>
-</sc-if>
 </div>
-<div style="font-size: 11px; font-weight: 600; letter-spacing: 0.1em; color: #5E5B55; margin: 24px 0 4px">TU BRIEFING</div>
+<div class="m-sec" style="margin-top:28px">Tu briefing<small>{{count}} hechos</small></div>
+<div class="m-stagger" style="padding:0 20px">
 <sc-for list="{{brief}}" as="b" hint-placeholder-count="4">
-<a href="{{b.href}}" style="{{b.style}}">
-<span style="display: block; font-family: 'Newsreader', serif; font-size: 18px; line-height: 1.3">{{b.title}}</span>
-<span style="display: flex; align-items: center; gap: 8px; margin-top: 7px; font-size: 12px; color: #5E5B55"><span style="display: flex; height: 4px; width: 46px; border-radius: 2px; overflow: hidden; gap: 1px"><span style="{{b.l}}"></span><span style="{{b.c}}"></span><span style="{{b.r}}"></span></span>{{b.count}} · <span style="{{b.flagStyle}}">{{b.flag}}</span></span>
+<a class="m-tap" href="{{b.href}}" style="display:block;position:relative;padding:{{b.pad}};border-top:1px solid var(--np-line);min-height:72px">
+<span style="display:flex;align-items:center;gap:8px;font:500 11px var(--np-font-mono);color:var(--np-faint);letter-spacing:.06em">{{b.n}}<sc-if value="{{b.lead}}" hint-placeholder-val="{{ false }}"><span style="font:600 10px var(--np-font-ui);letter-spacing:.1em;color:var(--np-accent);background:var(--np-accent-soft);padding:2px 7px;border-radius:6px">DESTACADA</span></sc-if></span>
+<span style="display:block;font:{{b.font}};letter-spacing:-.01em;margin-top:6px">{{b.title}}</span>
+<span style="display:flex;align-items:center;gap:10px;margin-top:10px;font:400 13px var(--np-font-ui);color:var(--np-muted)"><span class="m-leanbar" style="width:52px;flex:none"><i style="{{b.l}}"></i><i style="{{b.c}}"></i><i style="{{b.r}}"></i></span>{{b.count}}<span style="{{b.flagStyle}}">{{b.flag}}</span></span>
 </a>
 </sc-for>
-<div style="display: flex; gap: 8px; overflow: hidden; margin-top: 14px"><sc-for list="{{topics}}" as="t" hint-placeholder-count="4"><button onClick="{{t.toggle}}" style="{{t.style}}">{{t.name}}</button></sc-for></div>
+</div>
+<div class="m-sec" style="margin-top:22px">Tus temas</div>
+<div style="display:flex;gap:8px;overflow:hidden;padding:0 20px"><sc-for list="{{topics}}" as="t" hint-placeholder-count="4"><button class="m-chip" aria-pressed="{{t.on}}" onClick="{{t.toggle}}">{{t.name}}</button></sc-for></div>
+</sc-if>
 </div>
 <sc-if value="{{toast}}" hint-placeholder-val="{{ false }}">
-<div class="up" style="position: absolute; left: 12px; right: 12px; bottom: 100px; z-index: 6; background: #17171A; color: #F6F4EF; border-radius: 20px; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 12px 32px rgba(23,23,26,.28)">
-<div style="display: flex; gap: 12px; align-items: flex-start"><span style="flex: none; width: 36px; height: 36px; border-radius: 10px; background: #2B2B2F; display: flex; align-items: center; justify-content: center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F6F4EF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 001 1h14a1 1 0 001-1v-7M16 6l-4-4-4 4M12 2v13"></path></svg></span><div style="flex: 1; min-width: 0"><div style="font-size: 12px; color: #B9B4A9">Compartido desde Telegram</div><div style="font-family: 'Newsreader', serif; font-size: 16px; line-height: 1.3; margin-top: 2px">El salario mínimo bate récords mientras la patronal…</div></div></div>
-<div style="display: flex; gap: 8px"><button onClick="{{dismiss}}" style="flex: 1; height: 44px; border: 0; border-radius: 12px; background: #2B2B2F; color: #F6F4EF">Ahora no</button><a href="Movil-Analisis.dc.html" style="flex: 2; height: 44px; border-radius: 12px; background: #F6F4EF; color: #17171A; display: flex; align-items: center; justify-content: center; font-weight: 500">Analizar</a></div>
+<div class="m-sheet" style="left:12px;right:12px;bottom:calc(var(--m-tabbar) + var(--m-bottom) + 10px);border-radius:24px;background:var(--np-ink);color:var(--np-on-ink);padding:16px;box-shadow:0 14px 36px rgba(23,23,26,.3)">
+<div style="display:flex;gap:12px;align-items:flex-start"><span class="m-ico" style="background:#2B2B2F;color:#F6F4EF;flex:none"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 3L5 13.5h6L10 21l8-10.5h-6z"/></svg></span><div style="flex:1;min-width:0"><div style="font:400 12px var(--np-font-ui);color:#B9B4A9">Compartido desde Telegram</div><div style="font:400 17px/1.3 var(--np-font-read);margin-top:2px">El salario mínimo bate récords mientras la patronal…</div></div></div>
+<div style="display:flex;gap:8px;margin-top:14px"><button class="m-btn sm" style="flex:1;background:#2B2B2F" onClick="{{dismiss}}">Ahora no</button><a class="m-btn sm m-tap paper" style="flex:2" href="Movil-Analisis.dc.html">Analizar</a></div>
 </div>
 </sc-if>
-<nav style="display: flex; justify-content: space-around; padding: 8px 8px 28px; border-top: 1px solid #E2DED5; background: #F6F4EF">
-<sc-for list="{{nav}}" as="n" hint-placeholder-count="4"><a href="{{n.href}}" style="{{n.style}}"><span style="{{n.pill}}">{{n.icon}}</span>{{n.label}}</a></sc-for>
-</nav>
+<nav class="m-tabbar" aria-label="Principal"><a class="m-tab" href="Movil-Inicio.dc.html" aria-current="page"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="fill" stroke="none" d="M5.5 4h13A1.5 1.5 0 0120 5.5v13a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 18.5v-13A1.5 1.5 0 015.5 4z"/><path d="M5.5 4h13A1.5 1.5 0 0120 5.5v13a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 18.5v-13A1.5 1.5 0 015.5 4z"/><path d="M8 9h8M8 12.5h8M8 16h4.5"/></svg><span class="badge"></span></span>Hoy</a><a class="m-tab" href="Movil-Analisis.dc.html"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="fill" stroke="none" d="M12 7c-1.8-1.5-4.5-2-7.5-1.5V18c3-.4 5.7.1 7.5 1.5 1.8-1.4 4.5-1.9 7.5-1.5V5.5C16.5 5 13.8 5.5 12 7z"/><path d="M12 7c-1.8-1.5-4.5-2-7.5-1.5V18c3-.4 5.7.1 7.5 1.5 1.8-1.4 4.5-1.9 7.5-1.5V5.5C16.5 5 13.8 5.5 12 7z"/><path d="M12 7v12.5"/></svg></span>Leyendo</a><a class="m-tab" href="Movil-Agente.dc.html"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="fill" stroke="none" d="M6 4.5h12a2 2 0 012 2V15a2 2 0 01-2 2h-6.5L7 20.5V17H6a2 2 0 01-2-2V6.5a2 2 0 012-2z"/><path d="M6 4.5h12a2 2 0 012 2V15a2 2 0 01-2 2h-6.5L7 20.5V17H6a2 2 0 01-2-2V6.5a2 2 0 012-2z"/><path d="M12 7.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z"/></svg></span>Agente</a><a class="m-tab" href="Movil-Ajustes.dc.html"><span class="pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path class="fill" stroke="none" d="M4 8h8M17 8h3M4 16h3M12 16h8"/><path d="M4 8h8M17 8h3M4 16h3M12 16h8"/><path d="M14.5 8m-2.5 0a2.5 2.5 0 105 0 2.5 2.5 0 10-5 0"/><path d="M9.5 16m-2.5 0a2.5 2.5 0 105 0 2.5 2.5 0 10-5 0"/></svg></span>Ajustes</a></nav>
 </div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
 class Component extends DCLogic {
-  constructor(p) { super(p); this.state = { toast: false, q: '', follow: { Economía: true, Vivienda: true, Europa: true } }; }
-  componentDidMount() { this.t = setTimeout(() => this.setState({ toast: true }), 1600); }
-  componentWillUnmount() { clearTimeout(this.t); }
+  constructor(p) { super(p); const q = new URLSearchParams(location.search).get('s'); this.state = { loading: q !== 'ready' && q !== 'toast', toast: q === 'toast', q: '', follow: { Economía: true, Vivienda: true, Europa: true } }; }
+  componentDidMount() { this.ts = []; if (this.state.loading) this.ts.push(setTimeout(() => this.setState({ loading: false }), 1500)); if (!this.state.toast) this.ts.push(setTimeout(() => this.setState({ toast: true }), 4200)); }
+  componentWillUnmount() { (this.ts || []).forEach(clearTimeout); }
   renderVals() {
-    const s = this.state, E = 'cubic-bezier(.22,1,.36,1)';
-    const seg = (n, c) => 'flex:' + n + ';background:' + c;
+    const s = this.state;
     const ev = [['El Gobierno aprueba una subida del salario mínimo; la patronal la rechaza', [5, 4, 5], '14 medios', '2 discrepancias', true, 'salario smi patronal'], ['La UE acuerda el marco del nuevo presupuesto de defensa', [2, 5, 2], '9 medios', 'consenso', false, 'ue europa defensa'], ['El Congreso tramita la reforma de la ley de vivienda', [6, 2, 3], '11 medios', 'cobertura desigual', true, 'vivienda alquiler ley'], ['Un estudio vincula la ola de calor de agosto con 1.200 muertes', [3, 3, 1], '7 medios', '1 dato discutido', true, 'calor clima']];
     const q = s.q.trim().toLowerCase();
     let results = [];
     if (q) {
-      if (q.indexOf('http') === 0 || q.indexOf('.es') > 0 || q.indexOf('.com') > 0) results.push({ title: 'Analizar esta URL', meta: s.q, icon: '↗', href: 'Movil-Analisis.dc.html', tone: 'background:#E8ECFA;color:#2340B8' });
-      ev.forEach((e) => { if (q.split(/\s+/).some((w) => w.length > 2 && (e[0].toLowerCase().indexOf(w) >= 0 || e[5].indexOf(w) >= 0))) results.push({ title: e[0], meta: e[2] + ' · ' + e[3], icon: '◆', href: 'Movil-Sintesis.dc.html', tone: 'background:#EFECE5;color:#17171A' }); });
-      if (!results.length) results.push({ title: 'Nadie ha cubierto «' + s.q + '»', meta: 'Avisarme o investigar con IA', icon: '!', href: 'Movil-SinCobertura.dc.html', tone: 'background:#FBF0DC;color:#8A5300' });
+      if (q.indexOf('http') === 0 || q.indexOf('.es') > 0 || q.indexOf('.com') > 0) results.push({ title: 'Analizar esta URL', meta: s.q, icon: '↗', href: 'Movil-Analisis.dc.html', tone: 'acc' });
+      ev.forEach((e) => { if (q.split(/\s+/).some((w) => w.length > 2 && (e[0].toLowerCase().indexOf(w) >= 0 || e[5].indexOf(w) >= 0))) results.push({ title: e[0], meta: e[2] + ' · ' + e[3], icon: '◆', href: 'Movil-Sintesis.dc.html', tone: '' }); });
+      if (!results.length) results.push({ title: 'Nadie ha cubierto «' + s.q + '»', meta: 'Avisarme o investigar con IA', icon: '!', href: 'Movil-SinCobertura.dc.html', tone: 'warn' });
     }
-    const NAV = [['Hoy', '◉', 'Movil-Inicio.dc.html', true], ['Leyendo', '¶', 'Movil-Analisis.dc.html'], ['Agente', '✳', 'Movil-Agente.dc.html'], ['Ajustes', '⚙', 'Movil-Ajustes.dc.html']];
     return {
-      toast: s.toast, dismiss: () => this.setState({ toast: false }),
-      q: s.q, onQ: (e) => this.setState({ q: e.target.value }), hasQ: !!q,
-      inputStyle: 'width:100%;box-sizing:border-box;height:52px;padding:0 18px;background:#FFFFFF;font-size:16px;color:#17171A;transition:border-radius .3s;' + (q ? 'border:1px solid #17171A;border-radius:16px 16px 0 0' : 'border:1px solid #D9D5CC;border-radius:16px'),
-      results: results.map((r, i) => ({ ...r, ico: 'flex:none;width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;' + r.tone, style: 'display:flex;align-items:center;gap:10px;padding:10px;border-radius:12px;animation:dropIn .4s ' + E + ' both;animation-delay:' + (i * 50) + 'ms' })),
-      brief: ev.map((e, i) => ({ title: e[0], href: 'Movil-Sintesis.dc.html', count: e[2], flag: e[3], flagStyle: 'color:' + (e[4] ? '#8A5300' : '#0B6B50'), l: seg(e[1][0], '#C2412F'), c: seg(e[1][1], '#B9B4A9'), r: seg(e[1][2], '#2F5BD3'), style: 'display:block;padding:14px 0;border-top:1px solid #E2DED5;animation:rise .9s ' + E + ' both;animation-delay:' + (250 + i * 80) + 'ms' })),
-      topics: [['Economía', 3], ['Vivienda', 1], ['Europa', 2], ['Clima', 0]].map((t) => { const on = !!s.follow[t[0]]; return { name: t[0] + (on && t[1] ? ' · ' + t[1] : ''), toggle: () => this.setState({ follow: { ...s.follow, [t[0]]: !on } }), style: 'flex:none;height:36px;padding:0 14px;border-radius:999px;font-size:13px;' + (on ? 'background:#17171A;color:#F6F4EF;border:1px solid #17171A' : 'background:transparent;color:#5E5B55;border:1px dashed #CFCAC0') }; }),
-      nav: NAV.map((n) => ({ label: n[0], icon: n[1], href: n[2], style: 'display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;min-width:70px;padding-top:4px;color:' + (n[3] ? '#17171A' : '#8D8981'), pill: 'display:flex;align-items:center;justify-content:center;width:52px;height:30px;border-radius:15px;font-size:16px;' + (n[3] ? 'background:#E7E3DA' : '') }))
+      loading: s.loading, ready: !s.loading, refresh: () => { this.setState({ loading: true }); this.ts.push(setTimeout(() => this.setState({ loading: false }), 1400)); },
+      toast: s.toast && !s.loading, dismiss: () => this.setState({ toast: false }),
+      q: s.q, onQ: (e) => this.setState({ q: e.target.value }), hasQ: !!q, count: ev.length,
+      inputStyle: 'width:100%;height:52px;padding:0 18px 0 48px;background:#FFFFFF;font-size:16px;color:#17171A;' + (q ? 'border:0;box-shadow:inset 0 0 0 1.5px #17171A;border-radius:18px 18px 0 0' : 'border:0;box-shadow:inset 0 0 0 1px #D9D5CC;border-radius:18px'),
+      results,
+      brief: ev.map((e, i) => ({ n: String(i + 1).padStart(2, '0'), lead: i === 0, title: e[0], href: 'Movil-Sintesis.dc.html', count: e[2], flag: e[3], pad: i === 0 ? '18px 0 18px' : '16px 0', font: i === 0 ? "500 25px/1.18 'Newsreader',serif" : "400 19px/1.28 'Newsreader',serif", flagStyle: 'font-weight:500;color:' + (e[4] ? '#8A5300' : '#0B6B50'), l: 'flex:' + e[1][0], c: 'flex:' + e[1][1], r: 'flex:' + e[1][2] })),
+      topics: [['Economía', 3], ['Vivienda', 1], ['Europa', 2], ['Clima', 0]].map((t) => { const on = !!s.follow[t[0]]; return { name: t[0] + (on && t[1] ? ' · ' + t[1] : ''), on: on ? 'true' : 'false', toggle: () => this.setState({ follow: { ...s.follow, [t[0]]: !on } }) }; })
     };
   }
 }
