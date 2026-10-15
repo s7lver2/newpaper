@@ -1646,5 +1646,65 @@
       "wrongPassphrase": "Frase de paso incorrecta o fichero dañado.",
       "failed": "No se ha podido completar: {message}"
     }
+  },
+  "mobile": {
+    "nav": {
+      "label": "Secciones",
+      "today": "Hoy",
+      "reading": "Leyendo",
+      "agent": "Agente",
+      "settings": "Ajustes"
+    },
+    "welcome": {
+      "count": "{n} de {total}",
+      "title": "newpaper en tu bolsillo",
+      "body": "Comparte cualquier noticia con newpaper y verás cómo está contada, qué afirma y quién más la cuenta.",
+      "next": "Siguiente",
+      "pairTitle": "¿Tienes newpaper en el ordenador?",
+      "pairBody": "Empareja el móvil para compartir ajustes, guardados e historial, y usar el modelo local de tu PC.",
+      "pairNow": "Emparejar ahora",
+      "pairLater": "Más tarde"
+    },
+    "today": {
+      "search": "Busca un tema o pega un enlace",
+      "empty": "Todavía no hay noticias. Vuelve en unos minutos."
+    },
+    "reading": {
+      "empty": "Comparte una noticia con newpaper o elige una en Hoy.",
+      "loading": "Abriendo la noticia…",
+      "failed": "No se ha podido descargar la noticia.",
+      "notArticle": "Esta página no parece una noticia.",
+      "analysis": "Análisis",
+      "original": "Ver original",
+      "close": "Cerrar",
+      "analyzeOriginal": "Analizar",
+      "askAgent": "Preguntar al agente"
+    },
+    "settings": {
+      "network": "Conexión",
+      "direct": "Conexión directa",
+      "synced": "Sincronizado."
+    },
+    "provider": {
+      "pasteHint": "Pega aquí la clave de tu proveedor de IA."
+    },
+    "pair": {
+      "body": "En el ordenador, abre Ajustes › Dispositivos › Emparejar un dispositivo y escanea el QR.",
+      "scan": "Escanear el QR",
+      "pairing": "Emparejando…",
+      "failed": "No se ha podido emparejar: {message}",
+      "notNewpaper": "Ese QR no es de newpaper.",
+      "paired": "Emparejado con {name} ({fp}).",
+      "ollamaTitle": "Usar el Ollama de {name}",
+      "ollamaBody": "{n, plural, one {Tiene # modelo instalado} other {Tiene # modelos instalados}}. Los análisis rápidos irán a tu PC y no saldrán de tu red.",
+      "ollamaUse": "Usarlo",
+      "ollamaHint": "Si tu PC tiene Ollama, arráncalo con OLLAMA_HOST=0.0.0.0 para que el móvil lo vea. Hazlo solo en redes de confianza: Ollama no pide contraseña."
+    },
+    "edition": {
+      "title": "Para leer sin conexión",
+      "hint": "Lo que guardas en cualquier dispositivo se puede leer aquí sin red.",
+      "empty": "No hay nada guardado todavía.",
+      "back": "Volver"
+    }
   }
 }

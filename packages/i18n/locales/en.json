@@ -1646,5 +1646,65 @@
       "wrongPassphrase": "Wrong passphrase or damaged file.",
       "failed": "Could not finish: {message}"
     }
+  },
+  "mobile": {
+    "nav": {
+      "label": "Sections",
+      "today": "Today",
+      "reading": "Reading",
+      "agent": "Agent",
+      "settings": "Settings"
+    },
+    "welcome": {
+      "count": "{n} of {total}",
+      "title": "newpaper in your pocket",
+      "body": "Share any news article with newpaper and see how it is told, what it claims and who else reports it.",
+      "next": "Next",
+      "pairTitle": "Do you have newpaper on your computer?",
+      "pairBody": "Pair your phone to share settings, saved articles and history, and to use your PC’s local model.",
+      "pairNow": "Pair now",
+      "pairLater": "Later"
+    },
+    "today": {
+      "search": "Search a topic or paste a link",
+      "empty": "No news yet. Come back in a few minutes."
+    },
+    "reading": {
+      "empty": "Share a news article with newpaper or pick one in Today.",
+      "loading": "Opening the article…",
+      "failed": "The article could not be downloaded.",
+      "notArticle": "This page does not look like a news article.",
+      "analysis": "Analysis",
+      "original": "View original",
+      "close": "Close",
+      "analyzeOriginal": "Analyse",
+      "askAgent": "Ask the agent"
+    },
+    "settings": {
+      "network": "Connection",
+      "direct": "Direct connection",
+      "synced": "Synced."
+    },
+    "provider": {
+      "pasteHint": "Paste your AI provider key here."
+    },
+    "pair": {
+      "body": "On your computer, open Settings › Devices › Pair a device and scan the QR code.",
+      "scan": "Scan the QR code",
+      "pairing": "Pairing…",
+      "failed": "Could not pair: {message}",
+      "notNewpaper": "That QR code is not from newpaper.",
+      "paired": "Paired with {name} ({fp}).",
+      "ollamaTitle": "Use {name}’s Ollama",
+      "ollamaBody": "{n, plural, one {It has # model installed} other {It has # models installed}}. Quick analyses will go to your PC and stay on your network.",
+      "ollamaUse": "Use it",
+      "ollamaHint": "If your PC has Ollama, start it with OLLAMA_HOST=0.0.0.0 so the phone can see it. Only do this on trusted networks: Ollama has no password."
+    },
+    "edition": {
+      "title": "To read offline",
+      "hint": "Whatever you save on any device can be read here without a network.",
+      "empty": "Nothing saved yet.",
+      "back": "Back"
+    }
   }
 }

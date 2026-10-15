@@ -1646,5 +1646,65 @@
       "wrongPassphrase": "Falsche Passphrase oder beschädigte Datei.",
       "failed": "Konnte nicht abgeschlossen werden: {message}"
     }
+  },
+  "mobile": {
+    "nav": {
+      "label": "Bereiche",
+      "today": "Heute",
+      "reading": "Lesen",
+      "agent": "Agent",
+      "settings": "Einstellungen"
+    },
+    "welcome": {
+      "count": "{n} von {total}",
+      "title": "newpaper für die Hosentasche",
+      "body": "Teile einen beliebigen Artikel mit newpaper und sieh, wie er erzählt wird, was er behauptet und wer sonst noch berichtet.",
+      "next": "Weiter",
+      "pairTitle": "Hast du newpaper auf dem Rechner?",
+      "pairBody": "Kopple dein Handy, um Einstellungen, Gespeichertes und Verlauf zu teilen und das lokale Modell deines PCs zu nutzen.",
+      "pairNow": "Jetzt koppeln",
+      "pairLater": "Später"
+    },
+    "today": {
+      "search": "Thema suchen oder Link einfügen",
+      "empty": "Noch keine Nachrichten. Schau in ein paar Minuten wieder vorbei."
+    },
+    "reading": {
+      "empty": "Teile einen Artikel mit newpaper oder wähle einen unter Heute.",
+      "loading": "Artikel wird geöffnet…",
+      "failed": "Der Artikel konnte nicht geladen werden.",
+      "notArticle": "Diese Seite sieht nicht wie ein Artikel aus.",
+      "analysis": "Analyse",
+      "original": "Original ansehen",
+      "close": "Schließen",
+      "analyzeOriginal": "Analysieren",
+      "askAgent": "Den Agenten fragen"
+    },
+    "settings": {
+      "network": "Verbindung",
+      "direct": "Direkte Verbindung",
+      "synced": "Synchronisiert."
+    },
+    "provider": {
+      "pasteHint": "Füge hier den Schlüssel deines KI-Anbieters ein."
+    },
+    "pair": {
+      "body": "Öffne auf dem Rechner Einstellungen › Geräte › Gerät koppeln und scanne den QR-Code.",
+      "scan": "QR-Code scannen",
+      "pairing": "Wird gekoppelt…",
+      "failed": "Koppeln fehlgeschlagen: {message}",
+      "notNewpaper": "Dieser QR-Code ist nicht von newpaper.",
+      "paired": "Gekoppelt mit {name} ({fp}).",
+      "ollamaTitle": "Ollama von {name} nutzen",
+      "ollamaBody": "{n, plural, one {Es ist # Modell installiert} other {Es sind # Modelle installiert}}. Schnellanalysen laufen auf deinem PC und bleiben in deinem Netz.",
+      "ollamaUse": "Nutzen",
+      "ollamaHint": "Wenn dein PC Ollama hat, starte es mit OLLAMA_HOST=0.0.0.0, damit das Handy es sieht. Nur in vertrauenswürdigen Netzen: Ollama hat kein Passwort."
+    },
+    "edition": {
+      "title": "Zum Offline-Lesen",
+      "hint": "Was du auf einem beliebigen Gerät speicherst, kannst du hier ohne Netz lesen.",
+      "empty": "Noch nichts gespeichert.",
+      "back": "Zurück"
+    }
   }
 }
