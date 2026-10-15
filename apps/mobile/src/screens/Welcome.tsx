@@ -1,7 +1,8 @@
 import { useT } from '@newpaper/i18n/react';
-import { useRef, useState, type PointerEvent as RPointerEvent } from 'react';
+import { useEffect, useRef, useState, type PointerEvent as RPointerEvent } from 'react';
 import { ipc } from '../ipc';
 import { go } from '../router';
+import { barsOverDark } from '../theme';
 import { IconBack } from '../icons';
 
 const PAGES = 6;
@@ -16,6 +17,13 @@ export function Welcome() {
   const [done, setDone] = useState(false);
   const start = useRef<{ x: number; id: number } | null>(null);
   const width = useRef(1);
+
+  const intro = page === 0 && !done;
+  useEffect(() => {
+    if (!intro) return;
+    barsOverDark(true);
+    return () => barsOverDark(false);
+  }, [intro]);
 
   const clamp = (n: number) => Math.min(PAGES - 1, Math.max(0, n));
   const onDown = (e: RPointerEvent<HTMLDivElement>) => {

@@ -11,11 +11,26 @@ export async function loadTheme(): Promise<ThemeChoice> {
 
 let stopWatch: (() => void) | null = null;
 
+/** Pantallas que pintan oscuro pase lo que pase con el tema (cámara del escáner, portada de la bienvenida). */
+let overDark = 0;
+
+/** Iconos de la barra de estado y de gestos según lo que hay detrás: claros sobre oscuro, oscuros sobre papel. */
+function syncBars(): void {
+  const dark = overDark > 0 || document.documentElement.dataset.theme === 'ink';
+  void ipc.systemBars(dark).catch(() => {});
+}
+
+export function barsOverDark(on: boolean): void {
+  overDark = Math.max(0, overDark + (on ? 1 : -1));
+  syncBars();
+}
+
 /** Aplica el tema y, si es el del sistema, sigue sus cambios mientras la app esté abierta. */
 export function applyThemeChoice(choice: ThemeChoice): void {
   applyTheme(choice);
+  syncBars();
   stopWatch?.();
-  stopWatch = choice === 'system' ? watchSystemTheme(() => applyTheme('system')) : null;
+  stopWatch = choice === 'system' ? watchSystemTheme(() => { applyTheme('system'); syncBars(); }) : null;
 }
 
 export async function setThemeChoice(choice: ThemeChoice): Promise<void> {

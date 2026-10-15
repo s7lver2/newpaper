@@ -62,6 +62,10 @@ impl<R: Runtime> NpMobile<R> {
     pub fn set_proxy(&self, p: ProxyArg) -> Result<(), MobileError> {
         self.call::<serde_json::Value>("setProxy", p).map(|_| ())
     }
+    /// Iconos de las barras del sistema: claros sobre fondo oscuro (tinta) u oscuros sobre papel.
+    pub fn system_bars(&self, dark_background: bool) -> Result<(), MobileError> {
+        self.call::<serde_json::Value>("systemBars", serde_json::json!({ "dark": dark_background })).map(|_| ())
+    }
     pub fn multicast(&self, on: bool) -> Result<(), MobileError> {
         self.call::<serde_json::Value>("multicast", serde_json::json!({ "on": on })).map(|_| ())
     }

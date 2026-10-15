@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
+import android.util.Log
 import android.net.wifi.WifiManager
 import android.webkit.WebView
 import androidx.webkit.ProxyConfig
@@ -22,6 +23,7 @@ import app.tauri.plugin.Plugin
 @InvokeArg class OpenArgs { lateinit var url: String; lateinit var labels: Labels }
 @InvokeArg class ProxyArgs { lateinit var kind: String; var port: Int = 0 }
 @InvokeArg class MulticastArgs { var on: Boolean = false }
+@InvokeArg class BarsArgs { var dark: Boolean = false }
 
 @TauriPlugin
 class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
@@ -45,6 +47,7 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
         var current: Network? = null
         val cb = object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
+                Log.d("NpMobile", "default network available: $network (was $current)")
                 if (current != null && current != network) NpNative.networkChanged()
                 current = network
             }
@@ -103,6 +106,17 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
         }
         activity.runOnUiThread {
             original.open(a.url, a.labels.close, a.labels.analyze)
+            invoke.resolve()
+        }
+    }
+
+    /** Iconos de la barra de estado y de gestos: oscuros sobre papel, claros sobre tinta. Solo Rust la llama. */
+    @Command fun systemBars(invoke: Invoke) {
+        val dark = invoke.parseArgs(BarsArgs::class.java).dark
+        activity.runOnUiThread {
+            val c = androidx.core.view.WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+            c.isAppearanceLightStatusBars = !dark
+            c.isAppearanceLightNavigationBars = !dark
             invoke.resolve()
         }
     }

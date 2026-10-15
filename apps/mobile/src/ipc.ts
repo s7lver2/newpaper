@@ -44,6 +44,7 @@ export const ipc = {
   secretSet: (key: string, value: string) => invoke<void>('secret_set', { key, value }),
   historyRecordVisit: (url: string, title: string) => invoke<string | null>('history_record_visit', { url, title }),
   historySearch: (filter: HistoryFilter) => invoke<HistoryEntry[]>('history_search', { filter }),
+  systemBars: (dark: boolean) => invoke<void>('mobile_set_system_bars', { dark }),
   historyDelete: (scope: DeleteScope) => invoke<number>('history_delete', { scope }),
   secretDelete: (key: string) => invoke<void>('secret_delete', { key }),
   syncRevoke: (peerId: string) => invoke<PeerView[]>('sync_revoke', { peerId }),

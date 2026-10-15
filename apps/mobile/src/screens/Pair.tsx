@@ -5,6 +5,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { resetPipeline } from '../ai/pipeline';
 import { ipc, type OllamaProbe, type PeerView } from '../ipc';
 import { go, useBackClose } from '../router';
+import { barsOverDark } from '../theme';
 
 type View = 'intro' | 'scan' | 'manual' | 'denied' | 'busy' | 'done';
 
@@ -78,6 +79,7 @@ export function Pair() {
   useEffect(() => {
     if (view !== 'scan') return;
     document.documentElement.classList.add('m-scanning');
+    barsOverDark(true);
     scanning.current = true;
     let live = true;
     void scan({ windowed: true, formats: [Format.QRCode] })
@@ -100,6 +102,7 @@ export function Pair() {
     return () => {
       live = false;
       document.documentElement.classList.remove('m-scanning');
+      barsOverDark(false);
       if (scanning.current) void cancel().catch(() => {});
       scanning.current = false;
     };

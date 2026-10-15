@@ -159,10 +159,10 @@ export function Reading({ url }: { url: string | null }) {
         ) : (
           <ReaderView article={a} rewriteImage={() => null} onOpenLink={(u) => go('leer', { u })} />
         )}
-        <div className="m-btn-row" style={{ padding: 0, margin: '22px 0 8px', flexWrap: 'wrap' }}>
-          <button type="button" className="m-btn sec sm" onClick={() => void ipc.originalOpen(a.url, labels)}>{t('mobile.reading.original')}</button>
-          <button type="button" className="m-btn sec sm" onClick={() => void ipc.savedAdd({ url: a.url, title: a.title, outlet: a.siteName, articleJson: JSON.stringify(a), savedAt: Date.now() })}>{t('sources.save.add')}</button>
-          <button type="button" className="m-btn sec sm" onClick={() => go('agente', { u: a.url })}>{t('mobile.reading.askAgent')}</button>
+        <div className="m-btn-row" style={{ padding: 0, margin: '22px 0 8px', flexDirection: 'column' }}>
+          <button type="button" className="m-btn sec" onClick={() => void ipc.originalOpen(a.url, labels)}>{t('mobile.reading.original')}</button>
+          <button type="button" className="m-btn sec" onClick={() => void ipc.savedAdd({ url: a.url, title: a.title, outlet: a.siteName, articleJson: JSON.stringify(a), savedAt: Date.now() })}>{t('sources.save.add')}</button>
+          <button type="button" className="m-btn sec" onClick={() => go('agente', { u: a.url })}>{t('mobile.reading.askAgent')}</button>
         </div>
       </div>
       {sheet ? <AnalysisSheet onClose={closeSheet} /> : null}

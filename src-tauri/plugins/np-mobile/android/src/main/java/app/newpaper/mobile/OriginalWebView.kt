@@ -36,6 +36,17 @@ class OriginalWebView(private val activity: Activity, private val onHtml: (Strin
 
     private fun px(dp: Int) = (dp * activity.resources.displayMetrics.density).toInt()
 
+    /** Botón plano de la barra superior: texto sin mayúsculas forzadas y sin el relleno gris de Material. */
+    private fun flat(b: Button, color: String) {
+        b.isAllCaps = false
+        b.setBackgroundColor(Color.TRANSPARENT)
+        b.setTextColor(Color.parseColor(color))
+        b.textSize = 15f
+        b.minHeight = px(48)
+        b.minimumWidth = px(64)
+        b.setPadding(px(16), 0, px(16), 0)
+    }
+
     @SuppressLint("SetJavaScriptEnabled")
     fun open(url: String, closeLabel: String, analyzeLabel: String) {
         close()
@@ -67,7 +78,7 @@ class OriginalWebView(private val activity: Activity, private val onHtml: (Strin
         }
         bar.addView(Button(activity).apply {
             text = analyzeLabel
-            minHeight = px(48)
+            flat(this, "#2F5BD3")
             setOnClickListener {
                 web.evaluateJavascript("document.documentElement.outerHTML") { json ->
                     val html = org.json.JSONArray("[$json]").getString(0)
@@ -75,7 +86,7 @@ class OriginalWebView(private val activity: Activity, private val onHtml: (Strin
                 }
             }
         })
-        bar.addView(Button(activity).apply { text = closeLabel; minHeight = px(48); setOnClickListener { close() } })
+        bar.addView(Button(activity).apply { text = closeLabel; flat(this, "#17171A"); setOnClickListener { close() } })
         val col = LinearLayout(activity).apply { orientation = LinearLayout.VERTICAL; setBackgroundColor(Color.WHITE) }
         // La actividad va de borde a borde: la barra no debe quedar bajo la barra de estado.
         ViewCompat.setOnApplyWindowInsetsListener(col) { v, insets ->

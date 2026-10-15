@@ -17,6 +17,12 @@ pub async fn mobile_fetch_page(ext: State<'_, Arc<ShellExtensions>>, url: String
     fetch_page(&client, &url).await.map_err(|e| CmdError::new("fetch", serde_json::to_string(&e).unwrap_or_default()))
 }
 
+/// La interfaz avisa del tema que pinta (papel/tinta): Android no lo deduce con la actividad de borde a borde.
+#[tauri::command]
+pub async fn mobile_set_system_bars(app: AppHandle<Wry>, dark: bool) -> CmdResult<()> {
+    app.np_mobile().system_bars(dark).map_err(|e| CmdError::new("mobile", e.0))
+}
+
 #[tauri::command]
 pub async fn mobile_pending_share(app: AppHandle<Wry>) -> CmdResult<Option<String>> {
     let text = app.np_mobile().pending_share().map_err(|e| CmdError::new("mobile", e.0))?;

@@ -82,6 +82,7 @@
     "allow-mobile-original-open",
     "allow-mobile-original-close",
     "allow-mobile-ollama-probe",
-    "allow-mobile-use-pc-ollama"
+    "allow-mobile-use-pc-ollama",
+    "allow-mobile-set-system-bars"
   ]
 }
