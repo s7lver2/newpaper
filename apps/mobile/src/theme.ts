@@ -22,3 +22,20 @@ export async function setThemeChoice(choice: ThemeChoice): Promise<void> {
   await ipc.settingsSet(KEY, choice).catch(() => {});
   applyThemeChoice(choice);
 }
+
+const MOTION_KEY = 'device.reduceMotion';
+
+/** Reducir animaciones: ajuste propio de la app (además de `prefers-reduced-motion` del sistema, que respeta el CSS). */
+export function applyMotion(reduce: boolean): void {
+  if (reduce) document.documentElement.dataset.motion = 'reduce';
+  else delete document.documentElement.dataset.motion;
+}
+
+export async function loadMotion(): Promise<boolean> {
+  return (await ipc.settingsGet<boolean>(MOTION_KEY).catch(() => null)) === true;
+}
+
+export async function setMotion(reduce: boolean): Promise<void> {
+  await ipc.settingsSet(MOTION_KEY, reduce).catch(() => {});
+  applyMotion(reduce);
+}
