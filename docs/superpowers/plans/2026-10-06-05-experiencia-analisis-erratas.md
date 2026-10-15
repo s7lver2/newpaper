@@ -183,3 +183,56 @@ Descartados como recomendados: OpenAI y Anthropic (clave de pago obligatoria y f
 - Que el oyente loopback sea alcanzable con el cortafuegos/antivirus de cada equipo (en Windows el tráfico loopback no suele pedir permiso, pero no se probó en todos).
 - Cuota real de los niveles gratuitos de Gemini, Groq y OpenRouter (cambian a menudo; solo se leyeron las tablas públicas).
 - Linux/macOS: el abridor del navegador (`xdg-open`/`open`) compila pero no se ejecutó.
+
+## Simplificación de la conexión de proveedores y New Router
+
+Fecha: 2026-10-15. El usuario (autor del mockup) pidió explícitamente **simplificar**: con 14 proveedores, grupos abiertos/cerrados, filtros, recomendados, inicio de sesión, local y avanzado, conectar un proveedor abrumaba a una persona no técnica. Por eso se **desvía del mockup** `Proveedores.dc.html` (y de `Ajustes.dc.html`) donde reduce carga cognitiva; se conservan tokens, tipografía, tarjetas y movimiento.
+
+### Principio: divulgación progresiva
+
+1. **Paso 1 del asistente** muestra solo: un título («Empieza con uno de estos»), los 3 recomendados (logo, nombre, una frase, «Conectar X»), «¿Ya tienes una clave? Pégala aquí» (reconoce el proveedor) y **un** enlace discreto «Ver todos los proveedores (13)».
+2. Ese enlace abre una **subvista con «Volver»** (no se despliega en el sitio: así los tres recomendados no compiten con la lista): buscador, interruptor de tres posiciones **Abiertos / Cerrados / En tu equipo** con una línea que explica el elegido, y filas compactas (logo, nombre, una frase, etiquetas Gratis / Con cuenta / Local, flecha). Al final, una fila de texto «¿Tienes tu propio servidor? Conéctalo» (el endpoint propio; la palabra «endpoint» ya no sale en las primeras vistas).
+3. **Ajustes › IA**: la primera vista es «Tus proveedores» (los conectados o detectados, con «Añadir proveedor» que abre el mismo asistente), «Punto de partida» (cuatro opciones en una fila + una línea + coste, tiempo y pasos en tu equipo) y el límite de gasto. La cuadrícula de proveedores y el inspector de 8 pasos pasan a **«Avanzado»**, plegado por defecto. Sin proveedores solo se ve «Conecta un proveedor» y «Avanzado».
+
+### Antes y después
+
+Medido en la app real (build `custom-protocol`, papel y tinta, 1440×900 y 800×600; sin desbordamiento horizontal en ninguna combinación). Elementos interactivos visibles: botones habilitados, enlaces, campos y deslizador (los pasos del indicador no lo son).
+
+| Vista | Antes | Después |
+|---|---|---|
+| Asistente, paso 1 | 19 | **6** (3 recomendados, campo de clave, «Ver todos», cerrar) |
+| Asistente, lista completa | — | 14 elementos, **6 paradas de tabulador** (volver, buscador, interruptor, lista, servidor propio, cerrar) |
+| Ajustes › IA, primera vista (2 conectados) | 39 | **9** (2 proveedores, «Añadir», 4 opciones de punto de partida, límite, «Avanzado»); 6 paradas de tabulador |
+| Ajustes › IA, «Avanzado» abierto | 39 | 37 (se quitaron los 5 filtros y el botón del asistente) |
+| Ajustes › IA, sin proveedores | 39 (15 fichas + presets + límite) | **2** («Conectar un proveedor», «Avanzado») |
+
+Aparte, el paso 1 pasa de ~6 bloques (recomendados con descripción larga, clave, Abiertos, Cerrados, En tu equipo, Avanzado) a 3 (recomendados, clave, enlace).
+
+### Teclado y foco
+
+Al abrir la lista el foco va al buscador; Tab recorre volver → buscador → interruptor → lista → servidor propio; en el interruptor, flechas izquierda/derecha; en la lista, flechas arriba/abajo, Inicio y Fin (un solo tabulador para toda la lista, «roving tabindex»); flecha arriba desde la primera fila vuelve al buscador. **Escape = un nivel atrás**: vacía la búsqueda si tiene texto, vuelve a «Elegir» (y el foco regresa a «Ver todos»), luego cierra el asistente; desde el paso 2 vuelve a la lista. El punto de partida de Ajustes es un interruptor de radio con flechas. Comprobado con eventos de teclado reales por CDP.
+
+### New Router
+
+Ver `2026-10-15-new-router-idea.md`. Va en una lista `roadmap` de `config/providers.json` (no en `providers`), de modo que no puede entrar en `autoAssign`, en la tabla del proxy de Rust, en los modelos en vivo ni en «conectados» (probado en `registry.test.ts` y en `table.rs`). Fila atenuada de trazo discontinuo con «Próximamente» y botón desactivado al principio de la lista completa; no está en la primera vista. Sin red, sin estado falso, sin «Avísame».
+
+### Desviaciones respecto al mockup
+
+- Paso 1: se quita la descripción larga de las tarjetas recomendadas (la advertencia de privacidad de Gemini sigue en el paso 2, `tip.google`), la etiqueta «Recomendado» (el título ya lo dice) y el texto de ayuda bajo «Pega tu clave». Las cuadrículas «Abiertos», «Cerrados», «En tu equipo» y «Avanzado» pasan a la subvista de lista; los grupos son ahora un interruptor, no secciones apiladas.
+- La lista usa filas, no fichas, y frases nuevas en lenguaje llano (`providers.hint.*`) en lugar de «V4, pesos abiertos», «build.nvidia.com», etc.
+- Con texto en el buscador se busca en **todos** los grupos (el interruptor se atenúa): quien escribe «claude» estando en «Abiertos» no ve una lista vacía.
+- Etiquetas nuevas: «Gratis» (campo `freeTier` del registro: Gemini, OpenRouter, Groq y Hugging Face, los que la revisión anterior documenta con cuota o créditos gratuitos), «Con cuenta» (hay inicio de sesión disponible: hoy solo OpenRouter) y «Local».
+- Ajustes › IA: los cuatro presets de tarjeta grande pasan a un interruptor de una fila con la descripción debajo; se quitan los filtros Todos/Activos/Abiertos/Cerrados/Local (redundantes con los grupos y con «Tus proveedores»); la cuadrícula de 15 fichas, su panel y el pipeline de 8 pasos con el inspector y el resumen oscuro van en «Avanzado». El resumen de la primera vista es una fila de tres cifras (coste por noticia, tiempo, pasos en tu equipo), sin franjas de color.
+- Menos palabras: se acortan el subtítulo de Ajustes y el texto del estado vacío; «endpoint» y «adaptador» ya no salen en las primeras vistas (siguen en «Avanzado» y en el paso 2 del servidor propio, que no se tocó).
+- Pasos 2 y 3: sin cambios salvo el espacio del indicador de pasos (30/34 → 24/28 px) para que coincida con la subvista.
+
+### Verificación y límites
+
+- `window.__TAURI_INTERNALS__.invoke` es de solo lectura, así que un guardián de JavaScript no puede interceptar llamadas: las comprobaciones se hicieron con el gancho de OAuth falso activo (`NP_TEST_OAUTH`, que bloquea el tráfico a proveedores) y sin llamar a ninguno. Para capturar el estado vacío se puso `ai.connected` a `[]` en la app y se restauró (`["nvidia","ollama","openrouter"]`, comprobado); las claves del llavero no se tocaron.
+- Pruebas nuevas: `chooser.test.ts` (segmentos, búsqueda sin acentos ni mayúsculas en todos los grupos, etiquetas), `registry.test.ts` (el `roadmap` no es proveedor ni se asigna; registros antiguos sin `roadmap` cargan; id repetido o estado desconocido se rechazan; `freeTier`) y `table.rs` (`roadmap` no crea una `ProviderSpec`).
+
+### Pendiente
+
+- Revisión humana de las frases nuevas en alemán e inglés.
+- «Gratis» se basa en lo documentado en la revisión anterior (las cuotas gratuitas cambian a menudo).
+- La fila «Próximamente» está al principio de la lista completa; si se prefiere al final o en la primera vista, es un cambio de una línea.
