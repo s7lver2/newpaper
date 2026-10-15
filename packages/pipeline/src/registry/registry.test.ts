@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 import { detectProviders } from './detect';
+import { autoAssign } from '../assign/presets';
 import { loadRegistry } from './registry';
 
 const file = JSON.parse(readFileSync(new URL('../../../../config/providers.json', import.meta.url), 'utf8'));
@@ -53,6 +54,24 @@ describe('providers registry', () => {
       if (p.category !== 'advanced') expect(p.models.some((m) => m.capabilities.includes('structured')), p.id).toBe(true);
       expect(new Set(p.models.map((m) => m.id)).size, p.id).toBe(p.models.length);
     }
+  });
+
+  it('keeps the roadmap (New Router) apart: it is never a provider, never detected and never assigned', () => {
+    expect(reg.roadmap).toEqual([{ id: 'newrouter', name: 'New Router', status: 'planned' }]);
+    expect(reg.get('newrouter')).toBeUndefined();
+    expect(reg.providers.some((p) => p.id === 'newrouter')).toBe(false);
+    expect(reg.recommended().some((p) => p.id === 'newrouter')).toBe(false);
+    const all = reg.providers.map((p) => p.id);
+    for (const preset of ['privacy', 'balanced', 'quality', 'cheap'] as const)
+      for (const a of Object.values(autoAssign(reg, [...all, 'newrouter'], preset, {}))) expect(a!.provider).not.toBe('newrouter');
+    // Un registro anterior sin `roadmap` sigue cargando, y una entrada que choque con un proveedor se rechaza.
+    expect(loadRegistry({ version: 1, providers: file.providers }).roadmap).toEqual([]);
+    expect(() => loadRegistry({ ...file, roadmap: [{ id: 'groq', name: 'Groq', status: 'planned' }] })).toThrow(/clashes/);
+    expect(() => loadRegistry({ ...file, roadmap: [{ id: 'x', name: 'X', status: 'live' }] })).toThrow();
+  });
+
+  it('marks the free tiers the review found, and nothing else', () => {
+    expect(reg.providers.filter((p) => p.freeTier).map((p) => p.id).sort()).toEqual(['google', 'groq', 'huggingface', 'openrouter']);
   });
 
   it('rejects malformed registries', () => {

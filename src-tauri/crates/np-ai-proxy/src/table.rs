@@ -203,6 +203,15 @@ mod tests {
     }
 
     #[test]
+    fn roadmap_entries_never_become_provider_specs() {
+        let j = r#"{"version":1,"providers":[{"id":"groq","baseUrl":"https://api.groq.com/openai/v1","auth":"bearer","type":"cloud"}],
+          "roadmap":[{"id":"newrouter","name":"New Router","status":"planned"}]}"#;
+        let t = ProviderTable::from_registry_json(j).unwrap();
+        assert!(t.get("groq").is_some());
+        assert!(t.get("newrouter").is_none());
+    }
+
+    #[test]
     fn login_specs_are_validated_against_the_provider_host() {
         let ok = r#"{"providers":[{"id":"openrouter","baseUrl":"https://openrouter.ai/api/v1","auth":"bearer","type":"cloud",
           "login":{"flow":"oauth-pkce-key","status":"available","authUrl":"https://openrouter.ai/auth","exchangeUrl":"https://openrouter.ai/api/v1/auth/keys"}},

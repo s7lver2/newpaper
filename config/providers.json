@@ -2,7 +2,7 @@
   "version": 1,
   "providers": [
     {
-      "id": "google", "name": "Gemini (Google)", "logo": "googlegemini.svg", "category": "cloud", "type": "cloud", "recommended": true, "openness": "closed",
+      "id": "google", "name": "Gemini (Google)", "logo": "googlegemini.svg", "category": "cloud", "type": "cloud", "recommended": true, "freeTier": true, "openness": "closed",
       "adapter": "google", "baseUrl": "https://generativelanguage.googleapis.com/v1beta", "auth": "x_goog_api_key",
       "keyPrefixes": ["AIza"], "keyUrl": "https://aistudio.google.com/apikey",
       "models": [
@@ -12,7 +12,7 @@
       ]
     },
     {
-      "id": "openrouter", "name": "OpenRouter", "logo": "openrouter.svg", "category": "cloud", "type": "cloud", "recommended": true, "openness": "mixed",
+      "id": "openrouter", "name": "OpenRouter", "logo": "openrouter.svg", "category": "cloud", "type": "cloud", "recommended": true, "freeTier": true, "openness": "mixed",
       "adapter": "openai-compatible", "baseUrl": "https://openrouter.ai/api/v1", "auth": "bearer",
       "keyPrefixes": ["sk-or-"], "keyUrl": "https://openrouter.ai/settings/keys",
       "login": { "flow": "oauth-pkce-key", "status": "available", "authUrl": "https://openrouter.ai/auth", "exchangeUrl": "https://openrouter.ai/api/v1/auth/keys" },
@@ -33,7 +33,7 @@
       ]
     },
     {
-      "id": "groq", "name": "Groq", "logo": "groq.svg", "category": "cloud", "type": "cloud", "openness": "open",
+      "id": "groq", "name": "Groq", "logo": "groq.svg", "category": "cloud", "type": "cloud", "freeTier": true, "openness": "open",
       "adapter": "openai-compatible", "baseUrl": "https://api.groq.com/openai/v1", "auth": "bearer",
       "keyPrefixes": ["gsk_"], "keyUrl": "https://console.groq.com/keys",
       "models": [
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "id": "huggingface", "name": "Hugging Face", "logo": "huggingface.svg", "category": "cloud", "type": "cloud", "openness": "open",
+      "id": "huggingface", "name": "Hugging Face", "logo": "huggingface.svg", "category": "cloud", "type": "cloud", "freeTier": true, "openness": "open",
       "adapter": "openai-compatible", "baseUrl": "https://router.huggingface.co/v1", "auth": "bearer",
       "keyPrefixes": ["hf_"], "keyUrl": "https://huggingface.co/settings/tokens",
       "models": [
@@ -124,5 +124,8 @@
       "adapter": "openai-compatible", "baseUrl": "https://example.invalid/v1", "auth": "bearer",
       "keyPrefixes": [], "keyUrl": null, "models": []
     }
+  ],
+  "roadmap": [
+    { "id": "newrouter", "name": "New Router", "status": "planned" }
   ]
 }

@@ -30,6 +30,8 @@ export const ProviderEntrySchema = z.object({
   logo: z.string(),
   category: ProviderCategorySchema,
   recommended: z.boolean().default(false),
+  /** Tiene un nivel gratuito (cuota o créditos) sin pagar; solo informa a la interfaz, no cambia ninguna asignación. */
+  freeTier: z.boolean().default(false),
   openness: OpennessSchema,
   login: LoginSchema.optional(),
   type: z.enum(['cloud', 'local']),
@@ -41,12 +43,23 @@ export const ProviderEntrySchema = z.object({
   models: z.array(ModelEntrySchema),
 });
 
-export const RegistryFileSchema = z.object({ version: z.literal(1), providers: z.array(ProviderEntrySchema) });
+/**
+ * Idea futura que se enseña como «Próximamente»: no es un proveedor. No tiene URL, adaptador ni modelos y
+ * por eso vive aparte (`roadmap`): nunca entra en la asignación automática, en la tabla del proxy ni en la lista de conectados.
+ */
+export const RoadmapEntrySchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  name: z.string().min(1),
+  status: z.literal('planned'),
+});
+
+export const RegistryFileSchema = z.object({ version: z.literal(1), providers: z.array(ProviderEntrySchema), roadmap: z.array(RoadmapEntrySchema).default([]) });
 
 export type Capability = z.infer<typeof CapabilitySchema>;
 export type ProviderCategory = z.infer<typeof ProviderCategorySchema>;
 export type Openness = z.infer<typeof OpennessSchema>;
 export type LoginEntry = z.infer<typeof LoginSchema>;
+export type RoadmapEntry = z.infer<typeof RoadmapEntrySchema>;
 export type ModelEntry = z.infer<typeof ModelEntrySchema>;
 export type ProviderEntry = z.infer<typeof ProviderEntrySchema>;
 export type RegistryFile = z.infer<typeof RegistryFileSchema>;
