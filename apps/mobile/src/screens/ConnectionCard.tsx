@@ -1,5 +1,4 @@
 import { useI18n } from '@newpaper/i18n/react';
-import { SegmentedControl } from '@newpaper/ui-kit';
 import { invoke } from '@tauri-apps/api/core';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -116,22 +115,20 @@ export function ConnectionCard() {
   return (
     <div className="m-card">
       <strong>{t('mobile.connection.title')}</strong>
-      <SegmentedControl<Mode>
-        label={t('mobile.connection.title')}
-        value={mode}
-        onChange={(v) => {
-          if (!busy && v !== mode) choose(v);
-        }}
-        options={[
-          { value: 'direct', label: t('mobile.connection.direct') },
-          { value: 'tor', label: t('mobile.connection.tor') },
-        ]}
-      />
+      <div className="m-seg" role="group" aria-label={t('mobile.connection.title')} style={{ margin: '10px 0' }}>
+        {(['direct', 'tor'] as const).map((v) => (
+          <button key={v} type="button" aria-pressed={mode === v} disabled={busy} onClick={() => { if (v !== mode) choose(v); }}>
+            {t(v === 'direct' ? 'mobile.connection.direct' : 'mobile.connection.tor')}
+          </button>
+        ))}
+      </div>
       <p className="np-muted">{mode === 'tor' ? t('mobile.connection.torHint') : t('mobile.connection.directHint')}</p>
       {status ? <p role="status">{status}</p> : null}
       {blockedKey ? <p role="alert">{t(blockedKey)}</p> : null}
       {boot ? (
-        <div role="progressbar" aria-valuenow={boot.percent} aria-valuemin={0} aria-valuemax={100} style={{ height: 6, borderRadius: 3, background: 'var(--np-soft)' }}><div className="m-skel" style={{ height: 6, borderRadius: 3, width: `${Math.max(3, boot.percent)}%`, transition: 'width .6s' }} /></div>
+        <div className="m-conn-bar" role="progressbar" aria-valuenow={boot.percent} aria-valuemin={0} aria-valuemax={100}>
+          <i style={{ transform: `scaleX(${Math.max(0.03, boot.percent / 100)})` }} />
+        </div>
       ) : null}
       {d?.restartReason === 'network_change' ? <p className="np-muted">{t('mobile.torDiag.networkChange')}</p> : null}
       {d ? <p className="np-muted">{t(d.cache === 'warm' ? 'mobile.torDiag.cacheWarm' : d.cache === 'reset' ? 'mobile.torDiag.cacheReset' : 'mobile.torDiag.cacheCold')}</p> : null}

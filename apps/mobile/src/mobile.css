@@ -24,9 +24,9 @@ body { overflow: hidden; -webkit-tap-highlight-color: transparent; }
 .m-page::-webkit-scrollbar { display: none; }
 .m-page[hidden] { display: none; }
 .m-page.m-with-tabs { padding-bottom: calc(var(--m-tabbar) + var(--m-bottom) + 12px); }
-.m-stage-push { animation: m-push-in var(--m-dur-base) var(--m-ease-emph) both; }
-.m-stage-pop { animation: m-pop-in var(--m-dur-base) var(--m-ease-emph) both; }
-.m-stage-tab { animation: m-fade var(--m-dur-base) var(--m-ease) both; }
+.m-stage-push { animation: m-push-in var(--m-dur-base) var(--m-ease-emph) backwards; }
+.m-stage-pop { animation: m-pop-in var(--m-dur-base) var(--m-ease-emph) backwards; }
+.m-stage-tab { animation: m-fade var(--m-dur-base) var(--m-ease) backwards; }
 .m-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* barra superior y títulos */
@@ -171,7 +171,7 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 @media (prefers-reduced-motion: reduce) {
   .m-app *, .m-app *::before, .m-app *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
   .m-skel { animation: none !important; background: var(--np-chrome); }
-  .m-stage-push, .m-stage-pop { animation: m-fade 90ms linear both !important; }
+  .m-stage-push, .m-stage-pop { animation: m-fade 90ms linear backwards !important; }
   .m-splash-mark .stroke, .m-check path { stroke-dashoffset: 0; animation: none !important; }
 }
 
@@ -269,7 +269,7 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 /* reducir animaciones desde Ajustes (igual que prefers-reduced-motion del sistema) */
 :root[data-motion='reduce'] .m-app *, :root[data-motion='reduce'] .m-app *::before, :root[data-motion='reduce'] .m-app *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; animation-delay: 0s !important; transition-duration: .01ms !important; }
 :root[data-motion='reduce'] .m-skel { animation: none !important; background: var(--np-chrome); }
-:root[data-motion='reduce'] .m-stage-push, :root[data-motion='reduce'] .m-stage-pop { animation: m-fade 90ms linear both !important; }
+:root[data-motion='reduce'] .m-stage-push, :root[data-motion='reduce'] .m-stage-pop { animation: m-fade 90ms linear backwards !important; }
 :root[data-motion='reduce'] .m-splash-mark .stroke, :root[data-motion='reduce'] .m-check path { stroke-dashoffset: 0; animation: none !important; }
 @media (prefers-reduced-motion: reduce) { .m-scan-line { animation: none; top: 50%; } .m-pull-dot.spin svg { animation: none; } }
 .m-btn-row[style*='column'] > * { flex: none; }
@@ -476,8 +476,8 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 @keyframes m-hs-dot { to { background: var(--np-ok); } }
 
 .m-fp { display: grid; gap: 4px; }
-.m-fp-groups { display: flex; justify-content: space-between; gap: 8px; margin-top: 12px; }
-.m-fp-groups b { flex: 1; text-align: center; padding: 10px 0; border-radius: 12px; background: var(--np-soft); font: 500 20px var(--np-font-mono); letter-spacing: .04em; color: var(--np-muted); }
+.m-fp-groups { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 12px; }
+.m-fp-groups b { flex: 0 0 calc(33% - 6px); text-align: center; padding: 10px 0; border-radius: 12px; background: var(--np-soft); font: 500 20px var(--np-font-mono); letter-spacing: .04em; color: var(--np-muted); }
 .m-fp-groups b.on { color: var(--np-ink); animation: m-spring-in 300ms var(--m-spring) both; }
 .m-fp.match .m-fp-groups b { color: var(--np-ok); background: var(--np-ok-bg); transition: color var(--m-dur-base) var(--m-ease); }
 
@@ -488,3 +488,15 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 /* intro de arranque (canvas del motor v4): cubre la pantalla con tinta; el iris se aplica desde Splash.tsx */
 .m-intro { position: fixed; inset: 0; z-index: 50; background: #17171A; overflow: hidden; touch-action: manipulation; }
 .m-intro-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+/* Conexión: barra de progreso de Tor visible y con brillo móvil mientras trabaja (nunca parece congelada). */
+.m-conn-bar { height: 8px; border-radius: 4px; background: var(--np-line3); overflow: hidden; margin: 8px 0; }
+.m-conn-bar > i { display: block; height: 100%; width: 100%; border-radius: 4px; transform-origin: left; transition: transform .6s var(--m-ease);
+  background: linear-gradient(100deg, var(--np-accent) 30%, color-mix(in srgb, var(--np-accent) 55%, #fff) 50%, var(--np-accent) 70%); background-size: 300% 100%; animation: m-shimmer var(--m-dur-shimmer) linear infinite; }
+:root[data-motion='reduce'] .m-conn-bar > i { animation: none; }
+@media (prefers-reduced-motion: reduce) { .m-conn-bar > i { animation: none; } }
+
+/* Campos de texto: el anillo de enfoque va en el contenedor redondeado, no un rectángulo sobre el input. */
+.m-app .m-search input:focus-visible, .m-app .m-input:focus-visible { outline: none; }
+.m-search:focus-within { box-shadow: inset 0 0 0 2px var(--np-accent); }
+.m-input:focus-visible { box-shadow: 0 0 0 2px var(--np-accent); }
