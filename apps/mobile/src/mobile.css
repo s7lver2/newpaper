@@ -500,3 +500,5 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 .m-app .m-search input:focus-visible, .m-app .m-input:focus-visible { outline: none; }
 .m-search:focus-within { box-shadow: inset 0 0 0 2px var(--np-accent); }
 .m-input:focus-visible { box-shadow: 0 0 0 2px var(--np-accent); }
+
+.m-hint { overflow-wrap: anywhere; }

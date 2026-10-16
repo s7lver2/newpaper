@@ -303,3 +303,39 @@ No verificado (queda para el revisor con emulador):
 Pendiente:
 - Conexión (ítem 18) y `ConnectionCard.tsx`: lo lleva el agente de Tor.
 - `apps/mobile/harness.html` (arnés de navegador, excluido de git) se elimina al cerrar esta tanda.
+
+## Revisión final v3 y Tor
+
+Revisión de 2768af8..b45baed con emulador (AVD `np34`, Android 14 x86_64, 4 GB, `-gpu host`, sin Google Play Services, adb propio en el puerto 5594) y APK de depuración x86_64 y arm64 reconstruidos. Capturas y vídeos en el scratchpad de la sesión (`rev/shots`).
+
+### Hallazgos y correcciones
+- **Alto · splash nativo y canvas con tamaños distintos.** El icono del splash medía 195 px y la marca fantasma del canvas 326 px (salto visible en el traspaso). Android recorta el icono a un círculo de 2/3 del lienzo de 288 dp, así que no se puede ampliar sin cortarlo (probado: a 1,67 veces salía recortado). El icono queda a 1,08 veces (máximo sin recorte) y `Splash.tsx` arranca el canvas a ese mismo tamaño (escala desde el centro) y lo lleva a 1 en 380 ms. Medido en el vídeo: tamaños iguales en el cambio. Puede quedar un fotograma algo más tenue en el traspaso. `NP_INTRO_READY` se marca tras tres fotogramas pintados (antes tras el primero, y el splash se retiraba antes de que el canvas se viera). Commit 53547d1.
+- **Alto · las hojas se iban con el scroll.** `.m-stage-*` usaba `animation ... both`; el relleno `forwards` de un `transform` mantenía un bloque contenedor y las hojas (`position: fixed`) se desplazaban con la página (hoja de Análisis, Proveedores, Emparejar). Ahora `backwards`. Comprobado en emulador. Commit 085b221.
+- **Medio · Atrás en el asistente de proveedor salía de la pantalla** en vez de volver al paso anterior. Cada paso adelante añade una entrada de historial. Verificado. Commit 64eb57f.
+- **Medio · la huella de emparejamiento mostraba 3 de 5 grupos (48 bits).** El PC muestra 5 (80 bits). Ahora se muestran los 5. Commit 64eb57f.
+- **Medio · emparejamiento sin confirmar.** `sync_pair_with` deja al equipo emparejado antes de confirmar la huella; si el usuario salía con Atrás o cambiaba de pestaña quedaba emparejado sin verificar (y el bucle de sincronización de 5 min lo incluiría). La pantalla revoca al desmontarse si no hubo confirmación y descarta un apretón de manos en curso. Sigue habiendo una ventana corta (pantalla de huella abierta) en la que el equipo ya está emparejado: cerrarla exige que Rust marque el par como pendiente hasta confirmar (no hecho).
+- **Medio · clave en el estado de React y clave huérfana.** La clave pegada seguía en `typed`/`key` durante toda la prueba. Se vacía en cuanto está en el llavero y, si la prueba falla y se sale del asistente sin conectar, se borra del llavero.
+- **Bajo · el tope de 6 s del splash dependía del callback de `evaluateJavascript`** (si el renderer se colgaba no actuaba). Ahora hay un temporizador independiente. `themes.xml` tenía mal el espacio de nombres `tools`.
+- **Bajo (UI)** · barra de progreso de Tor casi invisible (brillo gris sobre gris), segmentado de la tarjeta Conexión con botones comprimidos a la izquierda, rectángulo de enfoque cuadrado sobre los campos redondos, URL larga de error que desbordaba la caja.
+- **Descartado: `setOnExitAnimationListener { it.remove() }`.** Quitaba el parpadeo pero dejaba la barra de estado opaca y morada (primary de Material3) en toda la app; revertido (49d8da3).
+
+### Seguridad (revisado)
+- Claves solo por `secret_set`; no hay `secret_get`; no van en URLs ni en logs; los errores de prueba se muestran tal cual y no contienen la clave.
+- `np-mobile-core::ollama::classify`: solo http(s); IPv4 privada, CGNAT o loopback, `localhost`, `*.ts.net` o https; rechaza 169.254.x.x, 0.0.0.0 e IPv6 privada; descarta credenciales de la URL; la sonda no sigue redirecciones. El móvil no tiene servidor propio ni OAuth (no hay entrada libre de URL aparte del PC emparejado).
+- Extracción a `@newpaper/ui-kit/logic`: typecheck de ui, ui-kit, pipeline, i18n y mobile en verde; tests ui 66/66, ui-kit 35/35, i18n 18/18; `cargo check -p np-app` (escritorio) en verde.
+- `mobile.json` contiene `allow-tor-retry` y `allow-tor-reset`; `ui.json` (escritorio) no los necesita. Los comandos se registran en ambos `generate_handler!`, pero solo el móvil los llama.
+- Tor y `np-net`: Directa nunca arranca Arti (`retry_tor` devuelve false, `reset_tor` solo marca el borrado para el próximo arranque en Tor, `network_changed` no actúa); verificado en emulador (cambio a Directa: «tor stopped»; Inicio y volver no lo arranca). Fallar o reiniciar deja `connect` en `NotReady` (SOCKS devuelve error, proxy de la webview a `127.0.0.1:9`): no sale tráfico en claro durante los reinicios. `cargo test -p np-net --lib`: 23/23. El vigilante de 240 s se verificó: con TCP bloqueado el intento se abandona, se programa el reintento (20 s) y «Reintentar» tras desbloquear llega a «listo» con la caché reutilizada.
+- Perfil: `[profile.dev.package."*"] opt-level = 2` también se aplica a las compilaciones de escritorio en depuración (primera compilación más lenta, binario más rápido; `debug = false` en dependencias). No se limita a Android porque Cargo no filtra perfiles por objetivo; se deja anotado.
+- Menores sin arreglar: la etiqueta `cache="warm"` aparece también con una caché sin directorio (estado creado por un intento bloqueado); la tarjeta Conexión no vuelve a sondear si Tor cae después de estar listo hasta reabrir Ajustes; el borrado diferido de «Deshacer» deja la clave en el llavero si el proceso muere en esos 4,5 s.
+
+### Verificado en emulador (capturas)
+Splash nativo, intro (remolino, cascada, abanico, n, estallido, marca limpia, iris; unos 13 fps medidos con `screenrecord` en el emulador, no representativo de un teléfono), Bienvenida (6 páginas y final), Hoy (papel y tinta), Ajustes (buscador, zona de peligro, tema, idioma), IA y proveedores, asistente (inicio, lista completa con buscador y segmentos, clave detectada, prueba con la red rechazada con `iptables` para el uid de la app: «no responde» con Reintentar y Cambiar la clave; Atrás por pasos), Emparejar (introducción, permiso de cámara denegado, hoja de código a mano), Lectura con lente abierta y cerrada y hoja de Análisis tras desplazar, Conexión en Directa y Tor (arranque en frío en 18 s con dependencias a opt 2, «sin cambios desde hace N s», «Tarda más de lo normal» a 35 s, bloqueo diagnosticado, fallo con Reintentar, Usar conexión directa y Restablecer Tor).
+
+### No verificado
+Escaneo real de QR, apretón de manos y huella (no hay par); asistente con clave válida y análisis real (sin proveedores reales); «Restablecer Tor» pulsado; arranque tibio medido (solo visto en los registros); 60 fps y degradación de calidad en un dispositivo real; gesto atrás predictivo; arm64 en ejecución; esqueleto de Hoy (los datos llegan antes de poder capturarlo).
+
+### Diferencias con los mockups que quedan
+Pantalla final de la Bienvenida sin anillo ni fragmentos visibles en la captura y alineada a la izquierda; resumen «Tu análisis» de la pantalla IA claro (no la tarjeta oscura); el asistente no tiene el indicador de tres segmentos ni el botón Pegar; la tarjeta Conexión no tiene el porcentaje grande ni la lista de cuatro fases con tiempos de M21; el botón «Conectar un proveedor» de IA no ocupa todo el ancho.
+
+### Rendimiento
+APK de depuración: 203,4 MiB (arm64) y 203,6 MiB (x86_64); `libnp_app_lib.so` 193 MiB almacenada sin comprimir. Con `llvm-strip --strip-unneeded` la biblioteca baja a 52,8 MiB (unos 18 MiB comprimida): estimación de un APK de release arm64 de 25 a 35 MiB si el perfil release se parece (no compilado). Arranque en frío hasta el fin del splash: 4,0 a 4,6 s en el emulador (`am start -W`), más 3 s de intro la primera vez. Memoria: PSS 146 a 180 MiB (RSS 290 a 320 MiB) con Hoy abierto. El APK incremental de Gradle puede llegar a 416 MiB por relleno al sustituir la biblioteca: borrar el `.apk` antes de compilar da el tamaño real.

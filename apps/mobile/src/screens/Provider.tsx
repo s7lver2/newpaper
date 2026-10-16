@@ -18,7 +18,7 @@ import { ipc } from '../ipc';
 import { go } from '../router';
 import { Bar } from './Bar';
 import { ProviderLogo } from '../providers/Logo';
-import { markConnected, runTest, storeKey, testModel } from '../providers/connect';
+import { connectedIds, forgetKey, markConnected, runTest, storeKey, testModel } from '../providers/connect';
 import { useI18n } from '@newpaper/i18n/react';
 
 type Step = 'home' | 'all' | 'key' | 'local' | 'test' | 'start' | 'done';
@@ -56,6 +56,15 @@ export function Provider() {
   stepRef.current = step;
   const ctx = useRef<{ local: boolean; query: string }>({ local: false, query: '' });
   ctx.current = { local: chosen?.type === 'local', query };
+  // Clave guardada para la prueba pero nunca dada por conectada (prueba fallida, se sale del asistente): se borra del llavero.
+  const stored = useRef<string | null>(null);
+  useEffect(
+    () => () => {
+      const id = stored.current;
+      if (id) void connectedIds().then((ids) => (ids.includes(id) ? undefined : forgetKey(id)));
+    },
+    [],
+  );
   const forward = (s: Step) => {
     history.pushState({ npStep: true }, '');
     depth.current += 1;
@@ -133,7 +142,10 @@ export function Provider() {
     setResult(null);
     const slowTimer = window.setTimeout(() => setSlow(true), 3000);
     try {
-      if (p.type === 'cloud') await storeKey(p, key);
+      if (p.type === 'cloud') {
+        await storeKey(p, key);
+        if (key.trim()) stored.current = p.id;
+      }
       // La clave ya está en el llavero: no se queda en el estado de la pantalla.
       setKey('');
       setTyped('');
@@ -153,6 +165,7 @@ export function Provider() {
     }
     const localModels = chosen.type === 'local' && pc ? { [chosen.id]: pc.models } : {};
     const a = await markConnected(chosen, preset, localModels);
+    stored.current = null;
     await ipc.settingsSet('ai.monthlyLimitUsd', limit > 0 ? limit : null);
     setAssignments(a);
     forward('done');
