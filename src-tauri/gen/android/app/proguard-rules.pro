@@ -19,3 +19,12 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# newpaper: the native library resolves these by name over JNI and the Tauri plugin
+# manager finds the plugin and its @Command methods by reflection; R8 must not rename or drop them.
+-keep class app.newpaper.mobile.** { *; }
+-keepclasseswithmembernames class * { native <methods>; }
+-keep class app.newpaper.MainActivity { *; }
+-keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
