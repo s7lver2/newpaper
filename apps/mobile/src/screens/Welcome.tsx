@@ -1,6 +1,6 @@
 import { useI18n } from '@newpaper/i18n/react';
 import { useReducedMotion } from '@newpaper/ui-kit';
-import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent, type ReactNode } from 'react';
 import { ipc } from '../ipc';
 import { go } from '../router';
 import { barsOverDark } from '../theme';
@@ -75,6 +75,9 @@ export function Welcome() {
   const [ia, setIa] = useState<IaChoice>('later');
   const [topics, setTopics] = useState<string[]>([]);
   const [done, setDone] = useState(false);
+  // `moving`: hay una transición de página en curso (o un arrastre); en reposo solo la página activa es visible y enfocable.
+  const [moving, setMoving] = useState(false);
+  const track = useRef<HTMLDivElement | null>(null);
   const start = useRef<{ x: number; id: number } | null>(null);
   const width = useRef(1);
 
@@ -85,6 +88,34 @@ export function Welcome() {
     barsOverDark(true);
     return () => barsOverDark(false);
   }, [intro]);
+
+  const firstPage = useRef(true);
+  const isDragging = drag !== null;
+  // Layout effect: `moving` se activa antes de pintar, así la página que sale no parpadea oculta un fotograma.
+  useLayoutEffect(() => {
+    if (firstPage.current) {
+      firstPage.current = false;
+      return;
+    }
+    if (reduced) {
+      setMoving(false);
+      return;
+    }
+    setMoving(true);
+    if (isDragging) return;
+    const el = track.current;
+    const end = (e?: Event) => {
+      if (e && (e.target as HTMLElement).dataset?.slide !== String(page)) return;
+      setMoving(false);
+    };
+    el?.addEventListener('transitionend', end);
+    // Respaldo si la transición no llega a ejecutarse (pestaña en segundo plano, ajuste del sistema).
+    const fallback = window.setTimeout(() => end(), 760);
+    return () => {
+      el?.removeEventListener('transitionend', end);
+      window.clearTimeout(fallback);
+    };
+  }, [page, reduced, isDragging]);
 
   const clamp = (n: number) => Math.min(PAGES - 1, Math.max(0, n));
   const onDown = (e: RPointerEvent<HTMLDivElement>) => {
@@ -127,9 +158,9 @@ export function Welcome() {
       {page < 3 ? (
         <button type="button" className="m-skip" onClick={() => setPage(3)}>{t('mobile.welcome.skip')}</button>
       ) : null}
-      <div className="m-welcome-track" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
+      <div ref={track} className="m-welcome-track" onPointerDown={onDown} onPointerMove={onMove} onPointerUp={onUp} onPointerCancel={onUp}>
         {/* Cada página lleva --p (posición respecto al centro): las capas se desplazan a ritmos distintos. */}
-        <div className={`m-slide m-slide-intro${page === 0 ? ' active' : ''}${dragging ? ' dragging' : ''}`} style={slide(0)} aria-hidden={page !== 0}>
+        <div className={`m-slide m-slide-intro${page === 0 ? ' active' : ''}${dragging ? ' dragging' : ''}${page !== 0 && !moving && !dragging ? ' hide' : ''}`} style={slide(0)} aria-hidden={page !== 0} inert={page !== 0 || undefined} data-slide={0}>
           <div className="m-art m-art-intro">
             <span className="m-intro-mark"><Mark size={72} /></span>
           </div>
@@ -144,7 +175,7 @@ export function Welcome() {
           </div>
         </div>
 
-        <div className={`m-slide${page === 1 ? ' active' : ''}${dragging ? ' dragging' : ''}`} style={slide(1)} aria-hidden={page !== 1}>
+        <div className={`m-slide${page === 1 ? ' active' : ''}${dragging ? ' dragging' : ''}${page !== 1 && !moving && !dragging ? ' hide' : ''}`} style={slide(1)} aria-hidden={page !== 1} inert={page !== 1 || undefined} data-slide={1}>
           <div className="m-art">
             <div className="m-wcard" aria-hidden="true">
               <p className="m-kicker">{t('mobile.welcome.p2.kicker')}</p>
@@ -179,7 +210,7 @@ export function Welcome() {
           </div>
         </div>
 
-        <div className={`m-slide${page === 2 ? ' active' : ''}${dragging ? ' dragging' : ''}`} style={slide(2)} aria-hidden={page !== 2}>
+        <div className={`m-slide${page === 2 ? ' active' : ''}${dragging ? ' dragging' : ''}${page !== 2 && !moving && !dragging ? ' hide' : ''}`} style={slide(2)} aria-hidden={page !== 2} inert={page !== 2 || undefined} data-slide={2}>
           <div className="m-art">
             <p className="m-lens-demo">
               {t('mobile.welcome.p3.sample')
@@ -195,7 +226,7 @@ export function Welcome() {
           </div>
         </div>
 
-        <div className={`m-slide${page === 3 ? ' active' : ''}${dragging ? ' dragging' : ''}`} style={slide(3)} aria-hidden={page !== 3}>
+        <div className={`m-slide${page === 3 ? ' active' : ''}${dragging ? ' dragging' : ''}${page !== 3 && !moving && !dragging ? ' hide' : ''}`} style={slide(3)} aria-hidden={page !== 3} inert={page !== 3 || undefined} data-slide={3}>
           <div className="m-art">
             <div className="m-chat" aria-hidden="true">
               <p className="m-chat-q">{t('mobile.welcome.p4.question')}</p>
@@ -209,7 +240,7 @@ export function Welcome() {
           </div>
         </div>
 
-        <div className={`m-slide${page === 4 ? ' active' : ''}${dragging ? ' dragging' : ''}`} style={slide(4)} aria-hidden={page !== 4}>
+        <div className={`m-slide${page === 4 ? ' active' : ''}${dragging ? ' dragging' : ''}${page !== 4 && !moving && !dragging ? ' hide' : ''}`} style={slide(4)} aria-hidden={page !== 4} inert={page !== 4 || undefined} data-slide={4}>
           <div className="m-art m-topics" role="group" aria-label={t('mobile.welcome.p5.title')}>
             {TOPICS.map((k, i) => {
               const on = topics.includes(k);
@@ -237,7 +268,7 @@ export function Welcome() {
           </div>
         </div>
 
-        <div className={`m-slide${page === 5 ? ' active' : ''}${dragging ? ' dragging' : ''}`} style={slide(5)} aria-hidden={page !== 5}>
+        <div className={`m-slide${page === 5 ? ' active' : ''}${dragging ? ' dragging' : ''}${page !== 5 && !moving && !dragging ? ' hide' : ''}`} style={slide(5)} aria-hidden={page !== 5} inert={page !== 5 || undefined} data-slide={5}>
           <div className="m-art m-ia" role="radiogroup" aria-label={t('mobile.welcome.p6.title')}>
             {IA_CHOICES.map((v, i) => (
               <button
