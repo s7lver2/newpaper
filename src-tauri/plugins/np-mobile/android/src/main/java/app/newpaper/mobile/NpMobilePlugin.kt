@@ -37,9 +37,60 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
     /** Falso si Rust pidió un proxy (o el bloqueo) y la webview no pudo aplicarlo: entonces no se abre la webview original. */
     @Volatile private var proxyOk = true
 
+    /** Últimos márgenes de las barras del sistema, en píxeles CSS (dp). La interfaz los pide al arrancar y los recibe por evento. */
+    @Volatile private var lastInsets = JSObject().put("top", 0).put("bottom", 0).put("left", 0).put("right", 0)
+
     override fun load(webView: WebView) {
         pending = textOf(activity.intent)
         watchNetwork()
+        watchInsets()
+    }
+
+    /**
+     * `env(safe-area-inset-*)` no siempre incluye las barras del sistema en la WebView (depende de la versión): se miden
+     * aquí (barras del sistema y recorte de pantalla) y la interfaz las usa como mínimo.
+     */
+    private fun watchInsets() {
+        val content = activity.findViewById<android.view.View>(android.R.id.content) ?: return
+        val density = activity.resources.displayMetrics.density
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(content) { v, insets ->
+            val b = insets.getInsets(androidx.core.view.WindowInsetsCompat.Type.systemBars() or androidx.core.view.WindowInsetsCompat.Type.displayCutout())
+            val next = JSObject()
+                .put("top", Math.round(b.top / density))
+                .put("bottom", Math.round(b.bottom / density))
+                .put("left", Math.round(b.left / density))
+                .put("right", Math.round(b.right / density))
+            if (next.toString() != lastInsets.toString()) {
+                lastInsets = next
+                trigger("insets", next)
+            }
+            // Se devuelven sin tocar: el resto de la jerarquía los recibe igual que antes.
+            androidx.core.view.ViewCompat.onApplyWindowInsets(v, insets)
+        }
+        androidx.core.view.ViewCompat.requestApplyInsets(content)
+    }
+
+    @Command fun insets(invoke: Invoke) {
+        invoke.resolve(lastInsets)
+    }
+
+    /** Datos del dispositivo para «Acerca de» y el informe de errores. Nada de identificadores del equipo. */
+    @Command fun deviceInfo(invoke: Invoke) {
+        val webview = try {
+            if (android.os.Build.VERSION.SDK_INT >= 26) WebView.getCurrentWebViewPackage()?.let { "${it.packageName} ${it.versionName}" } else null
+        } catch (e: Exception) {
+            null
+        }
+        invoke.resolve(
+            JSObject()
+                .put("webview", webview)
+                .put("androidRelease", android.os.Build.VERSION.RELEASE)
+                .put("sdk", android.os.Build.VERSION.SDK_INT)
+                .put("manufacturer", android.os.Build.MANUFACTURER)
+                .put("model", android.os.Build.MODEL)
+                .put("abi", android.os.Build.SUPPORTED_ABIS.firstOrNull())
+                .put("debuggable", (activity.applicationInfo.flags and android.content.pm.ApplicationInfo.FLAG_DEBUGGABLE) != 0),
+        )
     }
 
     /**

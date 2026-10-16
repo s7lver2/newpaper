@@ -85,6 +85,10 @@
     "allow-mobile-original-close",
     "allow-mobile-ollama-probe",
     "allow-mobile-use-pc-ollama",
-    "allow-mobile-set-system-bars"
+    "allow-mobile-set-system-bars",
+    "allow-mobile-insets",
+    "allow-mobile-block-counts",
+    "allow-mobile-block-reset",
+    "allow-mobile-about"
   ]
 }

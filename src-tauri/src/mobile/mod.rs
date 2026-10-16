@@ -1,6 +1,7 @@
 //! Subproyecto 8: integración móvil (Android primero; iOS queda con su `cfg` preparado).
 #[cfg(target_os = "android")]
 pub mod adblock_jni;
+pub mod about;
 pub mod commands;
 #[cfg(target_os = "android")]
 pub mod net_jni;
@@ -11,6 +12,9 @@ use std::sync::{Arc, OnceLock};
 
 use np_net::NetController;
 use tauri::{AppHandle, App, Manager, Wry};
+
+/// Contadores de anuncios y rastreadores bloqueados (los incrementa el puente JNI y los vuelca `privacy::spawn_stats_flush`).
+pub static KINDS: OnceLock<Arc<np_adblock::kind_stats::KindCounter>> = OnceLock::new();
 
 /// Red compartida con el puente JNI (cambios de red desde el plugin Kotlin).
 pub static NET: OnceLock<Arc<NetController>> = OnceLock::new();
@@ -31,6 +35,7 @@ pub fn lifecycle(app: &AppHandle<Wry>, suspended: bool) {
 pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     let net = app.state::<Arc<np_net::NetController>>().inner().clone();
     let _ = NET.set(net.clone());
+    let _ = KINDS.set(Arc::new(np_adblock::kind_stats::KindCounter::new()));
     proxy::follow(app.handle().clone(), net);
     #[cfg(target_os = "android")]
     {

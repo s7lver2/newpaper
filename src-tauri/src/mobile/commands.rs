@@ -6,8 +6,8 @@ use np_net::NetController;
 use np_shell::extensions::{HttpPurpose, ShellExtensions};
 use np_store::Store;
 use serde::{Deserialize, Serialize};
-use tauri::{AppHandle, State, Wry};
-use tauri_plugin_np_mobile::{NpMobileExt, OriginalLabels};
+use tauri::{AppHandle, Manager, State, Wry};
+use tauri_plugin_np_mobile::{DeviceInfo, Insets, NpMobileExt, OriginalLabels};
 
 use crate::error::{CmdError, CmdResult};
 
@@ -108,4 +108,52 @@ pub async fn mobile_use_pc_ollama(proxy: State<'_, Arc<AiProxy>>, store: State<'
     proxy.set_custom(&endpoints).map_err(|e| CmdError::new(e.code(), e.to_string()))?;
     store.set_setting("ai.customEndpoints", &endpoints)?;
     Ok(())
+}
+
+/// Márgenes de las barras del sistema (px CSS), medidos por el plugin nativo.
+#[tauri::command]
+pub async fn mobile_insets(app: AppHandle<Wry>) -> CmdResult<Insets> {
+    app.np_mobile().insets().map_err(|e| CmdError::new("mobile", e.0))
+}
+
+/// Contadores de anuncios y rastreadores bloqueados en la webview original (hoy y en total).
+#[tauri::command]
+pub async fn mobile_block_counts(store: State<'_, Arc<Store>>) -> CmdResult<np_adblock::kind_stats::BlockCounts> {
+    let kinds = super::KINDS.get().ok_or_else(|| CmdError::new("mobile", "counters not ready"))?;
+    let day = np_adblock::stats::today_local();
+    Ok(store.with_conn(|c| kinds.snapshot(c, &day))?)
+}
+
+#[tauri::command]
+pub async fn mobile_block_reset(store: State<'_, Arc<Store>>) -> CmdResult<np_adblock::kind_stats::BlockCounts> {
+    let kinds = super::KINDS.get().ok_or_else(|| CmdError::new("mobile", "counters not ready"))?;
+    store.with_conn(|c| kinds.reset(c))?;
+    let day = np_adblock::stats::today_local();
+    Ok(store.with_conn(|c| kinds.snapshot(c, &day))?)
+}
+
+#[derive(Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct AboutInfo {
+    pub build: super::about::BuildInfo,
+    pub device: DeviceInfo,
+    pub net_mode: String,
+    pub data_bytes: u64,
+}
+
+/// Información de la compilación y del dispositivo para «Acerca de».
+#[tauri::command]
+pub async fn mobile_about(app: AppHandle<Wry>, net: State<'_, Arc<NetController>>) -> CmdResult<AboutInfo> {
+    let device = app.np_mobile().device_info().unwrap_or_default();
+    let net_mode = serde_json::to_value(net.status().mode).ok().and_then(|v| v.as_str().map(String::from)).unwrap_or_default();
+    let mut dirs = Vec::new();
+    for d in [app.path().app_local_data_dir().ok(), app.path().app_data_dir().ok()].into_iter().flatten() {
+        if !dirs.contains(&d) {
+            dirs.push(d);
+        }
+    }
+    let data_bytes = tauri::async_runtime::spawn_blocking(move || dirs.iter().map(|d| super::about::dir_size(d)).sum::<u64>())
+        .await
+        .unwrap_or(0);
+    Ok(AboutInfo { build: super::about::build_info(), device, net_mode, data_bytes })
 }

@@ -32,6 +32,26 @@ pub enum ProxyArg {
     Block,
 }
 
+#[derive(Debug, Clone, Copy, Default, Serialize, Deserialize)]
+pub struct Insets {
+    pub top: i32,
+    pub bottom: i32,
+    pub left: i32,
+    pub right: i32,
+}
+
+#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase", default)]
+pub struct DeviceInfo {
+    pub webview: Option<String>,
+    pub android_release: String,
+    pub sdk: i32,
+    pub manufacturer: String,
+    pub model: String,
+    pub abi: Option<String>,
+    pub debuggable: bool,
+}
+
 #[derive(Deserialize)]
 struct Opt {
     value: Option<String>,
@@ -65,6 +85,13 @@ impl<R: Runtime> NpMobile<R> {
     /// Iconos de las barras del sistema: claros sobre fondo oscuro (tinta) u oscuros sobre papel.
     pub fn system_bars(&self, dark_background: bool) -> Result<(), MobileError> {
         self.call::<serde_json::Value>("systemBars", serde_json::json!({ "dark": dark_background })).map(|_| ())
+    }
+    /// Márgenes de las barras del sistema en píxeles CSS.
+    pub fn insets(&self) -> Result<Insets, MobileError> {
+        self.call("insets", ())
+    }
+    pub fn device_info(&self) -> Result<DeviceInfo, MobileError> {
+        self.call("deviceInfo", ())
     }
     pub fn multicast(&self, on: bool) -> Result<(), MobileError> {
         self.call::<serde_json::Value>("multicast", serde_json::json!({ "on": on })).map(|_| ())

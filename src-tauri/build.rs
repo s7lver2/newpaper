@@ -22,11 +22,42 @@ const APP_COMMANDS: &[&str] = &[
     "update_status", "update_check", "update_install_now", "update_set_channel", "update_ack_notes",
     "content_status", "content_check_now", "content_revert",
     "first_run_status", "first_run_apply", "bookmarks_scan", "ollama_pull", "open_default_apps",
-    "mobile_fetch_page", "mobile_pending_share", "mobile_original_open", "mobile_original_close", "mobile_ollama_probe", "mobile_use_pc_ollama", "mobile_set_system_bars",
+    "mobile_fetch_page", "mobile_pending_share", "mobile_original_open", "mobile_original_close", "mobile_ollama_probe", "mobile_use_pc_ollama", "mobile_set_system_bars", "mobile_block_counts", "mobile_block_reset", "mobile_about", "mobile_insets",
     "sync_status", "sync_set_enabled", "sync_set_name", "sync_pair_start", "sync_pair_cancel", "sync_pair_with", "sync_peers", "sync_peer_update", "sync_revoke", "sync_now", "sync_export", "sync_import",
 ];
 
+/// Datos de compilación para la pantalla «Acerca de» del móvil: commit corto de git (o `dev`), momento de la compilación
+/// y versiones de las dependencias principales leídas de `Cargo.lock`. Nada de esto es secreto.
+fn emit_build_info() {
+    use std::process::Command;
+    let git = |args: &[&str]| Command::new("git").args(args).output().ok().filter(|o| o.status.success()).map(|o| String::from_utf8_lossy(&o.stdout).trim().to_owned());
+    let hash = git(&["rev-parse", "--short=8", "HEAD"]).filter(|h| !h.is_empty()).unwrap_or_else(|| "dev".into());
+    let dirty = git(&["status", "--porcelain", "--untracked-files=no"]).is_some_and(|s| !s.is_empty());
+    let epoch = std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0);
+    println!("cargo:rustc-env=NP_GIT_HASH={hash}");
+    println!("cargo:rustc-env=NP_GIT_DIRTY={dirty}");
+    println!("cargo:rustc-env=NP_BUILD_EPOCH={epoch}");
+    println!("cargo:rustc-env=NP_BUILD_PROFILE={}", std::env::var("PROFILE").unwrap_or_else(|_| "debug".into()));
+    let lock = std::fs::read_to_string("Cargo.lock").unwrap_or_default();
+    let mut deps = Vec::new();
+    for name in ["tauri", "arti-client", "adblock", "rusqlite", "reqwest", "rustls", "tokio"] {
+        let needle = format!("name = \"{name}\"
+version = \"");
+        if let Some(i) = lock.find(&needle) {
+            let rest = &lock[i + needle.len()..];
+            if let Some(end) = rest.find('"') {
+                deps.push(format!("{name}={}", &rest[..end]));
+            }
+        }
+    }
+    println!("cargo:rustc-env=NP_DEPS={}", deps.join(","));
+    println!("cargo:rerun-if-changed=../.git/HEAD");
+    println!("cargo:rerun-if-changed=../.git/logs/HEAD");
+    println!("cargo:rerun-if-changed=Cargo.lock");
+}
+
 fn main() {
+    emit_build_info();
     tauri_build::try_build(
         tauri_build::Attributes::new().app_manifest(tauri_build::AppManifest::new().commands(APP_COMMANDS)),
     )

@@ -15,6 +15,10 @@ pub mod system;
 /// Puente móvil (subproyecto 8): intent de compartir, almacén seguro, webview original.
 #[cfg(mobile)]
 pub mod mobile;
+/// Las pruebas puras de «Acerca de» también corren en el PC.
+#[cfg(all(test, not(mobile)))]
+#[path = "mobile/about.rs"]
+mod about_tests;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -227,6 +231,10 @@ pub fn run() {
         mobile::commands::mobile_ollama_probe,
         mobile::commands::mobile_use_pc_ollama,
         mobile::commands::mobile_set_system_bars,
+        mobile::commands::mobile_insets,
+        mobile::commands::mobile_block_counts,
+        mobile::commands::mobile_block_reset,
+        mobile::commands::mobile_about,
     ]);
     builder
         .build(tauri::generate_context!())
