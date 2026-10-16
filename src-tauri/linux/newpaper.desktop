@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name={{name}}
+GenericName=News reader
+Comment=Private news reader and browser
+Exec={{exec}} %U
+Icon={{icon}}
+Terminal=false
+Categories=Network;News;WebBrowser;
+StartupWMClass={{exec}}
+# Solo enlaces web (http y https): igual que el registro de navegador del instalador de Windows. No se declara
+# text/html: newpaper no abre archivos locales (el esquema file está bloqueado).
+MimeType=x-scheme-handler/http;x-scheme-handler/https;

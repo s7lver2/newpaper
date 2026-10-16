@@ -47,6 +47,9 @@ jobs:
         run: cargo check --manifest-path src-tauri/Cargo.toml -p np-store -p np-feeds -p np-lexicon -p np-wayback -p np-net -p np-adblock
       - name: Pruebas de crates portables
         run: cargo test --manifest-path src-tauri/Cargo.toml -p np-store -p np-feeds -p np-lexicon -p np-wayback -p np-adblock
-      - name: Aplicación completa (aún sin anfitrión Linux; se espera que falle)
+      - name: Aplicación completa (anfitrión Linux nuevo; sin probar en una sesión gráfica, ver 2026-10-16-linux-auditoria.md)
         continue-on-error: true
         run: cargo check --manifest-path src-tauri/Cargo.toml -p np-shell -p np-app
+      - name: Pruebas de np-shell y np-app en Linux (sysmem, Wi-Fi/corriente, perfiles)
+        continue-on-error: true
+        run: cargo test --manifest-path src-tauri/Cargo.toml -p np-shell -p np-app
