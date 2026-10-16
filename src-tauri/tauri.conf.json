@@ -32,7 +32,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDg4M0M5Q0M3Mjk2RUM3QzMKUldURHgyNHB4NXc4aUpqbXFlaUd1SzlkWWw0RFRxY0w2eSs1SXpOUS9KbFhCT3hwK2JoYXZVaW0K",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDJDNDk1N0U2MkM2RkQ5ODEKUldTQjJXOHM1bGRKTEtwd2ZscjJCcjZYVXNPSGFOYXh2RDNOREJrYTVyYTk2UU8wbnFLYTFHQlIK",
       "endpoints": [
         "https://github.com/nickespro130/newpaper/releases/latest/download/latest.json"
       ],
