@@ -10,7 +10,7 @@ Principios: calmado y editorial (papel, Newsreader para voz, IBM Plex para inter
 node design/mockups/serve.mjs 5611        # http://127.0.0.1:5611/
 ```
 
-Parámetro `?s=` para saltar a un estado (solo en el servidor local, no cambia el artboard publicado): Arranque `?s=<ms>|short|reduce` (+ `&ui=0` oculta los controles de demo), Bienvenida `?s=0..5|done` (+ `&rm=1` simula movimiento reducido), Emparejar `?s=1|2|found|manual|denied|shake|3|4|sync|done`, Proveedor `?s=home|all|search|open|local|key|keykb|how|login|loginerr|server|ollama|ollama-unpaired|test|test-slow|ok|fail|fail-net|fail-quota|fail-local|preset|adv|picker|done`, IA `?s=list|empty|edit|edit-login|testing|test-ok|test-bad|disc|offline`, Conexión `?s=direct|boot|warm|stall|slow|failed|ready|ready-warm|netchange|reset`, Inicio `?s=ready|toast`, Ajustes `?s=ia|pipe|net|blk|src|stage|danger`, Analisis `?s=done|open`. Todos aceptan `rm=1` donde hay movimiento propio.
+Parámetro `?s=` para saltar a un estado (solo en el servidor local, no cambia el artboard publicado): Arranque `?s=<ms>|short|reduce` (+ `&ui=0` oculta los controles de demo), Bienvenida `?s=0..5|done` (+ `&rm=1` simula movimiento reducido), Emparejar `?s=1|2|found|manual|denied|shake|3|4|sync|done`, Proveedor `?s=home|all|search|open|local|key|keykb|how|login|loginerr|server|ollama|ollama-unpaired|test|test-slow|ok|fail|fail-net|fail-quota|fail-local|preset|adv|picker|done`, IA `?s=list|empty|edit|edit-login|testing|test-ok|test-bad|disc|offline`, Conexión `?s=direct|boot|warm|stall|slow|failed|ready|ready-warm|netchange|reset`, Inicio `?s=ready|toast`, Ajustes `?s=ia|pipe|net|blk|src|about|stage|danger`, Analisis `?s=done|open`. Todos aceptan `rm=1` donde hay movimiento propio.
 
 | Artboard | URL | Qué enseña |
 |---|---|---|
@@ -247,6 +247,16 @@ P1
 P2
 26. Deshacer al desconectar (diferir el borrado del llavero).
 27. Ajustar el motor de la intro según el rendimiento medido en un dispositivo de gama baja (`setQuality(1|2)` y menos hojas con `navigator.hardwareConcurrency` ≤ 4 o si la media de fotogramas supera 14–20 ms).
+
+## Pulido: ajustes, bloqueo, info y ojo (2026-10-16)
+
+Cambios tras usar la APK en un móvil real. Artboard: `Movil-Ajustes.dc.html` (`?s=pipe|blk|about`).
+
+- **Márgenes del sistema (abajo).** `--m-top` y `--m-bottom` son el mayor entre `env(safe-area-inset-*)` y `--np-inset-*`, que mide el plugin nativo (`NpMobilePlugin.watchInsets`, barras del sistema y recorte, en px CSS) y publica `insets.ts` (comando `mobile_insets` al arrancar y evento `insets`). `--m-bottom` nunca baja de 20 px. Las pantallas apiladas (sin barra de pestañas) terminan con `padding-bottom: --m-bottom + 24 px`; las raíces de pestaña, 24 px (la barra de pestañas ya queda fuera de `.m-main`). Las hojas usan `--m-bottom` en su relleno; el aviso (`.m-toast`) flota sobre la barra de pestañas solo si está (`data-tabs`). La última fila de cualquier pantalla con scroll debe quedar visible por encima de los botones o el gesto del sistema.
+- **Límite mensual: un solo sitio.** Se cambia solo en IA y proveedores (control deslizante, más «gastado este mes»). Pipeline muestra una fila de solo lectura («Límite mensual · Límite de X al mes · Gastado este mes») que lleva a esa pantalla; el asistente de proveedor ya no lo pide ni lo sobrescribe (solo explica dónde se fija). Fuente única: el ajuste `ai.monthlyLimitUsd`.
+- **Bloqueo: contadores.** Dos números grandes con cuenta ascendente (Anuncios bloqueados en rojo, Rastreadores bloqueados en azul, totales), una línea «Hoy: N anuncios · M rastreadores · desde el …» y «Restablecer contadores» con hoja de confirmación. Estado vacío honesto: los contadores cuentan lo que se bloquea en «Ver original» (el lector de newpaper no carga anuncios). Clasificación: un bloqueo cuenta como rastreador si lo bloquean también las listas de privacidad (EasyPrivacy, uBO privacy); el resto, anuncio. Se guardan en la tabla local `block_kind_stats` (por día y categoría, no se sincroniza), con volcado cada 5 s.
+- **Acerca de.** El botón «newpaper · Versión móvil · Android» de Ajustes abre una pantalla con nombre, versión, tipo de compilación (depuración/final), fecha, commit corto (`dev` si no hay git; `+` si había cambios sin confirmar), Android y API, dispositivo, arquitectura, WebView del sistema, idioma, modo de red, tamaño de los datos, versiones de componentes principales (de `Cargo.lock` en la compilación) y «Copiar información» (resumen sin claves, IP ni identificadores). Filas con entrada escalonada. Sin enlaces: no hay ninguno en la configuración del repositorio y no se inventan.
+- **Ojo sin proveedor.** Sin ningún proveedor conectado (ni `ai.connected` ni el Ollama del PC) el ojo se queda cerrado y al tocarlo se abre la hoja «Primero conecta un proveedor de IA» con «Conectar un proveedor» (asistente) y «Ahora no». Lo mismo con el banner de análisis del lector y con el campo del agente; no se lanza el análisis rápido al abrir. Se actualiza solo al conectar o desconectar. Pendiente de maqueta propia: la hoja usa el estilo de las hojas de confirmación (`.m-sheet`, ojo cerrado con un pequeño cabeceo).
 
 ## Preguntas abiertas
 
