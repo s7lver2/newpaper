@@ -4,6 +4,10 @@ pub mod events;
 mod win;
 #[cfg(windows)]
 pub use win::{clipboard_text, harden_ui};
+#[cfg(target_os = "linux")]
+mod linux;
+#[cfg(target_os = "linux")]
+pub use linux::{clipboard_text, harden_ui, set_content_filter};
 
 use std::{
     collections::{HashMap, HashSet},
@@ -462,8 +466,14 @@ impl TabManager {
         // bloqueo de anuncios): si no, la primera carga puede adelantarse a ellos.
         let first_url = url.clone();
         let blank = url::Url::parse("about:blank").expect("about:blank");
-        let mut builder = WebviewBuilder::new(label.clone(), WebviewUrl::External(blank))
-            .background_color(self.background())
+        let builder = WebviewBuilder::new(label.clone(), WebviewUrl::External(blank)).background_color(self.background());
+        // Linux: WebKitGTK no tiene `window.chrome.webview`; el puente va antes que cualquier otro script.
+        #[cfg(target_os = "linux")]
+        let builder = {
+            let b = builder.initialization_script(linux::BRIDGE_SHIM);
+            if profile.proxy.is_some() { b.initialization_script(linux::NO_PREFETCH_SHIM) } else { b }
+        };
+        let mut builder = builder
             .initialization_script(&format!("window.__npPT = {};", self.transitions_on()))
             .initialization_script(READY_SCRIPT)
             .initialization_script(CONTENT_SCRIPT)
@@ -473,6 +483,11 @@ impl TabManager {
             .on_navigation(|u| matches!(u.scheme(), "http" | "https") || u.as_str() == "about:blank");
         for js in self.ext.init_scripts() {
             builder = builder.initialization_script(&js);
+        }
+        // Linux: el proxy de Tor (SOCKS5 local) se pasa al motor; no hay `--proxy-server` de Chromium.
+        #[cfg(target_os = "linux")]
+        if let Some(p) = &profile.proxy {
+            builder = builder.proxy_url(url::Url::parse(p).map_err(|e| ShellError::Tauri(format!("invalid proxy url: {e}")))?);
         }
         let app = self.app.clone();
         builder = builder.on_page_load(move |wv, payload| {
@@ -511,6 +526,23 @@ impl TabManager {
         self.creating.fetch_sub(1, Ordering::SeqCst);
         let webview = added?;
         let _ = webview.hide();
+        // Linux: se reubica en el `Overlay` y se endurece. **Falla cerrado**: si la pestaña va por Tor y no se puede
+        // garantizar el proxy, la webview se cierra y no se carga nada (nunca una conexión directa por error).
+        #[cfg(target_os = "linux")]
+        {
+            let (tx, rx) = tokio::sync::oneshot::channel();
+            linux::attach(&self.app, id, &webview, (r.x, r.y, r.width.max(1.0), r.height.max(1.0)), profile.proxy.clone(), tx);
+            let setup = match tokio::time::timeout(Duration::from_secs(10), rx).await {
+                Ok(Ok(res)) => res,
+                Ok(Err(_)) => Err("webview setup was dropped".to_string()),
+                Err(_) => Err("webview setup timed out".to_string()),
+            };
+            if let Err(e) = setup {
+                tracing::error!(tab = id, error = %e, "refusing to load content: the webview could not be set up safely");
+                let _ = webview.close();
+                return Err(ShellError::Tauri(format!("webview setup failed, nothing was loaded: {e}")));
+            }
+        }
         if let Some(prev) = self.labels.lock().expect("labels lock").insert(id, label) {
             self.retired.lock().expect("retired lock").entry(id).or_default().push(prev);
         }
@@ -677,7 +709,14 @@ impl TabManager {
             let png = tokio::time::timeout(transition::CAPTURE_TIMEOUT, rx).await.ok()?.ok()??;
             Some(format!("data:image/png;base64,{}", base64::engine::general_purpose::STANDARD.encode(png)))
         }
-        #[cfg(not(windows))]
+        #[cfg(target_os = "linux")]
+        {
+            use base64::Engine;
+            let rx = linux::capture_png(wv);
+            let png = tokio::time::timeout(transition::CAPTURE_TIMEOUT, rx).await.ok()?.ok()??;
+            Some(format!("data:image/png;base64,{}", base64::engine::general_purpose::STANDARD.encode(png)))
+        }
+        #[cfg(not(any(windows, target_os = "linux")))]
         {
             let _ = wv;
             None
@@ -863,7 +902,7 @@ impl TabManager {
         };
         let rect = if self.transitioning.lock().expect("transition lock").contains(&id) { Self::offscreen(rect) } else { rect };
         if let Some(wv) = self.webview(id) {
-            let _ = wv.set_bounds(rect);
+            set_webview_bounds(&wv, rect);
         }
     }
 
@@ -878,7 +917,7 @@ impl TabManager {
             let away = self.transitioning.lock().expect("transition lock").contains(&id);
             let rect = if away { Self::offscreen(rect) } else { rect };
             for wv in self.webview(id).into_iter().chain(self.retired_webviews(id)) {
-                let _ = wv.set_bounds(rect);
+                set_webview_bounds(&wv, rect);
             }
         }
     }
@@ -1047,12 +1086,15 @@ impl TabManager {
         }
     }
 
+    /// Cabeceras de la respuesta principal: solo las rellena WebView2 (WebKitGTK no las entrega por evento).
+    #[cfg_attr(not(windows), allow(dead_code))]
     fn is_main_document(&self, id: TabId, label: &str, uri: &str) -> bool {
         let strip = |u: &str| u.split('#').next().unwrap_or(u).to_string();
         self.is_current(id, label) && self.main_uri.lock().expect("main uri lock").get(&id).map(|m| strip(m)) == Some(strip(uri))
     }
 
     /// Respuesta de la navegación principal (cabeceras de petición y respuesta, ya sin datos sensibles).
+    #[cfg_attr(not(windows), allow(dead_code))]
     pub(crate) fn on_main_response(&self, id: TabId, label: &str, uri: &str, status: u16, request: &[(String, String)], response: &[(String, String)]) {
         if !self.is_main_document(id, label, uri) {
             return;
@@ -1065,6 +1107,7 @@ impl TabManager {
         self.main_response.lock().expect("main response lock").insert(id, r);
     }
 
+    #[cfg_attr(not(windows), allow(dead_code))]
     pub(crate) fn set_webview2_version(&self, v: String) {
         *self.webview2_version.lock().expect("webview2 version lock") = v;
     }
@@ -1142,6 +1185,19 @@ mod win_tests {
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
         );
     }
+}
+
+/// Mueve y redimensiona una webview hija. En Linux `Webview::set_bounds` no hace nada (Tauri las mete en un `gtk::Box`):
+/// se colocan en el `Overlay` de `linux.rs`.
+fn set_webview_bounds(wv: &Webview, rect: tauri::Rect) {
+    #[cfg(target_os = "linux")]
+    {
+        let scale = wv.window().scale_factor().unwrap_or(1.0);
+        let (p, s) = (rect.position.to_logical::<f64>(scale), rect.size.to_logical::<f64>(scale));
+        linux::set_bounds(wv, p.x, p.y, s.width, s.height);
+    }
+    #[cfg(not(target_os = "linux"))]
+    let _ = wv.set_bounds(rect);
 }
 
 fn should_transition_ctx(m: &TabManager, tab: &TabInfo, id: TabId) -> bool {

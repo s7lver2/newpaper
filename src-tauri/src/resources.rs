@@ -19,12 +19,12 @@ pub struct ResourceState {
     monitor: Mutex<Monitor>,
 }
 
-#[cfg(windows)]
+#[cfg(any(windows, target_os = "linux"))]
 fn measure() -> (u64, u64) {
     (np_shell::sysmem::process_tree_bytes() / MIB, np_shell::sysmem::total_physical_bytes())
 }
 
-#[cfg(not(windows))]
+#[cfg(not(any(windows, target_os = "linux")))]
 fn measure() -> (u64, u64) {
     (0, 0)
 }

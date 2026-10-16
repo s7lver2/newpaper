@@ -24,14 +24,32 @@ const FIRST_RUN_KEY: &str = "device.firstRunDone";
 /// Navegadores cuyos marcadores se pueden importar (solo perfil `Default`).
 const BROWSERS: &[&str] = &["edge", "chrome", "brave"];
 
+/// Perfil `Default` de cada navegador: `%LOCALAPPDATA%` en Windows, `$XDG_CONFIG_HOME` (o `~/.config`) en Linux.
+/// Las versiones Flatpak/Snap guardan sus datos en otra ruta y no se leen (el usuario puede exportar sus marcadores).
 fn bookmarks_file(browser: &str) -> Option<PathBuf> {
-    let base = PathBuf::from(std::env::var_os("LOCALAPPDATA")?);
-    let rel = match browser {
-        "edge" => "Microsoft/Edge/User Data/Default/Bookmarks",
-        "chrome" => "Google/Chrome/User Data/Default/Bookmarks",
-        "brave" => "BraveSoftware/Brave-Browser/User Data/Default/Bookmarks",
-        _ => return None,
-    };
+    #[cfg(windows)]
+    let (base, rel) = (
+        PathBuf::from(std::env::var_os("LOCALAPPDATA")?),
+        match browser {
+            "edge" => "Microsoft/Edge/User Data/Default/Bookmarks",
+            "chrome" => "Google/Chrome/User Data/Default/Bookmarks",
+            "brave" => "BraveSoftware/Brave-Browser/User Data/Default/Bookmarks",
+            _ => return None,
+        },
+    );
+    #[cfg(not(windows))]
+    let (base, rel) = (
+        std::env::var_os("XDG_CONFIG_HOME")
+            .map(PathBuf::from)
+            .filter(|p| p.is_absolute())
+            .or_else(|| std::env::var_os("HOME").map(|h| PathBuf::from(h).join(".config")))?,
+        match browser {
+            "edge" => "microsoft-edge/Default/Bookmarks",
+            "chrome" => "google-chrome/Default/Bookmarks",
+            "brave" => "BraveSoftware/Brave-Browser/Default/Bookmarks",
+            _ => return None,
+        },
+    );
     Some(base.join(rel))
 }
 
@@ -166,6 +184,21 @@ pub async fn ollama_pull(app: AppHandle, model: String) -> CmdResult<()> {
 #[tauri::command]
 pub async fn open_default_apps() -> CmdResult<()> {
     // Abre la página de Configuración directamente; no usa el shell para no interpretar argumentos.
-    std::process::Command::new("explorer.exe").arg("ms-settings:defaultapps").spawn().map_err(|e| CmdError::new("system", e.to_string()))?;
-    Ok(())
+    #[cfg(windows)]
+    {
+        std::process::Command::new("explorer.exe").arg("ms-settings:defaultapps").spawn().map_err(|e| CmdError::new("system", e.to_string()))?;
+        Ok(())
+    }
+    // Linux: el panel de aplicaciones predeterminadas depende del escritorio (GNOME, KDE, COSMIC...); se prueba el
+    // de GNOME/COSMIC y el de KDE. Si no hay ninguno se dice (el usuario lo cambia con `xdg-settings`).
+    #[cfg(not(windows))]
+    {
+        const PANELS: &[(&str, &[&str])] = &[("gnome-control-center", &["default-apps"]), ("cosmic-settings", &[]), ("systemsettings", &["kcm_componentchooser"])];
+        for (cmd, args) in PANELS {
+            if std::process::Command::new(cmd).args(*args).spawn().is_ok() {
+                return Ok(());
+            }
+        }
+        Err(CmdError::new("system", "no settings panel found: set newpaper as the default browser from your desktop settings, or run `xdg-settings set default-web-browser newpaper.desktop`"))
+    }
 }

@@ -47,6 +47,10 @@ tauri-plugin-single-instance = "=2.5.2"
 tauri-plugin-autostart = "=2.7.0"
 sysinfo = "=0.39.6"
 
+# Linux (WebKitGTK): el bloqueo de red se compila a reglas de bloqueo de contenido de WebKit.
+[target.'cfg(target_os = "linux")'.dependencies]
+np-adblock = { path = "crates/np-adblock", features = ["content-blocking"] }
+
 # Móvil (subproyecto 8): escáner QR, plugin nativo y núcleo móvil.
 [target.'cfg(any(target_os = "android", target_os = "ios"))'.dependencies]
 tauri-plugin-barcode-scanner = "=2.5.1"

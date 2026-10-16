@@ -16,8 +16,12 @@ pub const DEFAULT_BROWSER_ARGS: &str = "--disable-features=msWebOOUI,msPdfOOUI,m
 pub struct WebviewProfile {
     /// Subcarpeta de `<app_local_data>/webview/` usada como user data folder de WebView2.
     pub data_dir_name: String,
-    /// Valor completo para `WebviewBuilder::additional_browser_args` (sustituye los de Tauri).
+    /// Valor completo para `WebviewBuilder::additional_browser_args` (sustituye los de Tauri). Solo Windows (WebView2).
     pub additional_browser_args: String,
+    /// Proxy SOCKS5 obligatorio de la webview (`socks5://127.0.0.1:<puerto>`), presente exactamente cuando la pestaña
+    /// va por Tor. Solo lo usa Linux (WebKitGTK no tiene `--proxy-server`); allí, si no se puede aplicar, la webview no
+    /// se crea. En Windows el mismo efecto va dentro de `additional_browser_args`.
+    pub proxy: Option<String>,
 }
 
 pub trait WebviewProfileProvider: Send + Sync {
@@ -119,7 +123,7 @@ impl ShellExtensions {
     pub fn profile_for_tab(&self, tab: TabId) -> WebviewProfile {
         match self.profile.read().expect("ext lock").as_ref() {
             Some(p) => p.profile_for_tab(tab),
-            None => WebviewProfile { data_dir_name: "direct".into(), additional_browser_args: DEFAULT_BROWSER_ARGS.into() },
+            None => WebviewProfile { data_dir_name: "direct".into(), additional_browser_args: DEFAULT_BROWSER_ARGS.into(), proxy: None },
         }
     }
 
@@ -204,7 +208,7 @@ mod tests {
     struct Fixed;
     impl WebviewProfileProvider for Fixed {
         fn profile_for_tab(&self, tab: TabId) -> WebviewProfile {
-            WebviewProfile { data_dir_name: format!("tor-{tab}"), additional_browser_args: "--x".into() }
+            WebviewProfile { data_dir_name: format!("tor-{tab}"), additional_browser_args: "--x".into(), proxy: None }
         }
     }
 

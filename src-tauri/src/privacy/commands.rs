@@ -166,6 +166,9 @@ pub async fn adblock_set_enabled(
 ) -> CmdResult<AdblockStatus> {
     svc.set_enabled(enabled);
     settings::save_adblock_settings(&store, &svc.settings())?;
+    // Linux: el bloqueo vive en WebKit (reglas de bloqueo de contenido), no en un gancho que mira `enabled`.
+    #[cfg(target_os = "linux")]
+    rebuild_blocker(svc.inner().clone(), cache.inner().clone());
     Ok(compute_adblock_status(&cache, &svc.settings()))
 }
 

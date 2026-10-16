@@ -15,6 +15,13 @@ reqwest = { workspace = true }
 tokio = { workspace = true }
 base64 = "0.22"
 
+# Linux: WebKitGTK 4.1 (las mismas versiones que arrastra Tauri/wry; ver Cargo.lock). Necesita libwebkit2gtk-4.1-dev.
+[target.'cfg(target_os = "linux")'.dependencies]
+gtk = "0.18"
+webkit2gtk = { version = "2", features = ["v2_40"] }
+cairo-rs = { version = "0.18", features = ["png"] }
+javascriptcore-rs = "1.1"
+
 [target.'cfg(windows)'.dependencies]
 webview2-com = { workspace = true }
 windows = { workspace = true }

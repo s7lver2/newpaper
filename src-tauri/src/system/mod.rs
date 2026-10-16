@@ -31,6 +31,11 @@ fn http_urls<'a>(args: impl Iterator<Item = &'a String>) -> Vec<String> {
     args.filter(|a| a.starts_with("http://") || a.starts_with("https://")).cloned().collect()
 }
 
+/// La vuelta atrás con el instalador guardado solo existe en Windows (NSIS). En Linux las actualizaciones las aplica
+/// el actualizador (AppImage) o el gestor de paquetes (.deb/.rpm), que conservan versiones anteriores a su manera.
+#[cfg(desktop)]
+pub const ROLLBACK_SUPPORTED: bool = cfg!(windows);
+
 #[cfg(desktop)]
 pub fn rollback_installer(data_dir: &std::path::Path, version: &str) -> PathBuf {
     data_dir.join("updates").join("rollback").join(format!("newpaper_{version}_x64-setup.exe"))
@@ -46,7 +51,7 @@ pub fn boot_check(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     guard.save()?;
     if let BootDecision::Rollback { to_version } = decision {
         let installer = rollback_installer(&data_dir, &to_version);
-        if installer.exists() {
+        if ROLLBACK_SUPPORTED && installer.exists() {
             tracing::warn!(%version, %to_version, "rolling back after repeated failed starts");
             // `/P`: instalación pasiva del NSIS de Tauri (barra de progreso, sin preguntas).
             std::process::Command::new(&installer).arg("/P").spawn()?;

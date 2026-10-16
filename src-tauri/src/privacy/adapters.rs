@@ -23,11 +23,13 @@ use tauri::{AppHandle, Emitter};
 
 pub fn profile_for(mode: NetMode, socks_port: u16, without_tor: bool) -> WebviewProfile {
     if mode == NetMode::Direct || without_tor {
-        return WebviewProfile { data_dir_name: "direct".into(), additional_browser_args: DEFAULT_BROWSER_ARGS.into() };
+        return WebviewProfile { data_dir_name: "direct".into(), additional_browser_args: DEFAULT_BROWSER_ARGS.into(), proxy: None };
     }
     WebviewProfile {
         data_dir_name: "tor".into(),
         additional_browser_args: format!("{DEFAULT_BROWSER_ARGS} {}", tor_browser_args(socks_port)),
+        // Linux (WebKitGTK): mismo SOCKS local; si no se puede imponer, la webview no se crea (ver np-shell/host/linux.rs).
+        proxy: Some(format!("socks5://127.0.0.1:{socks_port}")),
     }
 }
 
@@ -162,6 +164,7 @@ mod tests {
         let p = profile_for(NetMode::Direct, 50123, false);
         assert_eq!(p.data_dir_name, "direct");
         assert_eq!(p.additional_browser_args, DEFAULT_BROWSER_ARGS);
+        assert_eq!(p.proxy, None, "a direct tab must never carry a proxy");
     }
 
     #[test]
@@ -170,11 +173,14 @@ mod tests {
         assert_eq!(p.data_dir_name, "tor");
         assert!(p.additional_browser_args.starts_with(DEFAULT_BROWSER_ARGS));
         assert!(p.additional_browser_args.contains("socks5://127.0.0.1:50123"));
+        // El perfil Tor lleva SIEMPRE el proxy explícito: es lo que hace que Linux falle cerrado.
+        assert_eq!(p.proxy.as_deref(), Some("socks5://127.0.0.1:50123"));
     }
 
     #[test]
     fn tabs_opened_without_tor_use_the_direct_profile() {
         assert_eq!(profile_for(NetMode::Tor, 50123, true).data_dir_name, "direct");
+        assert_eq!(profile_for(NetMode::Tor, 50123, true).proxy, None);
     }
 
     #[test]

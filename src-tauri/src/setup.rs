@@ -17,11 +17,14 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     #[cfg(desktop)]
     crate::system::boot_check(app)?;
     let data = app.path().app_local_data_dir()?;
+    private_dir(&data)?;
     let store = Arc::new(Store::open(data.join("newpaper.sqlite"))?);
 
-    #[cfg(windows)]
+    // Windows: Administrador de credenciales. Linux: Secret Service (GNOME Keyring, KWallet...); sin servicio los
+    // comandos de claves fallan con un error claro, nunca se guarda en memoria ni en claro.
+    #[cfg(any(windows, target_os = "linux"))]
     let secrets: Arc<dyn SecretStore> = Arc::new(np_store::secrets::KeyringSecrets::new("newpaper"));
-    #[cfg(all(desktop, not(windows)))]
+    #[cfg(all(desktop, not(any(windows, target_os = "linux"))))]
     let secrets: Arc<dyn SecretStore> = Arc::new(np_store::secrets::MemorySecrets::default());
     #[cfg(mobile)]
     let secrets: Arc<dyn SecretStore> = Arc::new(crate::mobile::secrets::MobileSecrets(app.handle().clone()));
@@ -65,6 +68,20 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     spawn_history_retention(store);
     #[cfg(desktop)]
     create_main_window(app)?;
+    Ok(())
+}
+
+/// Crea la carpeta de datos y, en Unix, la deja en 0700: historial, claves de sincronización y Tor son privados del
+/// usuario (con el umask por defecto, 022, otro usuario de la máquina podría leer `newpaper.sqlite`).
+fn private_dir(dir: &std::path::Path) -> std::io::Result<()> {
+    std::fs::create_dir_all(dir)?;
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+        if let Err(e) = std::fs::set_permissions(dir, std::fs::Permissions::from_mode(0o700)) {
+            tracing::warn!(error = %e, dir = %dir.display(), "could not restrict the data folder to its owner");
+        }
+    }
     Ok(())
 }
 
@@ -115,9 +132,10 @@ fn create_main_window(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
         LogicalPosition::new(0.0, 0.0),
         LogicalSize::new(size.width, size.height),
     )?;
-    #[cfg(windows)]
+    // Windows: ajustes de WebView2. Linux: además coloca la UI y las pestañas en un `gtk::Overlay` (Tauri no lo hace).
+    #[cfg(any(windows, target_os = "linux"))]
     np_shell::host::harden_ui(&ui)?;
-    #[cfg(not(windows))]
+    #[cfg(not(any(windows, target_os = "linux")))]
     let _ = ui;
     Ok(())
 }

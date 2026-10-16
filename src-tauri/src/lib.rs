@@ -20,8 +20,19 @@ pub mod mobile;
 #[path = "mobile/about.rs"]
 mod about_tests;
 
+/// Linux con el controlador propietario de NVIDIA: WebKitGTK >= 2.42 pinta la ventana en blanco con el renderizador
+/// DMABUF. Se desactiva salvo que el usuario ya haya fijado la variable (a 0 o a 1).
+#[cfg(target_os = "linux")]
+fn linux_webkit_env() {
+    if std::env::var_os("WEBKIT_DISABLE_DMABUF_RENDERER").is_none() && std::path::Path::new("/proc/driver/nvidia").exists() {
+        std::env::set_var("WEBKIT_DISABLE_DMABUF_RENDERER", "1");
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    #[cfg(target_os = "linux")]
+    linux_webkit_env();
     tracing_subscriber::fmt()
         .with_env_filter(tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| "info".into()))
         .init();

@@ -9,7 +9,7 @@ use tauri::{App, AppHandle, Emitter, Manager, State, Url};
 use tauri_plugin_updater::{Update, UpdaterExt};
 use tokio::sync::Mutex;
 
-use super::{rollback_installer, SystemState};
+use super::{rollback_installer, SystemState, ROLLBACK_SUPPORTED};
 use crate::error::{CmdError, CmdResult};
 
 #[derive(Debug, Clone, Serialize)]
@@ -50,6 +50,9 @@ fn updater_pubkey(app: &AppHandle) -> Option<String> {
 
 /// Guarda el instalador firmado de la versión actual para poder volver atrás (§17).
 async fn keep_rollback_installer(app: &AppHandle) -> Result<(), String> {
+    if !ROLLBACK_SUPPORTED {
+        return Ok(()); // sin instalador NSIS que guardar: no se frena la actualización
+    }
     let sys = app.state::<Arc<SystemState>>();
     let path = rollback_installer(&sys.data_dir, &sys.version);
     if path.exists() {

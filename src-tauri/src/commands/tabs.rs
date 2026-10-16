@@ -124,13 +124,19 @@ pub async fn ctx_edit(tabs: Tabs<'_>, tab_id: TabId, action: String, text: Optio
 
 /// Texto del portapapeles del sistema (para pegar sin el permiso de portapapeles del navegador).
 #[tauri::command]
-pub async fn clipboard_text() -> CmdResult<Option<String>> {
+pub async fn clipboard_text(app: tauri::AppHandle) -> CmdResult<Option<String>> {
     #[cfg(windows)]
     {
+        let _ = app;
         Ok(np_shell::host::clipboard_text())
     }
-    #[cfg(not(windows))]
+    #[cfg(target_os = "linux")]
     {
+        Ok(np_shell::host::clipboard_text(&app))
+    }
+    #[cfg(not(any(windows, target_os = "linux")))]
+    {
+        let _ = app;
         Ok(None)
     }
 }

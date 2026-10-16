@@ -45,6 +45,33 @@ fn extra_rules() -> Option<String> {
     }
 }
 
+/// Linux: asa de la app para publicar las reglas de bloqueo de contenido de WebKit desde el hilo de reconstrucción.
+#[cfg(target_os = "linux")]
+static LINUX_APP: std::sync::OnceLock<AppHandle> = std::sync::OnceLock::new();
+
+/// Linux (WebKitGTK): no hay gancho por petición; las listas se traducen a reglas de bloqueo de contenido que aplica
+/// el propio WebKit. Sin traducción posible (o con el bloqueo desactivado) se quita el filtro y se avisa en el registro.
+#[cfg(target_os = "linux")]
+fn publish_content_filter(settings: &np_adblock::service::AdblockSettings, cache: &ListCache) {
+    let Some(app) = LINUX_APP.get() else { return };
+    let Ok(dir) = app.path().app_local_data_dir().map(|d| d.join("content-filter")) else { return };
+    let json = if !settings.enabled {
+        None
+    } else {
+        match np_adblock::content_filter::from_cache(cache, &settings.lists, extra_rules().as_deref()) {
+            Ok(f) => {
+                tracing::info!(rules = f.rules, dropped = f.dropped, "content blocking rules built");
+                Some(f.json)
+            }
+            Err(e) => {
+                tracing::error!(error = %e, "could not build the content blocking rules: network ad blocking is OFF");
+                None
+            }
+        }
+    };
+    np_shell::host::set_content_filter(app, dir, json);
+}
+
 /// Reconstruye el motor en un hilo bloqueante (≈1 s con las 7 listas) y lo instala al terminar.
 pub fn rebuild_blocker(svc: Arc<AdblockService>, cache: Arc<ListCache>) {
     tauri::async_runtime::spawn_blocking(move || {
@@ -52,6 +79,8 @@ pub fn rebuild_blocker(svc: Arc<AdblockService>, cache: Arc<ListCache>) {
         // Móvil: segundo motor con las listas de privacidad para separar anuncios de rastreadores en los contadores.
         let blocker = if cfg!(mobile) { build_blocker_classified(&cache, &settings, extra_rules().as_deref()) } else { build_blocker(&cache, &settings, extra_rules().as_deref()) };
         svc.install_blocker(blocker);
+        #[cfg(target_os = "linux")]
+        publish_content_filter(&settings, &cache);
         tracing::info!(lists = settings.lists.len(), "adblock engine rebuilt");
     });
 }
@@ -83,6 +112,8 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     // --- Bloqueo ---
     let svc = Arc::new(AdblockService::new(settings::load_adblock_settings(&store)?, Arc::new(UiNotifier::new(app.handle().clone()))));
     let cache = Arc::new(ListCache::new(data.join("filter-lists")));
+    #[cfg(target_os = "linux")]
+    let _ = LINUX_APP.set(app.handle().clone());
     rebuild_blocker(svc.clone(), cache.clone());
 
     // --- Red ---

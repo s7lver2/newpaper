@@ -10,6 +10,9 @@ pub mod navigation;
 pub mod resources;
 #[cfg(windows)]
 pub mod sysmem;
+#[cfg(target_os = "linux")]
+#[path = "sysmem_linux.rs"]
+pub mod sysmem;
 pub mod transition;
 pub mod news;
 pub mod extensions;
