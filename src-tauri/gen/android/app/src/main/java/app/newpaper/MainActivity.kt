@@ -21,9 +21,14 @@ class MainActivity : TauriActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     val splash = installSplashScreen()
     splash.setKeepOnScreenCondition { !introReady }
+    // Sin animacion de salida del sistema (su fundido se nota como un parpadeo de la marca): se retira de golpe.
+    splash.setOnExitAnimationListener { it.remove() }
     enableEdgeToEdge()
     super.onCreate(savedInstanceState)
     handler.post(pollIntro)
+    // Tope duro independiente del sondeo: si el callback de evaluateJavascript no llega (renderer colgado) el splash
+    // no se queda para siempre.
+    handler.postDelayed({ introReady = true }, INTRO_TIMEOUT_MS)
   }
 
   private val pollIntro: Runnable = object : Runnable {

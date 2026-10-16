@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/apk/res/android">
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Theme.np_app" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your theme here. -->

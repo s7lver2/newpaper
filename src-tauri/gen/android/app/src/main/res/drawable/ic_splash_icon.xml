@@ -6,6 +6,9 @@
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- El sistema recorta el icono a un circulo de 2/3 del lienzo de 288 dp (radio 36 u de las 108): la marca mide 32 u desde el
+         centro, asi que 1,08 es lo maximo sin recorte. La intro (Splash.tsx) parte de este mismo tamano y crece al del canvas. -->
+    <group android:scaleX="1.08" android:scaleY="1.08" android:pivotX="54" android:pivotY="54">
     <path
         android:pathData="M33,40.5V71"
         android:strokeColor="#34343B"
@@ -39,4 +42,5 @@
     <path
         android:fillColor="#34343B"
         android:pathData="M76.17,61.67L80.5,66L76.17,70.33Z" />
+    </group>
 </vector>

@@ -73,6 +73,19 @@ export function Splash({ mode, ready, onDone }: { mode: IntroMode; ready: boolea
     fit();
     window.addEventListener('resize', fit);
 
+    // El icono del splash nativo no puede ser tan grande como la marca del canvas (Android lo recorta a un circulo): mide
+    // 54 u * 1,08 * 288/108 dp. El canvas arranca a ese tamano (escala desde el centro) y crece al suyo en 380 ms, asi
+    // no hay salto de tamano en el traspaso.
+    const nativeDp = 54 * 1.08 * (288 / 108);
+    const canvasDp = 227 * scale;
+    const from = Math.min(1, nativeDp / canvasDp);
+    el.style.transformOrigin = '50% 50%';
+    el.style.transform = `scale(${from})`;
+    const grow = window.setTimeout(() => {
+      el.style.transition = 'transform 380ms cubic-bezier(.22,1,.36,1)';
+      el.style.transform = 'scale(1)';
+    }, 90);
+
     const finish = () => {
       if (done.current) return;
       done.current = true;
@@ -82,7 +95,21 @@ export function Splash({ mode, ready, onDone }: { mode: IntroMode; ready: boolea
       onDone();
     };
 
+    // El splash nativo se retira cuando la web avisa; si lo hace antes de que el sistema haya presentado el lienzo, hay un
+    // parpadeo (la marca fantasma desaparece y vuelve). Se esperan tres fotogramas pintados con draw(0) antes de avisar y
+    // de arrancar el reloj de la intro.
+    let warm = 0;
     const frame = (now: number) => {
+      if (warm < 3) {
+        warm += 1;
+        intro.draw(ctx, 0, mode);
+        if (warm === 3) {
+          window.NP_INTRO_READY = true;
+          document.documentElement.dataset.introReady = '1';
+        }
+        raf = requestAnimationFrame(frame);
+        return;
+      }
       if (!t0) {
         t0 = now;
         lastFrame = now;
@@ -106,10 +133,6 @@ export function Splash({ mode, ready, onDone }: { mode: IntroMode; ready: boolea
         tm = skipTo;
       }
       intro.draw(ctx, tm, mode);
-      if (!window.NP_INTRO_READY) {
-        window.NP_INTRO_READY = true;
-        document.documentElement.dataset.introReady = '1';
-      }
       const h = intro.hand(tm, mode);
       // El iris se escribe directo en el estilo del lienzo (sin re-renderizar cada fotograma).
       el.style.maskImage = h.iris > 0 ? irisMask(h.iris * scale) : '';
@@ -121,13 +144,11 @@ export function Splash({ mode, ready, onDone }: { mode: IntroMode; ready: boolea
     // Primer fotograma en el mismo instante que el splash nativo: draw(0) con el canvas ya dimensionado.
     intro.setQuality(0);
     intro.draw(ctx, 0, mode);
-    window.NP_INTRO_READY = true;
-    document.documentElement.dataset.introReady = '1';
     raf = requestAnimationFrame(frame);
 
     // Tocar la pantalla salta al final (iris en 200 ms) cuando Hoy ya está listo y la intro lleva un rato.
     const tap = () => {
-      if (!readyRef.current || done.current) return;
+      if (!readyRef.current || done.current || !t0) return;
       const tm = performance.now() - t0;
       if (tm < SKIP_AFTER_MS) return;
       const endAt = total - SKIP_IRIS_MS;
@@ -137,6 +158,7 @@ export function Splash({ mode, ready, onDone }: { mode: IntroMode; ready: boolea
 
     return () => {
       cancelAnimationFrame(raf);
+      window.clearTimeout(grow);
       window.removeEventListener('resize', fit);
       el.removeEventListener('pointerdown', tap);
       barsOverDark(false);
