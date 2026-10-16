@@ -41,8 +41,30 @@ impl ResourceType {
     }
 }
 
+/// Qué es lo que se bloqueó: un anuncio (o molestia) o un rastreador. Solo se usa para los contadores del móvil.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub enum BlockKind {
+    Ad,
+    Tracker,
+}
+
 pub struct Blocker {
     engine: Engine,
+    /// Motor solo con las listas de privacidad (EasyPrivacy, uBO privacy): decide si algo bloqueado cuenta como rastreador.
+    /// Es opcional porque cuesta memoria; el escritorio no lo construye.
+    trackers: Option<Engine>,
+}
+
+fn engine_of<I, S>(lists: I) -> Engine
+where
+    I: IntoIterator<Item = S>,
+    S: AsRef<str>,
+{
+    let mut set = FilterSet::new(false);
+    for text in lists {
+        set.add_filter_list(text.as_ref().to_owned(), ParseOptions::default());
+    }
+    Engine::new_with_filter_set(set)
 }
 
 impl Blocker {
@@ -52,13 +74,18 @@ impl Blocker {
         I: IntoIterator<Item = S>,
         S: AsRef<str>,
     {
-        let mut set = FilterSet::new(false);
-        for text in lists {
-            set.add_filter_list(text.as_ref().to_owned(), ParseOptions::default());
-        }
-        Self {
-            engine: Engine::new_with_filter_set(set),
-        }
+        Self { engine: engine_of(lists), trackers: None }
+    }
+
+    /// Como `from_lists`, más un motor con solo las listas de rastreadores para clasificar lo bloqueado.
+    pub fn from_lists_classified<I, S, J, T>(all: I, tracker_lists: J) -> Self
+    where
+        I: IntoIterator<Item = S>,
+        S: AsRef<str>,
+        J: IntoIterator<Item = T>,
+        T: AsRef<str>,
+    {
+        Self { engine: engine_of(all), trackers: Some(engine_of(tracker_lists)) }
     }
 
     pub fn empty() -> Self {
@@ -74,6 +101,17 @@ impl Blocker {
         match Request::new(url, source_url, kind.as_adblock_str(), &method) {
             Ok(request) => self.engine.check_network_request(&request).should_block(),
             Err(_) => false,
+        }
+    }
+
+    /// Clasifica una petición que `should_block` ya bloqueó: rastreador si lo bloquean también las listas de privacidad,
+    /// anuncio (o molestia) en cualquier otro caso. Sin motor de rastreadores todo cuenta como anuncio.
+    pub fn classify(&self, url: &str, source_url: &str, kind: ResourceType, method: &str) -> BlockKind {
+        let Some(trackers) = &self.trackers else { return BlockKind::Ad };
+        let method = method.to_ascii_lowercase();
+        match Request::new(url, source_url, kind.as_adblock_str(), &method) {
+            Ok(request) if trackers.check_network_request(&request).should_block() => BlockKind::Tracker,
+            _ => BlockKind::Ad,
         }
     }
 
@@ -161,6 +199,18 @@ mod tests {
             ResourceType::Script,
             "GET"
         ));
+    }
+
+    #[test]
+    fn classifies_trackers_apart_from_ads() {
+        let b = Blocker::from_lists_classified(["||ads.example.com^
+||track.example.net^"], ["||track.example.net^"]);
+        let (src, k) = ("https://news.example.org/", ResourceType::Script);
+        assert!(b.should_block("https://track.example.net/t.js", src, k, "GET"));
+        assert_eq!(b.classify("https://track.example.net/t.js", src, k, "GET"), BlockKind::Tracker);
+        assert_eq!(b.classify("https://ads.example.com/a.js", src, k, "GET"), BlockKind::Ad);
+        // Sin motor de rastreadores (escritorio) todo es un anuncio.
+        assert_eq!(blocker().classify("https://tracker.example.net/t.js", src, k, "GET"), BlockKind::Ad);
     }
 
     #[test]

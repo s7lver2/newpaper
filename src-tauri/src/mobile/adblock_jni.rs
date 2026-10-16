@@ -31,7 +31,15 @@ pub extern "system" fn Java_app_newpaper_mobile_NpNative_shouldBlock(
     let (url, source, kind) = (get(&mut env, &url), get(&mut env, &source), get(&mut env, &kind));
     match ADBLOCK.get() {
         // Pestaña 0: la webview original no tiene pestañas; las estadísticas quedan agregadas.
-        Some(a) if a.check(0, &url, &source, kind_of(&kind), "GET") => JNI_TRUE,
-        _ => JNI_FALSE,
+        Some(a) => match a.check_kind(0, &url, &source, kind_of(&kind), "GET") {
+            Some(k) => {
+                if let Some(c) = super::KINDS.get() {
+                    c.record(k);
+                }
+                JNI_TRUE
+            }
+            None => JNI_FALSE,
+        },
+        None => JNI_FALSE,
     }
 }

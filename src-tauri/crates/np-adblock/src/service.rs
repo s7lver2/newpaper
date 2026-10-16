@@ -5,8 +5,8 @@ use std::sync::{Arc, RwLock};
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    blocker::{Blocker, ResourceType},
-    lists::{load_lists, ListCache, ListCategory, FILTER_LISTS},
+    blocker::{BlockKind, Blocker, ResourceType},
+    lists::{load_lists, spec, ListCache, ListCategory, FILTER_LISTS},
     stats::{today_local, BlockedStats},
 };
 
@@ -49,17 +49,22 @@ impl AdblockService {
     }
 
     pub fn check(&self, tab: u64, url: &str, source_url: &str, kind: ResourceType, method: &str) -> bool {
+        self.check_kind(tab, url, source_url, kind, method).is_some()
+    }
+
+    /// Como `check`, y si bloquea dice qué era (anuncio o rastreador) para los contadores del móvil.
+    pub fn check_kind(&self, tab: u64, url: &str, source_url: &str, kind: ResourceType, method: &str) -> Option<BlockKind> {
         if !self.settings.read().expect("settings lock").enabled {
-            return false;
+            return None;
         }
         let blocker = self.blocker();
-        let block = blocker.should_block(url, source_url, kind, method);
-        if block {
-            tracing::debug!(tab, ?kind, url, source = source_url, "blocked");
-            let n = self.stats.record(tab, &today_local());
-            self.notifier.blocked(tab, n);
+        if !blocker.should_block(url, source_url, kind, method) {
+            return None;
         }
-        block
+        tracing::debug!(tab, ?kind, url, source = source_url, "blocked");
+        let n = self.stats.record(tab, &today_local());
+        self.notifier.blocked(tab, n);
+        Some(blocker.classify(url, source_url, kind, method))
     }
 
     pub fn install_blocker(&self, b: Blocker) {
@@ -111,6 +116,18 @@ pub fn build_blocker(cache: &ListCache, settings: &AdblockSettings, extra_rules:
         .map(|l| l.text.as_str())
         .chain(extra_rules);
     Blocker::from_lists(texts)
+}
+
+/// Igual que `build_blocker`, con un segundo motor de solo las listas de privacidad para separar anuncios de
+/// rastreadores en los contadores del móvil. Cuesta memoria extra: el escritorio usa `build_blocker`.
+pub fn build_blocker_classified(cache: &ListCache, settings: &AdblockSettings, extra_rules: Option<&str>) -> Blocker {
+    let loaded = load_lists(cache, &settings.lists);
+    let texts = loaded.iter().map(|l| l.text.as_str()).chain(extra_rules);
+    let tracker_texts = loaded
+        .iter()
+        .filter(|l| spec(l.id).is_some_and(|s| s.category == ListCategory::Privacy))
+        .map(|l| l.text.as_str());
+    Blocker::from_lists_classified(texts, tracker_texts)
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize)]

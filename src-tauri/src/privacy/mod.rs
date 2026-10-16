@@ -9,7 +9,7 @@ use async_trait::async_trait;
 use np_adblock::{
     cosmetic_msg::COSMETIC_SCRIPT,
     lists::ListCache,
-    service::{build_blocker, AdblockService},
+    service::{build_blocker, build_blocker_classified, AdblockService},
     stats::today_local,
     updater::{refresh_lists, ListFetcher},
 };
@@ -49,7 +49,8 @@ fn extra_rules() -> Option<String> {
 pub fn rebuild_blocker(svc: Arc<AdblockService>, cache: Arc<ListCache>) {
     tauri::async_runtime::spawn_blocking(move || {
         let settings = svc.settings();
-        let blocker = build_blocker(&cache, &settings, extra_rules().as_deref());
+        // Móvil: segundo motor con las listas de privacidad para separar anuncios de rastreadores en los contadores.
+        let blocker = if cfg!(mobile) { build_blocker_classified(&cache, &settings, extra_rules().as_deref()) } else { build_blocker(&cache, &settings, extra_rules().as_deref()) };
         svc.install_blocker(blocker);
         tracing::info!(lists = settings.lists.len(), "adblock engine rebuilt");
     });
@@ -124,6 +125,12 @@ fn spawn_stats_flush(app: AppHandle, store: Arc<Store>, svc: Arc<AdblockService>
             tokio::time::sleep(Duration::from_secs(5)).await;
             if let Err(e) = store.with_conn(|c| svc.stats().flush(c)) {
                 tracing::warn!(error = %e, "blocked stats flush failed");
+            }
+            #[cfg(mobile)]
+            if let Some(k) = crate::mobile::KINDS.get() {
+                if let Err(e) = store.with_conn(|c| k.flush(c, &today_local())) {
+                    tracing::warn!(error = %e, "blocked kind stats flush failed");
+                }
             }
             let today = store.with_conn(|c| svc.stats().day_total(c, &today_local())).unwrap_or(0);
             let _ = app.emit_to("ui", "adblock://counts", serde_json::json!({ "tabs": svc.stats().tab_counts(), "today": today }));
