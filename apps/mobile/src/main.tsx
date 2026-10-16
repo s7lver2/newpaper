@@ -6,8 +6,12 @@ import { detectSystemLocale, I18nProvider } from '@newpaper/i18n/react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { ipc } from './ipc';
+import intro from './splash/intro-engine';
 import { applyMotion, applyThemeChoice, loadMotion, loadTheme } from './theme';
 import './mobile.css';
+
+// Sprites y tablas de la intro mientras el sistema aún muestra el splash nativo y esperamos los ajustes (no pinta nada).
+intro.init();
 
 // Tema antes de pintar: papel, tinta o el del sistema (por defecto).
 applyThemeChoice(await loadTheme());

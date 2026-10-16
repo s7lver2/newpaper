@@ -45,8 +45,8 @@ Fuente única: `design/mockups/tools/motion-base.css` (variables `--m-*`; los co
 | `--m-dur-shimmer` | 1400 ms | brillo del esqueleto (bucle lineal) |
 | `--m-dur-scan` | 2200 ms | línea del escáner QR |
 | `--m-stagger` | 45 ms | retardo entre filas (máx. 8 elementos) |
-| `--m-dur-intro` | 2920 ms | intro de primer inicio (ver Arranque y la tabla de hitos) |
-| `--m-dur-intro-short` | 1080 ms | intro de los siguientes inicios |
+| `--m-dur-intro` | 4640 ms | intro de primer inicio: coreografía 3780 ms + pausa 400 + iris 460 (ver Arranque y la tabla de hitos) |
+| `--m-dur-intro-short` | 1620 ms | intro de los siguientes inicios: 1240 + pausa 120 + iris 260 |
 | `--m-dur-intro-reduce` | 800 ms | intro con movimiento reducido (solo fundidos) |
 | `--m-dur-iris` | 360 ms | iris que descubre la app tras la intro (`ease-in-out`) |
 | `--m-dur-packet` | 1500 ms | un paquete de datos recorre el enlace PC↔móvil (`--m-ease-inout`, en bucle desfasado) |
@@ -106,29 +106,30 @@ Alternativas descartadas (en M17): B solo rombo tripartito (más abstracta, pier
 
 Concepto (M16 y M16b, v4): el lenguaje de movimiento es el del arranque de **Balatro**, no una atracción gravitatoria. El fondo es un **remolino de «pintura»** (warp de dominio) a muy baja resolución (72×156 px escalados sin suavizado, ≈ 5,4 px lógicos por píxel), en una paleta derivada de la marca y oscura: tinta `#17171A`, rojo prensa `#C44A3C`, azul `#3656B8` y casi negro `#16161F`, con viñeta y barrido CRT (una de cada tres filas más oscura). Sobre él cae una **cascada de 32 hojas de periódico con grosor** (sprite con grano de papel, rótulo de color, columnas de texto, foto, esquina doblada, borde de varias capas y sombra) que entran por los bordes en **espiral**, **voltean** como cartas (el anverso pasa a un reverso con una n), se **estiran** en el sentido del movimiento, pasan de largo con **sobreimpulso** y aterrizan con un **rebote elástico** (squash & stretch). Toda la escena **gira lentamente y hace zoom** (−17° y +17 % que se endereza hasta ~2 s) y cada aterrizaje da un **temblor de pantalla** y un empujón de zoom. Las hojas forman un **abanico** de mano de cartas, «inhalan» (−13 %) y **saltan encajando en la n** (arco curvo, estiramiento ×1,55, sobreimpulso fuerte) con un impacto de 7 px de temblor y **franja cromática** (copias roja y azul desplazadas en modo `lighter`). La n de papel queda formada; el **remolino se enrolla** (la torsión radial se multiplica) y **colapsa** hasta un punto que **estalla**: destello, onda de choque con borde rojo/azul y **temblor de 11 px**, y aparece la **marca limpia: n blanca `#F6F4EF` y rombo sobre fondo tinta**, con squash & stretch rápido. El rombo tripartito se enciende con resorte (centro con escala, izquierda y derecha deslizando) y da un último temblor. Un **iris** (círculo que se abre desde el centro, 360 ms) descubre la app.
 
-Hitos del primer inicio (ms; los de «siguientes» son los mismos ÷ 2,7):
+Hitos del primer inicio (v5). Dos tiempos: **real** (lo que ve el usuario) e **interno** (el de la coreografía; real = interno × 1,4 hasta 2700 interno = 3780 ms reales). Los de «siguientes» usan ×0,46.
 
-| ms | Hito | Detalle |
-|---|---|---|
-| 0 | Splash nativo | tinta + n y rombo fantasma `#34343B`; 0 px de diferencia con `drawNative()`; remolino, hojas y temblor a cero |
-| 60–560 | El remolino se abre | círculo que crece de 30 a 790 px con `easeOutCubic`, alfa 0,35 → 1, giro inicial rápido (≈ 7 rad/s) que se frena |
-| 120–1400 | Cascada | 32 hojas con salida escalonada (26 ms ± 12), 500–590 ms de vuelo cada una: espiral de 1,6–2,9 rad, sobreimpulso `easeOutBack(1,3)`, volteo de 2–4 medias vueltas, escala 3,4 → 2,3, estiramiento hasta ×1,8; aterrizaje con rebote `e^(−d/105)·cos(0,034 d)` y temblor de 1,7 px (τ 75 ms) |
-| 1450–1600 | Abanico | las hojas descansan en un abanico (±0,43 rad, radio 232 px) y «inhalan» −13 % |
-| 1600–2045 | Encaje en la n | 32 saltos de 290 ms con salida cada 5 ms, `easeOutBack(2,3)`, arco lateral de 30–80 px, estiramiento ×1,55, rotación al trazo; rebote de aterrizaje de 85 ms; la n de papel se rellena de 1720 a 2050 |
-| 1760 | Impacto | temblor 7 px (τ 120 ms) + franja cromática (τ 85 ms) |
-| 1900–2150 | Colapso | el remolino se enrolla (torsión ×26) y su radio cae con `1−s²` |
-| 2100 | Estallido | destello (τ 110 ms), onda de 18 → 400 px en 520 ms con borde rojo/azul, temblor 11 px; las hojas se desvanecen (2060–2230) |
-| 2100–2420 | Marca limpia | n blanca (fundido de 160 ms) con squash & stretch (+14 %/−10 %, `e^(−d/110)`) y franja cromática |
-| 2180–2640 | Rombo | resorte `easeOutBack(1,9)`, temblor de 3,5 px a 2330 |
-| 2560–2920 | Iris | `clip-path: circle(0 → 920 px)` sobre el esqueleto de Hoy (o la Bienvenida la primera vez) |
+| real ms | interno | Hito | Detalle |
+|---|---|---|---|
+| 0 | 0 | Splash nativo | tinta + n y rombo fantasma `#34343B`; 0 px de diferencia con `drawNative()`; remolino, hojas y temblor a cero |
+| 84–784 | 60–560 | El remolino se abre | círculo que crece de 30 a 790 px con `easeOutCubic`, alfa 0,35 → 1, giro inicial que se frena |
+| 170–1960 | 120–1400 | Cascada | 32 hojas con salida escalonada, 700–830 ms reales de vuelo: espiral, sobreimpulso `easeOutBack(1,3)`, volteo de 2–4 medias vueltas, escala 3,4 → 2,3, estiramiento; aterrizaje con rebote elástico |
+| 2030–2240 | 1450–1600 | Abanico | las hojas descansan en un abanico (±0,43 rad) y «inhalan» −13 % |
+| 2240–2870 | 1600–2045 | Encaje en la n | 32 saltos de 406 ms reales, `easeOutBack(2,3)`, arco lateral, estiramiento ×1,55; la n de papel se rellena de 1720 a 2050 interno |
+| 2460 | 1760 | Impacto | temblor 7 px y franja cromática (solo calidad 0) |
+| 2660–3160 | 1900–2260 | El remolino se apaga | se enrolla (torsión ×26), su radio cae con `1−s²` **y se desvanece** (alfa `1−sm(2000,2300)`): sin corte |
+| 2940 | 2100 | Estallido suave | destello que **sube** en ~200 ms (alfa máx. 0,38; antes 0,6 de golpe) y onda de choque; las hojas se desvanecen de 2040 a 2320 interno |
+| 2910–3390 | 2080–2420 | **Fundido a n blanca** | la n de papel (textura) pasa a `#F6F4EF` con `smoothstep` durante 340 interno ≈ 475 ms reales; la de papel se mantiene opaca debajo, así la cobertura nunca baja a mitad del fundido; squash & stretch (+14 %/−10 %) y franja cromática |
+| 3050–3780 | 2180–2700 | Rombo | aparece con `smoothstep` de 220 interno, resorte `easeOutBack(1,9)`, temblor de 3,5 px |
+| 3780–4180 | — | **Pausa** | 400 ms con la marca (n + rombo) formada y quieta; el lienzo no se redibuja |
+| 4180–4640 | — | Iris | agujero circular transparente en el propio lienzo (`destination-out`, 0 → 920 px, `smoothstep`, 460 ms) sobre el esqueleto de Hoy (o la Bienvenida la primera vez) |
 
-**Siguientes inicios** (1080 ms): mismo motor con el tiempo ×2,7 y 16 hojas (las pares); la secuencia de hitos es idéntica. Solo se muestra la larga la primera vez (o tras «borrar datos»). **Movimiento reducido** (`prefers-reduced-motion` o «Eliminar animaciones» de Android): sin remolino, sin hojas, sin temblor ni zoom, sin iris: 0–120 ms n fantasma, 120–340 fundido a la marca limpia y rombo, 340–640 pausa, 640–800 fundido a la app.
+**Siguientes inicios** (1620 ms): mismo motor con el tiempo ×0,46, 16 hojas (las pares), pausa de 120 ms e iris de 260 ms; la secuencia de hitos es idéntica. Solo se muestra la larga la primera vez (o tras «borrar datos»). **Movimiento reducido** (`prefers-reduced-motion` o «Eliminar animaciones» de Android): sin remolino, sin hojas, sin temblor ni zoom, sin iris: 0–120 ms n fantasma, 120–340 fundido a la marca limpia y rombo, 340–640 pausa, 640–800 fundido a la app.
 
 Tokens de movimiento de la intro: temblor = Σ `A·e^(−d/τ)·cos(0,09 d)` con (A, τ) = (1,7, 75) por hoja, (7, 120) encaje, (11, 120) estallido, (3,5, 100) rombo; empuje de zoom = `0,0045·A` por evento; franja cromática = ±6 px de desplazamiento (copias `#FF3D3D` y `#2D8CFF`, `lighter`, alfa ≤ 0,6); rebote elástico = `e^(−d/τ)·cos(ω d)` con τ 85–110 ms; sobreimpulso = `easeOutBack` con c1 1,3 (vuelo), 2,3 (encaje) y 1,9 (rombo). Nada es aleatorio en tiempo de ejecución: semilla fija (`rng(11)` para hojas, `rng(5)` para el grano de los sprites).
 
 Implementación: `NPIntro.draw(ctx, t, mode)` (en `tools/intro-engine.js`, sin dependencias) es una **función pura del tiempo** (modos `first`, `short`, `reduce`): dibuja el fotograma t en un `<canvas>` 2D de 390×844 lógicos (el llamante aplica `setTransform(dpr,0,0,dpr,0,0)`, `dpr` máx. 2). API completa: `draw(ctx,t,mode)`, `drawNative(ctx)` (splash nativo), `hand(t,mode)` → `{iris,fade}` (radio del iris y fundido para la capa DOM), `TOT`, `T` (hitos), `phases` (etiquetas del demo), `setQuality(0|1|2)` (remolino 72×156 / 48×104 / 32×70; no cambia la API de dibujo) y `sm`. Cambios respecto a v3: `T` tiene otras claves (`swirl, fly, fan, snap, hit, collapse, burst, clean, dia, hand`) y se añade `setQuality`; `draw`, `drawNative`, `hand`, `TOT` y `phases` conservan su firma. No hay variante WebGL: el remolino es un bucle de 11 232 píxeles con tablas de seno (sin `Math.sin`) que se recalcula a 30 Hz (paso `floor(t/33,3 ms)`, así sigue siendo función pura del tiempo) y se pinta escalado sin suavizado; si hiciera falta, el mismo cálculo cabe en un fragmento de GLSL a 72×156 y `draw()` seguiría siendo el respaldo en canvas 2D. La app lo llama desde `requestAnimationFrame` con `t = performance.now() − t0`; si un fotograma tarda más de 24 ms avanza el tiempo y no el número de fotogramas (nunca se alarga el arranque). La app debe seguir arrancando mientras suena la intro: los datos locales se cargan detrás y la intro solo espera su duración mínima; salida inmediata (iris acelerado a 200 ms) si Hoy ya está listo y el usuario toca la pantalla.
 
-Presupuesto de rendimiento: nada se asigna por fotograma (sprites, tablas, paleta con viñeta y barrido, siluetas cromáticas y el degradado del destello se crean una vez en el primer `draw`); por fotograma ≤ 32 `drawImage` de sprites + 1 del remolino + trazos de la n; el remolino cuesta ≈ 1,3 ms (JS, escritorio) cada 33 ms. Medido en el panel de navegador (escritorio, sin GPU, canvas de 780×1688 = dpr 2): 1–4 ms de JS por fotograma (mediana) y ≈ 23 ms con la rasterización por software forzada; en una WebView con canvas acelerado la rasterización pasa a la GPU. Regla de degradación: si la media de los primeros 10 fotogramas supera 14 ms, `setQuality(1)`; si supera 20 ms, `setQuality(2)` y la mitad de hojas (lista `short`). Con `devicePixelRatio` > 2 limitar a 2.
+Presupuesto de rendimiento: nada se asigna por fotograma (sprites, tablas, paleta con viñeta y barrido, siluetas cromáticas y el degradado del destello se crean una vez en el primer `draw`); por fotograma ≤ 32 `drawImage` de sprites + 1 del remolino + trazos de la n; el remolino cuesta ≈ 1,3 ms (JS, escritorio) cada 33 ms. Medido en el panel de navegador (escritorio, sin GPU, canvas de 780×1688 = dpr 2): 1–4 ms de JS por fotograma (mediana) y ≈ 23 ms con la rasterización por software forzada; en una WebView con canvas acelerado la rasterización pasa a la GPU. Regla de degradación (v5): `calibrate()` mide el coste real del remolino durante el splash nativo y elige la calidad inicial (≤ 3,5 ms por recálculo); durante la intro la app toma la **mediana de los últimos 12 fotogramas** (rAF) y baja una calidad si pasa de 18 ms (sin subir nunca). Calidades: remolino 72×156 a 30 Hz / 48×104 a 24 Hz / 32×70 a 20 Hz; `devicePixelRatio` máx. 1,5 / 1,25 / 1; la franja cromática de las hojas solo en la calidad 0. La n y sus franjas se pintan desde sprites precalculados, el iris se recorta en el propio lienzo (`destination-out`, sin máscara CSS) y durante la pausa no se redibuja nada.
 
 ### Empalme con el splash nativo de Android (sin salto visible)
 
@@ -155,7 +156,7 @@ Primera carga de Hoy: esqueleto con la forma exacta del contenido (saludo, busca
 - Inactivo: icono y etiqueta `#5E5B55`. Activo: icono azul `--np-accent` con relleno suave 16 % y píldora 64x32 `--np-accent-soft` que se ensancha desde el centro (scaleX .35 → 1, 280 ms `--m-ease`), icono rebota (spring), etiqueta en tinta.
 - Alto 64 px + inset de gestos; cada pestaña ocupa 1/4 del ancho y 48+ px de alto táctil. Punto rojo (8 px) en Hoy para edición nueva sin leer, nunca contadores.
 - Se oculta en pantallas apiladas (lectura, agente, síntesis, ajustes secundarios, escáner). Tocar la pestaña activa sube al inicio; segunda vez recarga.
-- Cambio de raíz: fundido 280 ms, sin deslizamiento lateral; cada pestaña conserva su scroll.
+- Cambio de raíz: eje compartido. La pestaña que sale se desvanece en 110 ms desplazándose 14 px hacia el lado contrario al del cambio; la que entra llega en 420 ms (`--m-ease`, 70 ms de retardo) desde 28 px del lado del orden de pestañas (derecha si el destino está a la derecha), y sus 6 primeros bloques entran en cascada de 30 ms (10 px). La píldora de la barra es un único elemento que se desliza entre pestañas (420 ms `--m-ease`). Solo `transform` y `opacity`; todas las raíces siguen montadas y conservan su scroll. Con movimiento reducido: cambio instantáneo, píldora sin deslizar.
 
 ## Navegación y gesto atrás
 
@@ -252,7 +253,7 @@ P2
 - Icono: ¿«n.» (elegido) o la alternativa B (solo rombo)? Hay también un fondo liso alternativo (sin reglas de columna).
 - Pestañas: ¿mantener «Leyendo» y «Agente» como raíces con lista de sesiones? Los mockups solo muestran sus pantallas de sesión (apiladas, sin tab bar); falta diseñar la raíz de cada una (lista de lo abierto / conversaciones).
 - Splash nativo: **¿n fantasma o n blanca?** Para que no haya salto, el splash nativo y el primer fotograma son la marca en gris oscuro (`#34343B`), no blanca. Alternativa: splash con la n blanca y que la intro empiece disolviéndola en hojas durante 150 ms (la n «se desintegra» y vuelve a formarse), más espectacular pero con un fotograma más de ruptura.
-- Intro (v4, estilo Balatro): ¿más o menos temblor y franja cromática (tokens en Arranque)? ¿Mantener 2,9 s la primera vez? Las siguientes son de 1,1 s (se puede saltar tocando). ¿Se prefiere solo la variante corta siempre?
+- Intro (v4, estilo Balatro): ¿más o menos temblor y franja cromática (tokens en Arranque)? ¿Mantener 4,6 s la primera vez (antes 2,9 s, demasiado rápida en un teléfono real)? Las siguientes son de 1,6 s (se puede saltar tocando). ¿Se prefiere solo la variante corta siempre?
 - Texto de New Router y frases cortas de cada proveedor (`providers.hint.*`): las de M15 son provisionales, falta que el autor las revise.
 - Gemini: el mockup muestra el aviso de privacidad (Google puede usar lo que envías) en el paso 2; ¿también en la lista completa?
 - ¿El snackbar «Deshacer» al desconectar un proveedor es demasiado para una acción poco frecuente? La alternativa es solo la hoja de confirmación.

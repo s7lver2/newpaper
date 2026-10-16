@@ -502,3 +502,33 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 .m-input:focus-visible { box-shadow: 0 0 0 2px var(--np-accent); }
 
 .m-hint { overflow-wrap: anywhere; }
+
+/* ---- Pulido: bienvenida (fantasmas de ilustración), pestañas e intro ---------------------------------------------------- */
+/* Cada página recorta lo suyo: la ilustración con paralaje (-35 %) ya no puede asomar fuera de su página. */
+.m-slide { overflow: hidden; contain: layout paint; }
+/* Las páginas lejanas (o ya asentadas) se ocultan por clase de estado (`.hide`), no por aria-hidden con retardo; y mientras se
+   arrastra no hay transiciones (antes la vecina iba con 560 ms de retraso y quedaba a un lado). */
+.m-slide[aria-hidden='true'] { visibility: visible; transition: transform var(--m-dur-emph) var(--m-ease-emph); }
+.m-slide.dragging, .m-slide.dragging[aria-hidden='true'] { transition: none; }
+.m-slide.hide, .m-slide.hide[aria-hidden='true'] { visibility: hidden; transition: none; }
+/* La ilustración y el texto se desplazan con --p: si no transicionan, saltan a su destino al instante y la ilustración de la
+   página que sale se queda desplazada a un lado mientras la página aún se mueve. Ahora van con la misma curva y duración. */
+.m-slide:not(.dragging) .m-art { transition: transform var(--m-dur-emph) var(--m-ease-emph); }
+.m-slide:not(.dragging) .m-text { transition: transform var(--m-dur-emph) var(--m-ease-emph), opacity var(--m-dur-base) var(--m-ease); }
+.m-slide.hide .m-art, .m-slide.hide .m-text { transition: none; }
+
+/* pestañas: ejes compartidos (la que sale se desvanece hacia un lado, la que entra llega desde el otro) + píldora que se desliza */
+.m-tab-in { animation: m-tab-in var(--m-dur-slow) var(--m-ease) 70ms backwards; }
+.m-tab-out { animation: m-tab-out 110ms var(--m-ease-exit) forwards; pointer-events: none; }
+.m-tab-in > :nth-child(-n+6) { animation: m-tab-child var(--m-dur-slow) var(--m-ease) backwards; }
+.m-tab-in > :nth-child(2) { animation-delay: 30ms; } .m-tab-in > :nth-child(3) { animation-delay: 60ms; }
+.m-tab-in > :nth-child(4) { animation-delay: 90ms; } .m-tab-in > :nth-child(5) { animation-delay: 120ms; } .m-tab-in > :nth-child(6) { animation-delay: 150ms; }
+@keyframes m-tab-in { from { opacity: 0; transform: translate3d(var(--tx, 0), 0, 0); } to { opacity: 1; transform: none; } }
+@keyframes m-tab-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translate3d(calc(var(--tx, 0) * -.5), 0, 0); } }
+@keyframes m-tab-child { from { opacity: 0; transform: translate3d(0, 10px, 0); } to { opacity: 1; transform: none; } }
+.m-tabbar { --ti: 0; }
+.m-tabslide { position: absolute; z-index: 0; top: 8px; left: 4px; width: calc((100% - 8px) / 4); height: 32px; pointer-events: none; transform: translate3d(calc(var(--ti) * 100%), 0, 0); transition: transform var(--m-dur-slow) var(--m-ease); }
+.m-tabslide::before { content: ''; position: absolute; left: 50%; top: 0; width: 64px; height: 32px; margin-left: -32px; border-radius: 16px; background: var(--np-accent-soft); }
+.m-tab .pill::before { content: none; }
+:root[data-motion='reduce'] .m-tabslide { transition: none; }
+@media (prefers-reduced-motion: reduce) { .m-tabslide { transition: none; } .m-tab-in, .m-tab-out, .m-tab-in > * { animation: none !important; } }
