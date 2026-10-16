@@ -48,11 +48,14 @@ describe('detectClaims', () => {
 });
 
 describe('repairSpans (lenient)', () => {
-  it('relocates quotes that differ in case, quotes, dashes or whitespace, or paraphrase one sentence', () => {
-    const text = 'El ataque dejó 13 muertos y 32 heridos.\n\nSerá la primera ejecución militar desde 1961 — dijo el Pentágono.';
+  it('relocates quotes that differ in case, quotes, dashes or whitespace, or a near-identical sentence; drops loose paraphrases', () => {
+    const text = 'El ataque dejó 13 muertos y 32 heridos.\n\nSerá la primera ejecución militar desde 1961 — dijo el Pentágono.\n\nLa fiscalía pidió al tribunal que aceptara las pruebas presentadas por la defensa durante la vista oral.';
     const out = repairSpans(text, [
       { quote: 'EL ATAQUE dejó 13  muertos y 32 heridos', span: [0, 0] as [number, number] },
       { quote: 'primera ejecución militar desde 1961 - dijo', span: [0, 0] as [number, number] },
+      // Una sola palabra distinta en una frase larga: parecido alto, se ancla en la frase.
+      { quote: 'La fiscalía pidió al tribunal que admitiera las pruebas presentadas por la defensa durante la vista oral.', span: [0, 0] as [number, number] },
+      // Parafraseada con otras palabras: parecido bajo, se descarta en vez de marcar «alguna» frase.
       { quote: 'El ataque dejó 13 muertos y 32 personas heridas', span: [0, 0] as [number, number] },
     ]);
     expect(out).toHaveLength(3);

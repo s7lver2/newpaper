@@ -39,6 +39,8 @@ export async function judgeDocument(o: { ctx: StageCtx; docA: string; others: { 
     stage: 'score',
     temperature: o.ctx.temperature ?? 0,
     noTemperature: o.ctx.noTemperature,
+    maxOutputTokens: o.ctx.maxOutputTokens,
+    providerOptions: o.ctx.providerOptions,
     signal: o.ctx.signal,
   });
   return { value: r.object as JudgeOutput, usage: r.usage };

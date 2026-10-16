@@ -1,4 +1,4 @@
-import { stepCountIs, streamText, tool } from 'ai';
+import { generateText, stepCountIs, streamText, tool } from 'ai';
 import { describeError } from '../registry/models';
 import { z } from 'zod';
 import { delimit, UNTRUSTED_NOTE } from '../llm/delimit';
@@ -64,6 +64,8 @@ export async function runAgent(o: {
   fetcher: SourceFetcher;
   extract: ExtractFn;
   onEvent: (e: AgentEvent) => void;
+  /** Milisegundos sin ninguna señal del modelo tras los que se abandona el intento (por defecto 60 s). */
+  idleMs?: number;
 }): Promise<{ text: string; citations: AgentCitation[]; usage: Usage }> {
   const c = o.context;
   const sources = c.sources;
@@ -144,37 +146,84 @@ export async function runAgent(o: {
     `Question: ${o.question}`,
   ].filter(Boolean).join('\n');
 
-  // Algunos endpoints (p. ej. los gratuitos de NVIDIA NIM) no admiten herramientas: si falla con ellas, se responde sin ellas.
-  const attempt = async (useTools: boolean) => {
-    let streamError: unknown;
-    const result = streamText({
+  // Cadena de intentos: con herramientas y en streaming; sin herramientas (algunos endpoints, como los gratuitos de NVIDIA NIM o
+  // el esquema de las herramientas en Gemini, las rechazan); y sin streaming (si el transporte no entrega el SSE a medida
+  // que llega, el flujo parece colgado). Cada intento tiene su propio plazo de inactividad: si el modelo no da señales
+  // (texto, razonamiento o pasos de herramientas) en ese tiempo, se corta y se pasa al siguiente en vez de esperar sin fin.
+  type Kind = 'stream-tools' | 'stream' | 'generate';
+  const idleMs = o.idleMs ?? 60_000;
+  const outputTokens = Math.max(o.ctx.maxOutputTokens ?? 0, 2048);
+  const attempt = async (kind: Kind) => {
+    const ac = new AbortController();
+    let timedOut = false;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const touch = () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        timedOut = true;
+        ac.abort();
+      }, idleMs);
+    };
+    const link = () => ac.abort();
+    o.ctx.signal?.addEventListener('abort', link, { once: true });
+    if (o.ctx.signal?.aborted) ac.abort();
+    const base = {
       model: o.ctx.model,
       system,
-      messages: [...(o.history ?? []), { role: 'user', content: prompt }],
-      ...(useTools ? { tools, stopWhen: stepCountIs(6) } : {}),
+      messages: [...(o.history ?? []), { role: 'user' as const, content: prompt }],
       temperature: o.ctx.noTemperature ? undefined : o.ctx.temperature,
-      abortSignal: o.ctx.signal,
-      maxOutputTokens: 2048,
-      // streamText no lanza los errores del proveedor: sin esto la respuesta quedaba vacía en silencio.
-      onError: ({ error }) => {
-        streamError ??= error;
-      },
-    });
+      abortSignal: ac.signal,
+      maxOutputTokens: outputTokens,
+      ...(o.ctx.providerOptions ? { providerOptions: o.ctx.providerOptions } : {}),
+    };
     let raw = '';
+    let error: unknown;
+    let usage: { inputTokens?: number; outputTokens?: number } | null = null;
+    touch();
     try {
-      for await (const delta of result.textStream) {
-        raw += delta;
-        o.onEvent({ type: 'text', delta });
+      if (kind === 'generate') {
+        const r = await generateText(base);
+        raw = r.text;
+        usage = r.usage;
+        if (raw) o.onEvent({ type: 'text', delta: raw });
+      } else {
+        const result = streamText({
+          ...base,
+          ...(kind === 'stream-tools' ? { tools, stopWhen: stepCountIs(6) } : {}),
+          onChunk: touch,
+          onStepFinish: touch,
+          // streamText no lanza los errores del proveedor: sin esto la respuesta quedaba vacía en silencio.
+          onError: ({ error: e }) => {
+            error ??= e;
+          },
+        });
+        for await (const delta of result.textStream) {
+          touch();
+          raw += delta;
+          o.onEvent({ type: 'text', delta });
+        }
+        if (!error) usage = await result.totalUsage;
       }
     } catch (e) {
-      streamError ??= e;
+      error ??= e;
+    } finally {
+      clearTimeout(timer);
+      o.ctx.signal?.removeEventListener('abort', link);
     }
-    return { raw, streamError, usage: streamError ? null : await result.totalUsage };
+    if (timedOut && !o.ctx.signal?.aborted) error = new Error(`sin respuesta del modelo en ${Math.round(idleMs / 1000)} s`);
+    return { raw, error, usage };
   };
-  let run = await attempt(true);
-  if ((run.streamError || !run.raw.trim()) && !o.ctx.signal?.aborted) run = await attempt(false);
-  if (run.streamError || !run.raw.trim() || !run.usage) {
-    const message = run.streamError ? describeError(run.streamError) : 'el modelo no devolvió ninguna respuesta';
+
+  const order: Kind[] = ['stream-tools', 'stream', 'generate'];
+  let run = await attempt(order[0]!);
+  for (let i = 1; i < order.length && (run.error || !run.raw.trim()) && !o.ctx.signal?.aborted; i++) {
+    // El texto parcial del intento fallido se retira antes de reintentar (si no, la respuesta saldría duplicada).
+    o.onEvent({ type: 'retry', reason: order[i] === 'generate' ? 'stream' : 'tools' });
+    run = await attempt(order[i]!);
+  }
+  if (o.ctx.signal?.aborted) throw new DOMException('The operation was aborted.', 'AbortError');
+  if (run.error || !run.raw.trim() || !run.usage) {
+    const message = run.error ? describeError(run.error) : 'el modelo no devolvió ninguna respuesta (puede haber agotado los tokens razonando)';
     o.onEvent({ type: 'error', message });
     throw new Error(message);
   }

@@ -1,5 +1,6 @@
 export type { Article, NewsSignals } from './article';
 export { LIMITS } from './article';
+export { normalizeText } from './text';
 export { collectSignals, looksLikeNews } from './signals';
 export { extractArticle, extractFromHtml } from './extract';
 export { bestCandidate, fixImages, isPlaceholderSrc, parseSrcset } from './images';

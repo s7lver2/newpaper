@@ -4,6 +4,7 @@ import { fixImages } from './images';
 import { classifyPage, extractListing, isSectionUrl, MIN_ITEMS } from './listing';
 import { cleanBody, endsAbruptly, hasWallMarker, markWallElements } from './paywall';
 import { collectSignals, looksLikeNews } from './signals';
+import { normalizeText } from './text';
 import { cutAtNextStory, dropFollowModules, keepPrimaryArticle } from './single';
 import { dropHiddenFromClone } from './visibility';
 
@@ -41,7 +42,7 @@ function absolutize(html: string, base: string): string {
 function plainText(el: Element): string {
   const copy = el.cloneNode(true) as Element;
   copy.querySelectorAll('p, li, h1, h2, h3, h4, h5, h6, blockquote, pre, figcaption, tr, br').forEach((n) => n.after('\n\n'));
-  return (copy.textContent ?? '').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  return normalizeText(copy.textContent ?? '');
 }
 
 export function extractArticle(doc: Document, url: string): Article | null {

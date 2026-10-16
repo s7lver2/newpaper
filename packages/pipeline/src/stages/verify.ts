@@ -71,6 +71,8 @@ export async function retrieveSources(o: {
       stage: 'verify',
       temperature: 0,
       noTemperature: o.ctx.noTemperature,
+      maxOutputTokens: o.ctx.maxOutputTokens,
+      providerOptions: o.ctx.providerOptions,
       signal: o.ctx.signal,
     });
     usage = r.usage;
@@ -133,6 +135,8 @@ export async function verifyClaims(ctx: StageCtx, article: ArticleInput, claims:
     stage: 'verify',
     temperature: ctx.temperature,
     noTemperature: ctx.noTemperature,
+    maxOutputTokens: ctx.maxOutputTokens,
+    providerOptions: ctx.providerOptions,
     signal: ctx.signal,
   });
   const byId = new Map(sources.map((s) => [s.id, s]));

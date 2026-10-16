@@ -38,6 +38,8 @@ export interface AgentMessage {
   steps: string[];
   done: boolean;
   error: string | null;
+  /** Aviso transitorio (p. ej. «reintentando sin herramientas»). */
+  retry?: 'tools' | 'stream' | null;
 }
 
 export function applyAgentEvent(m: AgentMessage, e: AgentEvent): AgentMessage {
@@ -50,6 +52,8 @@ export function applyAgentEvent(m: AgentMessage, e: AgentEvent): AgentMessage {
       return { ...m, visuals: [...m.visuals, e.viz] };
     case 'media':
       return { ...m, media: [...m.media, e.media] };
+    case 'retry':
+      return { ...m, text: '', steps: [], retry: e.reason };
     case 'done':
       return { ...m, text: e.text, citations: e.citations, done: true };
     case 'error':

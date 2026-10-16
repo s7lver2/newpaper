@@ -13,6 +13,9 @@ export { costOf, estimateAnalysis, estimateTokens, STAGE_OUTPUT_TOKENS, type Usa
 export { applyBudget } from './cost/budget';
 export { cachedStage, textHash, type CacheStore } from './cache/key';
 export type * from './run/ports';
+export { mergeResults, type MergedResult } from './run/merge';
+export { providerTuning } from './run/tuning';
+export { fold, locate, sentenceSpans, similarity, type Located } from './text/anchor';
 export { createPipeline, type AnalysisResult, type Pipeline, type RunOpts, type StageEvent } from './run/pipeline';
 export { DEFAULT_WEIGHTS, type FramingWeights } from './stages/framing';
 export { mirrorCheck, mirrorText, blocError } from './stages/mirror';

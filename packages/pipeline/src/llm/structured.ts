@@ -1,6 +1,7 @@
 import { generateText, NoObjectGeneratedError, Output, type LanguageModel } from 'ai';
 import { z } from 'zod';
 import { describeError } from '../registry/models';
+import type { ProviderOptions } from '../stages/ctx';
 
 export type StageId = 'claims' | 'quickScore' | 'verify' | 'score' | 'judgeB' | 'synthesis' | 'aiDetect' | 'agent' | 'investigate';
 
@@ -34,6 +35,8 @@ async function generateNative<T>(opts: {
   maxOutputTokens?: number;
   temperature?: number;
   noTemperature?: boolean;
+  /** Opciones propias del proveedor (p. ej. el presupuesto de razonamiento de Gemini). */
+  providerOptions?: ProviderOptions;
   signal?: AbortSignal;
 }): Promise<{ object: T; usage: Usage }> {
   const usage: Usage = { inputTokens: 0, outputTokens: 0 };
@@ -46,6 +49,7 @@ async function generateNative<T>(opts: {
       temperature: opts.noTemperature ? undefined : opts.temperature,
       abortSignal: opts.signal,
       maxRetries: 1,
+      ...(opts.providerOptions ? { providerOptions: opts.providerOptions } : {}),
       // Sin tope, OpenRouter reserva toda la ventana de contexto y responde 402 si el saldo no la cubre.
       maxOutputTokens: opts.maxOutputTokens ?? 4096,
     });
@@ -53,18 +57,22 @@ async function generateNative<T>(opts: {
     usage.outputTokens += r.usage.outputTokens ?? 0;
     return r.output as T;
   };
+  let truncated = false;
   try {
     return { object: await call(opts.prompt), usage };
   } catch (first) {
     if (opts.signal?.aborted) throw new StageError(opts.stage, 'aborted', 'aborted');
     if (!NoObjectGeneratedError.isInstance(first)) throw new StageError(opts.stage, 'provider', describeError(first));
+    if (first.finishReason === 'length') truncated = true;
     usage.inputTokens += first.usage?.inputTokens ?? 0;
     usage.outputTokens += first.usage?.outputTokens ?? 0;
     const feedback = `${opts.prompt}\n\nYour previous output was invalid (${String(first.cause ?? first.message).slice(0, 400)}). Previous output:\n${(first.text ?? '').slice(0, 2000)}\nReturn only valid JSON that matches the schema.`;
     try {
       return { object: await call(feedback), usage };
     } catch (second) {
-      throw new StageError(opts.stage, NoObjectGeneratedError.isInstance(second) ? 'invalid_output' : 'provider', describeError(second));
+      if (NoObjectGeneratedError.isInstance(second) && second.finishReason === 'length') truncated = true;
+      const why = truncated ? 'the reply was cut off by the output token limit (the model spent it thinking); ' : '';
+      throw new StageError(opts.stage, NoObjectGeneratedError.isInstance(second) ? 'invalid_output' : 'provider', `${why}${describeError(second)}`.slice(0, 400));
     }
   }
 }
@@ -95,6 +103,7 @@ ${schemaJson}`;
           temperature: opts.noTemperature ? undefined : opts.temperature,
           abortSignal: opts.signal,
           maxRetries: 1,
+          ...(opts.providerOptions ? { providerOptions: opts.providerOptions } : {}),
           maxOutputTokens: opts.maxOutputTokens ?? 4096,
         });
         usage.inputTokens += r.usage.inputTokens ?? 0;

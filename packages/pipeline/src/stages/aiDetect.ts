@@ -55,6 +55,8 @@ export async function detectAiText(o: { text: string; locale: OutputLocale; c2pa
       stage: 'aiDetect',
       temperature: 0,
       noTemperature: o.ctx.noTemperature,
+      maxOutputTokens: o.ctx.maxOutputTokens,
+      providerOptions: o.ctx.providerOptions,
       signal: o.ctx.signal,
     });
     usage = r.usage;

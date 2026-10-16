@@ -22,6 +22,7 @@ import { quickScore, scoreArticle } from '../stages/score';
 import { synthesize } from '../stages/synthesis';
 import { findCoverage, retrieveSources, verifyClaims, type RetrievedSource } from '../stages/verify';
 import type { CoverageResult, PipelineDeps } from './ports';
+import { providerTuning } from './tuning';
 
 export interface StageEvent { stage: StageId; status: 'running' | 'done' | 'cached' | 'failed' | 'skipped'; error?: string; usedFallback?: boolean }
 export interface RunOpts { signal?: AbortSignal; onStage?: (e: StageEvent) => void }
@@ -38,6 +39,8 @@ export interface AnalysisResult {
   aiAuthorship: AiAuthorship | null;
   uncovered: boolean;
   failed: StageId[];
+  /** Motivo de cada etapa fallida (mensaje del proveedor o de la validación), para enseñarlo y reintentar. */
+  errors?: Partial<Record<StageId, string>>;
   capped: boolean;
 }
 
@@ -56,7 +59,7 @@ const host = (u: string) => {
 export function createPipeline(deps: PipelineDeps) {
   const ctxOf = (a: Assignment, signal?: AbortSignal): StageCtx => {
     const m = deps.models.get(a);
-    return { model: m.model, noTemperature: m.noTemperature, temperature: a.temperature, locale: deps.locale(), signal };
+    return { model: m.model, noTemperature: m.noTemperature, temperature: a.temperature, locale: deps.locale(), signal, ...providerTuning(deps.registry.get(a.provider)?.adapter) };
   };
 
   /** Ejecuta una etapa LLM con fallback, contabiliza el consumo y devuelve el valor con el modelo usado. */
@@ -78,7 +81,7 @@ export function createPipeline(deps: PipelineDeps) {
     return { assignments: budget.assignments as Assignments, capped: budget.capped, hash: await textHash(article.url, article.text) };
   }
 
-  function stageRunner(article: ArticleInput, hash: string, opts: RunOpts, failed: StageId[]) {
+  function stageRunner(article: ArticleInput, hash: string, opts: RunOpts, failed: StageId[], errors: Partial<Record<StageId, string>>) {
     const emit = (e: StageEvent) => opts.onStage?.(e);
     return async function stage<T>(id: StageId, a: Assignment | undefined, fn: (ctx: StageCtx) => Promise<StageResult<T>>, cacheIt = true): Promise<T | null> {
       if (!a) {
@@ -98,7 +101,9 @@ export function createPipeline(deps: PipelineDeps) {
         return r.value as T;
       } catch (e) {
         failed.push(id);
-        emit({ stage: id, status: 'failed', error: e instanceof Error ? e.message : String(e) });
+        const error = e instanceof Error ? e.message : String(e);
+        errors[id] = error;
+        emit({ stage: id, status: 'failed', error });
         return null;
       }
     };
@@ -107,7 +112,8 @@ export function createPipeline(deps: PipelineDeps) {
   async function runQuickAnalysis(article: ArticleInput, opts: RunOpts = {}): Promise<AnalysisResult> {
     const { assignments, capped, hash } = await prepare(article);
     const failed: StageId[] = [];
-    const stage = stageRunner(article, hash, opts, failed);
+    const errors: Partial<Record<StageId, string>> = {};
+    const stage = stageRunner(article, hash, opts, failed, errors);
     const a = assignments.quickScore ?? assignments.claims;
     const r = await stage('quickScore', a, async (ctx) => {
       const c = await detectClaims(ctx, article, { quick: true });
@@ -118,14 +124,15 @@ export function createPipeline(deps: PipelineDeps) {
       url: article.url, hash, quick: true,
       claims: r ? { claims: [], loadedPhrases: r.loadedPhrases } : null,
       coverage: null, verdicts: null, sources: [], score: r?.score ?? null, synthesis: null, aiAuthorship: null,
-      uncovered: false, failed, capped,
+      uncovered: false, failed, errors, capped,
     };
   }
 
   async function runFullAnalysis(article: ArticleInput, opts: RunOpts = {}): Promise<AnalysisResult> {
     const { assignments: as, capped, hash } = await prepare(article);
     const failed: StageId[] = [];
-    const stage = stageRunner(article, hash, opts, failed);
+    const errors: Partial<Record<StageId, string>> = {};
+    const stage = stageRunner(article, hash, opts, failed, errors);
     const locale = deps.locale();
 
     // Independientes entre sí: afirmaciones, cobertura (red) y detector de IA corren a la vez.
@@ -179,7 +186,7 @@ export function createPipeline(deps: PipelineDeps) {
     const primaryCount = sources.filter((s) => s.kind === 'primary').length;
     const uncovered = coverage ? isUncovered(coverage, primaryCount) : false;
     await deps.onAnalyzed?.(article.url).catch(() => {});
-    return { url: article.url, hash, quick: false, claims, coverage, verdicts, sources, score, synthesis, aiAuthorship, uncovered, failed, capped };
+    return { url: article.url, hash, quick: false, claims, coverage, verdicts, sources, score, synthesis, aiAuthorship, uncovered, failed, errors, capped };
   }
 
   async function askAgent(o: {
@@ -191,6 +198,8 @@ export function createPipeline(deps: PipelineDeps) {
     history?: { role: 'user' | 'assistant'; content: string }[];
     onEvent: (e: AgentEvent) => void;
     signal?: AbortSignal;
+    /** Plazo sin señales del modelo antes de reintentar o dar error (por defecto 60 s). */
+    idleMs?: number;
   }) {
     const a = (await deps.assignments()).agent;
     if (!a) throw new Error('no model assigned to the agent');
@@ -213,6 +222,7 @@ export function createPipeline(deps: PipelineDeps) {
         fetcher: deps.sources,
         extract: deps.extract,
         onEvent: o.onEvent,
+        idleMs: o.idleMs,
       });
       return { value: { text: out.text, citations: out.citations }, usage: out.usage };
     });

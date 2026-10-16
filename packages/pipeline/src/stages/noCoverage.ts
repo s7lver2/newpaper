@@ -21,6 +21,8 @@ export async function investigateUncovered(o: { ctx: StageCtx; article: ArticleI
     stage: 'investigate',
     temperature: o.ctx.temperature,
     noTemperature: o.ctx.noTemperature,
+    maxOutputTokens: o.ctx.maxOutputTokens,
+    providerOptions: o.ctx.providerOptions,
     signal: o.ctx.signal,
   });
   const ids = new Set(o.sources.map((s) => s.id));

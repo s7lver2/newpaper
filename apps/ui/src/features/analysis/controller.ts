@@ -1,4 +1,4 @@
-import type { AnalysisResult, ArticleInput, Pipeline, StageEvent, StageId } from '@newpaper/pipeline';
+import { mergeResults, type AnalysisResult, type ArticleInput, type Pipeline, type StageEvent, type StageId } from '@newpaper/pipeline';
 import { commands } from '../../ipc/commands';
 import { onTabPage } from '../../ipc/events';
 import type { PageArticle, TabId } from '../../ipc/types';
@@ -22,7 +22,17 @@ export interface TabAnalysis {
 
 export const analysisStore = createStore<{ byTab: Record<number, TabAnalysis> }>({ byTab: {} });
 export const useTabAnalysis = (tabId: TabId | null) => analysisStore.use((s) => (tabId === null ? undefined : s.byTab[tabId]));
-export const latestResult = (a: TabAnalysis | undefined): AnalysisResult | null => (a ? (a.full ?? a.quick) : null);
+const mergedCache = new WeakMap<AnalysisResult, { quick: AnalysisResult; out: AnalysisResult | null }>();
+/** Lo que se enseña: el completo, conservando de la pasada rápida lo que el completo no pudo calcular (p. ej. la neutralidad). */
+export const latestResult = (a: TabAnalysis | undefined): AnalysisResult | null => {
+  if (!a) return null;
+  if (!a.full || !a.quick) return a.full ?? a.quick;
+  const hit = mergedCache.get(a.full);
+  if (hit && hit.quick === a.quick) return hit.out;
+  const out = mergeResults(a.quick, a.full);
+  mergedCache.set(a.full, { quick: a.quick, out });
+  return out;
+};
 
 const noHash = (u: string) => u.split('#')[0]!;
 export function toArticleInput(p: PageArticle): ArticleInput {

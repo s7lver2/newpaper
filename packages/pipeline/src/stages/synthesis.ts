@@ -59,6 +59,8 @@ export async function synthesize(o: {
     stage: 'synthesis',
     temperature: o.ctx.temperature,
     noTemperature: o.ctx.noTemperature,
+    maxOutputTokens: o.ctx.maxOutputTokens,
+    providerOptions: o.ctx.providerOptions,
     signal: o.ctx.signal,
   });
   const ids = new Set(o.sources.map((s) => s.id));
