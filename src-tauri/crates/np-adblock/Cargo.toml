@@ -4,6 +4,10 @@ version = "0.1.0"
 edition = "2021"
 publish = false
 
+[features]
+# Salida a bloqueo de contenido de WebKit (WebKitGTK no tiene gancho por petición). La activa np-app en Linux.
+content-blocking = ["adblock/content-blocking"]
+
 [dependencies]
 adblock = { version = "=0.13.3", default-features = false, features = ["embedded-domain-resolver", "full-regex-handling"] }
 async-trait = { workspace = true }
