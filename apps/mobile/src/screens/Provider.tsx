@@ -46,7 +46,6 @@ export function Provider() {
   const [result, setResult] = useState<TestResult | null>(null);
   const [slow, setSlow] = useState(false);
   const [preset, setPreset] = useState<PresetId>('balanced');
-  const [limit, setLimit] = useState(0);
   const [pc, setPc] = useState<{ base: string; models: string[] } | null>(null);
   const [pcChecked, setPcChecked] = useState(false);
   const [assignments, setAssignments] = useState<Assignments | null>(null);
@@ -91,7 +90,6 @@ export function Provider() {
 
   useEffect(() => {
     void getRegistry().then(setRegistry);
-    void ipc.settingsGet<number>('ai.monthlyLimitUsd').then((v) => typeof v === 'number' && setLimit(v));
   }, []);
 
   const found = useMemo(() => (registry && typed.trim().length >= 4 ? detectProviders(typed.trim(), registry) : []), [registry, typed]);
@@ -166,7 +164,6 @@ export function Provider() {
     const localModels = chosen.type === 'local' && pc ? { [chosen.id]: pc.models } : {};
     const a = await markConnected(chosen, preset, localModels);
     stored.current = null;
-    await ipc.settingsSet('ai.monthlyLimitUsd', limit > 0 ? limit : null);
     setAssignments(a);
     forward('done');
   };
@@ -377,15 +374,7 @@ export function Provider() {
             </button>
           ))}
         </div>
-        <h2 className="m-sec">{t('providers.budget')}</h2>
-        <div className="m-card" style={{ margin: '0 var(--m-gutter)' }}>
-          <label className="m-slider-label">
-            <span>{t('providers.limit')}</span>
-            <b className="np-mono">{limit > 0 ? fmt(limit) : t('mobile.provider.noLimit')}</b>
-          </label>
-          <input type="range" min={0} max={50} step={1} value={limit} onChange={(e) => setLimit(Number(e.target.value))} className="m-slider" aria-label={t('providers.limit')} style={{ '--v': `${(limit / 50) * 100}%` } as CSSProperties} />
-          <p className="m-hint">{t('providers.limitHint')}</p>
-        </div>
+        <p className="m-hint">{t('mobile.provider.limitElsewhere')}</p>
         <div className="m-btn-row" style={{ flexDirection: 'column', marginTop: 16 }}>
           <button type="button" className="m-btn" onClick={() => void connect()}>{t('providers.connect', { name: name(chosen) })}</button>
         </div>

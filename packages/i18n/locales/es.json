@@ -1829,7 +1829,8 @@
         "closed": "Modelos propietarios de empresas de IA.",
         "local": "Corren en tu equipo, sin enviar nada."
       },
-      "newRouter": "New Router"
+      "newRouter": "New Router",
+      "limitElsewhere": "El límite de gasto mensual se fija en Ajustes › IA y proveedores."
     },
     "pair": {
       "body": "En el ordenador, abre Ajustes › Dispositivos › Emparejar un dispositivo y escanea el QR.",
@@ -1928,7 +1929,9 @@
       "lead": "Qué calidad quieres y cuánto puedes gastar al mes.",
       "quickOnOpen": "Análisis rápido al abrir",
       "quickOnOpenSub": "Se lanza al abrir una noticia, con tu proveedor.",
-      "saved": "Guardado"
+      "saved": "Guardado",
+      "budgetValue": "Límite de {limit} al mes",
+      "budgetWhere": "El límite de gasto se cambia en IA y proveedores; aquí solo se muestra."
     },
     "sources": {
       "title": "Fuentes y temas",
@@ -1983,6 +1986,56 @@
       "disconnected": "{name} desconectado",
       "undo": "Deshacer",
       "add": "Añadir proveedor"
+    },
+    "blocking": {
+      "counters": "Bloqueado hasta ahora",
+      "ads": "Anuncios bloqueados",
+      "trackers": "Rastreadores bloqueados",
+      "empty": "Todavía no se ha bloqueado nada. Los contadores cuentan lo que se bloquea al abrir una noticia con «Ver original»; el lector de newpaper no carga anuncios.",
+      "emptyOff": "El bloqueo está desactivado, así que no se cuenta nada.",
+      "today": "Hoy: {ads} anuncios · {trackers} rastreadores",
+      "since": "desde el {date}",
+      "reset": "Restablecer contadores",
+      "resetTitle": "¿Restablecer los contadores?",
+      "resetBody": "Los totales y los de hoy vuelven a cero. Las listas de filtros no cambian.",
+      "resetDo": "Restablecer"
+    },
+    "about": {
+      "title": "Acerca de newpaper",
+      "failed": "No se pudo leer la información de la app.",
+      "version": "Versión {version}",
+      "release": "Versión final",
+      "debug": "Compilación de depuración",
+      "build": "Compilación",
+      "builtAt": "Compilada",
+      "commit": "Commit",
+      "system": "Sistema",
+      "android": "Android",
+      "device": "Dispositivo",
+      "abi": "Arquitectura",
+      "webview": "WebView del sistema",
+      "app": "Esta app",
+      "locale": "Idioma",
+      "network": "Conexión",
+      "data": "Datos de la app",
+      "components": "Componentes de código abierto",
+      "licensesNote": "newpaper usa estos y otros proyectos de código abierto. Sus licencias están en el código fuente de cada uno.",
+      "copy": "Copiar información",
+      "copyHint": "Copia un resumen para informar de un error. No incluye claves, direcciones IP ni datos personales.",
+      "copied": "Información copiada",
+      "copyFailed": "No se pudo copiar",
+      "unknown": "desconocido",
+      "net": {
+        "direct": "Directa",
+        "tor": "Tor"
+      }
+    },
+    "needProvider": {
+      "title": "Primero conecta un proveedor de IA",
+      "body": "El ojo y el análisis necesitan una IA que lea la noticia. Conecta un proveedor y el ojo se abrirá.",
+      "connect": "Conectar un proveedor",
+      "later": "Ahora no",
+      "banner": "Conecta un proveedor de IA para analizar"
     }
   }
 }

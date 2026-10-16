@@ -1829,7 +1829,8 @@
         "closed": "Proprietary models from AI companies.",
         "local": "Run on your computer; nothing is sent."
       },
-      "newRouter": "New Router"
+      "newRouter": "New Router",
+      "limitElsewhere": "The monthly spending limit is set under Settings › AI and providers."
     },
     "pair": {
       "body": "On your computer, open Settings › Devices › Pair a device and scan the QR code.",
@@ -1928,7 +1929,9 @@
       "lead": "How much quality you want and how much you can spend each month.",
       "quickOnOpen": "Quick analysis on open",
       "quickOnOpenSub": "Runs when you open a story, with your provider.",
-      "saved": "Saved"
+      "saved": "Saved",
+      "budgetValue": "Limit of {limit} a month",
+      "budgetWhere": "The spending limit is changed under AI and providers; it is only shown here."
     },
     "sources": {
       "title": "Sources and topics",
@@ -1983,6 +1986,56 @@
       "disconnected": "{name} disconnected",
       "undo": "Undo",
       "add": "Add provider"
+    },
+    "blocking": {
+      "counters": "Blocked so far",
+      "ads": "Ads blocked",
+      "trackers": "Trackers blocked",
+      "empty": "Nothing has been blocked yet. The counters count what is blocked when you open a story with “View original”; the newpaper reader loads no ads.",
+      "emptyOff": "Blocking is off, so nothing is counted.",
+      "today": "Today: {ads} ads · {trackers} trackers",
+      "since": "since {date}",
+      "reset": "Reset counters",
+      "resetTitle": "Reset the counters?",
+      "resetBody": "The totals and today’s counts go back to zero. The filter lists do not change.",
+      "resetDo": "Reset"
+    },
+    "about": {
+      "title": "About newpaper",
+      "failed": "Could not read the app information.",
+      "version": "Version {version}",
+      "release": "Release build",
+      "debug": "Debug build",
+      "build": "Build",
+      "builtAt": "Built",
+      "commit": "Commit",
+      "system": "System",
+      "android": "Android",
+      "device": "Device",
+      "abi": "Architecture",
+      "webview": "System WebView",
+      "app": "This app",
+      "locale": "Language",
+      "network": "Connection",
+      "data": "App data",
+      "components": "Open-source components",
+      "licensesNote": "newpaper uses these and other open-source projects. Their licences are in each project’s source code.",
+      "copy": "Copy information",
+      "copyHint": "Copies a summary for bug reports. It contains no keys, IP addresses or personal data.",
+      "copied": "Information copied",
+      "copyFailed": "Could not copy",
+      "unknown": "unknown",
+      "net": {
+        "direct": "Direct",
+        "tor": "Tor"
+      }
+    },
+    "needProvider": {
+      "title": "Connect an AI provider first",
+      "body": "The eye and the analysis need an AI to read the story. Connect a provider and the eye will open.",
+      "connect": "Connect a provider",
+      "later": "Not now",
+      "banner": "Connect an AI provider to analyse"
     }
   }
 }

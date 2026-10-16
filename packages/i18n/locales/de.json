@@ -1829,7 +1829,8 @@
         "closed": "Proprietäre Modelle von KI-Unternehmen.",
         "local": "Laufen auf deinem Gerät, es wird nichts gesendet."
       },
-      "newRouter": "New Router"
+      "newRouter": "New Router",
+      "limitElsewhere": "Das monatliche Ausgabenlimit legst du unter Einstellungen › KI und Anbieter fest."
     },
     "pair": {
       "body": "Öffne auf dem Rechner Einstellungen › Geräte › Gerät koppeln und scanne den QR-Code.",
@@ -1928,7 +1929,9 @@
       "lead": "Wie viel Qualität du willst und wie viel du pro Monat ausgeben kannst.",
       "quickOnOpen": "Schnellanalyse beim Öffnen",
       "quickOnOpenSub": "Startet beim Öffnen einer Meldung mit deinem Anbieter.",
-      "saved": "Gespeichert"
+      "saved": "Gespeichert",
+      "budgetValue": "Limit von {limit} pro Monat",
+      "budgetWhere": "Das Ausgabenlimit änderst du unter KI und Anbieter; hier wird es nur angezeigt."
     },
     "sources": {
       "title": "Quellen und Themen",
@@ -1983,6 +1986,56 @@
       "disconnected": "{name} getrennt",
       "undo": "Rückgängig",
       "add": "Anbieter hinzufügen"
+    },
+    "blocking": {
+      "counters": "Bisher blockiert",
+      "ads": "Blockierte Werbung",
+      "trackers": "Blockierte Tracker",
+      "empty": "Bisher wurde nichts blockiert. Die Zähler erfassen, was beim Öffnen einer Meldung mit „Original ansehen“ blockiert wird; der newpaper-Reader lädt keine Werbung.",
+      "emptyOff": "Die Blockierung ist aus, deshalb wird nichts gezählt.",
+      "today": "Heute: {ads} Werbung · {trackers} Tracker",
+      "since": "seit {date}",
+      "reset": "Zähler zurücksetzen",
+      "resetTitle": "Zähler zurücksetzen?",
+      "resetBody": "Gesamt- und Tageswerte gehen auf null. Die Filterlisten bleiben unverändert.",
+      "resetDo": "Zurücksetzen"
+    },
+    "about": {
+      "title": "Über newpaper",
+      "failed": "Die App-Informationen konnten nicht gelesen werden.",
+      "version": "Version {version}",
+      "release": "Release-Build",
+      "debug": "Debug-Build",
+      "build": "Build",
+      "builtAt": "Erstellt",
+      "commit": "Commit",
+      "system": "System",
+      "android": "Android",
+      "device": "Gerät",
+      "abi": "Architektur",
+      "webview": "System-WebView",
+      "app": "Diese App",
+      "locale": "Sprache",
+      "network": "Verbindung",
+      "data": "App-Daten",
+      "components": "Open-Source-Komponenten",
+      "licensesNote": "newpaper nutzt diese und weitere Open-Source-Projekte. Ihre Lizenzen stehen im Quellcode des jeweiligen Projekts.",
+      "copy": "Informationen kopieren",
+      "copyHint": "Kopiert eine Zusammenfassung für Fehlerberichte. Sie enthält keine Schlüssel, IP-Adressen oder persönlichen Daten.",
+      "copied": "Informationen kopiert",
+      "copyFailed": "Kopieren fehlgeschlagen",
+      "unknown": "unbekannt",
+      "net": {
+        "direct": "Direkt",
+        "tor": "Tor"
+      }
+    },
+    "needProvider": {
+      "title": "Verbinde zuerst einen KI-Anbieter",
+      "body": "Das Auge und die Analyse brauchen eine KI, die die Meldung liest. Verbinde einen Anbieter, dann öffnet sich das Auge.",
+      "connect": "Anbieter verbinden",
+      "later": "Jetzt nicht",
+      "banner": "Verbinde einen KI-Anbieter, um zu analysieren"
     }
   }
 }

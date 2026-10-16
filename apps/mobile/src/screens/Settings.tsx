@@ -101,7 +101,7 @@ export function Settings() {
     {
       key: 'about',
       title: t('mobile.settings.g.about'),
-      rows: [{ id: 'version', label: t('app.name'), sub: t('mobile.settings.aboutSub'), icon: 'info' }],
+      rows: [{ id: 'version', label: t('app.name'), sub: t('mobile.settings.aboutSub'), icon: 'info', onPress: () => go('acerca') }],
     },
     {
       key: 'danger',

@@ -2,8 +2,11 @@ import { useI18n } from '@newpaper/i18n/react';
 import { useEffect, useState } from 'react';
 import { resetPipeline } from '../ai/pipeline';
 import { Switch, Toast } from '../components';
+import { IconChevron } from '../icons';
 import { ipc, type AdblockStatus, type MonthUsage, type TopicState } from '../ipc';
+import { go } from '../router';
 import { Bar } from './Bar';
+import { BlockCounters } from './BlockCounters';
 
 type Preset = 'privacy' | 'balanced' | 'quality' | 'cheap';
 const PRESETS: Preset[] = ['privacy', 'balanced', 'quality', 'cheap'];
@@ -12,13 +15,13 @@ const PRESETS: Preset[] = ['privacy', 'balanced', 'quality', 'cheap'];
 export function Pipeline() {
   const { t, formatNumber } = useI18n();
   const [preset, setPreset] = useState<Preset>('balanced');
-  const [limit, setLimit] = useState('');
+  const [limit, setLimit] = useState<number | null>(null);
   const [quick, setQuick] = useState(true);
   const [usage, setUsage] = useState<MonthUsage | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   useEffect(() => {
     void ipc.settingsGet<Preset>('ai.preset').then((v) => v && setPreset(v)).catch(() => {});
-    void ipc.settingsGet<number>('ai.monthlyLimitUsd').then((v) => setLimit(typeof v === 'number' ? String(v) : '')).catch(() => {});
+    void ipc.settingsGet<number>('ai.monthlyLimitUsd').then((v) => setLimit(typeof v === 'number' && v > 0 ? v : null)).catch(() => {});
     void ipc.settingsGet<boolean>('ai.quickOnOpen').then((v) => setQuick(v ?? true)).catch(() => {});
     void ipc.usageMonth().then(setUsage).catch(() => {});
   }, []);
@@ -32,10 +35,6 @@ export function Pipeline() {
     // Cambiar de preset vuelve a la asignación automática: se descarta cualquier asignación manual guardada.
     void ipc.settingsSet('ai.assignments', {}).catch(() => {});
     void ipc.settingsSet('ai.preset', p).then(saved);
-  };
-  const saveLimit = () => {
-    const n = Number(limit.replace(',', '.'));
-    void ipc.settingsSet('ai.monthlyLimitUsd', limit.trim() === '' || !Number.isFinite(n) || n < 0 ? null : n).then(saved);
   };
   return (
     <section>
@@ -55,12 +54,16 @@ export function Pipeline() {
       </div>
       <p className="m-hint">{t('providers.auto')}</p>
       <h2 className="m-sec">{t('providers.budget')}</h2>
-      <label className="m-field">
-        <span>{t('providers.limit')}</span>
-        <input className="m-input" inputMode="decimal" value={limit} onChange={(e) => setLimit(e.target.value)} onBlur={saveLimit} />
-      </label>
-      <p className="m-hint">{t('providers.limitHint')}</p>
-      {usage ? <p className="m-sub">{t('providers.spent', { amount: formatNumber(usage.cost, { style: 'currency', currency: 'USD' }) })}</p> : null}
+      <div className="m-group">
+        <button type="button" className="m-row" onClick={() => go('ia')}>
+          <span className="m-row-body">
+            <b>{t('providers.limit')}</b>
+            <span>{limit === null ? t('mobile.provider.noLimit') : t('mobile.pipeline.budgetValue', { limit: formatNumber(limit, { style: 'currency', currency: 'USD' }) })}{usage ? ` · ${t('providers.spent', { amount: formatNumber(usage.cost, { style: 'currency', currency: 'USD' }) })}` : ''}</span>
+          </span>
+          <IconChevron />
+        </button>
+      </div>
+      <p className="m-hint">{t('mobile.pipeline.budgetWhere')}</p>
       <h2 className="m-sec">{t('mobile.pipeline.title')}</h2>
       <div className="m-group">
         <div className="m-row">
@@ -114,6 +117,7 @@ export function Blocking() {
               <Switch checked={st.enabled} label={t('privacy.blocking.enabled')} onChange={(v) => void ipc.adblockSetEnabled(v).then(setSt)} />
             </div>
           </div>
+          <BlockCounters enabled={st.enabled} />
           <h2 className="m-sec">{t('privacy.blocking.lists')}</h2>
           <div className="m-group">
             {st.lists.map((l) => (

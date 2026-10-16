@@ -6,6 +6,8 @@ import { useEffect, useMemo, useState, type FormEvent } from 'react';
 import { getPipeline } from '../ai/pipeline';
 import { ipc } from '../ipc';
 import { go, back } from '../router';
+import { useAiReady } from '../aiReady';
+import { NeedProviderSheet } from '../components';
 import { loadArticle, readingState, useReading } from '../readingStore';
 import { IconBack, IconChevron } from '../icons';
 
@@ -77,6 +79,8 @@ export function Agent({ url }: { url: string | null }) {
   const [msgs, setMsgs] = useState<AgentMessage[]>([]);
   const [busy, setBusy] = useState(false);
   const [parties, setParties] = useState<PartyInfo[]>([]);
+  const ready = useAiReady() === true;
+  const [need, setNeed] = useState(false);
   useEffect(() => {
     if (url) void loadArticle(url);
   }, [url]);
@@ -103,6 +107,7 @@ export function Agent({ url }: { url: string | null }) {
 
   const send = async (e: FormEvent) => {
     e.preventDefault();
+    if (!ready) return setNeed(true);
     const question = q.trim();
     const a = readingState().article;
     if (!question || !a || busy) return;
@@ -202,12 +207,13 @@ export function Agent({ url }: { url: string | null }) {
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
           <label className="m-sr" htmlFor="m-agent-q">{t('agent.placeholder')}</label>
-          <input id="m-agent-q" className="m-input" style={{ borderRadius: 26, height: 52 }} value={q} placeholder={t('agent.placeholder')} onChange={(e) => setQ(e.target.value)} />
-          <button type="submit" className="m-btn" style={{ width: 52, height: 52, padding: 0, borderRadius: 26 }} disabled={busy || !q.trim()} aria-label={t('agent.send')}>
+          <input id="m-agent-q" className="m-input" style={{ borderRadius: 26, height: 52 }} value={q} placeholder={ready ? t('agent.placeholder') : t('mobile.needProvider.banner')} readOnly={!ready} onClick={() => !ready && setNeed(true)} onChange={(e) => setQ(e.target.value)} />
+          <button type="submit" className="m-btn" style={{ width: 52, height: 52, padding: 0, borderRadius: 26 }} disabled={ready && (busy || !q.trim())} aria-label={t('agent.send')}>
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z" /></svg>
           </button>
         </div>
       </form>
+      {need ? <NeedProviderSheet onClose={() => setNeed(false)} /> : null}
     </section>
   );
 }

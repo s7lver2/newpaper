@@ -2,6 +2,7 @@ import { extractFromHtml, type Article } from '@newpaper/extract';
 import type { AnalysisResult, StageEvent } from '@newpaper/pipeline';
 import { useSyncExternalStore } from 'react';
 import { getPipeline } from './ai/pipeline';
+import { aiReadyNow, refreshAiReady } from './aiReady';
 import { ipc } from './ipc';
 
 export interface ReadingState {
@@ -50,6 +51,8 @@ export async function loadArticle(url: string): Promise<void> {
 export async function analyze(kind: 'quick' | 'full'): Promise<void> {
   const a = state.article;
   if (!a) return;
+  // Sin proveedor de IA no hay análisis (ni error): la interfaz enseña «Primero conecta un proveedor».
+  if (!(aiReadyNow() ?? (await refreshAiReady()))) return;
   set({ busy: kind, error: null, stages: {} });
   const onStage = (e: StageEvent) => set({ stages: { ...state.stages, [e.stage]: e.status } });
   try {

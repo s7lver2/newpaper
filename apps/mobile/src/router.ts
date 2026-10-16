@@ -14,7 +14,8 @@ export type RouteName =
   | 'sin-conexion'
   | 'pipeline'
   | 'bloqueo'
-  | 'fuentes';
+  | 'fuentes'
+  | 'acerca';
 export interface Route { name: RouteName; params: URLSearchParams }
 /** Cómo se llegó a la pantalla: decide la animación (push desde la derecha, pop hacia la derecha, pestaña = fundido). */
 export type NavDir = 'push' | 'pop' | 'tab';

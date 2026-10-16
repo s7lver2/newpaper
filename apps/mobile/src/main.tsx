@@ -5,11 +5,13 @@ import { isLocale } from '@newpaper/i18n';
 import { detectSystemLocale, I18nProvider } from '@newpaper/i18n/react';
 import { createRoot } from 'react-dom/client';
 import { App } from './App';
+import { initInsets } from './insets';
 import { ipc } from './ipc';
 import intro from './splash/intro-engine';
 import { applyMotion, applyThemeChoice, loadMotion, loadTheme } from './theme';
 import './mobile.css';
 
+initInsets();
 // Sprites y tablas de la intro mientras el sistema aún muestra el splash nativo y esperamos los ajustes (no pinta nada).
 intro.init();
 

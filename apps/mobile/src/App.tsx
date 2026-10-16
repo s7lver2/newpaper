@@ -6,6 +6,7 @@ import { go, TAB_ROOTS, useNavDir, useRoute, type RouteName } from './router';
 import { IconAgent, IconReading, IconSettings, IconToday } from './icons';
 import { Splash } from './Splash';
 import type { IntroMode } from './splash/intro-engine';
+import { About } from './screens/About';
 import { Today } from './screens/Today';
 import { Welcome } from './screens/Welcome';
 
@@ -178,6 +179,8 @@ export function App() {
         return <Blocking />;
       case 'fuentes':
         return <Sources />;
+      case 'acerca':
+        return <About />;
       default:
         return null;
     }
@@ -188,7 +191,7 @@ export function App() {
   const showTabs = !fullscreen && root !== null;
 
   return (
-    <div className="m-app np-root" data-route={route.name}>
+    <div className="m-app np-root" data-route={route.name} data-tabs={showTabs ? '' : undefined}>
       <div className="m-statusscrim" aria-hidden="true" />
       <main className="m-main">
         {/* Las raíces se quedan montadas: cada pestaña conserva su scroll y estado. */}

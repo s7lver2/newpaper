@@ -36,14 +36,38 @@ export function decodeEntities(s: string): string {
 }
 const cleanCards = (cs: EventCard[]) => cs.map((c) => ({ ...c, title: decodeEntities(c.title) }));
 
+const AI_KEYS = new Set(['ai.connected', 'ai.customEndpoints', 'ai.assignments']);
+const aiListeners = new Set<() => void>();
+/** Avisa cuando la propia app cambia los ajustes que deciden si hay un proveedor de IA (`ai.connected`, `ai.customEndpoints`...). */
+export function onAiSettingsChange(cb: () => void): () => void {
+  aiListeners.add(cb);
+  return () => aiListeners.delete(cb);
+}
+
+export interface BlockKinds { ads: number; trackers: number }
+export interface BlockCounts { today: BlockKinds; total: BlockKinds; since: string | null }
+export interface AboutInfo {
+  build: { version: string; profile: string; builtAt: number; git: string; gitDirty: boolean; deps: [string, string][] };
+  device: { webview: string | null; androidRelease: string; sdk: number; manufacturer: string; model: string; abi: string | null; debuggable: boolean };
+  netMode: string;
+  dataBytes: number;
+}
+
 /** Envoltorios de los comandos que usa el móvil (todos existen en el bloque `#[cfg(mobile)]` de src-tauri/src/lib.rs). */
 export const ipc = {
   settingsGet: <T>(key: string) => invoke<T | null>('settings_get', { key }),
-  settingsSet: (key: string, value: unknown) => invoke<void>('settings_set', { key, value }),
+  settingsSet: (key: string, value: unknown) =>
+    invoke<void>('settings_set', { key, value }).then(() => {
+      if (AI_KEYS.has(key)) aiListeners.forEach((l) => l());
+    }),
   configRead: (name: string) => invoke<string>('config_read', { name }),
   secretSet: (key: string, value: string) => invoke<void>('secret_set', { key, value }),
   historyRecordVisit: (url: string, title: string) => invoke<string | null>('history_record_visit', { url, title }),
   historySearch: (filter: HistoryFilter) => invoke<HistoryEntry[]>('history_search', { filter }),
+  insets: () => invoke<{ top: number; bottom: number; left: number; right: number }>('mobile_insets'),
+  blockCounts: () => invoke<BlockCounts>('mobile_block_counts'),
+  blockReset: () => invoke<BlockCounts>('mobile_block_reset'),
+  about: () => invoke<AboutInfo>('mobile_about'),
   systemBars: (dark: boolean) => invoke<void>('mobile_set_system_bars', { dark }),
   historyDelete: (scope: DeleteScope) => invoke<number>('history_delete', { scope }),
   secretDelete: (key: string) => invoke<void>('secret_delete', { key }),

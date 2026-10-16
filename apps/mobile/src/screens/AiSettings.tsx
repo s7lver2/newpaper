@@ -25,6 +25,7 @@ export function AiSettings() {
   const [connected, setConnected] = useState<string[]>([]);
   const [preset, setPreset] = useState<PresetId>('balanced');
   const [limit, setLimit] = useState(0);
+  const [spent, setSpent] = useState<number | null>(null);
   const [open, setOpen] = useState<ProviderEntry | null>(null);
   const [probe, setProbe] = useState<{ phase: 'idle' | 'running' | 'done'; result: TestResult | null }>({ phase: 'idle', result: null });
   const [confirm, setConfirm] = useState<ProviderEntry | null>(null);
@@ -41,6 +42,7 @@ export function AiSettings() {
   useEffect(() => {
     void getRegistry().then(setRegistry);
     void load();
+    void ipc.usageMonth().then((u) => setSpent(u.cost)).catch(() => {});
     return () => {
       // Al salir, un borrado pendiente se completa: el usuario ya no puede deshacerlo desde esta pantalla.
       if (pendingRef.current) {
@@ -155,6 +157,7 @@ export function AiSettings() {
         </label>
         <input type="range" min={0} max={50} step={1} value={limit} onChange={(e) => saveLimit(Number(e.target.value))} className="m-slider" aria-label={t('providers.limit')} style={{ '--v': `${(limit / 50) * 100}%` } as CSSProperties} />
         <p className="m-hint">{t('providers.limitHint')}</p>
+        {spent !== null ? <p className="m-hint">{t('providers.spent', { amount: fmt(spent) })}</p> : null}
       </div>
 
       {open ? (

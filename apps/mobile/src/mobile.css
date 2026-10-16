@@ -5,7 +5,8 @@
   --m-dur-sheet: 380ms; --m-dur-ring: 900ms; --m-dur-shimmer: 1400ms; --m-dur-scan: 2200ms; --m-stagger: 45ms;
   --m-ease: cubic-bezier(.22,1,.36,1); --m-ease-emph: cubic-bezier(.05,.7,.1,1); --m-ease-exit: cubic-bezier(.3,0,.8,.15);
   --m-ease-inout: cubic-bezier(.65,0,.35,1); --m-spring: cubic-bezier(.34,1.56,.64,1);
-  --m-top: env(safe-area-inset-top, 0px); --m-bottom: max(env(safe-area-inset-bottom, 0px), 20px);
+  /* Márgenes del sistema: el mayor entre `env()` y lo que mide el plugin nativo (`--np-inset-*`, ver insets.ts). */
+  --m-top: max(env(safe-area-inset-top, 0px), var(--np-inset-top, 0px)); --m-bottom: max(env(safe-area-inset-bottom, 0px), var(--np-inset-bottom, 0px), 20px);
   --m-hit: 48px; --m-gutter: 20px; --m-appbar: 56px; --m-tabbar: 64px; --m-r-card: 20px; --m-r-ctl: 16px;
 }
 html, body, #root { height: 100%; margin: 0; background: var(--np-paper); color: var(--np-ink); }
@@ -20,10 +21,11 @@ body { overflow: hidden; -webkit-tap-highlight-color: transparent; }
 .m-app :focus-visible { outline: 2px solid var(--np-accent); outline-offset: 2px; }
 .m-app svg { flex: none; }
 .m-main { flex: 1; min-height: 0; position: relative; overflow: hidden; }
-.m-page { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: 32px; scrollbar-width: none; overscroll-behavior: contain; }
+.m-page { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; padding-bottom: calc(var(--m-bottom) + 24px); scrollbar-width: none; overscroll-behavior: contain; }
 .m-page::-webkit-scrollbar { display: none; }
 .m-page[hidden] { display: none; }
-.m-page.m-with-tabs { padding-bottom: calc(var(--m-tabbar) + var(--m-bottom) + 12px); }
+.m-page:has(> .m-agent) { padding-bottom: 0; }
+.m-page.m-with-tabs { padding-bottom: 24px; } /* la barra de pestañas ya queda fuera de `.m-main` */
 .m-stage-push { animation: m-push-in var(--m-dur-base) var(--m-ease-emph) backwards; }
 .m-stage-pop { animation: m-pop-in var(--m-dur-base) var(--m-ease-emph) backwards; }
 .m-stage-tab { animation: m-fade var(--m-dur-base) var(--m-ease) backwards; }
@@ -198,6 +200,7 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 .m-tribar i:nth-child(3) { background: #7C93F0; }
 
 /* tapa de la barra de estado: el contenido no se lee por debajo de la hora y los iconos */
+.m-app[data-tabs] .m-toast { bottom: calc(var(--m-bottom) + var(--m-tabbar) + 8px); }
 .m-statusscrim { position: fixed; top: 0; left: 0; right: 0; height: var(--m-top); z-index: 4; background: var(--np-paper); pointer-events: none; }
 .m-scanning .m-statusscrim { background: transparent; }
 
@@ -220,7 +223,7 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 @keyframes m-pulse { from { transform: scale(.7); opacity: .6; } to { transform: scale(1.2); opacity: 1; } }
 
 /* snackbar */
-.m-toast { position: fixed; left: 16px; right: 16px; bottom: calc(var(--m-bottom) + var(--m-tabbar) + 8px); z-index: 30; padding: 14px 18px; border-radius: 16px; background: var(--np-ink); color: var(--np-on-ink); font: 500 14px/1.3 var(--np-font-ui); box-shadow: var(--np-shadow-modal); animation: m-rise var(--m-dur-base) var(--m-ease) both; }
+.m-toast { position: fixed; left: 16px; right: 16px; bottom: calc(var(--m-bottom) + 12px); z-index: 30; padding: 14px 18px; border-radius: 16px; background: var(--np-ink); color: var(--np-on-ink); font: 500 14px/1.3 var(--np-font-ui); box-shadow: var(--np-shadow-modal); animation: m-rise var(--m-dur-base) var(--m-ease) both; }
 
 /* estados a pantalla (permiso denegado, emparejado) */
 .m-state { display: grid; justify-items: center; gap: 8px; text-align: center; padding: 28px var(--m-gutter) 12px; }
@@ -502,6 +505,30 @@ button.m-row:active { background: var(--np-soft); transform: none; }
 .m-input:focus-visible { box-shadow: 0 0 0 2px var(--np-accent); }
 
 .m-hint { overflow-wrap: anywhere; }
+
+/* contadores de bloqueo */
+.m-counts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 0 16px; }
+.m-count { display: grid; gap: 6px; padding: 16px; border-radius: var(--m-r-card); background: var(--np-card); border: 1px solid var(--np-line2); animation: m-rise var(--m-dur-slow) var(--m-ease) both; }
+.m-count-trackers { animation-delay: var(--m-stagger); }
+.m-count-n { font: 500 38px/1 var(--np-font-read); letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.m-count-ads .m-count-n { color: var(--np-left); }
+.m-count-trackers .m-count-n { color: var(--np-right); }
+.m-count > span { font: 400 13px/1.3 var(--np-font-ui); color: var(--np-muted); }
+.m-counts-sub { background: none; padding: 0; margin: 10px 20px 8px; }
+
+/* acerca de */
+.m-about-head { display: grid; justify-items: start; gap: 6px; margin: 8px var(--m-gutter) 0; animation: m-rise var(--m-dur-slow) var(--m-ease) both; }
+.m-about-name { font: 500 34px/1 var(--np-font-read); letter-spacing: -.02em; }
+.m-about-ver { font: 400 15px var(--np-font-ui); color: var(--np-muted); }
+.m-about-chip { font: 600 11px/1 var(--np-font-ui); letter-spacing: .08em; text-transform: uppercase; padding: 6px 10px; border-radius: 10px; }
+.m-about-chip.dbg { background: var(--np-warn-bg); color: var(--np-warn); }
+.m-about-chip.rel { background: var(--np-ok-bg); color: var(--np-ok); }
+.m-about-v { flex: none; max-width: 62%; text-align: right; font: 500 14px/1.35 var(--np-font-mono); overflow-wrap: anywhere; }
+
+/* sin proveedor de IA: el ojo se queda cerrado */
+.m-need { text-align: left; }
+.m-need-eye { margin: 0 0 8px -4px; background: var(--np-soft); animation: m-eye-nod var(--m-dur-emph) var(--m-ease) 200ms both; }
+@keyframes m-eye-nod { 0% { transform: translateX(0); } 25% { transform: translateX(-5px); } 55% { transform: translateX(4px); } 100% { transform: none; } }
 
 /* ---- Pulido: bienvenida (fantasmas de ilustración), pestañas e intro ---------------------------------------------------- */
 /* Cada página recorta lo suyo: la ilustración con paralaje (-35 %) ya no puede asomar fuera de su página. */

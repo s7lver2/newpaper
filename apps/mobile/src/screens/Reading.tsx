@@ -5,6 +5,8 @@ import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { ipc, type HistoryEntry, type SavedArticle } from '../ipc';
 import { go, back, useBackClose } from '../router';
 import { loadArticle, showHtml, useReading } from '../readingStore';
+import { useAiReady } from '../aiReady';
+import { NeedProviderSheet } from '../components';
 import { AnalysisSheet } from './AnalysisSheet';
 import { IconBack, IconChevron, IconLens } from '../icons';
 
@@ -73,7 +75,9 @@ export function Reading({ url }: { url: string | null }) {
   const s = useReading();
   const [sheet, setSheet] = useState(false);
   const [lens, setLens] = useState(true);
-  const closeSheet = useBackClose(sheet, () => setSheet(false));
+  const ready = useAiReady() === true;
+  const [need, setNeed] = useState(false);
+  const closeSheet = useBackClose(sheet && ready, () => setSheet(false));
   useEffect(() => {
     if (url) void loadArticle(url);
   }, [url]);
@@ -112,10 +116,10 @@ export function Reading({ url }: { url: string | null }) {
       <button
         type="button"
         className="m-lens"
-        aria-pressed={lens}
+        aria-pressed={ready && lens}
         aria-label={t('analysis.lens.toggle')}
-        disabled={!result}
-        onClick={() => setLens(!lens)}
+        disabled={ready && !result}
+        onClick={() => (ready ? setLens(!lens) : setNeed(true))}
       >
         <IconLens />
       </button>
@@ -143,11 +147,11 @@ export function Reading({ url }: { url: string | null }) {
       {bar}
       <div style={{ padding: '0 var(--m-gutter)' }}>
         <h1 style={{ font: '500 31px/1.14 var(--np-font-read)', letterSpacing: '-.02em', margin: '6px 0 14px' }}>{a.title}</h1>
-        <button type="button" className="m-card" style={{ margin: '0 0 18px', width: '100%' }} onClick={() => setSheet(true)}>
+        <button type="button" className="m-card" style={{ margin: '0 0 18px', width: '100%' }} onClick={() => (ready ? setSheet(true) : setNeed(true))}>
           <span className="m-kicker">{t('mobile.reading.analysis')}</span>
-          <span style={{ font: '400 15px/1.4 var(--np-font-ui)' }}>{result ? t('mobile.reading.bannerReady') : t('mobile.reading.bannerEmpty')}</span>
+          <span style={{ font: '400 15px/1.4 var(--np-font-ui)' }}>{!ready ? t('mobile.needProvider.banner') : result ? t('mobile.reading.bannerReady') : t('mobile.reading.bannerEmpty')}</span>
         </button>
-        {lens && result && marks.length > 0 ? (
+        {ready && lens && result && marks.length > 0 ? (
           <AnnotatedText
             text={a.text}
             lang={a.lang}
@@ -165,7 +169,8 @@ export function Reading({ url }: { url: string | null }) {
           <button type="button" className="m-btn sec" onClick={() => go('agente', { u: a.url })}>{t('mobile.reading.askAgent')}</button>
         </div>
       </div>
-      {sheet ? <AnalysisSheet onClose={closeSheet} /> : null}
+      {sheet && ready ? <AnalysisSheet onClose={closeSheet} /> : null}
+      {need ? <NeedProviderSheet onClose={() => setNeed(false)} /> : null}
     </article>
   );
 }
