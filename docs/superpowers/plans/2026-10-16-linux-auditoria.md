@@ -132,3 +132,20 @@ Equipos recomendados: A) Ubuntu/Pop!_OS 22.04 con GNOME en X11; B) 24.04 con Way
 ## 6. Cambios de código (resumen)
 
 `np-shell`: `host/linux.rs` (nuevo), `sysmem_linux.rs` (nuevo), `extensions.rs` (`WebviewProfile.proxy`), `host/mod.rs` (cableado y `set_webview_bounds`), `Cargo.toml` (gtk, webkit2gtk, cairo). `np-store`: llavero Linux. `np-adblock`: `content_filter.rs` + feature `content-blocking`. `np-app`: `setup.rs` (llavero, 0700, harden_ui), `privacy/{mod,adapters,commands}.rs` (proxy de Tor, reglas de bloqueo), `system/{mod,updater,firstrun}.rs`, `sources/offline_sched.rs`, `resources.rs`, `commands/tabs.rs`, `lib.rs`. UI: `ReaderSurface.tsx`, `ui-kit/reader/sanitize.ts` (+test), `shell.css`. Empaquetado: `tauri.linux.conf.json`, `linux/newpaper.desktop`, `scripts/release-manifest.mjs`. Windows: comportamiento sin cambios (todo detrás de `cfg(target_os = "linux")`/`cfg(not(windows))`, salvo `WebviewProfile.proxy`, que en Windows se rellena pero no se usa).
+
+## 7. Integración con el PR #1 (feat/linux-port)
+
+El PR #1 (s7lver2, `feat/linux-port`) se integró con un merge real (sin rebase). Solapaba con esta auditoría en cinco puntos; se dejó **una** implementación por función:
+
+| Conflicto | Se conservó | De quién | Por qué |
+|---|---|---|---|
+| `np-shell/src/sysmem_linux.rs` (add/add) | Árbol de procesos con `RssAnon` de `/proc/<pid>/status` | Nuestro | Es la misma semántica que Windows (memoria privada, sin bibliotecas compartidas contadas varias veces) y no necesita `tempfile` como dev-dependency. Se descartó la variante PSS/`smaps_rollup` del PR (más cara por proceso y a menudo ilegible sin permisos). |
+| `src/sources/offline_sched.rs` (Wi-Fi/corriente) | `/proc/net/route` + `/sys/class/net/<if>/wireless` y `/sys/class/power_supply` | Nuestro | Sin dependencias nuevas, también funciona en sesiones sin D-Bus del sistema y está probada con tests. Se descartó `zbus` (NetworkManager/UPower) del PR; se quitó `zbus` de `src-tauri/Cargo.toml` y del `Cargo.lock`. Diferencia: sin NetworkManager no se distingue Wi-Fi de una VPN sobre Wi-Fi; con la ruta por defecto sí. |
+| `src/resources.rs` | Un único `measure()` para Linux | Ambos eran idénticos | El PR añadía una copia de la función de Linux ya existente. |
+| `np-store/src/secrets.rs`, `np-store/Cargo.toml`, `src/setup.rs` (llavero) | Secret Service con mensaje de error claro (`describe`) y sin caída silenciosa a `MemorySecrets` ni a texto plano (solo escritorio no-Windows/Linux usa memoria; Android usa `MobileSecrets`) | Nuestro | El PR añadía lo mismo (`keyring` con `sync-secret-service`, `crypto-rust`) pero sin los matices de móvil; el texto del `#[ignore]` del test se mantuvo en la versión nuestra. |
+| `tauri.linux.conf.json` (add/add) | Nuestro (deb+rpm+AppImage, icono, categoría, `.desktop`) con `"depends": ["libwebkit2gtk-4.1-0 (>= 2.40)", "libgtk-3-0", "libdbus-1-3"]`; del PR se tomó el `$schema` | Ambos | Nuestras dependencias son más exactas (`>= 2.40` es lo que exige el código por `v2_40`; `libdbus-1-3` por el Secret Service). No se añadió `libayatana-appindicator3-1` del PR: la app no usa bandeja del sistema (§5) ni el árbol de crates tiene appindicator. |
+| `apps/ui/src/shell/ReaderSurface.tsx` (`npoffline`) | Lista de prefijos `http://npoffline.localhost/` y `npoffline://localhost/` | Nuestro | Funciona igual de bien en Windows/Android/Linux y sin llamar a `convertFileSrc` (que necesita el runtime de Tauri y rompe los tests). Mismo resultado que `convertFileSrc('', 'npoffline')` del PR. |
+| `np-shell/Cargo.toml` | Dependencias de Linux (gtk, webkit2gtk, cairo, javascriptcore) | Nuestro | El PR solo añadía `tempfile` (dev) para su test de `/proc`, que ya no existe. |
+| `Cargo.lock` | Regenerado con cargo a partir del nuestro | — | Sin `zbus`/`tempfile` nuevos el resultado es idéntico al de antes del merge. |
+
+Solapamientos restantes: ninguno en código. Quedan sin probar en Linux real el comportamiento de `/proc`/`/sys` en contenedores y la detección de Wi-Fi sobre VPN (ver §4).
