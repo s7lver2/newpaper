@@ -19,6 +19,12 @@ describe('sanitizeArticleHtml', () => {
     const out = sanitizeArticleHtml('<img src="https://cdn.example/a.jpg" srcset="b.jpg 2x" alt="A">', { rewriteImage: proxy });
     expect(out).toBe('<img src="http://npimg.localhost/https%3A%2F%2Fcdn.example%2Fa.jpg" alt="A" loading="lazy">');
   });
+  it('keeps local offline images in the non-Windows protocol form (npoffline://)', () => {
+    const keep = (u: string) => u;
+    expect(sanitizeArticleHtml('<img src="npoffline://localhost/a.webp" alt="A">', { rewriteImage: keep })).toBe(
+      '<img src="npoffline://localhost/a.webp" alt="A" loading="lazy">',
+    );
+  });
   it('drops images whose URL is rejected', () => {
     expect(sanitizeArticleHtml('<img src="data:image/png;base64,AA">', { rewriteImage: () => null })).toBe('');
   });

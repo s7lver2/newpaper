@@ -10,9 +10,13 @@ import { ListingReader } from './ListingSurface';
 import type { ReaderSurfaceProps } from './registry';
 
 /** Imagen por el proxy `npimg`; `r` lleva la página para que Rust envíe el Referer (solo el origen). */
+/** Prefijos de las imágenes locales de una edición sin conexión: `http://npoffline.localhost/` (Windows/Android) o
+ *  `npoffline://localhost/` (Linux/macOS), según lo que calcule `convertFileSrc` en cada sistema. */
+const OFFLINE_PREFIXES = ['http://npoffline.localhost/', 'npoffline://localhost/'];
+
 export const rewriteImage = (absUrl: string, pageUrl?: string): string => {
   // Las imágenes de una edición sin conexión ya son locales (protocolo `npoffline`).
-  if (absUrl.startsWith('http://npoffline.localhost/')) return absUrl;
+  if (OFFLINE_PREFIXES.some((p) => absUrl.startsWith(p))) return absUrl;
   const base = convertFileSrc(absUrl, 'npimg');
   return pageUrl ? `${base}?r=${encodeURIComponent(pageUrl)}` : base;
 };

@@ -49,7 +49,7 @@
 .np-surface { position: absolute; inset: 0; overflow: auto; background: var(--np-paper); }
 
 /* Reader top bar: sticky, blurred, with a thin reading-progress line */
-.np-reader-actions { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 6px 14px; background: color-mix(in srgb, var(--np-reader-bg, var(--np-paper)) 86%, transparent); backdrop-filter: blur(14px) saturate(1.2); border-bottom: 1px solid transparent; }
+.np-reader-actions { position: sticky; top: 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 56px; padding: 6px 14px; background: color-mix(in srgb, var(--np-reader-bg, var(--np-paper)) 86%, transparent); -webkit-backdrop-filter: blur(14px) saturate(1.2); backdrop-filter: blur(14px) saturate(1.2); border-bottom: 1px solid transparent; }
 .np-reader-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--np-accent); transform: scaleX(var(--np-progress, 0)); transform-origin: left; transition: transform .12s linear; pointer-events: none; }
 .np-reader-orig { display: inline-flex; align-items: center; gap: 6px; padding: 0 14px 0 8px; border-radius: 12px; }
 .np-reader-orig svg { width: 18px; height: 18px; }

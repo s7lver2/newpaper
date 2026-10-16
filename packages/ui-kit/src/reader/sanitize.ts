@@ -26,7 +26,8 @@ export function sanitizeArticleHtml(html: string, opts: { rewriteImage(absUrl: s
         const v = el.getAttribute(dim);
         if (v !== null && !/^\d{1,4}$/.test(v.trim())) el.removeAttribute(dim);
       }
-      const rewritten = /^https?:\/\//i.test(src) && !PLACEHOLDER.test(src) ? opts.rewriteImage(src) : null;
+      // `npoffline:` son imágenes ya locales de una edición sin conexión (en Linux/macOS: `npoffline://localhost/`).
+      const rewritten = /^(?:https?|npoffline):\/\//i.test(src) && !PLACEHOLDER.test(src) ? opts.rewriteImage(src) : null;
       if (!rewritten) {
         // No se borra dentro del gancho (DOMPurify está recorriendo el árbol): se marca y se quita después.
         el.setAttribute(DROP, '');
@@ -41,7 +42,7 @@ export function sanitizeArticleHtml(html: string, opts: { rewriteImage(absUrl: s
     ALLOWED_ATTR,
     ALLOW_DATA_ATTR: false,
     ALLOW_ARIA_ATTR: false,
-    ALLOWED_URI_REGEXP: /^(?:https?:|npimg:)/i,
+    ALLOWED_URI_REGEXP: /^(?:https?:|npimg:|npoffline:)/i,
     RETURN_DOM_FRAGMENT: true,
   });
   purify.removeAllHooks();
