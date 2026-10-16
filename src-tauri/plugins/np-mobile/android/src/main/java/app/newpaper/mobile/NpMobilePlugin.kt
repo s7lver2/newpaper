@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.Network
+import android.net.NetworkCapabilities
 import android.util.Log
 import android.net.wifi.WifiManager
 import android.webkit.WebView
@@ -41,21 +42,37 @@ class NpMobilePlugin(private val activity: Activity) : Plugin(activity) {
         watchNetwork()
     }
 
-    /** Cambio de la red activa (Wi-Fi <-> datos, pérdida de red): Rust reinicia Tor. La decisión la toma Rust (debounce). */
+    /**
+     * Cambio de la red por defecto. Solo avisa a Rust cuando cambia la identidad de la red validada (manejador de red +
+     * transporte), no con el ruido de capacidades (intensidad de señal, ancho de banda, enlaces) que en dispositivos
+     * reales llega varias veces por segundo. Rust decide además si reinicia Tor y cuándo (red calmada).
+     */
     private fun watchNetwork() {
         val cm = activity.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager ?: return
-        var current: Network? = null
+        var lastKey: String? = null
         val cb = object : ConnectivityManager.NetworkCallback() {
-            override fun onAvailable(network: Network) {
-                Log.d("NpMobile", "default network available: $network (was $current)")
-                if (current != null && current != network) NpNative.networkChanged()
-                current = network
+            private fun transportOf(caps: NetworkCapabilities): String = when {
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> "vpn"
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> "wifi"
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> "cell"
+                caps.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> "eth"
+                else -> "other"
             }
+
+            override fun onCapabilitiesChanged(network: Network, caps: NetworkCapabilities) {
+                // Sin salida validada a Internet no sirve de nada reiniciar Tor: se espera a que lo esté.
+                if (!caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) return
+                val key = "${transportOf(caps)}:${network.networkHandle}"
+                if (key == lastKey) return
+                Log.i("NpMobile", "default network: $key (was $lastKey)")
+                lastKey = key
+                NpNative.networkChanged(key)
+            }
+
             override fun onLost(network: Network) {
-                if (current == network) {
-                    current = null
-                    NpNative.networkChanged()
-                }
+                Log.i("NpMobile", "default network lost: $network (last $lastKey)")
+                // No se avisa: sin red no hay nada que reiniciar. La red siguiente llega por onCapabilitiesChanged
+                // con otro manejador y reinicia Tor (o la misma red al volver, que se ignora).
             }
         }
         try {

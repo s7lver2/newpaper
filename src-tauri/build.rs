@@ -8,7 +8,7 @@ const APP_COMMANDS: &[&str] = &[
     "history_delete", "omnibox_suggest",
     "secret_set", "secret_has", "secret_delete",
     "config_read",
-    "privacy_status", "net_set_mode", "tor_set_exit_country", "tor_new_circuit", "privacy_set_routing",
+    "privacy_status", "net_set_mode", "tor_retry", "tor_reset", "tor_set_exit_country", "tor_new_circuit", "privacy_set_routing",
     "tab_without_tor", "adblock_status", "adblock_set_enabled", "adblock_set_list", "adblock_refresh",
     "blocked_counts",
     "feeds_refresh_now", "coverage_for", "events_briefing", "events_search", "event_detail", "outlets_list",

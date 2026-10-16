@@ -28,6 +28,7 @@ pub struct FakeTor {
     circuit: AtomicU64,
     starts: AtomicUsize,
     stops: AtomicUsize,
+    resets: AtomicUsize,
 }
 
 impl FakeTor {
@@ -42,6 +43,7 @@ impl FakeTor {
             circuit: AtomicU64::new(1),
             starts: AtomicUsize::new(0),
             stops: AtomicUsize::new(0),
+            resets: AtomicUsize::new(0),
         })
     }
 
@@ -52,7 +54,7 @@ impl FakeTor {
 
     pub fn set_ready(&self, ready: bool) {
         self.ready.store(ready, Ordering::SeqCst);
-        self.state.send_replace(if ready { TorState::Ready } else { TorState::Bootstrapping { percent: 50 } });
+        self.state.send_replace(if ready { TorState::Ready } else { TorState::bootstrapping(50) });
     }
 
     pub fn seen_targets(&self) -> Vec<String> {
@@ -63,6 +65,9 @@ impl FakeTor {
     }
     pub fn stops(&self) -> usize {
         self.stops.load(Ordering::SeqCst)
+    }
+    pub fn resets(&self) -> usize {
+        self.resets.load(Ordering::SeqCst)
     }
     pub fn exit_country(&self) -> Option<String> {
         self.country.lock().unwrap().clone()
@@ -115,5 +120,8 @@ impl TorBackend for FakeTor {
     }
     fn connector(self: Arc<Self>) -> Arc<dyn Connector> {
         self
+    }
+    fn reset_data(&self) {
+        self.resets.fetch_add(1, Ordering::SeqCst);
     }
 }

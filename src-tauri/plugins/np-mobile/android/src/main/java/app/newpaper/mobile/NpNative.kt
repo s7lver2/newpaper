@@ -4,6 +4,6 @@ package app.newpaper.mobile
 object NpNative {
     @JvmStatic external fun shouldBlock(url: String, sourceUrl: String, type: String): Boolean
 
-    /** Cambio de red: reinicia Tor si está en uso (src-tauri/src/mobile/net_jni.rs). */
-    @JvmStatic external fun networkChanged()
+    /** Cambio de la red por defecto, con su identificador (`wifi:<handle>`): Rust decide si reinicia Tor (src-tauri/src/mobile/net_jni.rs). */
+    @JvmStatic external fun networkChanged(id: String)
 }

@@ -32,6 +32,8 @@
     "allow-config-read",
     "allow-privacy-status",
     "allow-net-set-mode",
+    "allow-tor-retry",
+    "allow-tor-reset",
     "allow-adblock-status",
     "allow-adblock-set-enabled",
     "allow-adblock-set-list",

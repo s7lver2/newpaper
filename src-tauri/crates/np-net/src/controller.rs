@@ -2,10 +2,10 @@
 
 use std::{
     sync::{
-        atomic::{AtomicBool, Ordering},
+        atomic::{AtomicBool, AtomicU32, AtomicU64, Ordering},
         Arc, Mutex, RwLock,
     },
-    time::{Duration, Instant},
+    time::Duration,
 };
 
 use tokio::sync::watch;
@@ -25,10 +25,13 @@ pub fn tor_browser_args(port: u16) -> String {
     )
 }
 
-/// Espera antes de reintentar Tor tras un fallo de arranque (red caída, consenso no descargado...).
-pub const TOR_RETRY_DELAY: Duration = Duration::from_secs(60);
-/// Dos cambios de red seguidos (WiFi <-> datos) cuentan como uno: evita reiniciar Arti en cada rebote.
-pub const NETWORK_DEBOUNCE: Duration = Duration::from_secs(3);
+/// Primera espera antes de reintentar Tor tras un fallo de arranque (red caída, consenso no descargado...).
+/// Cada fallo seguido duplica la espera hasta `TOR_RETRY_MAX`; un arranque correcto la reinicia.
+pub const TOR_RETRY_DELAY: Duration = Duration::from_secs(20);
+pub const TOR_RETRY_MAX: Duration = Duration::from_secs(300);
+/// Tras un aviso de cambio de red se espera a que la red se calme (silencio de este tiempo) antes de reiniciar
+/// Arti: el paso Wi-Fi <-> datos suele producir varios avisos seguidos y cada reinicio pierde el progreso.
+pub const NETWORK_SETTLE: Duration = Duration::from_secs(8);
 
 fn build_client(socks_port: Option<u16>, auth: Option<&Auth>, follow_redirects: bool) -> Result<reqwest::Client, NetError> {
     let mut b = crate::with_roots(reqwest::Client::builder())
@@ -66,7 +69,13 @@ pub struct NetController {
     /// Móvil: la app está en segundo plano. Tor no corre y el kill switch deja todo cerrado.
     paused: AtomicBool,
     retry_pending: AtomicBool,
-    last_restart: Mutex<Option<Instant>>,
+    /// Fallos de arranque seguidos (para el retardo exponencial).
+    failures: AtomicU32,
+    /// Identificador de la última red por defecto vista; un aviso con el mismo identificador no reinicia nada.
+    network_id: Mutex<Option<String>>,
+    /// Número de avisos de red: el reinicio diferido solo actúa si no llegó otro después.
+    network_gen: AtomicU64,
+    network_settle: Mutex<Duration>,
 }
 
 impl NetController {
@@ -97,7 +106,10 @@ impl NetController {
             status,
             paused: AtomicBool::new(false),
             retry_pending: AtomicBool::new(false),
-            last_restart: Mutex::new(None),
+            failures: AtomicU32::new(0),
+            network_id: Mutex::new(None),
+            network_gen: AtomicU64::new(0),
+            network_settle: Mutex::new(NETWORK_SETTLE),
         });
         if settings.mode == NetMode::Tor {
             tor.start();
@@ -130,21 +142,65 @@ impl NetController {
         self.settings.read().expect("settings lock").mode == NetMode::Tor && !self.paused.load(Ordering::SeqCst)
     }
 
+    fn retry_delay(&self) -> Duration {
+        let n = self.failures.load(Ordering::SeqCst).saturating_sub(1).min(6);
+        (TOR_RETRY_DELAY * 2u32.pow(n)).min(TOR_RETRY_MAX)
+    }
+
     fn schedule_retry(self: &Arc<Self>, weak: &std::sync::Weak<Self>) {
-        let failed = matches!(*self.tor.subscribe().borrow(), TorState::Failed { .. });
-        if !failed || !self.wants_tor() || self.retry_pending.swap(true, Ordering::SeqCst) {
+        match &*self.tor.subscribe().borrow() {
+            TorState::Ready => {
+                self.failures.store(0, Ordering::SeqCst);
+                return;
+            }
+            TorState::Failed { .. } => {}
+            _ => return,
+        }
+        if !self.wants_tor() || self.retry_pending.swap(true, Ordering::SeqCst) {
             return;
         }
+        self.failures.fetch_add(1, Ordering::SeqCst);
+        let delay = self.retry_delay();
+        tracing::info!(retry_in_s = delay.as_secs(), failures = self.failures.load(Ordering::SeqCst), "tor failed: retry scheduled");
         let weak = weak.clone();
         tokio::spawn(async move {
-            tokio::time::sleep(TOR_RETRY_DELAY).await;
+            tokio::time::sleep(delay).await;
             if let Some(me) = weak.upgrade() {
                 me.retry_pending.store(false, Ordering::SeqCst);
-                if me.wants_tor() {
+                // Solo si sigue caído: el usuario pudo reintentar a mano mientras tanto.
+                if me.wants_tor() && matches!(*me.tor.subscribe().borrow(), TorState::Failed { .. }) {
                     me.tor.start();
                 }
             }
         });
+    }
+
+    /// Acción del usuario ("Reintentar"): reinicia Arti desde la caché ahora, sin esperar al temporizador.
+    pub fn retry_tor(&self) -> bool {
+        if !self.wants_tor() {
+            return false;
+        }
+        tracing::info!("tor: manual retry");
+        self.failures.store(0, Ordering::SeqCst);
+        self.tor.stop();
+        self.tor.set_start_reason("retry");
+        self.tor.start();
+        self.refresh();
+        true
+    }
+
+    /// Acción del usuario ("Restablecer Tor"): borra la caché del directorio y el estado de Arti y arranca de cero.
+    pub fn reset_tor(&self) -> bool {
+        tracing::warn!("tor: reset requested, clearing arti data");
+        self.tor.stop();
+        self.tor.reset_data();
+        self.tor.set_start_reason("reset");
+        self.failures.store(0, Ordering::SeqCst);
+        if self.wants_tor() {
+            self.tor.start();
+        }
+        self.refresh();
+        true
     }
 
     /// Móvil, app a segundo plano: para Arti (batería). El modo no cambia; el proxy de la webview queda cerrado.
@@ -165,22 +221,50 @@ impl NetController {
         self.refresh();
     }
 
-    /// Cambio de red: reconecta (reinicia Arti) si Tor está en uso. Devuelve si lo reinició.
-    pub fn network_changed(&self) -> bool {
+    /// Para los tests: cuánto debe callar la red antes de reiniciar Arti.
+    pub fn set_network_settle(&self, d: Duration) {
+        *self.network_settle.lock().expect("settle lock") = d;
+    }
+
+    /// Cambio de la red por defecto (identificador de red, no ruido de capacidades). Reinicia Arti solo si la red es
+    /// otra de verdad y tras `NETWORK_SETTLE` sin más avisos. El primer aviso solo fija la red de partida. Devuelve si
+    /// programó un reinicio.
+    pub fn network_changed(self: &Arc<Self>, id: &str) -> bool {
+        {
+            let mut cur = self.network_id.lock().expect("network id lock");
+            match cur.as_deref() {
+                None => {
+                    tracing::info!(network = id, "default network: first sighting");
+                    *cur = Some(id.to_string());
+                    return false;
+                }
+                Some(prev) if prev == id => {
+                    tracing::debug!(network = id, "default network: same network, ignored");
+                    return false;
+                }
+                Some(prev) => tracing::info!(from = prev, to = id, "default network changed"),
+            }
+            *cur = Some(id.to_string());
+        }
         if !self.wants_tor() {
             return false;
         }
-        {
-            let mut last = self.last_restart.lock().expect("restart lock");
-            if last.is_some_and(|t| t.elapsed() < NETWORK_DEBOUNCE) {
-                return false;
+        let generation = self.network_gen.fetch_add(1, Ordering::SeqCst) + 1;
+        let settle = *self.network_settle.lock().expect("settle lock");
+        let weak = Arc::downgrade(self);
+        tokio::spawn(async move {
+            tokio::time::sleep(settle).await;
+            let Some(me) = weak.upgrade() else { return };
+            if me.network_gen.load(Ordering::SeqCst) != generation || !me.wants_tor() {
+                return;
             }
-            *last = Some(Instant::now());
-        }
-        tracing::info!("network changed: rebootstrapping tor");
-        self.tor.stop();
-        self.tor.start();
-        self.refresh();
+            tracing::info!("network settled: restarting tor from its cache");
+            me.failures.store(0, Ordering::SeqCst);
+            me.tor.stop();
+            me.tor.set_start_reason("network_change");
+            me.tor.start();
+            me.refresh();
+        });
         true
     }
 
@@ -398,15 +482,45 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn network_change_rebootstraps_once_and_never_in_direct() {
+    async fn network_change_restarts_once_for_a_real_change_and_never_in_direct() {
         let tor = FakeTor::new(true);
         let net = NetController::start(tor_mode(), tor.clone()).await.unwrap();
-        assert!(net.network_changed());
-        assert!(!net.network_changed(), "debounced");
-        assert_eq!(tor.stops(), 1);
+        net.set_network_settle(Duration::from_millis(40));
+        assert!(!net.network_changed("wifi:1"), "the first sighting only records the network");
+        assert!(!net.network_changed("wifi:1"), "same network (capability churn): ignored");
+        assert!(net.network_changed("cell:2"));
+        assert!(net.network_changed("wifi:3"), "a second change inside the settle window");
+        tokio::time::sleep(Duration::from_millis(150)).await;
+        assert_eq!(tor.stops(), 1, "one restart for the whole burst");
         assert_eq!(tor.starts(), 2);
         net.set_mode(NetMode::Direct);
-        assert!(!net.network_changed());
+        assert!(!net.network_changed("cell:4"));
+        tokio::time::sleep(Duration::from_millis(100)).await;
         assert_eq!(tor.starts(), 2, "direct mode never starts tor");
+    }
+
+    #[tokio::test]
+    async fn manual_retry_and_reset_restart_tor() {
+        let tor = FakeTor::new(true);
+        let net = NetController::start(tor_mode(), tor.clone()).await.unwrap();
+        assert!(net.retry_tor());
+        assert_eq!((tor.stops(), tor.starts()), (1, 2));
+        assert!(net.reset_tor());
+        assert_eq!(tor.resets(), 1);
+        assert_eq!((tor.stops(), tor.starts()), (2, 3));
+        net.set_mode(NetMode::Direct);
+        assert!(!net.retry_tor(), "never in direct mode");
+    }
+
+    #[test]
+    fn retry_delay_backs_off_and_caps() {
+        let c = Duration::from_secs;
+        let mut last = c(0);
+        for (n, want) in [(1u32, c(20)), (2, c(40)), (3, c(80)), (4, c(160)), (5, c(300)), (9, c(300))] {
+            let d = (TOR_RETRY_DELAY * 2u32.pow(n.saturating_sub(1).min(6))).min(TOR_RETRY_MAX);
+            assert_eq!(d, want);
+            assert!(d >= last);
+            last = d;
+        }
     }
 }

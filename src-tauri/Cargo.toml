@@ -64,6 +64,12 @@ tempfile = { workspace = true }
 members = [".", "crates/*", "plugins/*"]
 resolver = "2"
 
+# Las dependencias se compilan optimizadas también en depuración. Arti validando e indexando ~9000 microdescriptores
+# (y SQLite empaquetado) a opt-level 0 tarda minutos en un móvil: era el "atasco en el 44 %" de los APK de depuración.
+[profile.dev.package."*"]
+opt-level = 2
+debug = false
+
 [workspace.dependencies]
 tauri = { version = "~2.12", features = ["unstable"] }
 tauri-build = { version = "2.7.1", features = [] }

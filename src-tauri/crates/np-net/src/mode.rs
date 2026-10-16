@@ -30,9 +30,46 @@ impl Default for NetSettings {
 #[serde(tag = "state", rename_all = "camelCase")]
 pub enum TorState {
     Off,
-    Bootstrapping { percent: u8 },
+    Bootstrapping {
+        percent: u8,
+        /// Qué hace Arti ahora y por qué puede estar parado. `None` en el motor simulado.
+        #[serde(skip_serializing_if = "Option::is_none")]
+        detail: Option<BootDetail>,
+    },
     Ready,
     Failed { message: String },
+}
+
+/// Diagnóstico del arranque de Tor para la interfaz y para los registros (`BootstrapStatus` de Arti).
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BootDetail {
+    /// `connecting`, `directory`, `certificates` o `descriptors`.
+    pub phase: String,
+    /// Texto de Arti, p. ej. "directory is fetching microdescriptors (1200/9000)". Solo informativo.
+    pub summary: String,
+    /// Motivo por el que Arti dice estar bloqueado: `offline`, `filtering`, `cant_reach_tor`, `clock_skewed`,
+    /// `cant_bootstrap`. Es un diagnóstico aproximado: la interfaz lo presenta con cautela.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub blocked: Option<String>,
+    /// Segundos desde que empezó este intento.
+    pub elapsed_secs: u64,
+    /// Segundos sin que el texto de progreso cambie.
+    pub stalled_secs: u64,
+    /// Caché de Arti al empezar: `cold` (vacía), `warm` (reutilizada) o `reset` (borrada a petición).
+    pub cache: String,
+    /// Antigüedad de la caché reutilizada, en segundos.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub cache_age_secs: Option<u64>,
+    /// Por qué se reinició: `network_change`, `retry`, `reset`. Vacío en un arranque normal o al reanudar.
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub restart_reason: Option<String>,
+}
+
+impl TorState {
+    pub fn bootstrapping(percent: u8) -> Self {
+        TorState::Bootstrapping { percent, detail: None }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
@@ -139,7 +176,7 @@ mod tests {
         let mut s = NetSettings::default();
         assert!(!compose_status(&s, &TorState::Off, 9050, 0).kill_switch_active);
         s.mode = NetMode::Tor;
-        assert!(compose_status(&s, &TorState::Bootstrapping { percent: 40 }, 9050, 0).kill_switch_active);
+        assert!(compose_status(&s, &TorState::bootstrapping(40), 9050, 0).kill_switch_active);
         assert!(compose_status(&s, &TorState::Failed { message: "x".into() }, 9050, 0).kill_switch_active);
         assert!(!compose_status(&s, &TorState::Ready, 9050, 0).kill_switch_active);
     }
@@ -147,7 +184,7 @@ mod tests {
     #[test]
     fn status_serializes_for_the_ui() {
         let s = NetSettings { mode: NetMode::Tor, exit_country: Some("DE".into()), ..Default::default() };
-        let v = serde_json::to_value(compose_status(&s, &TorState::Bootstrapping { percent: 12 }, 50123, 3)).unwrap();
+        let v = serde_json::to_value(compose_status(&s, &TorState::bootstrapping(12), 50123, 3)).unwrap();
         assert_eq!(v["mode"], "tor");
         assert_eq!(v["tor"]["state"], "bootstrapping");
         assert_eq!(v["tor"]["percent"], 12);

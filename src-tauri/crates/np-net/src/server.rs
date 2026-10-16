@@ -59,6 +59,11 @@ pub trait TorBackend: Send + Sync {
     fn new_circuit(&self) -> u64;
     fn circuit(&self) -> u64;
     fn connector(self: Arc<Self>) -> Arc<dyn Connector>;
+    /// Marca los datos de Arti (caché del directorio y estado de guardas) para borrarse en el próximo arranque.
+    /// No arranca nada: el llamante decide cuándo. Sin efecto en el motor simulado.
+    fn reset_data(&self) {}
+    /// Motivo del próximo arranque (`network_change`, `retry`, `reset`), solo para el diagnóstico.
+    fn set_start_reason(&self, _reason: &'static str) {}
 }
 
 pub struct SocksServer {

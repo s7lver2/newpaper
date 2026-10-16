@@ -25,7 +25,7 @@ mod tests {
     fn tor_mode_never_falls_back_to_direct() {
         assert_eq!(decide(NetMode::Direct, &TorState::Off, 9150), ProxyDecision::Direct);
         assert_eq!(decide(NetMode::Tor, &TorState::Ready, 9150), ProxyDecision::Socks { port: 9150 });
-        for t in [TorState::Off, TorState::Bootstrapping { percent: 40 }, TorState::Failed { message: "x".into() }] {
+        for t in [TorState::Off, TorState::bootstrapping(40), TorState::Failed { message: "x".into() }] {
             assert_eq!(decide(NetMode::Tor, &t, 9150), ProxyDecision::Block);
         }
         assert_eq!(decide(NetMode::Tor, &TorState::Ready, 0), ProxyDecision::Block);

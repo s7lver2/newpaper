@@ -77,6 +77,20 @@ pub async fn net_set_mode(
     Ok(status(&net, &profiles))
 }
 
+/// "Reintentar": reinicia Arti desde su caché sin esperar al temporizador. Nada en modo Directa.
+#[tauri::command]
+pub async fn tor_retry(net: State<'_, Arc<NetController>>, profiles: State<'_, Arc<NetProfiles>>) -> CmdResult<PrivacyStatus> {
+    net.retry_tor();
+    Ok(status(&net, &profiles))
+}
+
+/// "Restablecer Tor": borra la caché del directorio y el estado de Arti y arranca de cero (estado atascado o dañado).
+#[tauri::command]
+pub async fn tor_reset(net: State<'_, Arc<NetController>>, profiles: State<'_, Arc<NetProfiles>>) -> CmdResult<PrivacyStatus> {
+    net.reset_tor();
+    Ok(status(&net, &profiles))
+}
+
 #[cfg(desktop)]
 #[tauri::command]
 pub async fn tor_set_exit_country(

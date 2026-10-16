@@ -3,7 +3,7 @@ pub mod error;
 pub mod mode;
 
 pub use error::NetError;
-pub use mode::{compose_status, normalize_country, route, NetMode, NetSettings, NetStatus, Route, TorState, Traffic};
+pub use mode::{compose_status, normalize_country, BootDetail, route, NetMode, NetSettings, NetStatus, Route, TorState, Traffic};
 pub mod socks;
 pub use socks::TargetAddr;
 pub mod fake;
