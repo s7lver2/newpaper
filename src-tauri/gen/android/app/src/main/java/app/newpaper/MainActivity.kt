@@ -26,7 +26,7 @@ class MainActivity : TauriActivity() {
     handler.post(pollIntro)
   }
 
-  private val pollIntro = object : Runnable {
+  private val pollIntro: Runnable = object : Runnable {
     override fun run() {
       if (introReady) return
       // Si la intro no llega a pintarse, el splash no se queda para siempre: a los 6 s se retira.
