@@ -16,5 +16,10 @@ url = { workspace = true }
 [target.'cfg(windows)'.dependencies]
 keyring = { version = "3.6", features = ["windows-native"] }
 
+# Linux: Secret Service por D-Bus (libdbus-1 en ejecución; `libdbus-1-dev` al compilar). Sin servicio, los comandos
+# fallan con un error claro: nunca se cae a MemorySecrets ni a texto plano.
+[target.'cfg(target_os = "linux")'.dependencies]
+keyring = { version = "3.6", features = ["sync-secret-service", "crypto-rust"] }
+
 [dev-dependencies]
 tempfile = { workspace = true }

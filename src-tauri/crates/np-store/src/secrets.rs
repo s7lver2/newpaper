@@ -38,38 +38,49 @@ impl SecretStore for MemorySecrets {
     }
 }
 
-#[cfg(windows)]
+#[cfg(any(windows, target_os = "linux"))]
 pub struct KeyringSecrets {
     service: String,
 }
 
-#[cfg(windows)]
+#[cfg(any(windows, target_os = "linux"))]
 impl KeyringSecrets {
     pub fn new(service: &str) -> Self {
         Self { service: service.to_string() }
     }
     fn entry(&self, key: &str) -> Result<keyring::Entry, StoreError> {
         validate_secret_key(key)?;
-        keyring::Entry::new(&self.service, key).map_err(|e| StoreError::Secret(e.to_string()))
+        keyring::Entry::new(&self.service, key).map_err(|e| StoreError::Secret(describe(&e)))
     }
 }
 
-#[cfg(windows)]
+/// Mensaje de error del llavero. En Linux el llavero es el Secret Service de D-Bus (GNOME Keyring, KWallet 5.97+,
+/// KeePassXC...): si no hay ninguno en marcha o está bloqueado se dice claramente, y NUNCA se guarda en claro.
+#[cfg(any(windows, target_os = "linux"))]
+fn describe(e: &keyring::Error) -> String {
+    #[cfg(target_os = "linux")]
+    if matches!(e, keyring::Error::PlatformFailure(_) | keyring::Error::NoStorageAccess(_)) {
+        return format!("no system keyring available (a Secret Service such as GNOME Keyring or KWallet must be running and unlocked): {e}");
+    }
+    e.to_string()
+}
+
+#[cfg(any(windows, target_os = "linux"))]
 impl SecretStore for KeyringSecrets {
     fn get(&self, key: &str) -> Result<Option<String>, StoreError> {
         match self.entry(key)?.get_password() {
             Ok(v) => Ok(Some(v)),
             Err(keyring::Error::NoEntry) => Ok(None),
-            Err(e) => Err(StoreError::Secret(e.to_string())),
+            Err(e) => Err(StoreError::Secret(describe(&e))),
         }
     }
     fn set(&self, key: &str, value: &str) -> Result<(), StoreError> {
-        self.entry(key)?.set_password(value).map_err(|e| StoreError::Secret(e.to_string()))
+        self.entry(key)?.set_password(value).map_err(|e| StoreError::Secret(describe(&e)))
     }
     fn delete(&self, key: &str) -> Result<(), StoreError> {
         match self.entry(key)?.delete_credential() {
             Ok(()) | Err(keyring::Error::NoEntry) => Ok(()),
-            Err(e) => Err(StoreError::Secret(e.to_string())),
+            Err(e) => Err(StoreError::Secret(describe(&e))),
         }
     }
 }
@@ -102,9 +113,9 @@ mod tests {
         assert!(s.set(&"a".repeat(65), "x").is_err());
     }
 
-    #[cfg(windows)]
+    #[cfg(any(windows, target_os = "linux"))]
     #[test]
-    #[ignore = "toca el Administrador de credenciales real; ejecutar con --ignored"]
+    #[ignore = "toca el llavero real del sistema; ejecutar con --ignored"]
     fn keyring_store_round_trip() {
         exercise(&KeyringSecrets::new("newpaper-test"));
     }
