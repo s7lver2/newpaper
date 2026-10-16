@@ -59,6 +59,20 @@ export function listingPathScore(url: string): number {
   return segs.length <= 2 ? 2 : 0;
 }
 
+/** La URL es de una portada, sección, etiqueta o búsqueda (raíz, un solo segmento corto o segmento de listado). */
+export function isSectionUrl(url: string): boolean {
+  let u: URL;
+  try {
+    u = new URL(url);
+  } catch {
+    return false;
+  }
+  const segs = segments(u.pathname);
+  if (looksLikeArticlePath(u.pathname)) return false;
+  if (segs.length <= 1) return true;
+  return segs.some((x) => LISTING_SEGMENT.test(x)) || u.searchParams.has('q') || u.searchParams.has('s') || u.searchParams.has('query');
+}
+
 const NAV_SELECTOR = 'nav, footer, [role="navigation"], [role="banner"], [role="contentinfo"], [class*="menu" i], [class*="cookie" i], [class*="consent" i], [class*="newsletter" i], [class*="paywall" i], [class*="subscri" i], [aria-hidden="true"]';
 const SKIP_PATH = /(?:suscri|subscri|abonn|login|signin|sign-in|registro|register|newsletter|cookies?|privacidad|privacy|aviso-legal|terms|condiciones|contacto|contact|rss|feed|mailto:)/i;
 

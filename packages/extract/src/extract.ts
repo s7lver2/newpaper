@@ -1,7 +1,10 @@
 import { Readability } from '@mozilla/readability';
 import { LIMITS, type Article } from './article';
 import { fixImages } from './images';
+import { classifyPage, extractListing, isSectionUrl, MIN_ITEMS } from './listing';
 import { cleanBody, endsAbruptly, hasWallMarker, markWallElements } from './paywall';
+import { collectSignals, looksLikeNews } from './signals';
+import { cutAtNextStory, dropFollowModules, keepPrimaryArticle } from './single';
 import { dropHiddenFromClone } from './visibility';
 
 const cut = (s: string | null | undefined, max: number): string | null => (s ? s.slice(0, max).trim() || null : null);
@@ -42,12 +45,22 @@ function plainText(el: Element): string {
 }
 
 export function extractArticle(doc: Document, url: string): Article | null {
+  // Una portada, sección o listado (p. ej. un enlace de feed que apunta a la home) no es una noticia:
+  // Readability lo "extraería" como varios titulares seguidos.
+  const signals = collectSignals(doc);
+  if (classifyPage(doc, url, signals).kind === 'listing' && extractListing(doc, url).length >= MIN_ITEMS) return null;
+  // Lo mismo si la URL es de portada/sección y la página no se declara artículo (og:type / JSON-LD).
+  if (isSectionUrl(url) && !looksLikeNews(signals)) return null;
   const clone = doc.cloneNode(true) as Document;
   // Solo se lee lo que la página muestra (nada oculto o recortado) y se marcan los muros.
   dropHiddenFromClone(doc, clone);
   const wallMarker = hasWallMarker(doc);
   markWallElements(clone);
   fixImages(clone);
+  // Una sola noticia: fuera las precargadas/siguientes y los módulos de recomendadas.
+  keepPrimaryArticle(clone, url);
+  dropFollowModules(clone);
+  cutAtNextStory(clone, url);
   // Readability resuelve las URL relativas con baseURI: se fija a la URL real del artículo.
   if (!clone.querySelector('base[href]') && clone.head) {
     const base = clone.createElement('base');
