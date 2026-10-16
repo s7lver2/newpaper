@@ -1944,6 +1944,32 @@
         "skipped": "Skipped"
       }
     },
+    "torDiag": {
+      "phaseConnecting": "Connecting to the Tor network",
+      "phaseDirectory": "Downloading the Tor directory",
+      "phaseCertificates": "Verifying the directory",
+      "phaseDescriptors": "Downloading the relay list",
+      "slow": "This is taking longer than usual. You can keep waiting or use the direct connection meanwhile.",
+      "blockedOffline": "Tor reports there is no Internet connection.",
+      "blockedFiltering": "Your connection seems to filter Tor. Try another network or the direct connection.",
+      "blockedCantReach": "This connection cannot reach the Tor network.",
+      "blockedClock": "The phone clock looks wrong. Turn on automatic time.",
+      "blockedCantBootstrap": "Tor cannot download the directory.",
+      "blockedUnknown": "Tor says it is blocked.",
+      "elapsed": "{seconds} s",
+      "detail": "Technical detail",
+      "lastError": "Last error: {message}",
+      "retry": "Retry",
+      "direct": "Use direct connection",
+      "reset": "Reset Tor",
+      "resetHint": "Reset clears the Tor cache and starts from scratch.",
+      "networkChange": "You changed network: restarting Tor. Progress goes back to 0% and will be quick because the saved relay list is reused.",
+      "cacheWarm": "Using the saved relay list.",
+      "cacheCold": "First run: the relay list has to be downloaded.",
+      "cacheReset": "Relay list cleared: downloading it again.",
+      "stalled": "No change for {seconds} s · still working.",
+      "slowCold": "This is taking longer than usual. On mobile networks the first run can take several minutes; later ones will be quick because the list is saved."
+    },
     "ia": {
       "title": "AI and providers",
       "lead": "Which AI analyses each story, how much you spend, and when it stops.",

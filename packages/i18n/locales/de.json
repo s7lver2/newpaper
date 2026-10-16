@@ -1944,6 +1944,32 @@
         "skipped": "Übersprungen"
       }
     },
+    "torDiag": {
+      "phaseConnecting": "Verbindung zum Tor-Netzwerk",
+      "phaseDirectory": "Tor-Verzeichnis wird geladen",
+      "phaseCertificates": "Verzeichnis wird geprüft",
+      "phaseDescriptors": "Relay-Liste wird geladen",
+      "slow": "Das dauert länger als üblich. Du kannst warten oder in der Zwischenzeit die direkte Verbindung nutzen.",
+      "blockedOffline": "Tor meldet keine Internetverbindung.",
+      "blockedFiltering": "Deine Verbindung scheint Tor zu filtern. Versuche ein anderes Netz oder die direkte Verbindung.",
+      "blockedCantReach": "Diese Verbindung erreicht das Tor-Netzwerk nicht.",
+      "blockedClock": "Die Uhr des Telefons scheint falsch zu gehen. Automatische Zeit aktivieren.",
+      "blockedCantBootstrap": "Tor kann das Verzeichnis nicht laden.",
+      "blockedUnknown": "Tor meldet eine Blockade.",
+      "elapsed": "{seconds} s",
+      "detail": "Technische Details",
+      "lastError": "Letzter Fehler: {message}",
+      "retry": "Erneut versuchen",
+      "direct": "Direkte Verbindung nutzen",
+      "reset": "Tor zurücksetzen",
+      "resetHint": "Zurücksetzen löscht den Tor-Cache und beginnt von vorn.",
+      "networkChange": "Netzwechsel: Tor wird neu gestartet. Der Fortschritt beginnt bei 0 % und geht schnell, weil die gespeicherte Relay-Liste genutzt wird.",
+      "cacheWarm": "Gespeicherte Relay-Liste wird genutzt.",
+      "cacheCold": "Erster Start: die Relay-Liste muss geladen werden.",
+      "cacheReset": "Relay-Liste gelöscht: wird neu geladen.",
+      "stalled": "Keine Änderung seit {seconds} s · arbeitet weiter.",
+      "slowCold": "Das dauert länger als üblich. In Mobilfunknetzen kann der erste Start mehrere Minuten brauchen; spätere gehen schnell, weil die Liste gespeichert wird."
+    },
     "ia": {
       "title": "KI und Anbieter",
       "lead": "Welche KI jede Meldung analysiert, wie viel du ausgibst und wann sie stoppt.",

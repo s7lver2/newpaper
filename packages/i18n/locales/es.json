@@ -1944,6 +1944,32 @@
         "skipped": "Omitido"
       }
     },
+    "torDiag": {
+      "phaseConnecting": "Conectando con la red Tor",
+      "phaseDirectory": "Descargando el directorio de Tor",
+      "phaseCertificates": "Verificando el directorio",
+      "phaseDescriptors": "Descargando la lista de nodos",
+      "slow": "Tarda más de lo normal. Puedes seguir esperando o usar la conexión directa mientras tanto.",
+      "blockedOffline": "Tor indica que no hay conexión a Internet.",
+      "blockedFiltering": "Tu conexión parece filtrar Tor. Prueba otra red o la conexión directa.",
+      "blockedCantReach": "Esta conexión no llega a la red Tor.",
+      "blockedClock": "El reloj del teléfono parece desajustado. Actívalo en automático.",
+      "blockedCantBootstrap": "Tor no consigue descargar el directorio.",
+      "blockedUnknown": "Tor dice estar bloqueado.",
+      "elapsed": "{seconds} s",
+      "detail": "Detalle técnico",
+      "lastError": "Último error: {message}",
+      "retry": "Reintentar",
+      "direct": "Usar conexión directa",
+      "reset": "Restablecer Tor",
+      "resetHint": "Restablecer borra la caché de Tor y empieza de cero.",
+      "networkChange": "Cambiaste de red: reiniciando Tor. El progreso vuelve a 0 % y será rápido porque se reutiliza la lista guardada.",
+      "cacheWarm": "Usando la lista de relés guardada.",
+      "cacheCold": "Primera vez: hay que descargar la lista de relés.",
+      "cacheReset": "Lista de relés borrada: se descarga de nuevo.",
+      "stalled": "Sin cambios desde hace {seconds} s · sigue activo.",
+      "slowCold": "Tarda más de lo normal. En redes móviles la primera vez puede llevar varios minutos; las siguientes serán rápidas porque se guarda la lista."
+    },
     "ia": {
       "title": "IA y proveedores",
       "lead": "Qué IA analiza cada noticia, cuánto gastas y cuándo se detiene.",
