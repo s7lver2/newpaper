@@ -12,7 +12,7 @@ import {
   type Segment,
   type TestResult,
 } from '@newpaper/ui-kit/logic';
-import { useEffect, useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react';
 import { getRegistry } from '../ai/pipeline';
 import { ipc } from '../ipc';
 import { go } from '../router';
@@ -50,6 +50,35 @@ export function Provider() {
   const [pc, setPc] = useState<{ base: string; models: string[] } | null>(null);
   const [pcChecked, setPcChecked] = useState(false);
   const [assignments, setAssignments] = useState<Assignments | null>(null);
+  // Atrás de Android: cada paso adelante añade una entrada de historial; Atrás vuelve al paso anterior en vez de salir.
+  const depth = useRef(0);
+  const stepRef = useRef<Step>('home');
+  stepRef.current = step;
+  const ctx = useRef<{ local: boolean; query: string }>({ local: false, query: '' });
+  ctx.current = { local: chosen?.type === 'local', query };
+  const forward = (s: Step) => {
+    history.pushState({ npStep: true }, '');
+    depth.current += 1;
+    setStep(s);
+  };
+  const restart = () => {
+    const d = depth.current;
+    depth.current = 0;
+    setStep('home');
+    if (d > 0) history.go(-d);
+  };
+  useEffect(() => {
+    const onPop = () => {
+      if (depth.current <= 0) return;
+      depth.current -= 1;
+      const { local, query: q } = ctx.current;
+      const s = stepRef.current;
+      if (s === 'done') return go('ia');
+      setStep(s === 'all' ? 'home' : s === 'key' ? (q ? 'all' : 'home') : s === 'local' ? 'home' : s === 'test' ? (local ? 'local' : 'key') : s === 'start' ? (local ? 'local' : 'test') : 'home');
+    };
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
 
   useEffect(() => {
     void getRegistry().then(setRegistry);
@@ -71,13 +100,13 @@ export function Provider() {
     setPhase('idle');
     setResult(null);
     if (p.type === 'local') {
-      setStep('local');
+      forward('local');
       setPcChecked(false);
       setPc(await probePc());
       setPcChecked(true);
       return;
     }
-    setStep('key');
+    forward('key');
   };
 
   /** Busca el Ollama de los equipos emparejados (mismo puerto que el escritorio). */
@@ -98,13 +127,16 @@ export function Provider() {
   };
 
   const runPrueba = async (p: ProviderEntry) => {
-    setStep('test');
+    forward('test');
     setPhase('running');
     setSlow(false);
     setResult(null);
     const slowTimer = window.setTimeout(() => setSlow(true), 3000);
     try {
       if (p.type === 'cloud') await storeKey(p, key);
+      // La clave ya está en el llavero: no se queda en el estado de la pantalla.
+      setKey('');
+      setTyped('');
       const live = pc && p.type === 'local' ? pc.models : null;
       const r = await runTest(p, testModel(p, live));
       setResult(r);
@@ -123,7 +155,7 @@ export function Provider() {
     const a = await markConnected(chosen, preset, localModels);
     await ipc.settingsSet('ai.monthlyLimitUsd', limit > 0 ? limit : null);
     setAssignments(a);
-    setStep('done');
+    forward('done');
   };
 
   /** Coste de un análisis con las asignaciones elegidas (suma de los pasos con precio conocido). */
@@ -134,12 +166,8 @@ export function Provider() {
   };
 
   const back = () => {
-    if (step === 'all') return setStep('home');
-    if (step === 'key' || step === 'local') return setStep(step === 'key' && query ? 'all' : 'home');
-    if (step === 'test') return setStep(chosen?.type === 'local' ? 'local' : 'key');
-    if (step === 'start') return setStep(chosen?.type === 'local' ? 'local' : 'test');
-    if (step === 'done') return go('ia');
-    return go('ajustes');
+    if (depth.current > 0) return history.back();
+    return go('ia');
   };
 
   if (step === 'home') {
@@ -169,14 +197,14 @@ export function Provider() {
         {typed.trim().length >= 4 && found.length === 1 ? (
           <div className="m-btn-row" style={{ flexDirection: 'column' }}>
             <p className="m-hint m-ok">{t('providers.detected', { name: name(found[0]!) })}</p>
-            <button type="button" className="m-btn" onClick={() => { setChosen(found[0]!); setKey(typed.trim()); setStep('key'); }}>
+            <button type="button" className="m-btn" onClick={() => { setChosen(found[0]!); setKey(typed.trim()); forward('key'); }}>
               {t('providers.connect', { name: name(found[0]!) })}
             </button>
           </div>
         ) : null}
         {typed.trim().length >= 4 && found.length === 0 ? <p className="m-hint m-bad">{t('providers.unknownPrefix')}</p> : null}
         <div className="m-btn-row" style={{ marginTop: 14 }}>
-          <button type="button" className="m-btn sec" onClick={() => setStep('all')}>
+          <button type="button" className="m-btn sec" onClick={() => forward('all')}>
             {t('providers.seeAll', { n: listable(registry.providers).length })}
           </button>
         </div>
@@ -264,7 +292,7 @@ export function Provider() {
             <b>{t('mobile.provider.pcDetected')}</b>
             <span className="m-muted">{t('mobile.provider.pcModels', { n: pc.models.length, base: pc.base.replace(/^https?:\/\//, '') })}</span>
             <div className="m-btn-row" style={{ padding: 0, marginTop: 12 }}>
-              <button type="button" className="m-btn" onClick={() => setStep('start')}>{t('mobile.provider.pcUse')}</button>
+              <button type="button" className="m-btn" onClick={() => forward('start')}>{t('mobile.provider.pcUse')}</button>
             </div>
           </div>
         ) : pcChecked ? (
@@ -308,13 +336,13 @@ export function Provider() {
         </div>
         {phase === 'ok' ? (
           <div className="m-btn-row" style={{ flexDirection: 'column' }}>
-            <button type="button" className="m-btn" onClick={() => setStep('start')}>{t('mobile.provider.continue')}</button>
+            <button type="button" className="m-btn" onClick={() => forward('start')}>{t('mobile.provider.continue')}</button>
           </div>
         ) : null}
         {phase === 'fail' ? (
           <div className="m-btn-row" style={{ flexDirection: 'column' }}>
             <button type="button" className="m-btn" onClick={() => void runPrueba(chosen)}>{t('providers.retry')}</button>
-            <button type="button" className="m-btn sec" onClick={() => setStep('key')}>{t('mobile.provider.changeKey')}</button>
+            <button type="button" className="m-btn sec" onClick={() => back()}>{t('mobile.provider.changeKey')}</button>
           </div>
         ) : null}
       </section>
@@ -364,7 +392,7 @@ export function Provider() {
         </div>
         <div className="m-btn-row" style={{ flexDirection: 'column', marginTop: 16 }}>
           <button type="button" className="m-btn" onClick={() => go('ia')}>{t('mobile.provider.backToIa')}</button>
-          <button type="button" className="m-btn sec" onClick={() => { setChosen(null); setKey(''); setTyped(''); setStep('home'); }}>{t('providers.another')}</button>
+          <button type="button" className="m-btn sec" onClick={() => { setChosen(null); setKey(''); setTyped(''); restart(); }}>{t('providers.another')}</button>
         </div>
       </section>
     );

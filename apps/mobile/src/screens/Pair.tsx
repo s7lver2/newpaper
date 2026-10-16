@@ -74,10 +74,10 @@ function Handshake() {
   );
 }
 
-/** Huella: tres grupos que barajan y se fijan de uno en uno. Los valores que se fijan son los reales del emparejamiento. */
+/** Huella: todos los grupos (5 de 4 caracteres) que barajan y se fijan de uno en uno. Los valores que se fijan son los reales del emparejamiento. */
 function Fingerprint({ fp, onMatch, onMismatch }: { fp: string; onMatch: () => void; onMismatch: () => void }) {
   const { t } = useI18n();
-  const groups = fp.replace(/[^0-9A-Za-z]/g, '').match(/.{1,4}/g)?.slice(0, 3) ?? [fp];
+  const groups = fp.replace(/[^0-9A-Za-z]/g, '').match(/.{1,4}/g) ?? [fp];
   const [shown, setShown] = useState<string[]>(groups.map(() => '••••'));
   const [fixed, setFixed] = useState(0);
   const [match, setMatch] = useState(false);
@@ -92,7 +92,7 @@ function Fingerprint({ fp, onMatch, onMismatch }: { fp: string; onMatch: () => v
         fixedRef.current = i + 1;
         setShown((cur) => cur.map((x, j) => (j <= i ? groups[j]! : x)));
         setFixed(i + 1);
-      }, [480, 680, 880][i] ?? 880 + i * 200),
+      }, 480 + i * 200),
     );
     return () => {
       window.clearInterval(shuffle);
@@ -139,6 +139,16 @@ export function Pair() {
   const [report, setReport] = useState<SyncReport | null>(null);
   const scanning = useRef(false);
   const cancelledHandshake = useRef(false);
+  // Un emparejamiento solo vale si el usuario confirma la huella: si se sale de la pantalla antes (Atrás, otra pestaña)
+  // se revoca el equipo recién añadido y se descarta un apretón de manos en curso.
+  const pendingPeer = useRef<string | null>(null);
+  useEffect(
+    () => () => {
+      cancelledHandshake.current = true;
+      if (pendingPeer.current) void ipc.syncRevoke(pendingPeer.current).catch(() => {});
+    },
+    [],
+  );
 
   const layer = view === 'scan' || view === 'manual' || view === 'denied';
   const dismiss = useBackClose(layer, () => {
@@ -162,6 +172,7 @@ export function Pair() {
         return;
       }
       setPeer(p);
+      pendingPeer.current = p.id;
       setView('fingerprint');
       for (const addr of p.addresses) {
         try {
@@ -178,6 +189,7 @@ export function Pair() {
   };
 
   const mismatch = async () => {
+    pendingPeer.current = null;
     if (peer) await ipc.syncRevoke(peer.id).catch(() => {});
     setPeer(null);
     setError(t('mobile.pair.fpMismatch'));
@@ -289,7 +301,7 @@ export function Pair() {
           <h2>{t('mobile.pair.success', { name: peer.name })}</h2>
         </div>
         <div className="m-card">
-          <Fingerprint fp={peer.fingerprint} onMatch={() => setView('scope')} onMismatch={() => void mismatch()} />
+          <Fingerprint fp={peer.fingerprint} onMatch={() => { pendingPeer.current = null; setView('scope'); }} onMismatch={() => void mismatch()} />
         </div>
       </section>
     );
